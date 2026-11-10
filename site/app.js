@@ -444,6 +444,8 @@ var LAYERS = [
     },
   },
   {
+    /* parcels disabled Nov 10, 2026 — re-enable by flipping this flag */
+    enabled: false,
     id: "parcels", label: "Parcels (owner names — public record)",
     file: "data/parcels.geojson", onByDefault: false,
     build: function (gj) {
@@ -528,6 +530,7 @@ function setStatus(msg) { statusEl.textContent = msg; }
 LAYERS.forEach(function (def) {
   def.layer = null;
   def.loading = false;
+  if (def.enabled === false) { def.box = null; return; }
   var label = document.createElement("label");
   var box = document.createElement("input");
   box.type = "checkbox";
@@ -560,6 +563,7 @@ var requestedView = null;
   if (!m) return;
   var wanted = m[1].split(",");
   LAYERS.forEach(function (def) {
+    if (def.enabled === false || !def.box) return;
     if (wanted.indexOf(def.id) >= 0 && !def.box.checked) {
       def.box.checked = true;
       ensureLayer(def, false);
@@ -569,6 +573,7 @@ var requestedView = null;
 })();
 
 function ensureLayer(def, announce) {
+  if (def.enabled === false) return;
   if (def.layer) { def.layer.addTo(map); return; }
   if (def.loading) return;
   def.loading = true;
@@ -580,7 +585,7 @@ function ensureLayer(def, announce) {
     })
     .then(function (gj) {
       def.layer = def.build(gj);
-      if (def.box.checked) def.layer.addTo(map);
+      if (def.box && def.box.checked) def.layer.addTo(map);
       if (def.id === "trail") {
         if (requestedView) {
           map.setView([requestedView[0], requestedView[1]],
@@ -598,11 +603,11 @@ function ensureLayer(def, announce) {
       def.loading = false;
       if (def.missingOk) {
         def.layer = L.layerGroup();
-        if (def.box.checked) def.layer.addTo(map);
+        if (def.box && def.box.checked) def.layer.addTo(map);
         setStatus("");
       } else {
         setStatus("Could not load " + def.label + " (" + err.message + ").");
-        def.box.checked = false;
+        if (def.box) def.box.checked = false;
       }
     });
 }
@@ -688,11 +693,8 @@ map.on("layeradd", assertDrawOrder);
       "Access point (trail crossing)");
   add("<span class='swatch pin' style='background:#333333'></span>",
       "Access point (road crossing)");
-  add("", "<strong>Parcels</strong>");
-  add("<span class='swatch fill' style='background:#fdbb84'></span>",
-      "Parcel the trail crosses");
-  add("<span class='swatch fill' style='background:#e7e1c3'></span>",
-      "Adjoining parcel (corridor ring)");
+  /* Parcels legend swatches omitted while the layer is UI-disabled
+     (Nov 10, 2026 — see the parcels entry in LAYERS). */
   add("", "<strong>Access</strong>");
   Object.keys(ACCESS_STYLES).forEach(function (k) {
     var s = ACCESS_STYLES[k];

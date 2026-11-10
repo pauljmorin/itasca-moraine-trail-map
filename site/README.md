@@ -44,7 +44,7 @@ time their checkbox is switched on.
 | Section boundaries | `data/boundaries.geojson` | with sections | **No toggle of its own** — the boundary markers ride with the Adopted sections toggle: a short bar (140 m) struck **across** the line at every section start/end — perpendicular to the trail's bearing there, unlabelled, positioned on the stretch geometry endpoints (never at raw KMZ pin positions — one pin sits ~3.6 km off the line). The same file's two chapter termini are the separate layer below. |
 | Chapter ends (Itasca Moraine west & east) | `data/boundaries.geojson` | on | The boundary-bar language at chapter weight: a longer (~280 m) green bar across the line at each end, labelled "Itasca Moraine — west end" (chainage 0, at the GAP-W west end in Itasca State Park) and "Itasca Moraine — east end". Always available with the official line, independent of the sections toggle. |
 | Unadopted gap (unclaimed) | `data/gaps.geojson` | on | Stretches of the depicted line no section covers, drawn bold dashed red — the recruiting layer. Currently one: GAP-W, 2.92 mi in Itasca State Park. Popup: length, land context, nearest access at each end, trails crossing it. |
-| Parcels | `data/parcels.geojson` | off | Trail-corridor parcels (crossed + adjoining ring). Popup: parcel ID, county, land class, acres, and the **owner name + mailing address as published in the county parcel records** (public record — see Privacy). 919 of the 1,038 site parcels carry a published owner; the rest (mostly public land) show no owner row. |
+| Parcels | `data/parcels.geojson` | **UI-disabled** | **Built but UI-disabled as of Nov 10, 2026, pending a later re-enable** — the layer does not appear in the toggles, its legend swatches are removed, and nothing fetches `parcels.geojson` on load or toggle. The data, build logic, popup code and canvas rendering are all retained; re-enable by flipping `enabled: false` to `enabled: true` on the parcels entry in `app.js` (LAYERS). When enabled: trail-corridor parcels (crossed + adjoining ring), off by default. Popup: parcel ID, county, land class, acres, and the **owner name + mailing address as published in the county parcel records** (public record — see Privacy). 919 of the 1,038 site parcels carry a published owner; the rest (mostly public land) show no owner row. |
 | Access lines | `data/access.geojson` | off | MN DNR lines: state forest roads, state park trails/roads, OHV trails, state trails, snowmobile trails, hunter walking trails, styled by kind. |
 | Roads | `data/roads.geojson` | off | Road centerlines. Off by default: it is the visually busiest layer and the map opens faster without it. |
 | Access points (section crossings) | `data/access-points.geojson` | off | The computed crossing points where roads and DNR trails meet each section or the gap (111 points). Popup: name, kind, which section, position (start/mid/end), crossing vs near-approach. A crossing is a line on a map, not a drivable route — see the caution in `../docs/segment-gap-analysis.md` §5 before planning a mower run from it. |
@@ -52,7 +52,9 @@ time their checkbox is switched on.
 
 So the map opens (default view) with just the official line, the
 unadopted gap, the two chapter-end markers, and the (still empty)
-asset-pins layer — sections and parcels are one click away.
+asset-pins layer — sections are one click away. Parcels are built
+but UI-disabled as of Nov 10, 2026, pending a later re-enable (see
+the Parcels row above).
 
 The URL hash also accepts `#view=lat,lon,zoom` to open at a
 particular view instead of fitting the whole trail (combinable with
@@ -145,7 +147,10 @@ zero hits for any full adopter/sawyer name anywhere under `site/`.
 
 Layer toggles were visibly slow (parcels especially) — a
 render/DOM problem, not data volume (parcels: 494 KB, 9,434
-vertices). Two fixes, both in `app.js`: (1) the draw-order handler
+vertices). The parcels layer is UI-disabled in this build (see
+above), but its canvas/perf code path is retained unchanged and
+returns when the layer is re-enabled. Two fixes, both in
+`app.js`: (1) the draw-order handler
 on `layeradd` fired **once per feature** when a GeoJSON group was
 added — 5,902 times for roads — each firing re-asserting layer
 order; it is now coalesced to one re-assertion per animation
