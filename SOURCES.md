@@ -11,7 +11,12 @@ pulled.
   Scenic Trail: route/centerline features with status, type,
   surface, ownership and chapter attributes.
 - **URL:** https://services2.arcgis.com/UfGVyqUm4GHa2zrj/arcgis/rest/services/nct_public/FeatureServer
-- **Layer used:** Layer 2, "North Country Trail - Public" (polyline)
+- **Layers used:** Layer 2, "North Country Trail - Public"
+  (polyline); Layer 1, "Point Data - Public" (waypoints — parking,
+  camping, shelters, water, points of interest; pulled 2026-11-10
+  into `data/points/ncta-points.geojson`, 114 points in the working
+  envelope, and indexed by the gazetteer — see
+  `scripts/build_gazetteer.py`)
 - **Owner / publisher:** North Country Trail Association, on behalf
   of the National Park Service.
 - **Attribution (verbatim from the service):**

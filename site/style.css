@@ -63,6 +63,58 @@ html, body {
 
 .status { font-size: 0.8rem; color: #5a665c; min-height: 1em; }
 
+/* Gazetteer (Find box): the index loads lazily on first focus;
+   results are a simple dropdown list under the input, and a
+   section result's popup carries a scrollable contents list. */
+#gazetteer { position: relative; }
+#gaz-search {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 6px 9px;
+  font-size: 0.9rem;
+  border: 1px solid #a89a5b;
+  border-radius: 14px;
+  background: #fff;
+}
+#gaz-results {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 100%;
+  margin-top: 4px;
+  background: #fff;
+  border: 1px solid #c9c2ab;
+  border-radius: 6px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
+  max-height: 320px;
+  overflow-y: auto;
+  z-index: 1100;
+}
+.gaz-result {
+  display: block;
+  width: 100%;
+  text-align: left;
+  background: none;
+  border: none;
+  border-bottom: 1px solid #eee7d2;
+  padding: 6px 9px;
+  font-size: 0.87rem;
+  cursor: pointer;
+}
+.gaz-result:last-child { border-bottom: none; }
+.gaz-result:hover { background: #f3efdd; }
+.gaz-kind { color: #5a665c; }
+.gaz-mile { color: #8a6d1f; float: right; }
+.gaz-contents {
+  margin-top: 6px;
+  border-top: 1px solid #d8d2bd;
+  padding-top: 5px;
+  max-height: 170px;
+  overflow-y: auto;
+  font-size: 0.83rem;
+}
+.gaz-contents div { margin: 2px 0; }
+
 #legend { font-size: 0.85rem; }
 #legend .row { display: flex; align-items: center; gap: 8px; padding: 2px 0; }
 #legend .swatch {
@@ -134,18 +186,12 @@ html, body {
 }
 #corner-buttons button.active { background: #e8e2c8; }
 
-/* Permanent map labels (divIcons, non-interactive): section names at
-   stretch midpoints, boundary names over small dark dots, and the
-   larger chapter-terminus markers. Children are absolutely
-   positioned on the 0x0 icon anchor. */
+/* Map-face text (divIcons, non-interactive): only the terminus
+   NAME labels remain — boundary and terminus markers themselves
+   are tick bars drawn as canvas polylines in app.js. (Section
+   names are Leaflet tooltips, styled separately below.)
+   Children are absolutely positioned on the 0x0 icon anchor. */
 .map-label { background: none; border: none; }
-.map-label i {
-  position: absolute;
-  left: 0;
-  top: 0;
-  border-radius: 50%;
-  transform: translate(-50%, -50%);
-}
 .map-label span {
   position: absolute;
   left: 0;
@@ -154,30 +200,21 @@ html, body {
   font-weight: 600;
   text-shadow: 0 0 3px #fff, 0 0 3px #fff, 0 0 4px #fff;
 }
-.section-label span {
-  transform: translate(-50%, -50%);
+/* Section names: permanent Leaflet tooltips floating above the
+   line at mid-section (direction "top", offset [0,-6] in app.js).
+   Styled as bare haloed text — no box — and click-through. */
+.leaflet-tooltip.section-name-label {
+  background: transparent;
+  border: none;
+  box-shadow: none;
+  pointer-events: none;
   font-size: 11px;
+  font-weight: 600;
   color: #6e4400;
+  text-shadow: 0 0 3px #fff, 0 0 3px #fff, 0 0 4px #fff;
+  padding: 0;
 }
-.boundary-label i {
-  width: 7px;
-  height: 7px;
-  background: #263238;
-  border: 2px solid #fff;
-  box-shadow: 0 0 3px rgba(0, 0, 0, 0.6);
-}
-.boundary-label span {
-  transform: translate(-50%, -230%);
-  font-size: 10px;
-  color: #263238;
-}
-.terminus-label i {
-  width: 13px;
-  height: 13px;
-  background: #1a9850;
-  border: 3px solid #fff;
-  box-shadow: 0 0 4px rgba(0, 0, 0, 0.6);
-}
+.leaflet-tooltip.section-name-label::before { display: none; }
 .terminus-label span {
   transform: translate(-50%, -260%);
   font-size: 12px;
@@ -223,4 +260,5 @@ html, body {
   .leaflet-control-container { display: none; }
   #layer-toggles { display: none; }
   #corner-ui { display: none; }
+  #gazetteer { display: none; }
 }

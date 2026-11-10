@@ -40,9 +40,9 @@ time their checkbox is switched on.
 | Toggle | File | Default | Contents |
 |---|---|---|---|
 | Official trail line | `data/trail.geojson` | on | The official NCT depiction in the chapter extent, styled by chapter (Itasca Moraine green, Laurentian Lakes purple) and by kind (off-road solid, on-road dashed). Popup: chapter, type, certification, length, ownership, managing authority. |
-| Adopted sections | `data/stretches.geojson` | off | The chapter's adopted sections (from the adoption tracker joined onto the boundary-point overlay), drawn in amber over the official line, each with a permanent name label at its midpoint. Popup: section name, status (adopted), **placeholder** adopted-by names, length measured on the official line, length in the chapter tracker, whether a crossing is recorded at each end (see Privacy for the placeholder rule). |
-| Section boundaries | `data/boundaries.geojson` | with sections | **No toggle of its own** — the boundary markers ride with the Adopted sections toggle: a small dark dot + boundary name at every section start/end, positioned on the stretch geometry endpoints (never at raw KMZ pin positions — one pin sits ~3.6 km off the line). The same file's two chapter termini are the separate layer below. |
-| Chapter ends (Itasca Moraine west & east) | `data/boundaries.geojson` | on | Larger green markers labelled "Itasca Moraine — west end" (chainage 0, at the GAP-W west end in Itasca State Park) and "Itasca Moraine — east end". Always available with the official line, independent of the sections toggle. |
+| Adopted sections | `data/stretches.geojson` | off | The chapter's adopted sections (from the adoption tracker joined onto the boundary-point overlay), drawn in amber over the official line, each with its name as a permanent tooltip floating **above** the line at mid-section. Popup: section name, status (adopted), **placeholder** adopted-by names, length measured on the official line, length in the chapter tracker, whether a crossing is recorded at each end (see Privacy for the placeholder rule). |
+| Section boundaries | `data/boundaries.geojson` | with sections | **No toggle of its own** — the boundary markers ride with the Adopted sections toggle: a short bar (140 m) struck **across** the line at every section start/end — perpendicular to the trail's bearing there, unlabelled, positioned on the stretch geometry endpoints (never at raw KMZ pin positions — one pin sits ~3.6 km off the line). The same file's two chapter termini are the separate layer below. |
+| Chapter ends (Itasca Moraine west & east) | `data/boundaries.geojson` | on | The boundary-bar language at chapter weight: a longer (~280 m) green bar across the line at each end, labelled "Itasca Moraine — west end" (chainage 0, at the GAP-W west end in Itasca State Park) and "Itasca Moraine — east end". Always available with the official line, independent of the sections toggle. |
 | Unadopted gap (unclaimed) | `data/gaps.geojson` | on | Stretches of the depicted line no section covers, drawn bold dashed red — the recruiting layer. Currently one: GAP-W, 2.92 mi in Itasca State Park. Popup: length, land context, nearest access at each end, trails crossing it. |
 | Parcels | `data/parcels.geojson` | off | Trail-corridor parcels (crossed + adjoining ring). Popup: parcel ID, county, land class, acres, and the **owner name + mailing address as published in the county parcel records** (public record — see Privacy). 919 of the 1,038 site parcels carry a published owner; the rest (mostly public land) show no owner row. |
 | Access lines | `data/access.geojson` | off | MN DNR lines: state forest roads, state park trails/roads, OHV trails, state trails, snowmobile trails, hunter walking trails, styled by kind. |
@@ -65,6 +65,103 @@ aerial bases (USGS NAIP imagery; Esri World Imagery; MnGeo's
 Spring Aerial Imagery Program 2013–14 leaf-off photography of NW
 Minnesota). Providers, vintages and endpoints: `../SOURCES.md`.
 
+## Gazetteer (the Find box)
+
+The panel's **Find** box searches `site/data/gazetteer.geojson`
+(built by `scripts/build_gazetteer.py` from the working data; the
+index loads lazily on first focus, never at page load). Every
+entry is a point carrying two mileages: **chainage** (miles along
+the depicted chain from its west end) and the **NCT virtual mile**
+(the tracker's calibration: inside a section, interpolated between
+that section's declared `nct_mile_start/end` by chainage fraction;
+in GAP-W, interpolated 166.58 → 169.5 across the gap; never
+extrapolated — where the calibration doesn't cover a point, the
+field is null). Selecting a result flies the map to it, drops a
+temporary highlight, and opens an info card (kind, NCT mile,
+section, distance from each chapter end); a **section** result's
+card shows the section's full tracker record (below) plus a
+**"What's here"** contents list — every crossing, waypoint and
+boundary the index places inside that section.
+
+Entries (257 in the 2026-11-10 build): 32 section records
+(31 sections + GAP-W), 32 section boundaries, 2 chapter ends, 114
+NCTA waypoints (Parking 43, Camping 36, POI 29, Water 4, Shelter
+2 — the same NCTA public service's point layer, first used here),
+and 77 computed road/trail crossings. Rules that shape the index:
+
+- **Dedupe:** a computed crossing within 100 m of an NCTA parking
+  point is dropped in favour of the named NCTA entry (34 dropped).
+- **Off-chain waypoints:** the NCTA point layer covers a wider
+  envelope than the depicted section chain (it includes waypoints
+  on the NCT west/south of the chapter's depicted stretch). A
+  waypoint more than 250 m from the depicted chain keeps its true
+  position and its snap distance but gets **no** chainage, NCT
+  mile or section (66 of 114) — assigning it a chain position
+  would fabricate one.
+- **West-10's span gets no interpolated NCT miles**: the tracker
+  records that loop section's span as 192 → "Loop", not a linear
+  calibration, so its entries' `nct_mile` is null.
+- Named lakes/water bodies are **not** entries: no water-body
+  names source exists in the project data (some roads/trails are
+  named after lakes — a road named "Perch Lake" is a road).
+  Parcels aren't entries either (1,038 of them; the layer is
+  their home).
+
+### Spreadsheet fields — what crosses, what never does
+
+Section records surface the adoption tracker's content in the
+gazetteer under these exact rules (Paul's steer, 2026-11-10: "add
+as much information from the spreadsheet as possible"):
+
+**Crosses into the site copy:** section description (also
+searchable — "Ozawindib", "South Entrance"), NCT MN map refs
+(e.g. MN-031; also searchable), NCT virtual miles start/end,
+tracker length, land context, the **2026 maintenance notes**, the
+**Help Requested? values verbatim** (shown under the exact label
+"Help requested (as recorded in tracker)" — the bare integers in
+that column are unexplained and stay unexplained), and tracker
+comments **after** name substitution (next paragraph); a comment
+that still contains an unmatched personal reference is dropped
+from the site copy (2 of 18 on this build; the working data keeps
+it verbatim).
+
+**Crosses only as placeholders:** adopter names (as in v2 —
+numbered by first appearance along the chain) and **sawyer
+names**, mapped through the *same* numbering, so the same person
+is the same "Test adopter N" everywhere (two people appear only
+as sawyers; the numbering now reaches Test adopter 50).
+Maintenance notes and descriptions get the same substitution for
+any person named in them. Any email/phone pattern found in
+tracker text is stripped before it crosses (0 found on this
+build) and the strip count is printed by the build.
+
+**Never crosses, under any circumstances:** the tracker's
+**Phone Number** and **Email** columns. They are not read by any
+site build; verified on this build — zero `@` in the gazetteer
+file, zero phone-number patterns anywhere in `site/data/`, and
+zero hits for any full adopter/sawyer name anywhere under `site/`.
+
+## Performance note
+
+Layer toggles were visibly slow (parcels especially) — a
+render/DOM problem, not data volume (parcels: 494 KB, 9,434
+vertices). Two fixes, both in `app.js`: (1) the draw-order handler
+on `layeradd` fired **once per feature** when a GeoJSON group was
+added — 5,902 times for roads — each firing re-asserting layer
+order; it is now coalesced to one re-assertion per animation
+frame; (2) the heavy layers (parcels, access lines, roads, and
+also the official line, adopted sections and the gap) draw on
+**one shared canvas renderer** instead of thousands of SVG DOM
+paths (popups and click hit-testing verified working on canvas; a
+canvas renderer in a *custom pane* renders but stops receiving
+clicks in Leaflet 1.9.4, so the shared renderer stays in the
+default pane, and the small point layers stay SVG above it).
+Measured in the headless proof harness (synchronous add time,
+before → after): parcels ~100 ms → ~12 ms; access lines
+~303 ms → ~54 ms; roads ~426 ms → ~43 ms; the light layers were
+already ≤ ~9 ms and are unchanged in feel. Layers are built once
+and cached — re-toggling never refetches.
+
 ## Site data copies
 
 `scripts/build_site_data.py` (run from the repo root) regenerates
@@ -80,13 +177,16 @@ Minnesota). Providers, vintages and endpoints: `../SOURCES.md`.
   owner / owner address; segment layers use the public-view
   whitelist documented in the build script's header);
 - `site/data/boundaries.geojson` is built in the same run from the
-  stretch geometry endpoints plus the GAP-W west end (33 points —
-  see the Layers table).
+  stretch geometry endpoints plus the GAP-W west end (33 points,
+  each carrying the endpoints of its across-the-line tick bar —
+  see the Layers table). `site/data/gazetteer.geojson` is built
+  separately by `scripts/build_gazetteer.py` (see Gazetteer).
 
 Sizes after simplification (2026-11-10 v2 build): trail 0.07 MB,
 parcels 0.49 MB, access 1.68 MB, roads 0.97 MB, stretches 0.04 MB,
-gaps 0.002 MB, access points 0.03 MB, boundaries 0.005 MB —
-3.30 MB total, down from 30.1 MB of source data. Three tiny parcels
+gaps 0.002 MB, access points 0.03 MB, boundaries 0.007 MB,
+gazetteer 0.10 MB — 3.41 MB total, down from 30.1 MB of source
+data. Three tiny parcels
 (of 1,041) were dropped by polygon simplification; they remain in
 the source file. One stretch (CHP-13) is absent from the site copy
 because its source geometry is a single point — see Known data

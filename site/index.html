@@ -19,6 +19,13 @@
     2.9 mi at the west end, in Itasca State Park — has no adopter
     (shown in red).</p>
 
+  <h2>Find</h2>
+  <div id="gazetteer">
+    <input id="gaz-search" type="search" autocomplete="off"
+      placeholder="Find a place, section, crossing…">
+    <div id="gaz-results" hidden></div>
+  </div>
+
   <h2>Layers</h2>
   <div id="layer-toggles"><!-- checkboxes injected by app.js --></div>
   <p id="load-status" class="status"></p>
@@ -41,6 +48,9 @@
         <li>Roads: Minnesota DNR / MnDOT road centerlines</li>
         <li>Sections &amp; gaps: the chapter's adoption tracker and segment
           boundary points, joined onto the official line</li>
+        <li>Waypoints (parking, camping, shelters, water, points of
+          interest) and the Find index: North Country Trail Association
+          public point data, plus the layers above</li>
         <li>Base maps: © OpenStreetMap contributors; OpenTopoMap
           (CC-BY-SA)</li>
         <li>Shaded relief &amp; spring aerial base maps: Minnesota

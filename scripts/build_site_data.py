@@ -68,7 +68,11 @@ markers sit exactly on the drawn sections, never at raw KMZ pin
 positions — one pin sits ~3.6 km off the line) plus the GAP-W west
 end from the gaps file. Properties per point: name (boundary pin
 name), sections (stretch names meeting there), chapter_end (true
-only for the two chapter termini). No people, no adopter data.
+only for the two chapter termini), and tick — the two endpoints of
+the short bar the site strikes ACROSS the line at each boundary
+(140 m, perpendicular to the trail's local bearing from the
+adjoining stretch segment; design correction 2026-11-10: bars, not
+dots, and no text at segment ends). No people, no adopter data.
 
 Gaps carry only geometric/classification properties (gap id, name,
 length, land context, trail kind, nearest road/trail access at each
@@ -508,8 +512,30 @@ def build_boundaries():
     points = []
     by_label = {}
     mismatches = 0
+    last_seg = [None]  # fallback bearing (zero-length stretches)
 
-    def add(label, coord, section):
+    def tick_for(coord, seg):
+        """Endpoints of the 140 m bar struck across the line at
+        coord, perpendicular to the trail's direction along seg
+        (a (from, to) pair of adjoining stretch vertices)."""
+        if seg is not None:
+            last_seg[0] = seg
+        seg = seg or last_seg[0]
+        cx, cy = to_xy(coord)
+        ax, ay = to_xy(seg[0])
+        bx, by = to_xy(seg[1])
+        dx, dy = bx - ax, by - ay
+        norm = math.hypot(dx, dy) or 1.0
+        ux, uy = -dy / norm, dx / norm  # perpendicular unit (metres)
+        half = 140.0 / 2.0
+        out = []
+        for sgn in (-1, 1):
+            x, y = cx + sgn * half * ux, cy + sgn * half * uy
+            out.append([round(x / M_PER_DEG_LON, PRECISION),
+                        round(y / M_PER_DEG_LAT, PRECISION)])
+        return out
+
+    def add(label, coord, section, seg=None):
         nonlocal mismatches
         if label in by_label:
             feat = by_label[label]
@@ -526,7 +552,8 @@ def build_boundaries():
                                              round(coord[1], PRECISION)]},
                 "properties": {"name": label,
                                "sections": [section] if section else [],
-                               "chapter_end": False}}
+                               "chapter_end": False,
+                               "tick": tick_for(coord, seg)}}
         by_label[label] = feat
         points.append(feat)
         return feat
@@ -534,10 +561,14 @@ def build_boundaries():
     for i, feat in enumerate(stretches):
         p = feat["properties"]
         coords = feat["geometry"]["coordinates"]
+        if feat["geometry"]["type"] == "MultiLineString":
+            coords = coords[0]
         start_label = p.get("from_boundary") if i == 0 \
             else stretches[i - 1]["properties"].get("to_boundary")
-        add(start_label, coords[0], p.get("name"))
-        add(p.get("to_boundary"), coords[-1], p.get("name"))
+        seg_start = (coords[0], coords[1]) if len(coords) >= 2 else None
+        seg_end = (coords[-2], coords[-1]) if len(coords) >= 2 else None
+        add(start_label, coords[0], p.get("name"), seg_start)
+        add(p.get("to_boundary"), coords[-1], p.get("name"), seg_end)
 
     # East terminus: the stretch ending at the maximum chainage_end.
     # Chip-12 and Chip-13 tie on chainage_end (Chip-13 is zero-length
@@ -549,14 +580,17 @@ def build_boundaries():
         = True
 
     if gaps:
-        g = gaps[0]["geometry"]["coordinates"][0]
+        gcoords = gaps[0]["geometry"]["coordinates"]
+        g = gcoords[0]
         west = {"type": "Feature",
                 "geometry": {"type": "Point",
                              "coordinates": [round(g[0], PRECISION),
                                              round(g[1], PRECISION)]},
                 "properties": {"name": "Chapter west end (Itasca State Park)",
                                "sections": [],
-                               "chapter_end": True}}
+                               "chapter_end": True,
+                               "tick": tick_for(g, (gcoords[0],
+                                                    gcoords[1]))}}
         points.insert(0, west)
 
     dst = os.path.join(ROOT, "site/data/boundaries.geojson")

@@ -86,6 +86,22 @@ L.control.layers(
 ).addTo(map);
 L.control.scale({ imperial: true, metric: true }).addTo(map);
 
+/* Heavy vector layers draw on CANVAS, not SVG: parcels (1,038
+   features), roads (5,902) and access lines (3,670) as thousands of
+   DOM paths made layer toggles visibly slow, while a canvas redraws
+   in a single pass and popups/hit-testing still work. ALL of them
+   share ONE canvas renderer in the default overlay pane: a single
+   draw list is what lets bringToFront keep the stacking order
+   (parcels at the back, lines on top — see assertDrawOrder). A
+   canvas renderer in a CUSTOM pane was tried first and rejected:
+   in Leaflet 1.9.4 its paths render but stop receiving clicks
+   (verified in the proof harness — popup only via SVG/default
+   canvas), so no custom panes here. The small point layers keep
+   the default SVG renderer; assertDrawOrder also keeps the SVG
+   element above the canvas element in the shared pane. */
+var heavyCanvas = L.canvas();
+function canvasFor() { return heavyCanvas; }
+
 /* ------------------------------------------------------------ style */
 
 var CHAPTER_COLORS = { ITM: "#1a9850", LLC: "#762a83" };
@@ -159,29 +175,6 @@ function kvTable(rows) {
     if (v !== null) html += "<tr><td class='k'>" + r[0] + "</td><td>" + v + "</td></tr>";
   });
   return html + "</table>";
-}
-
-/* Planar midpoint (by half the path length) of a [lon, lat] line —
-   where the permanent section-name label sits. */
-function lineMidpoint(coords) {
-  var seg = [], total = 0, i, d;
-  for (i = 1; i < coords.length; i++) {
-    var dx = (coords[i][0] - coords[i - 1][0]) *
-      Math.cos(coords[i][1] * Math.PI / 180);
-    var dy = coords[i][1] - coords[i - 1][1];
-    d = Math.sqrt(dx * dx + dy * dy);
-    seg.push(d); total += d;
-  }
-  var half = total / 2, acc = 0;
-  for (i = 0; i < seg.length; i++) {
-    if (seg[i] > 0 && acc + seg[i] >= half) {
-      var t = (half - acc) / seg[i];
-      return [coords[i][0] + (coords[i + 1][0] - coords[i][0]) * t,
-              coords[i][1] + (coords[i + 1][1] - coords[i][1]) * t];
-    }
-    acc += seg[i];
-  }
-  return coords[Math.floor(coords.length / 2)];
 }
 
 function trailPopup(f) {
@@ -321,6 +314,7 @@ var LAYERS = [
     onByDefault: true,
     build: function (gj) {
       return L.geoJSON(gj, {
+        renderer: canvasFor(),
         style: trailStyle,
         onEachFeature: function (f, l) { l.bindPopup(trailPopup(f)); },
       });
@@ -331,27 +325,24 @@ var LAYERS = [
     file: "data/stretches.geojson", onByDefault: false,
     build: function (gj) {
       var lines = L.geoJSON(gj, {
+        renderer: canvasFor(),
         style: STRETCH_STYLE,
-        onEachFeature: function (f, l) { l.bindPopup(stretchPopup(f)); },
+        onEachFeature: function (f, l) {
+          l.bindPopup(stretchPopup(f));
+          /* Section name as a permanent tooltip floating ABOVE
+             the line at mid-section (Paul's design correction,
+             2026-11-10: names read as floating over their section,
+             never stamped on the tread). Leaflet anchors a path
+             tooltip at the line's length-centroid. */
+          if (f.properties.name) {
+            l.bindTooltip(f.properties.name, {
+              permanent: true, direction: "top", offset: [0, -6],
+              className: "section-name-label", interactive: false,
+            });
+          }
+        },
       });
-      /* Permanent section-name labels at each stretch's midpoint,
-         plus the section-boundary markers (separate layer def,
-         shown/hidden with this toggle — see syncBoundaries). */
-      var labels = L.layerGroup();
-      gj.features.forEach(function (f) {
-        var coords = f.geometry.type === "MultiLineString"
-          ? f.geometry.coordinates[0] : f.geometry.coordinates;
-        if (!coords || coords.length < 2 || !f.properties.name) return;
-        var mid = lineMidpoint(coords);
-        labels.addLayer(L.marker([mid[1], mid[0]], {
-          interactive: false, keyboard: false,
-          icon: L.divIcon({
-            className: "map-label section-label", iconSize: [0, 0],
-            html: "<span>" + esc(f.properties.name) + "</span>",
-          }),
-        }));
-      });
-      var group = L.layerGroup([lines, labels]);
+      var group = L.layerGroup([lines]);
       group.bringToFront = function () { lines.bringToFront(); };
       return group;
     },
@@ -365,18 +356,27 @@ var LAYERS = [
     file: "data/boundaries.geojson", onByDefault: false,
     hiddenToggle: true,
     build: function (gj) {
-      return L.geoJSON(gj, {
-        filter: function (f) { return !f.properties.chapter_end; },
-        pointToLayer: function (f, latlng) {
-          return L.marker(latlng, {
-            interactive: false, keyboard: false,
-            icon: L.divIcon({
-              className: "map-label boundary-label", iconSize: [0, 0],
-              html: "<i></i><span>" + esc(f.properties.name) + "</span>",
-            }),
-          });
-        },
+      /* Each boundary is a short bar struck ACROSS the line —
+         a 140 m tick perpendicular to the trail's bearing at that
+         point (tick endpoints computed by the site-data build) —
+         with NO text: Paul's design corrections (2026-11-10):
+         bars, not dots, and nothing labelled at segment ends.
+         White casing under a dark core keeps the tick readable
+         over the amber/green lines; drawn on the shared canvas. */
+      var casing = [], core = [];
+      gj.features.forEach(function (f) {
+        if (f.properties.chapter_end || !f.properties.tick) return;
+        var ll = f.properties.tick.map(function (c) {
+          return L.latLng(c[1], c[0]);
+        });
+        casing.push(L.polyline(ll, { renderer: canvasFor(),
+          interactive: false, color: "#ffffff", weight: 5,
+          opacity: 0.9 }));
+        core.push(L.polyline(ll, { renderer: canvasFor(),
+          interactive: false, color: "#263238", weight: 3,
+          opacity: 1 }));
       });
+      return L.layerGroup(casing.concat(core));
     },
   },
   {
@@ -394,11 +394,30 @@ var LAYERS = [
         var c = f.geometry.coordinates;
         var which = i === 0 ? "west end"
           : (i === ends.length - 1 ? "east end" : "end");
+        /* The chapter's own ends get the same visual language as
+           the section boundaries, with more weight: the boundary
+           tick stretched to ~280 m, in chapter green with a white
+           casing, plus the terminus name (the chapter delineation
+           Paul asked for — section ends stay unlabelled, chapter
+           ends are labelled). */
+        if (f.properties.tick) {
+          var t = f.properties.tick;
+          var mx = (t[0][0] + t[1][0]) / 2, my = (t[0][1] + t[1][1]) / 2;
+          var ext = t.map(function (p) {
+            return L.latLng(my + (p[1] - my) * 2, mx + (p[0] - mx) * 2);
+          });
+          group.addLayer(L.polyline(ext, { renderer: canvasFor(),
+            interactive: false, color: "#ffffff", weight: 7,
+            opacity: 0.9 }));
+          group.addLayer(L.polyline(ext, { renderer: canvasFor(),
+            interactive: false, color: "#1a9850", weight: 4.5,
+            opacity: 1 }));
+        }
         group.addLayer(L.marker([c[1], c[0]], {
           interactive: false, keyboard: false,
           icon: L.divIcon({
             className: "map-label terminus-label", iconSize: [0, 0],
-            html: "<i></i><span>Itasca Moraine — " + which + "</span>",
+            html: "<span>Itasca Moraine — " + which + "</span>",
           }),
         }));
       });
@@ -410,9 +429,11 @@ var LAYERS = [
     file: "data/gaps.geojson", onByDefault: true,
     build: function (gj) {
       var bind = function (f, l) { l.bindPopup(gapPopup(f)); };
-      var casing = L.geoJSON(gj, { style: GAP_CASING_STYLE,
+      var casing = L.geoJSON(gj, { renderer: canvasFor(),
+                                   style: GAP_CASING_STYLE,
                                    onEachFeature: bind });
-      var core = L.geoJSON(gj, { style: GAP_CORE_STYLE,
+      var core = L.geoJSON(gj, { renderer: canvasFor(),
+                                 style: GAP_CORE_STYLE,
                                  onEachFeature: bind });
       var group = L.layerGroup([casing, core]);
       group.bringToFront = function () {
@@ -427,6 +448,7 @@ var LAYERS = [
     file: "data/parcels.geojson", onByDefault: false,
     build: function (gj) {
       return L.geoJSON(gj, {
+        renderer: canvasFor(),
         style: parcelStyle,
         onEachFeature: function (f, l) { l.bindPopup(parcelPopup(f)); },
       });
@@ -437,6 +459,7 @@ var LAYERS = [
     file: "data/access.geojson", onByDefault: false,
     build: function (gj) {
       return L.geoJSON(gj, {
+        renderer: canvasFor(),
         style: accessStyle,
         onEachFeature: function (f, l) { l.bindPopup(accessPopup(f)); },
       });
@@ -447,6 +470,7 @@ var LAYERS = [
     onByDefault: false,
     build: function (gj) {
       return L.geoJSON(gj, {
+        renderer: canvasFor(),
         style: { color: "#999999", weight: 1, opacity: 0.7 },
         onEachFeature: function (f, l) {
           var html = roadPopup(f);
@@ -608,14 +632,33 @@ function syncBoundaries() {
   if (b.box.checked) { ensureLayer(b, false); }
   else if (b.layer) { map.removeLayer(b.layer); }
 }
-map.on("layeradd", function () {
-  ["trail", "stretches", "gaps", "accesspoints"].forEach(function (id) {
-    var d = layerById(id);
-    if (d && d.layer && map.hasLayer(d.layer) && d.layer.bringToFront) {
-      d.layer.bringToFront();
-    }
+/* A GeoJSON group add fires "layeradd" once PER FEATURE — 5,902
+   times for the roads layer — so re-asserting draw order on every
+   event was O(features x reorder) DOM churn on every toggle, the
+   main cause of slow layer switches. Coalesce: a burst of events
+   schedules ONE re-assertion on the next animation frame. */
+var drawOrderQueued = false;
+function assertDrawOrder() {
+  if (drawOrderQueued) return;
+  drawOrderQueued = true;
+  requestAnimationFrame(function () {
+    drawOrderQueued = false;
+    ["trail", "stretches", "gaps", "accesspoints"].forEach(function (id) {
+      var d = layerById(id);
+      if (d && d.layer && map.hasLayer(d.layer) && d.layer.bringToFront) {
+        d.layer.bringToFront();
+      }
+    });
+    /* Canvas and SVG share the overlay pane as sibling elements;
+       keep the SVG element (the point layers) painted above the
+       shared canvas regardless of which renderer initialized
+       first. */
+    var pane = map.getPane("overlayPane");
+    var svg = pane && pane.querySelector("svg");
+    if (svg && pane.lastChild !== svg) pane.appendChild(svg);
   });
-});
+}
+map.on("layeradd", assertDrawOrder);
 
 /* ------------------------------------------------------------ legend */
 
@@ -635,12 +678,12 @@ map.on("layeradd", function () {
   add(line(CHAPTER_COLORS.LLC), "Laurentian Lakes Chapter — off-road");
   add(line(CHAPTER_COLORS.LLC, true), "Laurentian Lakes Chapter — on-road");
   add("", "<strong>Chapter sections</strong>");
-  add(line("#e08214"), "Adopted section (name labelled on the line)");
+  add(line("#e08214"), "Adopted section (name floats above the line)");
   add(line("#d7301f", true), "Unadopted gap — unclaimed");
-  add("<span class='swatch pin dark'></span>",
-    "Section boundary (named; shows with Adopted sections)");
-  add("<span class='swatch pin terminus'></span>",
-    "Chapter end — Itasca Moraine terminus");
+  add(line("#263238"),
+    "Section boundary — bar across the line (shows with Adopted sections)");
+  add(line("#1a9850"),
+    "Chapter end — longer bar across the line (Itasca Moraine terminus)");
   add("<span class='swatch pin' style='background:#0570b0'></span>",
       "Access point (trail crossing)");
   add("<span class='swatch pin' style='background:#333333'></span>",
@@ -685,4 +728,175 @@ map.on("layeradd", function () {
   }
   wire("btn-sources", "sources-card");
   wire("btn-legend", "legend-card");
+})();
+
+/* ---------------------------------------------------------- gazetteer
+   The Find box searches site/data/gazetteer.geojson (built by
+   scripts/build_gazetteer.py): sections, boundaries, chapter ends,
+   crossings, and the NCTA waypoints. The index is fetched lazily
+   on first focus — never at page load — and cached, like every
+   layer here. Selecting a result flies the map to the point, drops
+   a temporary highlight marker, and opens its info card; a section
+   result's card carries the section's full tracker record plus its
+   contents list (everything the index places inside it). */
+var gazFeatures = null;
+var gazLoading = false;
+var gazMarker = null;
+
+function gazLoad(done) {
+  if (gazFeatures) { if (done) done(); return; }
+  if (gazLoading) return;
+  gazLoading = true;
+  fetch("data/gazetteer.geojson")
+    .then(function (r) {
+      if (!r.ok) throw new Error("HTTP " + r.status);
+      return r.json();
+    })
+    .then(function (gj) {
+      gazFeatures = gj.features || [];
+      gazLoading = false;
+      if (done) done();
+    })
+    .catch(function () {
+      gazLoading = false;
+      setStatus("Could not load the Find index.");
+    });
+}
+
+function gazSearch(q) {
+  var tokens = q.toLowerCase().split(/\s+/).filter(Boolean);
+  if (!tokens.length || !gazFeatures) return [];
+  return gazFeatures.filter(function (f) {
+    var hay = (f.properties.search_text || "").toLowerCase();
+    return tokens.every(function (t) { return hay.indexOf(t) >= 0; });
+  }).slice(0, 12);
+}
+
+function gazContents(sectionName) {
+  var byKind = {};
+  gazFeatures.forEach(function (f) {
+    var p = f.properties;
+    if (p.kind === "Section") return;
+    var inside = p.section === sectionName ||
+      (p.sections && p.sections.indexOf(sectionName) >= 0);
+    if (!inside) return;
+    (byKind[p.kind] = byKind[p.kind] || []).push(p.name);
+  });
+  return byKind;
+}
+
+function gazPopupHtml(f) {
+  var p = f.properties;
+  var rows = [
+    ["Kind", p.kind],
+    ["NCT mile", p.nct_mile != null ? p.nct_mile : null],
+    ["Section", p.section],
+    ["From the west end",
+      p.from_west_mi != null ? p.from_west_mi + " mi along the trail" : null],
+    ["From the east end",
+      p.from_east_mi != null ? p.from_east_mi + " mi along the trail" : null],
+  ];
+  if (p.sections && p.sections.length) {
+    rows[2] = ["Sections meeting here", p.sections.join(" / ")];
+  }
+  if (p.off_chain) {
+    rows.push(["Position", "Off the depicted chapter chain — nearest " +
+      "depicted point ≈ " + (p.snap_m / 1000).toFixed(1) + " km"]);
+  }
+  if (p.kind !== "Section") {
+    rows.push(["Description", p.description]);
+    return "<h3>" + (esc(p.name) || "Place") + "</h3>" + kvTable(rows);
+  }
+  rows = rows.concat([
+    ["Description", p.description],
+    ["Chapter tracker section", p.tracker_section],
+    ["NCT map", p.map_refs ? p.map_refs.join(", ") : null],
+    ["NCT miles", p.nct_mile_start != null
+      ? p.nct_mile_start + " – " + p.nct_mile_end : null],
+    ["Length (on the official line)",
+      p.length_mi != null ? p.length_mi + " mi" : null],
+    ["Length (chapter tracker)",
+      p.tracker_length_mi != null ? p.tracker_length_mi + " mi" : null],
+    ["Status", p.has_adopter ? "Adopted" : "Not adopted"],
+    ["Adopted by",
+      p.adopter_display ? p.adopter_display.join(", ") : null],
+    ["Sawyer",
+      p.sawyer_display ? p.sawyer_display.join(", ") : null],
+    ["2026 maintenance", p.maintenance_2026],
+    ["Help requested (as recorded in tracker)",
+      p.help_requested != null && p.help_requested !== ""
+        ? String(p.help_requested) : null],
+    ["Land", p.land_context],
+    ["Tracker comments", p.comments],
+  ]);
+  var html = "<h3>" + (esc(p.name) || "Section") + "</h3>" + kvTable(rows);
+  var contents = gazContents(p.name);
+  var kinds = Object.keys(contents).sort();
+  if (kinds.length) {
+    html += "<div class='gaz-contents'><strong>What's here:</strong>";
+    kinds.forEach(function (k) {
+      var names = contents[k];
+      html += "<div>" + esc(k) + " (" + names.length + "): " +
+        names.slice(0, 25).map(esc).join("; ") +
+        (names.length > 25 ? "; …" : "") + "</div>";
+    });
+    html += "</div>";
+  }
+  return html;
+}
+
+function gazSelect(f) {
+  var c = f.geometry.coordinates;
+  var latlng = L.latLng(c[1], c[0]);
+  map.flyTo(latlng, Math.max(map.getZoom(), 14), { duration: 0.8 });
+  if (gazMarker) map.removeLayer(gazMarker);
+  gazMarker = L.circleMarker(latlng, {
+    radius: 10, color: "#d7301f", weight: 3,
+    fillColor: "#fc8d59", fillOpacity: 0.55,
+  }).addTo(map);
+  gazMarker.bindPopup(gazPopupHtml(f),
+    { maxWidth: f.properties.kind === "Section" ? 380 : 300 });
+  window.setTimeout(function () { gazMarker.openPopup(); }, 850);
+}
+
+(function gazetteerUi() {
+  var input = document.getElementById("gaz-search");
+  var box = document.getElementById("gaz-results");
+  if (!input || !box) return;
+  function hide() { box.hidden = true; box.innerHTML = ""; }
+  function render() {
+    var results = gazSearch(input.value);
+    if (!results.length) { hide(); return; }
+    box.innerHTML = "";
+    results.forEach(function (f) {
+      var p = f.properties;
+      var b = document.createElement("button");
+      b.type = "button";
+      b.className = "gaz-result";
+      var mile = p.nct_mile != null ? "NCT " + p.nct_mile
+        : (p.off_chain ? "off-chain" : "");
+      b.innerHTML = "<strong>" + esc(p.name) + "</strong> " +
+        "<span class='gaz-kind'>" + esc(p.kind) + "</span> " +
+        "<span class='gaz-mile'>" + esc(mile) + "</span>";
+      b.addEventListener("mousedown", function (ev) {
+        ev.preventDefault();
+        hide();
+        gazSelect(f);
+      });
+      box.appendChild(b);
+    });
+    box.hidden = false;
+  }
+  input.addEventListener("focus", function () { gazLoad(render); });
+  input.addEventListener("input", function () { gazLoad(render); });
+  input.addEventListener("keydown", function (ev) {
+    if (ev.key === "Escape") { input.value = ""; hide(); }
+    if (ev.key === "Enter") {
+      var first = box.querySelector(".gaz-result");
+      if (first) first.dispatchEvent(new Event("mousedown"));
+    }
+  });
+  input.addEventListener("blur", function () {
+    window.setTimeout(hide, 150);
+  });
 })();
