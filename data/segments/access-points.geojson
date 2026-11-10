@@ -1,0 +1,2623 @@
+{
+ "type": "FeatureCollection",
+ "metadata": {
+  "note": "Practical access points per segment stretch and gap: road / access-trail crossings of the official line (how=crossing) plus nearest approach within 0.25 mi of an end that has no crossing (how=near)."
+ },
+ "features": [
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -95.17036991740112,
+     47.1540659110003
+    ]
+   },
+   "properties": {
+    "for_type": "segment",
+    "for_name": "West-1",
+    "position": "start",
+    "kind": "access_trail",
+    "source_type": "state_park_trail_or_road",
+    "label": "Ozawindib Trail",
+    "also_in": [
+     "state_park_trail_or_road"
+    ],
+    "repeat_crossings": 0,
+    "township": null,
+    "how": "crossing",
+    "dist_from_start_mi": 0.0
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -95.1522258175153,
+     47.15236423485906
+    ]
+   },
+   "properties": {
+    "for_type": "segment",
+    "for_name": "West-1",
+    "position": "end",
+    "kind": "access_trail",
+    "source_type": "snowmobile_trail",
+    "label": "Forest Rider Trails",
+    "also_in": [],
+    "repeat_crossings": 0,
+    "township": null,
+    "how": "crossing",
+    "dist_from_start_mi": 1.075
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -95.15220739417772,
+     47.15222314201195
+    ]
+   },
+   "properties": {
+    "for_type": "segment",
+    "for_name": "West-2",
+    "position": "start",
+    "kind": "access_trail",
+    "source_type": null,
+    "label": "Forest Rider Trails",
+    "also_in": [],
+    "repeat_crossings": 0,
+    "township": null,
+    "how": "near",
+    "dist_from_start_mi": 0.0
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -95.07506269114205,
+     47.145946404361844
+    ]
+   },
+   "properties": {
+    "for_type": "segment",
+    "for_name": "West-3",
+    "position": "end",
+    "kind": "access_trail",
+    "source_type": "ohv_trail",
+    "label": "Forest Riders Trails",
+    "also_in": [
+     "state_park_trail_or_road"
+    ],
+    "repeat_crossings": 0,
+    "township": null,
+    "how": "crossing",
+    "dist_from_start_mi": 1.902
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -95.07506269114205,
+     47.145946404361844
+    ]
+   },
+   "properties": {
+    "for_type": "segment",
+    "for_name": "West-3",
+    "position": "end",
+    "kind": "access_trail",
+    "source_type": "snowmobile_trail",
+    "label": "Forest Rider Trails",
+    "also_in": [],
+    "repeat_crossings": 0,
+    "township": null,
+    "how": "crossing",
+    "dist_from_start_mi": 1.902
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -95.07506269114205,
+     47.145946404361844
+    ]
+   },
+   "properties": {
+    "for_type": "segment",
+    "for_name": "West-4",
+    "position": "start",
+    "kind": "access_trail",
+    "source_type": "ohv_trail",
+    "label": "Forest Riders Trails",
+    "also_in": [
+     "state_park_trail_or_road"
+    ],
+    "repeat_crossings": 0,
+    "township": null,
+    "how": "crossing",
+    "dist_from_start_mi": 0.002
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -95.07506269114205,
+     47.145946404361844
+    ]
+   },
+   "properties": {
+    "for_type": "segment",
+    "for_name": "West-4",
+    "position": "start",
+    "kind": "access_trail",
+    "source_type": "snowmobile_trail",
+    "label": "Forest Rider Trails",
+    "also_in": [],
+    "repeat_crossings": 0,
+    "township": null,
+    "how": "crossing",
+    "dist_from_start_mi": 0.002
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -95.00529360578916,
+     47.177247439263915
+    ]
+   },
+   "properties": {
+    "for_type": "segment",
+    "for_name": "West-5",
+    "position": "end",
+    "kind": "access_trail",
+    "source_type": null,
+    "label": "Forest Rider Trails",
+    "also_in": [],
+    "repeat_crossings": 0,
+    "township": null,
+    "how": "near",
+    "dist_from_start_mi": 2.56
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -95.00529360578916,
+     47.177247439263915
+    ]
+   },
+   "properties": {
+    "for_type": "segment",
+    "for_name": "West-6",
+    "position": "start",
+    "kind": "access_trail",
+    "source_type": null,
+    "label": "Forest Rider Trails",
+    "also_in": [],
+    "repeat_crossings": 0,
+    "township": null,
+    "how": "near",
+    "dist_from_start_mi": 0.0
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -95.00536825381627,
+     47.177079059622386
+    ]
+   },
+   "properties": {
+    "for_type": "segment",
+    "for_name": "West-6",
+    "position": "mid",
+    "kind": "access_trail",
+    "source_type": "snowmobile_trail",
+    "label": "Forest Rider Trails",
+    "also_in": [
+     "snowmobile_trail"
+    ],
+    "repeat_crossings": 0,
+    "township": null,
+    "how": "crossing",
+    "dist_from_start_mi": 0.717
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -95.00442398746105,
+     47.17575725228348
+    ]
+   },
+   "properties": {
+    "for_type": "segment",
+    "for_name": "West-6",
+    "position": "mid",
+    "kind": "access_trail",
+    "source_type": "snowmobile_trail",
+    "label": "Forest Rider Trails",
+    "also_in": [],
+    "repeat_crossings": 0,
+    "township": null,
+    "how": "crossing",
+    "dist_from_start_mi": 0.821
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -95.00393497124301,
+     47.1743444917066
+    ]
+   },
+   "properties": {
+    "for_type": "segment",
+    "for_name": "West-6",
+    "position": "mid",
+    "kind": "access_trail",
+    "source_type": "snowmobile_trail",
+    "label": "Forest Rider Trails",
+    "also_in": [],
+    "repeat_crossings": 1,
+    "township": null,
+    "how": "crossing",
+    "dist_from_start_mi": 0.927
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -94.99254145685615,
+     47.166937197501525
+    ]
+   },
+   "properties": {
+    "for_type": "segment",
+    "for_name": "West-6",
+    "position": "mid",
+    "kind": "access_trail",
+    "source_type": "snowmobile_trail",
+    "label": "Forest Rider Trails",
+    "also_in": [],
+    "repeat_crossings": 0,
+    "township": null,
+    "how": "crossing",
+    "dist_from_start_mi": 1.791
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -94.98207285570163,
+     47.166196848404745
+    ]
+   },
+   "properties": {
+    "for_type": "segment",
+    "for_name": "West-6",
+    "position": "end",
+    "kind": "access_trail",
+    "source_type": "ohv_trail",
+    "label": "Forest Riders Trails",
+    "also_in": [
+     "state_park_trail_or_road"
+    ],
+    "repeat_crossings": 0,
+    "township": null,
+    "how": "crossing",
+    "dist_from_start_mi": 2.347
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -94.98207285570163,
+     47.166196848404745
+    ]
+   },
+   "properties": {
+    "for_type": "segment",
+    "for_name": "West-7",
+    "position": "start",
+    "kind": "access_trail",
+    "source_type": "ohv_trail",
+    "label": "Forest Riders Trails",
+    "also_in": [
+     "state_park_trail_or_road"
+    ],
+    "repeat_crossings": 0,
+    "township": null,
+    "how": "crossing",
+    "dist_from_start_mi": 0.0
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -94.98087055009897,
+     47.1661835995569
+    ]
+   },
+   "properties": {
+    "for_type": "segment",
+    "for_name": "West-7",
+    "position": "start",
+    "kind": "access_trail",
+    "source_type": "snowmobile_trail",
+    "label": "Forest Rider Trails",
+    "also_in": [],
+    "repeat_crossings": 0,
+    "township": null,
+    "how": "crossing",
+    "dist_from_start_mi": 0.069
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -94.92063888877564,
+     47.14359378513016
+    ]
+   },
+   "properties": {
+    "for_type": "segment",
+    "for_name": "West-8",
+    "position": "mid",
+    "kind": "access_trail",
+    "source_type": "ohv_trail",
+    "label": "Round River Drive",
+    "also_in": [
+     "state_park_trail_or_road"
+    ],
+    "repeat_crossings": 0,
+    "township": null,
+    "how": "crossing",
+    "dist_from_start_mi": 0.81
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -94.9179049565769,
+     47.147486354856184
+    ]
+   },
+   "properties": {
+    "for_type": "segment",
+    "for_name": "West-8",
+    "position": "mid",
+    "kind": "access_trail",
+    "source_type": "snowmobile_trail",
+    "label": "Forest Rider Trails",
+    "also_in": [
+     "snowmobile_trail"
+    ],
+    "repeat_crossings": 0,
+    "township": null,
+    "how": "crossing",
+    "dist_from_start_mi": 1.256
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -94.9179049565769,
+     47.147486354856184
+    ]
+   },
+   "properties": {
+    "for_type": "segment",
+    "for_name": "West-8",
+    "position": "mid",
+    "kind": "access_trail",
+    "source_type": "state_forest_road",
+    "label": "TeePee Lakes",
+    "also_in": [
+     "state_forest_road"
+    ],
+    "repeat_crossings": 0,
+    "township": null,
+    "how": "crossing",
+    "dist_from_start_mi": 1.256
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -94.91721593351586,
+     47.14714201427434
+    ]
+   },
+   "properties": {
+    "for_type": "segment",
+    "for_name": "West-8",
+    "position": "mid",
+    "kind": "access_trail",
+    "source_type": "snowmobile_trail",
+    "label": "Forest Rider Trails",
+    "also_in": [],
+    "repeat_crossings": 0,
+    "township": null,
+    "how": "crossing",
+    "dist_from_start_mi": 1.299
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -94.91721593351586,
+     47.14714201427434
+    ]
+   },
+   "properties": {
+    "for_type": "segment",
+    "for_name": "West-8",
+    "position": "mid",
+    "kind": "access_trail",
+    "source_type": "state_forest_road",
+    "label": "TeePee Lakes",
+    "also_in": [],
+    "repeat_crossings": 0,
+    "township": null,
+    "how": "crossing",
+    "dist_from_start_mi": 1.299
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -94.88498557144399,
+     47.15900839924755
+    ]
+   },
+   "properties": {
+    "for_type": "segment",
+    "for_name": "West-8",
+    "position": "mid",
+    "kind": "access_trail",
+    "source_type": "hunter_walking_trail",
+    "label": "Paul Bunyan (NW) HWT",
+    "also_in": [],
+    "repeat_crossings": 0,
+    "township": null,
+    "how": "crossing",
+    "dist_from_start_mi": 4.223
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -94.87559113977629,
+     47.15375233155421
+    ]
+   },
+   "properties": {
+    "for_type": "segment",
+    "for_name": "West-8",
+    "position": "end",
+    "kind": "access_trail",
+    "source_type": null,
+    "label": "Paul Bunyan (NW) HWT",
+    "also_in": [],
+    "repeat_crossings": 0,
+    "township": null,
+    "how": "near",
+    "dist_from_start_mi": 4.653
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -94.87559113977629,
+     47.15375233155421
+    ]
+   },
+   "properties": {
+    "for_type": "segment",
+    "for_name": "West-9",
+    "position": "start",
+    "kind": "access_trail",
+    "source_type": null,
+    "label": "Paul Bunyan (NW) HWT",
+    "also_in": [],
+    "repeat_crossings": 0,
+    "township": null,
+    "how": "near",
+    "dist_from_start_mi": 0.0
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -94.85597319231489,
+     47.15703971271176
+    ]
+   },
+   "properties": {
+    "for_type": "segment",
+    "for_name": "West-9",
+    "position": "mid",
+    "kind": "access_trail",
+    "source_type": "hunter_walking_trail",
+    "label": "Paul Bunyan (NW) HWT",
+    "also_in": [],
+    "repeat_crossings": 0,
+    "township": null,
+    "how": "crossing",
+    "dist_from_start_mi": 1.235
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -94.84104081117377,
+     47.14347737421365
+    ]
+   },
+   "properties": {
+    "for_type": "segment",
+    "for_name": "West-10",
+    "position": "mid",
+    "kind": "access_trail",
+    "source_type": "hunter_walking_trail",
+    "label": "Paul Bunyan (NW) HWT",
+    "also_in": [],
+    "repeat_crossings": 1,
+    "township": null,
+    "how": "crossing",
+    "dist_from_start_mi": 0.827
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -94.83839550321986,
+     47.142226480273216
+    ]
+   },
+   "properties": {
+    "for_type": "segment",
+    "for_name": "West-10",
+    "position": "mid",
+    "kind": "access_trail",
+    "source_type": "snowmobile_trail",
+    "label": "Nevis Wilder Trails",
+    "also_in": [],
+    "repeat_crossings": 0,
+    "township": null,
+    "how": "crossing",
+    "dist_from_start_mi": 0.984
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -94.83839549988605,
+     47.14222647824164
+    ]
+   },
+   "properties": {
+    "for_type": "segment",
+    "for_name": "West-10",
+    "position": "mid",
+    "kind": "access_trail",
+    "source_type": "hunter_walking_trail",
+    "label": "Paul Bunyan (NW) HWT",
+    "also_in": [],
+    "repeat_crossings": 0,
+    "township": null,
+    "how": "crossing",
+    "dist_from_start_mi": 0.984
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -94.83524163787412,
+     47.13969371543154
+    ]
+   },
+   "properties": {
+    "for_type": "segment",
+    "for_name": "West-10",
+    "position": "mid",
+    "kind": "access_trail",
+    "source_type": "hunter_walking_trail",
+    "label": "Paul Bunyan (NW) HWT",
+    "also_in": [],
+    "repeat_crossings": 0,
+    "township": null,
+    "how": "crossing",
+    "dist_from_start_mi": 1.242
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -94.83636570608336,
+     47.134733530557035
+    ]
+   },
+   "properties": {
+    "for_type": "segment",
+    "for_name": "West-10",
+    "position": "end",
+    "kind": "access_trail",
+    "source_type": "state_forest_road",
+    "label": "Refuge",
+    "also_in": [],
+    "repeat_crossings": 0,
+    "township": null,
+    "how": "crossing",
+    "dist_from_start_mi": 1.662
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -94.83636570608336,
+     47.134733530557035
+    ]
+   },
+   "properties": {
+    "for_type": "segment",
+    "for_name": "West-10",
+    "position": "end",
+    "kind": "access_trail",
+    "source_type": "ohv_trail",
+    "label": "Round River Drive",
+    "also_in": [
+     "state_park_trail_or_road"
+    ],
+    "repeat_crossings": 0,
+    "township": null,
+    "how": "crossing",
+    "dist_from_start_mi": 1.662
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -94.83636570608336,
+     47.134733530557035
+    ]
+   },
+   "properties": {
+    "for_type": "segment",
+    "for_name": "West-11",
+    "position": "start",
+    "kind": "access_trail",
+    "source_type": "state_forest_road",
+    "label": "Refuge",
+    "also_in": [],
+    "repeat_crossings": 0,
+    "township": null,
+    "how": "crossing",
+    "dist_from_start_mi": 0.0
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -94.83636570608336,
+     47.134733530557035
+    ]
+   },
+   "properties": {
+    "for_type": "segment",
+    "for_name": "West-11",
+    "position": "start",
+    "kind": "access_trail",
+    "source_type": "ohv_trail",
+    "label": "Round River Drive",
+    "also_in": [
+     "state_park_trail_or_road"
+    ],
+    "repeat_crossings": 0,
+    "township": null,
+    "how": "crossing",
+    "dist_from_start_mi": 0.0
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -94.85082630824752,
+     47.108243697816896
+    ]
+   },
+   "properties": {
+    "for_type": "segment",
+    "for_name": "West-11",
+    "position": "mid",
+    "kind": "access_trail",
+    "source_type": "snowmobile_trail",
+    "label": "Nevis Wilder Trails",
+    "also_in": [],
+    "repeat_crossings": 0,
+    "township": null,
+    "how": "crossing",
+    "dist_from_start_mi": 2.544
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -94.85082630824752,
+     47.108243697816896
+    ]
+   },
+   "properties": {
+    "for_type": "segment",
+    "for_name": "West-11",
+    "position": "mid",
+    "kind": "access_trail",
+    "source_type": "state_park_trail_or_road",
+    "label": "Round River Drive",
+    "also_in": [],
+    "repeat_crossings": 0,
+    "township": null,
+    "how": "crossing",
+    "dist_from_start_mi": 2.544
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -94.85082630824752,
+     47.108243697816896
+    ]
+   },
+   "properties": {
+    "for_type": "segment",
+    "for_name": "West-11",
+    "position": "mid",
+    "kind": "access_trail",
+    "source_type": "state_forest_road",
+    "label": "Steamboat",
+    "also_in": [],
+    "repeat_crossings": 0,
+    "township": null,
+    "how": "crossing",
+    "dist_from_start_mi": 2.544
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -94.8541823032917,
+     47.096469973984036
+    ]
+   },
+   "properties": {
+    "for_type": "segment",
+    "for_name": "West-11",
+    "position": "end",
+    "kind": "access_trail",
+    "source_type": null,
+    "label": "Round River Drive",
+    "also_in": [],
+    "repeat_crossings": 0,
+    "township": null,
+    "how": "near",
+    "dist_from_start_mi": 3.547
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -94.8541823032917,
+     47.096469973984036
+    ]
+   },
+   "properties": {
+    "for_type": "segment",
+    "for_name": "West-12",
+    "position": "start",
+    "kind": "access_trail",
+    "source_type": null,
+    "label": "Round River Drive",
+    "also_in": [],
+    "repeat_crossings": 0,
+    "township": null,
+    "how": "near",
+    "dist_from_start_mi": 0.0
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -94.83526748132721,
+     47.08352211867202
+    ]
+   },
+   "properties": {
+    "for_type": "segment",
+    "for_name": "West-12",
+    "position": "mid",
+    "kind": "access_trail",
+    "source_type": "snowmobile_trail",
+    "label": "Nevis Wilder Trails",
+    "also_in": [],
+    "repeat_crossings": 0,
+    "township": null,
+    "how": "crossing",
+    "dist_from_start_mi": 1.477
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -94.83526748641145,
+     47.083522120420795
+    ]
+   },
+   "properties": {
+    "for_type": "segment",
+    "for_name": "West-12",
+    "position": "mid",
+    "kind": "access_trail",
+    "source_type": "hunter_walking_trail",
+    "label": "Paul Bunyan (SE) HWT",
+    "also_in": [],
+    "repeat_crossings": 0,
+    "township": null,
+    "how": "crossing",
+    "dist_from_start_mi": 1.477
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -94.83178507307613,
+     47.07677212703682
+    ]
+   },
+   "properties": {
+    "for_type": "segment",
+    "for_name": "West-12",
+    "position": "end",
+    "kind": "access_trail",
+    "source_type": "state_park_trail_or_road",
+    "label": "Round River Drive",
+    "also_in": [],
+    "repeat_crossings": 0,
+    "township": null,
+    "how": "crossing",
+    "dist_from_start_mi": 2.11
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -94.83178507307613,
+     47.07677212703682
+    ]
+   },
+   "properties": {
+    "for_type": "segment",
+    "for_name": "West-12",
+    "position": "end",
+    "kind": "access_trail",
+    "source_type": "state_forest_road",
+    "label": "Spur I",
+    "also_in": [],
+    "repeat_crossings": 0,
+    "township": null,
+    "how": "crossing",
+    "dist_from_start_mi": 2.11
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -94.83178507307613,
+     47.07677212703682
+    ]
+   },
+   "properties": {
+    "for_type": "segment",
+    "for_name": "West-13",
+    "position": "start",
+    "kind": "access_trail",
+    "source_type": "state_park_trail_or_road",
+    "label": "Round River Drive",
+    "also_in": [],
+    "repeat_crossings": 0,
+    "township": null,
+    "how": "crossing",
+    "dist_from_start_mi": 0.005
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -94.83178507307613,
+     47.07677212703682
+    ]
+   },
+   "properties": {
+    "for_type": "segment",
+    "for_name": "West-13",
+    "position": "start",
+    "kind": "access_trail",
+    "source_type": "state_forest_road",
+    "label": "Spur I",
+    "also_in": [],
+    "repeat_crossings": 0,
+    "township": null,
+    "how": "crossing",
+    "dist_from_start_mi": 0.005
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -94.82893578828289,
+     47.06848591345996
+    ]
+   },
+   "properties": {
+    "for_type": "segment",
+    "for_name": "West-13",
+    "position": "mid",
+    "kind": "access_trail",
+    "source_type": "snowmobile_trail",
+    "label": "Nevis Wilder Trails",
+    "also_in": [],
+    "repeat_crossings": 0,
+    "township": null,
+    "how": "crossing",
+    "dist_from_start_mi": 0.692
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -94.82901528913567,
+     47.06836795474896
+    ]
+   },
+   "properties": {
+    "for_type": "segment",
+    "for_name": "West-13",
+    "position": "mid",
+    "kind": "access_trail",
+    "source_type": "hunter_walking_trail",
+    "label": "Paul Bunyan (SE) HWT",
+    "also_in": [],
+    "repeat_crossings": 0,
+    "township": null,
+    "how": "crossing",
+    "dist_from_start_mi": 0.701
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -94.81253183834464,
+     47.062029965150124
+    ]
+   },
+   "properties": {
+    "for_type": "segment",
+    "for_name": "West-13",
+    "position": "end",
+    "kind": "access_trail",
+    "source_type": "state_forest_road",
+    "label": "Akeley Cutoff",
+    "also_in": [],
+    "repeat_crossings": 0,
+    "township": null,
+    "how": "crossing",
+    "dist_from_start_mi": 2.161
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -94.81253183834464,
+     47.062029965150124
+    ]
+   },
+   "properties": {
+    "for_type": "segment",
+    "for_name": "West-13",
+    "position": "end",
+    "kind": "access_trail",
+    "source_type": "snowmobile_trail",
+    "label": "Nevis Wilder Trails",
+    "also_in": [],
+    "repeat_crossings": 0,
+    "township": null,
+    "how": "crossing",
+    "dist_from_start_mi": 2.161
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -94.81253183834464,
+     47.062029965150124
+    ]
+   },
+   "properties": {
+    "for_type": "segment",
+    "for_name": "West-13",
+    "position": "end",
+    "kind": "access_trail",
+    "source_type": "ohv_trail",
+    "label": "Round River Drive",
+    "also_in": [
+     "state_park_trail_or_road"
+    ],
+    "repeat_crossings": 0,
+    "township": null,
+    "how": "crossing",
+    "dist_from_start_mi": 2.161
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -94.81253183834464,
+     47.062029965150124
+    ]
+   },
+   "properties": {
+    "for_type": "segment",
+    "for_name": "West-14",
+    "position": "start",
+    "kind": "access_trail",
+    "source_type": "state_forest_road",
+    "label": "Akeley Cutoff",
+    "also_in": [],
+    "repeat_crossings": 0,
+    "township": null,
+    "how": "crossing",
+    "dist_from_start_mi": 0.0
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -94.81253183834464,
+     47.062029965150124
+    ]
+   },
+   "properties": {
+    "for_type": "segment",
+    "for_name": "West-14",
+    "position": "start",
+    "kind": "access_trail",
+    "source_type": "snowmobile_trail",
+    "label": "Nevis Wilder Trails",
+    "also_in": [],
+    "repeat_crossings": 0,
+    "township": null,
+    "how": "crossing",
+    "dist_from_start_mi": 0.0
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -94.81253183834464,
+     47.062029965150124
+    ]
+   },
+   "properties": {
+    "for_type": "segment",
+    "for_name": "West-14",
+    "position": "start",
+    "kind": "access_trail",
+    "source_type": "ohv_trail",
+    "label": "Round River Drive",
+    "also_in": [
+     "state_park_trail_or_road"
+    ],
+    "repeat_crossings": 0,
+    "township": null,
+    "how": "crossing",
+    "dist_from_start_mi": 0.0
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -94.78732428092671,
+     47.06393924894648
+    ]
+   },
+   "properties": {
+    "for_type": "segment",
+    "for_name": "West-14",
+    "position": "mid",
+    "kind": "access_trail",
+    "source_type": "ohv_trail",
+    "label": "Round River Drive",
+    "also_in": [
+     "state_park_trail_or_road"
+    ],
+    "repeat_crossings": 0,
+    "township": null,
+    "how": "crossing",
+    "dist_from_start_mi": 1.455
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -94.75345709768746,
+     47.063485883834616
+    ]
+   },
+   "properties": {
+    "for_type": "segment",
+    "for_name": "West-15",
+    "position": "mid",
+    "kind": "access_trail",
+    "source_type": "snowmobile_trail",
+    "label": "Nevis Wilder Trails",
+    "also_in": [],
+    "repeat_crossings": 0,
+    "township": null,
+    "how": "crossing",
+    "dist_from_start_mi": 1.009
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -94.75345709768746,
+     47.063485883834616
+    ]
+   },
+   "properties": {
+    "for_type": "segment",
+    "for_name": "West-15",
+    "position": "mid",
+    "kind": "access_trail",
+    "source_type": "state_forest_road",
+    "label": "Pineview",
+    "also_in": [],
+    "repeat_crossings": 0,
+    "township": null,
+    "how": "crossing",
+    "dist_from_start_mi": 1.009
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -94.75345709768746,
+     47.063485883834616
+    ]
+   },
+   "properties": {
+    "for_type": "segment",
+    "for_name": "West-15",
+    "position": "mid",
+    "kind": "access_trail",
+    "source_type": "ohv_trail",
+    "label": "Round River Drive",
+    "also_in": [
+     "state_park_trail_or_road"
+    ],
+    "repeat_crossings": 0,
+    "township": null,
+    "how": "crossing",
+    "dist_from_start_mi": 1.009
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -94.74335977843394,
+     47.06167333593484
+    ]
+   },
+   "properties": {
+    "for_type": "segment",
+    "for_name": "West-15",
+    "position": "mid",
+    "kind": "access_trail",
+    "source_type": "ohv_trail",
+    "label": "Round River Drive",
+    "also_in": [
+     "state_park_trail_or_road"
+    ],
+    "repeat_crossings": 0,
+    "township": null,
+    "how": "crossing",
+    "dist_from_start_mi": 1.561
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -94.73896461199364,
+     47.0620773840113
+    ]
+   },
+   "properties": {
+    "for_type": "segment",
+    "for_name": "West-15",
+    "position": "mid",
+    "kind": "access_trail",
+    "source_type": "snowmobile_trail",
+    "label": "Nevis Wilder Trails",
+    "also_in": [],
+    "repeat_crossings": 0,
+    "township": null,
+    "how": "crossing",
+    "dist_from_start_mi": 1.98
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -94.73896461199364,
+     47.0620773840113
+    ]
+   },
+   "properties": {
+    "for_type": "segment",
+    "for_name": "West-15",
+    "position": "mid",
+    "kind": "access_trail",
+    "source_type": "ohv_trail",
+    "label": "Round River Drive",
+    "also_in": [
+     "state_park_trail_or_road"
+    ],
+    "repeat_crossings": 0,
+    "township": null,
+    "how": "crossing",
+    "dist_from_start_mi": 1.98
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -94.73258346543224,
+     47.06888675092865
+    ]
+   },
+   "properties": {
+    "for_type": "segment",
+    "for_name": "West-15",
+    "position": "end",
+    "kind": "access_trail",
+    "source_type": "snowmobile_trail",
+    "label": "Nevis Wilder Trails",
+    "also_in": [
+     "snowmobile_trail"
+    ],
+    "repeat_crossings": 0,
+    "township": null,
+    "how": "crossing",
+    "dist_from_start_mi": 2.741
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -94.73258346543224,
+     47.06888675092865
+    ]
+   },
+   "properties": {
+    "for_type": "segment",
+    "for_name": "West-15",
+    "position": "end",
+    "kind": "access_trail",
+    "source_type": "state_park_trail_or_road",
+    "label": "Round River Drive",
+    "also_in": [
+     "state_park_trail_or_road"
+    ],
+    "repeat_crossings": 0,
+    "township": null,
+    "how": "crossing",
+    "dist_from_start_mi": 2.741
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -94.73258346543224,
+     47.06888675092865
+    ]
+   },
+   "properties": {
+    "for_type": "segment",
+    "for_name": "West-15",
+    "position": "end",
+    "kind": "access_trail",
+    "source_type": "state_forest_road",
+    "label": "Steamboat",
+    "also_in": [],
+    "repeat_crossings": 0,
+    "township": null,
+    "how": "crossing",
+    "dist_from_start_mi": 2.741
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -94.73255954042914,
+     47.068896463197525
+    ]
+   },
+   "properties": {
+    "for_type": "segment",
+    "for_name": "West-15",
+    "position": "end",
+    "kind": "access_trail",
+    "source_type": "state_forest_road",
+    "label": "East Steamboat",
+    "also_in": [
+     "state_forest_road"
+    ],
+    "repeat_crossings": 1,
+    "township": null,
+    "how": "crossing",
+    "dist_from_start_mi": 2.742
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -94.73210181249225,
+     47.06898105687365
+    ]
+   },
+   "properties": {
+    "for_type": "segment",
+    "for_name": "West-15",
+    "position": "end",
+    "kind": "access_trail",
+    "source_type": "snowmobile_trail",
+    "label": "Nevis Wilder Trails",
+    "also_in": [],
+    "repeat_crossings": 0,
+    "township": null,
+    "how": "crossing",
+    "dist_from_start_mi": 2.765
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -94.73210181249225,
+     47.06898105687365
+    ]
+   },
+   "properties": {
+    "for_type": "segment",
+    "for_name": "West-15",
+    "position": "end",
+    "kind": "access_trail",
+    "source_type": "state_park_trail_or_road",
+    "label": "Round River Drive",
+    "also_in": [],
+    "repeat_crossings": 0,
+    "township": null,
+    "how": "crossing",
+    "dist_from_start_mi": 2.765
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -94.73258346543224,
+     47.06888675092865
+    ]
+   },
+   "properties": {
+    "for_type": "segment",
+    "for_name": "West-16",
+    "position": "start",
+    "kind": "access_trail",
+    "source_type": "snowmobile_trail",
+    "label": "Nevis Wilder Trails",
+    "also_in": [
+     "snowmobile_trail"
+    ],
+    "repeat_crossings": 0,
+    "township": null,
+    "how": "crossing",
+    "dist_from_start_mi": 0.0
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -94.73258346543224,
+     47.06888675092865
+    ]
+   },
+   "properties": {
+    "for_type": "segment",
+    "for_name": "West-16",
+    "position": "start",
+    "kind": "access_trail",
+    "source_type": "state_park_trail_or_road",
+    "label": "Round River Drive",
+    "also_in": [
+     "state_park_trail_or_road"
+    ],
+    "repeat_crossings": 0,
+    "township": null,
+    "how": "crossing",
+    "dist_from_start_mi": 0.0
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -94.73258346543224,
+     47.06888675092865
+    ]
+   },
+   "properties": {
+    "for_type": "segment",
+    "for_name": "West-16",
+    "position": "start",
+    "kind": "access_trail",
+    "source_type": "state_forest_road",
+    "label": "Steamboat",
+    "also_in": [],
+    "repeat_crossings": 0,
+    "township": null,
+    "how": "crossing",
+    "dist_from_start_mi": 0.0
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -94.73255954042914,
+     47.068896463197525
+    ]
+   },
+   "properties": {
+    "for_type": "segment",
+    "for_name": "West-16",
+    "position": "start",
+    "kind": "access_trail",
+    "source_type": "state_forest_road",
+    "label": "East Steamboat",
+    "also_in": [
+     "state_forest_road"
+    ],
+    "repeat_crossings": 1,
+    "township": null,
+    "how": "crossing",
+    "dist_from_start_mi": 0.0
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -94.73210181249225,
+     47.06898105687365
+    ]
+   },
+   "properties": {
+    "for_type": "segment",
+    "for_name": "West-16",
+    "position": "start",
+    "kind": "access_trail",
+    "source_type": "snowmobile_trail",
+    "label": "Nevis Wilder Trails",
+    "also_in": [],
+    "repeat_crossings": 0,
+    "township": null,
+    "how": "crossing",
+    "dist_from_start_mi": 0.012
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -94.73210181249225,
+     47.06898105687365
+    ]
+   },
+   "properties": {
+    "for_type": "segment",
+    "for_name": "West-16",
+    "position": "start",
+    "kind": "access_trail",
+    "source_type": "state_park_trail_or_road",
+    "label": "Round River Drive",
+    "also_in": [],
+    "repeat_crossings": 0,
+    "township": null,
+    "how": "crossing",
+    "dist_from_start_mi": 0.012
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -94.72783584075825,
+     47.06816337877068
+    ]
+   },
+   "properties": {
+    "for_type": "segment",
+    "for_name": "West-16",
+    "position": "start",
+    "kind": "access_trail",
+    "source_type": "ohv_trail",
+    "label": "Martineau Recreational Trails",
+    "also_in": [
+     "state_park_trail_or_road"
+    ],
+    "repeat_crossings": 0,
+    "township": null,
+    "how": "crossing",
+    "dist_from_start_mi": 0.239
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -94.70641590037735,
+     47.07405986809284
+    ]
+   },
+   "properties": {
+    "for_type": "segment",
+    "for_name": "West-16",
+    "position": "end",
+    "kind": "access_trail",
+    "source_type": "state_forest_road",
+    "label": "Parkway",
+    "also_in": [
+     "state_forest_road"
+    ],
+    "repeat_crossings": 0,
+    "township": null,
+    "how": "crossing",
+    "dist_from_start_mi": 1.74
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -94.70641590037735,
+     47.07405986809284
+    ]
+   },
+   "properties": {
+    "for_type": "segment",
+    "for_name": "West-16",
+    "position": "end",
+    "kind": "access_trail",
+    "source_type": "state_park_trail_or_road",
+    "label": "Round River Drive",
+    "also_in": [
+     "state_park_trail_or_road"
+    ],
+    "repeat_crossings": 0,
+    "township": null,
+    "how": "crossing",
+    "dist_from_start_mi": 1.74
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -94.70660123005992,
+     47.074508986725085
+    ]
+   },
+   "properties": {
+    "for_type": "segment",
+    "for_name": "West-16",
+    "position": "end",
+    "kind": "access_trail",
+    "source_type": "state_forest_road",
+    "label": "Parkway",
+    "also_in": [],
+    "repeat_crossings": 0,
+    "township": null,
+    "how": "crossing",
+    "dist_from_start_mi": 1.772
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -94.70660123005992,
+     47.074508986725085
+    ]
+   },
+   "properties": {
+    "for_type": "segment",
+    "for_name": "West-16",
+    "position": "end",
+    "kind": "access_trail",
+    "source_type": "state_park_trail_or_road",
+    "label": "Round River Drive",
+    "also_in": [],
+    "repeat_crossings": 0,
+    "township": null,
+    "how": "crossing",
+    "dist_from_start_mi": 1.772
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -94.70660123005992,
+     47.074508986725085
+    ]
+   },
+   "properties": {
+    "for_type": "segment",
+    "for_name": "West-17",
+    "position": "start",
+    "kind": "access_trail",
+    "source_type": "state_forest_road",
+    "label": "Parkway",
+    "also_in": [],
+    "repeat_crossings": 0,
+    "township": null,
+    "how": "crossing",
+    "dist_from_start_mi": 0.001
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -94.70660123005992,
+     47.074508986725085
+    ]
+   },
+   "properties": {
+    "for_type": "segment",
+    "for_name": "West-17",
+    "position": "start",
+    "kind": "access_trail",
+    "source_type": "state_park_trail_or_road",
+    "label": "Round River Drive",
+    "also_in": [],
+    "repeat_crossings": 0,
+    "township": null,
+    "how": "crossing",
+    "dist_from_start_mi": 0.001
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -94.69063496571178,
+     47.080000206528936
+    ]
+   },
+   "properties": {
+    "for_type": "segment",
+    "for_name": "West-17",
+    "position": "mid",
+    "kind": "access_trail",
+    "source_type": "ohv_trail",
+    "label": "Round River Drive",
+    "also_in": [
+     "state_park_trail_or_road"
+    ],
+    "repeat_crossings": 0,
+    "township": null,
+    "how": "crossing",
+    "dist_from_start_mi": 1.074
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -94.64908425665578,
+     47.05696908993651
+    ]
+   },
+   "properties": {
+    "for_type": "segment",
+    "for_name": "Chip-1",
+    "position": "mid",
+    "kind": "road",
+    "source_type": null,
+    "label": "County 12 Nw",
+    "also_in": [],
+    "repeat_crossings": 0,
+    "township": "Shingobee Township",
+    "how": "crossing",
+    "dist_from_start_mi": 1.665
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -94.64215238491175,
+     47.04960077181637
+    ]
+   },
+   "properties": {
+    "for_type": "segment",
+    "for_name": "Chip-1",
+    "position": "mid",
+    "kind": "access_trail",
+    "source_type": "state_park_trail_or_road",
+    "label": "Heartland State Trail",
+    "also_in": [
+     "state_trail"
+    ],
+    "repeat_crossings": 0,
+    "township": null,
+    "how": "crossing",
+    "dist_from_start_mi": 2.42
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -94.64213461837048,
+     47.04959301652913
+    ]
+   },
+   "properties": {
+    "for_type": "segment",
+    "for_name": "Chip-1",
+    "position": "mid",
+    "kind": "access_trail",
+    "source_type": "snowmobile_trail",
+    "label": "Cass County Trails",
+    "also_in": [],
+    "repeat_crossings": 0,
+    "township": null,
+    "how": "crossing",
+    "dist_from_start_mi": 2.421
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -94.64210496466767,
+     47.04885105660595
+    ]
+   },
+   "properties": {
+    "for_type": "segment",
+    "for_name": "Chip-1",
+    "position": "mid",
+    "kind": "road",
+    "source_type": null,
+    "label": "Sixth Lake Rd Nw",
+    "also_in": [],
+    "repeat_crossings": 0,
+    "township": "Shingobee Township",
+    "how": "crossing",
+    "dist_from_start_mi": 2.48
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -94.63409183924965,
+     47.04241870653353
+    ]
+   },
+   "properties": {
+    "for_type": "segment",
+    "for_name": "Chip-1",
+    "position": "end",
+    "kind": "road",
+    "source_type": null,
+    "label": "State 34 Nw",
+    "also_in": [],
+    "repeat_crossings": 0,
+    "township": "Shingobee Township",
+    "how": "crossing",
+    "dist_from_start_mi": 3.409
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -94.63409183924965,
+     47.04241870653353
+    ]
+   },
+   "properties": {
+    "for_type": "segment",
+    "for_name": "Chip-2",
+    "position": "start",
+    "kind": "road",
+    "source_type": null,
+    "label": "State 34 Nw",
+    "also_in": [],
+    "repeat_crossings": 0,
+    "township": "Shingobee Township",
+    "how": "crossing",
+    "dist_from_start_mi": 0.012
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -94.59643081123055,
+     47.02968496361061
+    ]
+   },
+   "properties": {
+    "for_type": "segment",
+    "for_name": "Chip-2",
+    "position": "end",
+    "kind": "road",
+    "source_type": null,
+    "label": "County 50 Nw",
+    "also_in": [],
+    "repeat_crossings": 0,
+    "township": "Shingobee Township",
+    "how": "crossing",
+    "dist_from_start_mi": 2.872
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -94.59643081123055,
+     47.02968496361061
+    ]
+   },
+   "properties": {
+    "for_type": "segment",
+    "for_name": "Chip-3",
+    "position": "start",
+    "kind": "road",
+    "source_type": null,
+    "label": "County 50 Nw",
+    "also_in": [],
+    "repeat_crossings": 0,
+    "township": "Shingobee Township",
+    "how": "crossing",
+    "dist_from_start_mi": 0.0
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -94.54701320069972,
+     47.03305381693868
+    ]
+   },
+   "properties": {
+    "for_type": "segment",
+    "for_name": "Chip-4",
+    "position": "mid",
+    "kind": "access_trail",
+    "source_type": "snowmobile_trail",
+    "label": "Cass County Trails",
+    "also_in": [
+     "snowmobile_trail"
+    ],
+    "repeat_crossings": 0,
+    "township": null,
+    "how": "crossing",
+    "dist_from_start_mi": 1.14
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -94.5459733239399,
+     47.03129936927436
+    ]
+   },
+   "properties": {
+    "for_type": "segment",
+    "for_name": "Chip-4",
+    "position": "mid",
+    "kind": "access_trail",
+    "source_type": "snowmobile_trail",
+    "label": "Cass County Trails",
+    "also_in": [],
+    "repeat_crossings": 0,
+    "township": null,
+    "how": "crossing",
+    "dist_from_start_mi": 1.316
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -94.5399693978507,
+     47.024087651766365
+    ]
+   },
+   "properties": {
+    "for_type": "segment",
+    "for_name": "Chip-4",
+    "position": "mid",
+    "kind": "road",
+    "source_type": null,
+    "label": "60Th St Nw",
+    "also_in": [],
+    "repeat_crossings": 0,
+    "township": "Shingobee Township",
+    "how": "crossing",
+    "dist_from_start_mi": 2.077
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -94.53577491865205,
+     47.01452603329178
+    ]
+   },
+   "properties": {
+    "for_type": "segment",
+    "for_name": "Chip-4",
+    "position": "end",
+    "kind": "road",
+    "source_type": null,
+    "label": "State 371 Nw",
+    "also_in": [],
+    "repeat_crossings": 0,
+    "township": "Turtle Lake Township",
+    "how": "crossing",
+    "dist_from_start_mi": 3.372
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -94.53577491865205,
+     47.01452603329178
+    ]
+   },
+   "properties": {
+    "for_type": "segment",
+    "for_name": "Chip-5",
+    "position": "start",
+    "kind": "road",
+    "source_type": null,
+    "label": "State 371 Nw",
+    "also_in": [],
+    "repeat_crossings": 0,
+    "township": "Turtle Lake Township",
+    "how": "crossing",
+    "dist_from_start_mi": 0.0
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -94.51470295636673,
+     47.000372614477804
+    ]
+   },
+   "properties": {
+    "for_type": "segment",
+    "for_name": "Chip-5",
+    "position": "end",
+    "kind": "road",
+    "source_type": null,
+    "label": "Woodtick Trl Nw",
+    "also_in": [],
+    "repeat_crossings": 0,
+    "township": "Turtle Lake Township",
+    "how": "crossing",
+    "dist_from_start_mi": 2.094
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -94.51470295636673,
+     47.000372614477804
+    ]
+   },
+   "properties": {
+    "for_type": "segment",
+    "for_name": "Chip-6",
+    "position": "start",
+    "kind": "road",
+    "source_type": null,
+    "label": "Woodtick Trl Nw",
+    "also_in": [],
+    "repeat_crossings": 0,
+    "township": "Turtle Lake Township",
+    "how": "crossing",
+    "dist_from_start_mi": 0.004
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -94.48687912354397,
+     46.99668784629681
+    ]
+   },
+   "properties": {
+    "for_type": "segment",
+    "for_name": "Chip-6",
+    "position": "end",
+    "kind": "road",
+    "source_type": null,
+    "label": "Woodtick Trl Nw",
+    "also_in": [],
+    "repeat_crossings": 0,
+    "township": "Turtle Lake Township",
+    "how": "crossing",
+    "dist_from_start_mi": 2.167
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -94.48687912354397,
+     46.99668784629681
+    ]
+   },
+   "properties": {
+    "for_type": "segment",
+    "for_name": "Chip-7",
+    "position": "start",
+    "kind": "road",
+    "source_type": null,
+    "label": "Woodtick Trl Nw",
+    "also_in": [],
+    "repeat_crossings": 0,
+    "township": "Turtle Lake Township",
+    "how": "crossing",
+    "dist_from_start_mi": 0.004
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -94.4597882760043,
+     47.006573218822055
+    ]
+   },
+   "properties": {
+    "for_type": "segment",
+    "for_name": "Chip-7",
+    "position": "end",
+    "kind": "access_trail",
+    "source_type": "snowmobile_trail",
+    "label": "Cass County Trails",
+    "also_in": [],
+    "repeat_crossings": 0,
+    "township": null,
+    "how": "crossing",
+    "dist_from_start_mi": 1.688
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -94.4597882760043,
+     47.006573218822055
+    ]
+   },
+   "properties": {
+    "for_type": "segment",
+    "for_name": "Chip-8",
+    "position": "start",
+    "kind": "access_trail",
+    "source_type": "snowmobile_trail",
+    "label": "Cass County Trails",
+    "also_in": [],
+    "repeat_crossings": 0,
+    "township": null,
+    "how": "crossing",
+    "dist_from_start_mi": 0.0
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -94.43533350266736,
+     47.00815887001094
+    ]
+   },
+   "properties": {
+    "for_type": "segment",
+    "for_name": "Chip-8",
+    "position": "end",
+    "kind": "road",
+    "source_type": null,
+    "label": "30Th Ave Nw",
+    "also_in": [],
+    "repeat_crossings": 0,
+    "township": "Turtle Lake Township",
+    "how": "crossing",
+    "dist_from_start_mi": 1.477
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -94.43533350266736,
+     47.00815887001094
+    ]
+   },
+   "properties": {
+    "for_type": "segment",
+    "for_name": "Chip-9",
+    "position": "start",
+    "kind": "road",
+    "source_type": null,
+    "label": "30Th Ave Nw",
+    "also_in": [],
+    "repeat_crossings": 0,
+    "township": "Turtle Lake Township",
+    "how": "crossing",
+    "dist_from_start_mi": 0.0
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -94.3936719642274,
+     47.003374331379426
+    ]
+   },
+   "properties": {
+    "for_type": "segment",
+    "for_name": "Chip-9",
+    "position": "end",
+    "kind": "road",
+    "source_type": null,
+    "label": "Tower Rd Nw",
+    "also_in": [],
+    "repeat_crossings": 0,
+    "township": "Pine Lake Township",
+    "how": "crossing",
+    "dist_from_start_mi": 2.506
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -94.3936719642274,
+     47.003374331379426
+    ]
+   },
+   "properties": {
+    "for_type": "segment",
+    "for_name": "Chip-10",
+    "position": "start",
+    "kind": "road",
+    "source_type": null,
+    "label": "Tower Rd Nw",
+    "also_in": [],
+    "repeat_crossings": 0,
+    "township": "Pine Lake Township",
+    "how": "crossing",
+    "dist_from_start_mi": 0.0
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -94.34406360803101,
+     46.99762873592392
+    ]
+   },
+   "properties": {
+    "for_type": "segment",
+    "for_name": "Chip-10",
+    "position": "end",
+    "kind": "road",
+    "source_type": null,
+    "label": "Woodtick Trl Nw",
+    "also_in": [],
+    "repeat_crossings": 0,
+    "township": "Pine Lake Township",
+    "how": "crossing",
+    "dist_from_start_mi": 3.276
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -94.34406360803101,
+     46.99762873592392
+    ]
+   },
+   "properties": {
+    "for_type": "segment",
+    "for_name": "Chip-11",
+    "position": "start",
+    "kind": "road",
+    "source_type": null,
+    "label": "Woodtick Trl Nw",
+    "also_in": [],
+    "repeat_crossings": 0,
+    "township": "Pine Lake Township",
+    "how": "crossing",
+    "dist_from_start_mi": 0.003
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -94.30860194614323,
+     46.996036776512426
+    ]
+   },
+   "properties": {
+    "for_type": "segment",
+    "for_name": "Chip-11",
+    "position": "end",
+    "kind": "road",
+    "source_type": null,
+    "label": "Woodtick Trl Nw",
+    "also_in": [],
+    "repeat_crossings": 0,
+    "township": "Pine Lake Township",
+    "how": "crossing",
+    "dist_from_start_mi": 2.351
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -94.30860194614323,
+     46.996036776512426
+    ]
+   },
+   "properties": {
+    "for_type": "segment",
+    "for_name": "Chip-12",
+    "position": "start",
+    "kind": "road",
+    "source_type": null,
+    "label": "Woodtick Trl Nw",
+    "also_in": [],
+    "repeat_crossings": 0,
+    "township": "Pine Lake Township",
+    "how": "crossing",
+    "dist_from_start_mi": 0.0
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -94.25016537706425,
+     47.021515265950455
+    ]
+   },
+   "properties": {
+    "for_type": "segment",
+    "for_name": "Chip-12",
+    "position": "end",
+    "kind": "access_trail",
+    "source_type": "snowmobile_trail",
+    "label": "Cass County Trails",
+    "also_in": [],
+    "repeat_crossings": 0,
+    "township": null,
+    "how": "crossing",
+    "dist_from_start_mi": 4.087
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -94.25016537706425,
+     47.021515265950455
+    ]
+   },
+   "properties": {
+    "for_type": "segment",
+    "for_name": "Chip-13",
+    "position": "start",
+    "kind": "access_trail",
+    "source_type": "snowmobile_trail",
+    "label": "Cass County Trails",
+    "also_in": [],
+    "repeat_crossings": 0,
+    "township": null,
+    "how": "crossing",
+    "dist_from_start_mi": 0.0
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -95.21388820885464,
+     47.15076959898826
+    ]
+   },
+   "properties": {
+    "for_type": "gap",
+    "for_name": "GAP-W",
+    "position": "mid",
+    "kind": "access_trail",
+    "source_type": "state_park_trail_or_road",
+    "label": "Nicollet Trail",
+    "also_in": [
+     "state_park_trail_or_road"
+    ],
+    "repeat_crossings": 3,
+    "township": null,
+    "how": "crossing",
+    "dist_from_start_mi": 0.297
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -95.20598888535426,
+     47.14974048249449
+    ]
+   },
+   "properties": {
+    "for_type": "gap",
+    "for_name": "GAP-W",
+    "position": "mid",
+    "kind": "access_trail",
+    "source_type": "state_park_trail_or_road",
+    "label": "Deer Park Trail",
+    "also_in": [],
+    "repeat_crossings": 0,
+    "township": null,
+    "how": "crossing",
+    "dist_from_start_mi": 0.783
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -95.17036991740112,
+     47.1540659110003
+    ]
+   },
+   "properties": {
+    "for_type": "gap",
+    "for_name": "GAP-W",
+    "position": "end",
+    "kind": "access_trail",
+    "source_type": "state_park_trail_or_road",
+    "label": "Ozawindib Trail",
+    "also_in": [
+     "state_park_trail_or_road"
+    ],
+    "repeat_crossings": 0,
+    "township": null,
+    "how": "crossing",
+    "dist_from_start_mi": 2.914
+   }
+  }
+ ]
+}

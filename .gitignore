@@ -1,0 +1,31 @@
+# Photo inbox: originals are large and may carry personal devices'
+# metadata trails; they stay out of version control. The pins derived
+# from them are data and live under data/.
+photos-inbox/*
+!photos-inbox/.gitkeep
+
+# Large raw downloads and scratch extracts (re-pullable from the
+# public sources listed in SOURCES.md)
+*.gdb/
+*.gpkg
+*.zip
+raw/
+downloads/
+
+# Python scratch
+__pycache__/
+*.pyc
+
+# --- Working-view data: NEVER in the public repo ---
+# The public repo/Pages carry the public view; the site builds its
+# layers from whitelisted copies under site/data/. The files below
+# are the chapter working data and stay local / in the shared Drive.
+# Parcel source carries landowner name fields (privacy rule 1).
+data/parcels/*.geojson
+# Adopter-joined segment data carries adopter names.
+data/segments/segments.geojson
+data/segments/segment-stretches.geojson
+# The chapter's adoption tracker spreadsheet and the pristine
+# adopter-boundary KMZ as delivered.
+data/segments/*.xlsx
+data/segments/*.kmz

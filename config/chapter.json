@@ -1,0 +1,114 @@
+{
+ "chapter": {
+  "association": "North Country Trail Association",
+  "display_name": "Itasca Moraine Chapter",
+  "id": "itasca-moraine",
+  "state": "MN",
+  "trail": "North Country National Scenic Trail"
+ },
+ "data_sources": {
+  "access_layers_mn": {
+   "name": "MN DNR access layers (state forest roads and recreation trails)",
+   "services": [
+    {
+     "key": "state_forest_roads",
+     "layer_id": 0,
+     "name": "MNDNR Administered State Forest Roads",
+     "service_root": "https://enterprise.gisdata.mn.gov/aghost/rest/services/us_mn_state_dnr/trans_state_forest_roads/FeatureServer",
+     "source_type": "state_forest_road"
+    },
+    {
+     "key": "ohv_trails",
+     "layer_id": 0,
+     "name": "OHV Trails, Minnesota (MN DNR)",
+     "service_root": "https://enterprise.gisdata.mn.gov/aghost/rest/services/us_mn_state_dnr/trans_ohv_trails_mn/FeatureServer",
+     "source_type": "ohv_trail"
+    },
+    {
+     "key": "snowmobile_trails",
+     "layer_id": 0,
+     "name": "Snowmobile Trails, Minnesota (MN DNR)",
+     "service_root": "https://enterprise.gisdata.mn.gov/aghost/rest/services/us_mn_state_dnr/trans_snowmobile_trails_mn/FeatureServer",
+     "source_type": "snowmobile_trail"
+    },
+    {
+     "key": "hunter_walking_trails",
+     "layer_id": 0,
+     "name": "Hunter Walking Trails (MN DNR)",
+     "service_root": "https://enterprise.gisdata.mn.gov/aghost/rest/services/us_mn_state_dnr/trans_hunter_walking_trails/FeatureServer",
+     "source_type": "hunter_walking_trail"
+    },
+    {
+     "key": "state_trails",
+     "layer_id": 0,
+     "name": "State Trails, Minnesota (MN DNR)",
+     "service_root": "https://enterprise.gisdata.mn.gov/aghost/rest/services/us_mn_state_dnr/trans_state_trails_minnesota/FeatureServer",
+     "source_type": "state_trail"
+    },
+    {
+     "key": "state_park_trails_roads",
+     "layer_id": 0,
+     "name": "State Park Trails and Roads (MN DNR)",
+     "service_root": "https://enterprise.gisdata.mn.gov/aghost/rest/services/us_mn_state_dnr/trans_state_park_trails_roads/FeatureServer",
+     "source_type": "state_park_trail_or_road"
+    }
+   ]
+  },
+  "county_boundaries_mn": {
+   "layer_id": 0,
+   "name": "Minnesota County Boundaries (MnGeo)",
+   "service_root": "https://enterprise.gisdata.mn.gov/aghost/rest/services/us_mn_state_mngeo/bdry_counties_minnesota/FeatureServer",
+   "use": "Reference only: county determination for coverage reporting. Not a published map layer."
+  },
+  "official_trail_line": {
+   "fallback": "https://irma.nps.gov/DataStore/ (NPS DataStore, unit NOCO)",
+   "name": "North Country Trail (Public) - NCTA ArcGIS feature service",
+   "route_layer_name_contains": "North Country Trail",
+   "service_root": "https://services2.arcgis.com/UfGVyqUm4GHa2zrj/arcgis/rest/services/nct_public/FeatureServer"
+  },
+  "parcels_mn": {
+   "compiled_counties_crossed_by_chapter_trail": [
+    "Becker",
+    "Cass",
+    "Clearwater"
+   ],
+   "counties_crossed_but_not_in_compilation": [
+    "Hubbard"
+   ],
+   "county_field": "co_name",
+   "fallback_county_services": {
+    "hubbard": {
+     "layer_id": 0,
+     "layer_name": "Tax Parcels",
+     "name": "Hubbard County Tax Parcels (Hubbard County open data)",
+     "service_root": "https://gis.co.hubbard.mn.us/arcgis/rest/services/OpenData/Hubbard_County_Tax_Parcels/FeatureServer"
+    }
+   },
+   "hub_url": "https://gis.data.mn.gov/datasets/minnesota::parcels-compiled-from-opt-inopen-data-counes-minnesota-2",
+   "layer_id": 1,
+   "layer_name": "Plan Parcels Open",
+   "metadata_layer_id": 0,
+   "name": "Parcels, Compiled from Opt-In Open Data Counties, Minnesota (MnGeo)",
+   "service_root": "https://enterprise.gisdata.mn.gov/aghost/rest/services/us_mn_state_mngeo/plan_parcels_open/FeatureServer"
+  },
+  "road_centerlines_mn": {
+   "layer_id": 0,
+   "name": "Road Centerlines, Minnesota (MnDOT via MnGeo, open)",
+   "service_root": "https://enterprise.gisdata.mn.gov/aghost/rest/services/us_mn_state_mngeo/trans_road_centerlines_open/FeatureServer"
+  }
+ },
+ "outputs": {
+  "access_lines": "data/access/access-lines.geojson",
+  "access_roads": "data/access/roads.geojson",
+  "official_line_chapter_extent": "data/segments/official-line-chapter-extent.geojson",
+  "parcel_county_report": "data/parcels/county-coverage.md",
+  "parcels_corridor": "data/parcels/parcels-corridor.geojson"
+ },
+ "working_extent_wgs84": {
+  "comment": "Chapter working extent (bounding box) used to clip national datasets. Catches the Park Rapids / Itasca State Park / Walker corridor plus some neighbouring chapters' trail, which is wanted for later expansion.",
+  "max_lat": 47.35,
+  "max_lon": -94.3,
+  "min_lat": 46.7,
+  "min_lon": -95.6
+ }
+}
