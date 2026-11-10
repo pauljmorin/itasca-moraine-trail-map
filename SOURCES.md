@@ -47,8 +47,10 @@ pulled.
   `scripts/pull_parcels_corridor.py`.
 - **Use here:** Corridor clip only (trail-crossing parcels plus the
   adjoining ring), stored at `data/parcels/parcels-corridor.geojson`.
-  **Working view only — landowner names are never published**
-  (see DESIGN.md privacy rules).
+  **Owner names ARE published on the map** — they are published
+  public records in the county data, and the chapter ruled on
+  2026-11-10 that the site shows them (this reverses the original
+  working-view-only rule; see DESIGN.md privacy rules).
 - **Coverage for the counties the chapter's trail crosses**
   (determined 2026-11-10 against MnGeo county boundaries — see
   `data/parcels/county-coverage.md`): Becker, Cass and Clearwater
@@ -125,6 +127,39 @@ the services carry no per-service copyright text.
 - **URL:** https://enterprise.gisdata.mn.gov/aghost/rest/services/us_mn_state_mngeo/bdry_counties_minnesota/FeatureServer
   (layer 0)
 - **Owner / publisher:** MnGeo.
+
+## Base-map tile & image services (map v2, added 2026-11-10)
+
+Live map backgrounds, consumed directly by the site (nothing is
+downloaded into the repo). Every endpoint was verified from the
+project sandbox on 2026-11-10 by fetching sample tiles / WMS
+GetMap responses over the chapter's extent.
+
+- **Shaded relief (MN LiDAR)** — Minnesota Geospatial Image
+  Service (MnGeo), WMS 1.1.1, Web Mercator endpoint
+  `https://imageserver.gisdata.mn.gov/cgi-bin/wmswm?`, layer
+  `hillshd` ("Statewide"): hillshade derived from 1 m LiDAR
+  (statewide elevation collection 2008–2012; Minnesota Department
+  of Natural Resources / MnGeo). Wired via `L.tileLayer.wms`,
+  non-transparent base. Attribution: "Shaded relief (LiDAR
+  hillshade): MnGeo / Minnesota DNR".
+- **Aerial — MN spring imagery (MnGeo)** — same WMS service, layer
+  `nw14` ("2014 color NW 50 cm"): Spring Aerial Imagery Program
+  spring 2013–14 leaf-off colour photography, 50 cm, covering NW
+  Minnesota (Becker, Cass, Clearwater, Hubbard and neighbours).
+  Attribution: "Spring aerial imagery 2013–14: MnGeo / Minnesota
+  DNR".
+- **Shaded relief (USGS)** — The National Map (USGS),
+  `https://basemap.nationalmap.gov/arcgis/rest/services/USGSShadedReliefOnly/MapServer/tile/{z}/{y}/{x}`.
+  Attribution: "Shaded relief: USGS, The National Map".
+- **Aerial — USGS NAIP** — The National Map (USGS),
+  `https://basemap.nationalmap.gov/arcgis/rest/services/USGSImageryOnly/MapServer/tile/{z}/{y}/{x}`
+  (NAIP-based imagery). Attribution: "Aerial imagery: USGS, The
+  National Map (NAIP)".
+- **Aerial — Esri World Imagery** —
+  `https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}`.
+  Attribution: "Aerial imagery: Esri, Maxar, Earthstar
+  Geographics".
 
 ### Chapter data (not external)
 

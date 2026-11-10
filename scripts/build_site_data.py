@@ -8,8 +8,11 @@ addresses from county records; snowmobile/hunter-trail maintainer
 contact details in the access data). This script therefore:
 
 * whitelists attributes per layer (privacy: anything not listed is
-  dropped — see PARCEL_KEEP / mapping functions; owner/tax/POC fields
-  are never copied);
+  dropped — see PARCEL_KEEP / mapping functions; parcel TAX
+  addresses and DNR maintainer POC fields are never copied. Parcel
+  OWNER names and owner mailing addresses ARE carried — they are
+  published public record in the county parcel data, and the
+  chapter ruled on 2026-11-10 that the site shows them);
 * for the chapter segment layers (stretches / gaps / access points),
   applies the PUBLIC-VIEW whitelist below — this build is the public
   site build under the chapter's agreed publishing model, so the
@@ -24,21 +27,48 @@ data). The site copies keep, per adopted stretch, ONLY:
     name, tracker_section            section identity (no people)
     length_mi, tracker_length_mi     measured vs tracker lengths
     has_adopter                      boolean derived from the tracker
-                                     adopter column — the names
-                                     themselves are NOT copied
+                                     adopter column
+    adopter_display                  PLACEHOLDER adopter names only
+                                     ("Test adopter 1", "Test adopter
+                                     2", ...) — see below
     both_ends_access, access_at_start, access_at_end
                                      booleans from the crossing data
     chainage_start_mi, chainage_end_mi   position along the chain
 
+ADOPTER PLACEHOLDERS (chapter instruction, 2026-11-10): the public
+build shows that a section is adopted, and by a placeholder — never
+by a real name. Each distinct person in the source adopter lists
+is assigned "Test adopter N" in order of first appearance across
+the stretches (file order = chain order); the same person keeps
+the same placeholder on every section, so shared adopters read as
+shared. The real names are read only to tell people apart; they
+are never written to any site file.
+
 Deliberately EXCLUDED (working-view data, never public):
-    adopter / adopter_verbatim  — adopter names stay out of the
-                                  public site copies entirely
+    adopter / adopter_verbatim  — the real adopter names; only the
+                                  placeholders above are emitted
     sawyer                      — a person; excluded for the same reason
     maintenance_2026_notes      — working detail (2026 mowing record)
     help_requested_2026_raw     — working detail, uninterpreted
     tracker_comments            — free text; may name people
     tracker_description         — free text; not needed publicly
     access_points (embedded)    — superseded by the access-points layer
+
+PARCELS: the site copy carries parcel id, county, land class,
+acres, corridor position, and — per the 2026-11-10 ruling — the
+published OWNER name and owner mailing address from the same
+county record (MnGeo `owner_name` + `own_add_l1..l4`; Hubbard
+`PINAME1/2` + `PIADRLN1/2` + city/state/ZIP). Taxpayer name/address
+fields (MnGeo `tax_name` / `tax_add_l*`) are NOT carried — the
+owner record is the published one the chapter ruled on.
+
+BOUNDARIES (site/data/boundaries.geojson): built by
+build_boundaries() below from the stretch geometry endpoints (so
+markers sit exactly on the drawn sections, never at raw KMZ pin
+positions — one pin sits ~3.6 km off the line) plus the GAP-W west
+end from the gaps file. Properties per point: name (boundary pin
+name), sections (stretch names meeting there), chapter_end (true
+only for the two chapter termini). No people, no adopter data.
 
 Gaps carry only geometric/classification properties (gap id, name,
 length, land context, trail kind, nearest road/trail access at each
@@ -224,23 +254,41 @@ TRAIL_KEEP = ["chapter", "trail_stat", "trail_type", "cert_stat",
               "trail_surf", "closure"]
 
 # ---------------------------------------------------------------- parcels
-def map_parcel(p):
-    """Normalize both source schemas to a display-safe common set.
+def _join_parts(vals, sep=", "):
+    parts = [clean_str(v) for v in vals]
+    parts = [x for x in parts if x]
+    return sep.join(parts) or None
 
-    PRIVACY: owner names, owner/tax addresses and taxpayer fields in
-    the source records are deliberately NOT copied. Only parcel id,
-    county, land class/use, acres and corridor position are kept.
+
+def map_parcel(p):
+    """Normalize both source schemas to a common display set.
+
+    Per the chapter's 2026-11-10 ruling, the published OWNER name
+    and the owner mailing address from the same county record are
+    carried (public record). Taxpayer name/address fields are NOT
+    carried. Parcels with no published owner (mostly public-land
+    records) get owner=None and the popup omits the row.
     """
     county = clean_str(p.get("source_county")) or clean_str(p.get("co_name"))
     if "hubbgis_GIS_Parcels_PIN" in p:  # Hubbard County schema
         land_class = clean_str(p.get("Class1")) or clean_str(p.get("EXCLS1_DSC"))
         acres = num(p.get("hubbgis_GIS_Parcels_Acres")) or num(p.get("PYACRES"))
+        owner = _join_parts([p.get("PINAME1"), p.get("PINAME2")], sep=" ")
+        city_line = _join_parts([
+            clean_str(p.get("PICITY")),
+            _join_parts([p.get("PISTATE"),
+                         p.get("PIZIPCD6") or p.get("PIZIPCD4")], sep=" "),
+        ])
+        owner_address = _join_parts(
+            [p.get("PIADRLN1"), p.get("PIADRLN2"), city_line])
         return {
             "parcel_id": clean_str(p.get("hubbgis_GIS_Parcels_PIN")),
             "county": county,
             "land_class": land_class,
             "acres": acres,
             "corridor": clean_str(p.get("corridor_class")),
+            "owner": owner,
+            "owner_address": owner_address,
         }
     land_class = (clean_str(p.get("useclass1")) or clean_str(p.get("xuseclass1"))
                   or clean_str(p.get("ownership")))
@@ -251,6 +299,9 @@ def map_parcel(p):
         "land_class": land_class,
         "acres": acres,
         "corridor": clean_str(p.get("corridor_class")),
+        "owner": clean_str(p.get("owner_name")),
+        "owner_address": _join_parts([p.get("own_add_l1"), p.get("own_add_l2"),
+                                      p.get("own_add_l3"), p.get("own_add_l4")]),
     }
 
 
@@ -280,19 +331,33 @@ def map_road(p):
 
 # ------------------------------------------------------------- segments
 # PUBLIC-VIEW whitelist — see the module header for the full rule and
-# the exclusion list. Nothing personal is copied: adopter names become
-# the boolean has_adopter; sawyer, maintenance notes, comments and
-# descriptions are dropped outright.
+# the exclusion list. Real adopter names are never copied: each
+# distinct person becomes a "Test adopter N" placeholder (numbered
+# in order of first appearance as features are processed — the
+# source file is in chain order); sawyer, maintenance notes,
+# comments and descriptions are dropped outright.
+
+_PLACEHOLDERS = {}
+
+
+def _placeholder(name):
+    if name not in _PLACEHOLDERS:
+        _PLACEHOLDERS[name] = "Test adopter %d" % (len(_PLACEHOLDERS) + 1)
+    return _PLACEHOLDERS[name]
+
 
 def map_stretch(p):
     has_adopter = bool(p.get("adopter")) or \
         bool(clean_str(p.get("adopter_verbatim")))
+    names = [clean_str(x) for x in (p.get("adopter") or [])]
+    names = [x for x in names if x]
     return {
         "name": clean_str(p.get("name")),
         "tracker_section": clean_str(p.get("tracker_section")),
         "length_mi": num(p.get("length_mi")),
         "tracker_length_mi": num(p.get("tracker_length_mi")),
         "has_adopter": has_adopter,
+        "adopter_display": [_placeholder(x) for x in names] or None,
         "both_ends_access": bool(p.get("both_ends_access")),
         "access_at_start": bool(p.get("access_at_start")),
         "access_at_end": bool(p.get("access_at_end")),
@@ -418,10 +483,100 @@ def build_one(src_rel, dst_rel, tol_key, mapper):
     }
 
 
+# ------------------------------------------------------------ boundaries
+def build_boundaries():
+    """Section boundary points from the STRETCH geometry endpoints.
+
+    One point per boundary: the first stretch's start, then every
+    stretch's end (labelled by its to_boundary). Positions therefore
+    sit exactly on the drawn sections — raw KMZ pin coordinates are
+    never used (the Chip-13 end pin sits ~3.6 km off the line; its
+    stretch is a zero-length point on the line, which is where the
+    marker goes). The GAP-W west end (the chapter's west terminus,
+    chainage 0) is added from the gaps file; it and the last
+    stretch's end (east terminus, maximum chainage_end) are flagged
+    chapter_end. Points are rounded, never simplified.
+    """
+    with open(os.path.join(ROOT, "data/segments/segment-stretches.geojson")) as f:
+        stretches = json.load(f)["features"]
+    with open(os.path.join(ROOT, "data/segments/gaps.geojson")) as f:
+        gaps = json.load(f)["features"]
+    stretches.sort(key=lambda f: (f["properties"].get("chainage_start_mi")
+                                  is None,
+                                  f["properties"].get("chainage_start_mi")
+                                  or 0.0))
+    points = []
+    by_label = {}
+    mismatches = 0
+
+    def add(label, coord, section):
+        nonlocal mismatches
+        if label in by_label:
+            feat = by_label[label]
+            have = feat["geometry"]["coordinates"]
+            if abs(have[0] - coord[0]) > 0.0002 or \
+                    abs(have[1] - coord[1]) > 0.0002:
+                mismatches += 1
+            if section and section not in feat["properties"]["sections"]:
+                feat["properties"]["sections"].append(section)
+            return feat
+        feat = {"type": "Feature",
+                "geometry": {"type": "Point",
+                             "coordinates": [round(coord[0], PRECISION),
+                                             round(coord[1], PRECISION)]},
+                "properties": {"name": label,
+                               "sections": [section] if section else [],
+                               "chapter_end": False}}
+        by_label[label] = feat
+        points.append(feat)
+        return feat
+
+    for i, feat in enumerate(stretches):
+        p = feat["properties"]
+        coords = feat["geometry"]["coordinates"]
+        start_label = p.get("from_boundary") if i == 0 \
+            else stretches[i - 1]["properties"].get("to_boundary")
+        add(start_label, coords[0], p.get("name"))
+        add(p.get("to_boundary"), coords[-1], p.get("name"))
+
+    # East terminus: the stretch ending at the maximum chainage_end.
+    # Chip-12 and Chip-13 tie on chainage_end (Chip-13 is zero-length
+    # at the chain's end), so chainage_start breaks the tie.
+    east = max(stretches,
+               key=lambda f: (f["properties"].get("chainage_end_mi") or -1,
+                              f["properties"].get("chainage_start_mi") or -1))
+    by_label[east["properties"]["to_boundary"]]["properties"]["chapter_end"] \
+        = True
+
+    if gaps:
+        g = gaps[0]["geometry"]["coordinates"][0]
+        west = {"type": "Feature",
+                "geometry": {"type": "Point",
+                             "coordinates": [round(g[0], PRECISION),
+                                             round(g[1], PRECISION)]},
+                "properties": {"name": "Chapter west end (Itasca State Park)",
+                               "sections": [],
+                               "chapter_end": True}}
+        points.insert(0, west)
+
+    dst = os.path.join(ROOT, "site/data/boundaries.geojson")
+    with open(dst, "w") as f:
+        json.dump({"type": "FeatureCollection", "features": points},
+                  f, separators=(",", ":"))
+    return {"dst": "site/data/boundaries.geojson",
+            "features_out": len(points), "mismatches": mismatches,
+            "bytes_out": os.path.getsize(dst)}
+
+
 def main():
     results = []
     for args in LAYERS:
         results.append(build_one(*args))
+    b = build_boundaries()
+    print(f"{b['dst']}: {b['features_out']} boundary points "
+          f"({b['mismatches']} shared-endpoint coordinate mismatches), "
+          f"{b['bytes_out']/1e6:.3f} MB")
+    print(f"adopter placeholders assigned: {len(_PLACEHOLDERS)}")
     for r in results:
         print(f"{r['dst']}: {r['features_in']} -> {r['features_out']} features"
               f" ({r['dropped']} dropped in simplification), "

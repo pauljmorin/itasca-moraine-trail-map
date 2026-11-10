@@ -70,10 +70,13 @@ every parcel the trail crosses, plus the ring of parcels adjoining
 those. This answers "whose land does the trail cross, segment by
 segment?"
 
-**Working view ONLY.** Landowner names from parcel data never appear
-in the public view. The public view shows land class only (state,
-county, private, etc.). Parcel data is a snapshot; refresh roughly
-annually.
+**Owner names are published (revised 2026-11-10).** The parcel
+owner names are published county public records (~921 of the 1,041
+corridor parcels carry a published owner), and the chapter ruled
+on 2026-11-10 that they go ON the map, with the owner's mailing
+address from the same record. This reverses the original
+working-view-only rule below. Parcel data is a snapshot; refresh
+roughly annually.
 
 ### Access
 
@@ -96,8 +99,13 @@ chapter-sourced.
 
 ## Privacy and branding rules (hard rules)
 
-1. Landowner names: chapter working view only; never public.
-2. Public view shows land class, never ownership identity.
+1. Landowner names: **published on the map** (revised 2026-11-10 —
+   they are published county public records; see the Parcels
+   section). Taxpayer fields are not carried.
+2. Adopter names: never public as names. The public build shows
+   positional placeholders ("Test adopter 1", "Test adopter 2", …)
+   assigned by the site-data build; real adopter names live only
+   in the working data.
 3. Private access is labeled private/informal wherever drawn.
 4. The map is presented as an **Itasca Moraine Chapter** project of
    the North Country Trail Association. It is never presented as the

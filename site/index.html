@@ -22,32 +22,50 @@
   <h2>Layers</h2>
   <div id="layer-toggles"><!-- checkboxes injected by app.js --></div>
   <p id="load-status" class="status"></p>
-
-  <h2>Legend</h2>
-  <div id="legend"><!-- legend injected by app.js --></div>
-
-  <h2>Data sources</h2>
-  <ul class="credits">
-    <li>Trail line: North Country Trail Association, on behalf of the
-      National Park Service (official public depiction)</li>
-    <li>Parcels: Minnesota Geospatial Commons (MnGeo) compiled county
-      parcels; Hubbard County open data (Hubbard is not in the state
-      compilation)</li>
-    <li>Access lines: Minnesota DNR — state forest roads, state park
-      trails &amp; roads, OHV trails, state trails, snowmobile trails,
-      hunter walking trails</li>
-    <li>Roads: Minnesota DNR / MnDOT road centerlines</li>
-    <li>Sections &amp; gaps: the chapter's adoption tracker and segment
-      boundary points, joined onto the official line</li>
-    <li>Base maps: © OpenStreetMap contributors; OpenTopoMap
-      (CC-BY-SA)</li>
-  </ul>
-  <p class="privacy">Parcel layer shows parcel ID, county, land class
-    and acres only. Landowner names are never displayed on this map.
-    Adoption sections are shown by section name and length only —
-    adopter names are never displayed either.</p>
 </div>
-<div id="map"></div>
+<div id="map">
+  <!-- Reference material (sources + legend) lives behind these
+       corner buttons, toggled by app.js; both cards start closed. -->
+  <div id="corner-ui">
+    <div id="sources-card" class="corner-card" hidden>
+      <h2>Data sources</h2>
+      <ul class="credits">
+        <li>Trail line: North Country Trail Association, on behalf of the
+          National Park Service (official public depiction)</li>
+        <li>Parcels: Minnesota Geospatial Commons (MnGeo) compiled county
+          parcels; Hubbard County open data (Hubbard is not in the state
+          compilation)</li>
+        <li>Access lines: Minnesota DNR — state forest roads, state park
+          trails &amp; roads, OHV trails, state trails, snowmobile trails,
+          hunter walking trails</li>
+        <li>Roads: Minnesota DNR / MnDOT road centerlines</li>
+        <li>Sections &amp; gaps: the chapter's adoption tracker and segment
+          boundary points, joined onto the official line</li>
+        <li>Base maps: © OpenStreetMap contributors; OpenTopoMap
+          (CC-BY-SA)</li>
+        <li>Shaded relief &amp; spring aerial base maps: Minnesota
+          Geospatial Image Service (MnGeo / Minnesota DNR) — hillshade
+          derived from 1&nbsp;m LiDAR; Spring Aerial Imagery Program
+          2013–14 leaf-off colour photography</li>
+        <li>Aerial &amp; shaded-relief base maps: USGS The National Map
+          (NAIP imagery, shaded relief); Esri World Imagery</li>
+      </ul>
+      <p class="privacy">Parcel popups show the owner's name and mailing
+        address as published in the county parcel records (public
+        record). Adopted sections show placeholder adopter names
+        (Test adopter 1, 2, …) — the chapter's real adopter names are
+        kept in its working files and never appear on this map.</p>
+    </div>
+    <div id="legend-card" class="corner-card" hidden>
+      <h2>Legend</h2>
+      <div id="legend"><!-- legend injected by app.js --></div>
+    </div>
+    <div id="corner-buttons">
+      <button type="button" id="btn-sources" aria-pressed="false">ⓘ Sources</button>
+      <button type="button" id="btn-legend" aria-pressed="false">Legend</button>
+    </div>
+  </div>
+</div>
 <script src="leaflet.js"></script>
 <script src="app.js"></script>
 </body>

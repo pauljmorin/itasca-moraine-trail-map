@@ -1,13 +1,22 @@
-# The map site (v1 — chapter working view)
+# The map site (v2 — chapter working view)
 
 A single-page Leaflet map in plain HTML/CSS/JS. No build step, no
 API keys, nothing to install: `index.html` + `app.js` + `style.css`.
 Leaflet 1.9.4 is vendored alongside (`leaflet.js`, `leaflet.css`,
 `images/`) so the site has no CDN dependency — in keeping with the
-portability rule. Base-map tiles come from the public OSM /
-OpenTopoMap tile servers, so viewing needs an internet connection.
-Append `#layers=access,roads` to the URL to open with those layers
-already switched on.
+portability rule. Base-map tiles come from public tile servers
+(OSM, OpenTopoMap, MnGeo, USGS, Esri), so viewing needs an internet
+connection. Append `#layers=access,roads` to the URL to open with
+those layers already switched on.
+
+The side panel is deliberately short — title, the working-draft
+notice, the mileage summary, the layer toggles, and the load
+status. The reference material lives over the map instead: two
+buttons in the map's bottom-left corner, **ⓘ Sources** and
+**Legend**, each open a small floating card (the data-source
+credits; the legend). Both start closed; a second click closes a
+card. The Leaflet attribution in the bottom-right is separate and
+always visible.
 
 ## Viewing locally
 
@@ -31,20 +40,30 @@ time their checkbox is switched on.
 | Toggle | File | Default | Contents |
 |---|---|---|---|
 | Official trail line | `data/trail.geojson` | on | The official NCT depiction in the chapter extent, styled by chapter (Itasca Moraine green, Laurentian Lakes purple) and by kind (off-road solid, on-road dashed). Popup: chapter, type, certification, length, ownership, managing authority. |
-| Adopted sections | `data/stretches.geojson` | on | The chapter's adopted sections (from the adoption tracker joined onto the boundary-point overlay), drawn in amber over the official line. Popup: section name, status (adopted), length measured on the official line, length in the chapter tracker, whether a crossing is recorded at each end. **No adopter names** — the site copy carries only a has-adopter boolean (see Privacy). |
+| Adopted sections | `data/stretches.geojson` | off | The chapter's adopted sections (from the adoption tracker joined onto the boundary-point overlay), drawn in amber over the official line, each with a permanent name label at its midpoint. Popup: section name, status (adopted), **placeholder** adopted-by names, length measured on the official line, length in the chapter tracker, whether a crossing is recorded at each end (see Privacy for the placeholder rule). |
+| Section boundaries | `data/boundaries.geojson` | with sections | **No toggle of its own** — the boundary markers ride with the Adopted sections toggle: a small dark dot + boundary name at every section start/end, positioned on the stretch geometry endpoints (never at raw KMZ pin positions — one pin sits ~3.6 km off the line). The same file's two chapter termini are the separate layer below. |
+| Chapter ends (Itasca Moraine west & east) | `data/boundaries.geojson` | on | Larger green markers labelled "Itasca Moraine — west end" (chainage 0, at the GAP-W west end in Itasca State Park) and "Itasca Moraine — east end". Always available with the official line, independent of the sections toggle. |
 | Unadopted gap (unclaimed) | `data/gaps.geojson` | on | Stretches of the depicted line no section covers, drawn bold dashed red — the recruiting layer. Currently one: GAP-W, 2.92 mi in Itasca State Park. Popup: length, land context, nearest access at each end, trails crossing it. |
-| Parcels | `data/parcels.geojson` | on | Trail-corridor parcels (crossed + adjoining ring). Popup: parcel ID, county, land class, acres — **never an owner name** (see Privacy). |
+| Parcels | `data/parcels.geojson` | off | Trail-corridor parcels (crossed + adjoining ring). Popup: parcel ID, county, land class, acres, and the **owner name + mailing address as published in the county parcel records** (public record — see Privacy). 919 of the 1,038 site parcels carry a published owner; the rest (mostly public land) show no owner row. |
 | Access lines | `data/access.geojson` | off | MN DNR lines: state forest roads, state park trails/roads, OHV trails, state trails, snowmobile trails, hunter walking trails, styled by kind. |
 | Roads | `data/roads.geojson` | off | Road centerlines. Off by default: it is the visually busiest layer and the map opens faster without it. |
 | Access points (section crossings) | `data/access-points.geojson` | off | The computed crossing points where roads and DNR trails meet each section or the gap (111 points). Popup: name, kind, which section, position (start/mid/end), crossing vs near-approach. A crossing is a line on a map, not a drivable route — see the caution in `../docs/segment-gap-analysis.md` §5 before planning a mower run from it. |
 | Asset pins | `data/assets.geojson` | on | Photo-inventory pins. **This file does not exist yet** — until the first real photo batch runs, the layer simply shows empty. The pipeline writes `data/assets/assets.geojson` in the repo; copying it to `site/data/assets.geojson` publishes the pins. |
 
+So the map opens (default view) with just the official line, the
+unadopted gap, the two chapter-end markers, and the (still empty)
+asset-pins layer — sections and parcels are one click away.
+
 The URL hash also accepts `#view=lat,lon,zoom` to open at a
 particular view instead of fitting the whole trail (combinable with
 `#layers=`, e.g. `#layers=accesspoints&view=47.152,-95.195,13`).
 
-Base maps: OpenStreetMap, with OpenTopoMap as an alternative in the
-base-layer switcher (top right).
+Base maps (switcher, top right): OpenStreetMap and OpenTopoMap,
+plus — new in v2 — two shaded-relief bases (MnGeo's LiDAR-derived
+statewide hillshade; USGS The National Map shaded relief) and three
+aerial bases (USGS NAIP imagery; Esri World Imagery; MnGeo's
+Spring Aerial Imagery Program 2013–14 leaf-off photography of NW
+Minnesota). Providers, vintages and endpoints: `../SOURCES.md`.
 
 ## Site data copies
 
@@ -57,39 +76,49 @@ base-layer switcher (top right).
   stretches/gaps 10 m; points are only rounded);
 - attributes **whitelisted** per layer — anything not listed is
   dropped (parcels normalized across the MnGeo and Hubbard County
-  schemas to parcel ID / county / land class / acres / corridor;
-  segment layers use the public-view whitelist documented in the
-  build script's header).
+  schemas to parcel ID / county / land class / acres / corridor /
+  owner / owner address; segment layers use the public-view
+  whitelist documented in the build script's header);
+- `site/data/boundaries.geojson` is built in the same run from the
+  stretch geometry endpoints plus the GAP-W west end (33 points —
+  see the Layers table).
 
-Sizes after simplification (2026-11-10 build): trail 0.07 MB,
-parcels 0.40 MB, access 1.68 MB, roads 0.97 MB, stretches 0.04 MB,
-gaps 0.002 MB, access points 0.03 MB — 3.21 MB total, down from
-30.1 MB of source data. Three tiny parcels (of 1,041) were dropped
-by polygon simplification; they remain in the source file. One
-stretch (CHP-13) is absent from the site copy because its source
-geometry is a single point — see Known data notes.
+Sizes after simplification (2026-11-10 v2 build): trail 0.07 MB,
+parcels 0.49 MB, access 1.68 MB, roads 0.97 MB, stretches 0.04 MB,
+gaps 0.002 MB, access points 0.03 MB, boundaries 0.005 MB —
+3.30 MB total, down from 30.1 MB of source data. Three tiny parcels
+(of 1,041) were dropped by polygon simplification; they remain in
+the source file. One stretch (CHP-13) is absent from the site copy
+because its source geometry is a single point — see Known data
+notes.
 
-## Privacy (hard rule)
+## Privacy (two opposite rules — read carefully)
 
-Parcel owner names and tax addresses exist in the source corridor
-file for later chapter working-view tooling. They are **not** copied
-into `site/data/` and are **never displayed** by this site — the
-whitelist in `scripts/build_site_data.py` is the enforcement point,
-and the parcel popup states the rule. The same applies to personal
+**Parcel owners: shown.** The owner name and mailing address in
+the county parcel records are published public records, and the
+chapter ruled on 2026-11-10 that the site shows them. The site
+copy therefore carries `owner` / `owner_address` (from the same
+published county record) and the parcel popup displays them.
+Taxpayer name/address fields are still **not** carried. Personal
 contact fields (maintainer names/phones/emails) present in some
-DNR access source attributes: stripped, not shown. Keep it that way
-when editing the whitelist.
+DNR access source attributes are likewise stripped, not shown.
 
-The segment layers are held to the same standard under the
-chapter's publishing model (public site = public view only). The
-working segment files in `../data/segments/` carry the adoption
-tracker's personal data (adopter names, sawyer, maintenance notes);
-the site copies keep only section name, the two lengths, a
-has-adopter **boolean**, access booleans and chainage — the full
-whitelist and exclusion list are documented in the header of
-`scripts/build_site_data.py`. Verified on the 2026-11-10 build:
-zero `@` characters, zero phone-number patterns, and zero hits for
-sampled adopter/sawyer names in the three segment site copies.
+**Adopter names: placeholders only.** The working segment files in
+`../data/segments/` carry the adoption tracker's personal data
+(real adopter names, sawyer, maintenance notes). The site copies
+never contain a real adopter name: `scripts/build_site_data.py`
+assigns each distinct adopter a placeholder — "Test adopter 1",
+"Test adopter 2", … in order of first appearance along the chain
+(48 placeholders on the v2 build) — and emits only the placeholders
+(`adopter_display`), shown in the section popup's "Adopted by"
+row. Because the numbering is positional, the same person reads as
+the same placeholder on every section without any name leaving the
+working data. Sawyer, maintenance notes and tracker comments are
+dropped outright; the full whitelist and exclusion list are
+documented in the build script's header. Verified on the
+2026-11-10 v2 build: zero hits for every full adopter name in the
+working data anywhere under `site/`, zero email patterns, zero
+phone-number patterns, and zero `@` characters in `site/data/`.
 
 The panel carries the standing notice: *Working draft — not an
 official NCTA or National Park Service map.* The map is an Itasca
@@ -97,11 +126,13 @@ Moraine **Chapter** project.
 
 ## Printing
 
-`style.css` has basic `@media print` rules (panel with legend and
-notice, then the map) because the chapter recruits with paper maps
-at events. Print renders whatever is in the current viewport —
-pan/zoom first. **Untested on paper in v1**; proof before relying on
-it for an event.
+`style.css` has basic `@media print` rules (the panel's notice and
+mileage summary, then the map) because the chapter recruits with
+paper maps at events. The corner buttons and their cards do not
+print — open the Legend card on screen first if you need it beside
+the paper map. Print renders whatever is in the current viewport —
+pan/zoom first. **Untested on paper**; proof before relying on it
+for an event.
 
 ## Known data notes
 

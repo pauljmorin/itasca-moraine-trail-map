@@ -4,16 +4,16 @@
  * Data: simplified site copies under data/ (built by
  * scripts/build_site_data.py from the working data in ../data/).
  *
- * PRIVACY: the parcel layer shows parcel ID, county, land class and
- * acres only. Owner names exist in the source corridor file for
- * later chapter working-view tooling, but are stripped from the site
- * copy and are never displayed here. Access popups likewise show
- * names/classes only — maintainer contact fields are stripped too.
- * The segment layers follow the same rule one step further: the
- * site copies of the stretches carry NO adopter names at all (the
- * public-view whitelist in scripts/build_site_data.py reduces the
- * tracker's adopter column to a boolean), and popups show section
- * name, lengths and access only.
+ * PRIVACY: the parcel layer shows parcel ID, county, land class,
+ * acres, and the OWNER name + mailing address exactly as published
+ * in the county parcel records — public record, shown per the
+ * chapter's 2026-11-10 ruling (see scripts/build_site_data.py).
+ * Maintainer contact fields in the access source data are stripped
+ * and never displayed. Adopter names follow the opposite rule: the
+ * site copies of the stretches carry PLACEHOLDER names only
+ * ("Test adopter 1", "Test adopter 2", ...) assigned by the build
+ * script; the real adopter names exist only in the working data
+ * and are never copied into any site file.
  *
  * STRUCTURE: layers load lazily the first time their toggle is
  * switched on; each is just an entry in LAYERS below.
@@ -35,8 +35,53 @@ var topo = L.tileLayer("https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png", {
     "map style: © OpenTopoMap (CC-BY-SA)",
 });
 
+/* Shaded relief + aerial base layers (v2). Endpoints verified live
+   2026-11-10 (sample tiles / WMS GetMap fetched — see SOURCES.md).
+   The two MnGeo layers come from the Minnesota Geospatial Image
+   Service (WMS, Web Mercator endpoint): "hillshd" is the statewide
+   hillshade derived from 1 m LiDAR; "nw14" is the Spring Aerial
+   Imagery Program's 2013–14 leaf-off colour photography of NW
+   Minnesota (50 cm), which covers the chapter's counties. */
+var MN_WMS = "https://imageserver.gisdata.mn.gov/cgi-bin/wmswm?";
+var mnHillshade = L.tileLayer.wms(MN_WMS, {
+  layers: "hillshd", format: "image/jpeg", transparent: false,
+  version: "1.1.1",
+  attribution: "Shaded relief (LiDAR hillshade): MnGeo / Minnesota DNR",
+});
+var mnSpring = L.tileLayer.wms(MN_WMS, {
+  layers: "nw14", format: "image/jpeg", transparent: false,
+  version: "1.1.1",
+  attribution: "Spring aerial imagery 2013–14: MnGeo / Minnesota DNR",
+});
+var usgsRelief = L.tileLayer(
+  "https://basemap.nationalmap.gov/arcgis/rest/services/" +
+    "USGSShadedReliefOnly/MapServer/tile/{z}/{y}/{x}", {
+    maxZoom: 16,
+    attribution: "Shaded relief: USGS, The National Map",
+  });
+var usgsImagery = L.tileLayer(
+  "https://basemap.nationalmap.gov/arcgis/rest/services/" +
+    "USGSImageryOnly/MapServer/tile/{z}/{y}/{x}", {
+    maxZoom: 16,
+    attribution: "Aerial imagery: USGS, The National Map (NAIP)",
+  });
+var esriImagery = L.tileLayer(
+  "https://server.arcgisonline.com/ArcGIS/rest/services/" +
+    "World_Imagery/MapServer/tile/{z}/{y}/{x}", {
+    maxZoom: 18,
+    attribution: "Aerial imagery: Esri, Maxar, Earthstar Geographics",
+  });
+
 L.control.layers(
-  { "OpenStreetMap": osm, "Topo (OpenTopoMap)": topo }, null,
+  {
+    "OpenStreetMap": osm,
+    "Topo (OpenTopoMap)": topo,
+    "Shaded relief (MN LiDAR)": mnHillshade,
+    "Shaded relief (USGS)": usgsRelief,
+    "Aerial — USGS (NAIP)": usgsImagery,
+    "Aerial — Esri World Imagery": esriImagery,
+    "Aerial — MN spring 2013–14 (MnGeo)": mnSpring,
+  }, null,
   { position: "topright" }
 ).addTo(map);
 L.control.scale({ imperial: true, metric: true }).addTo(map);
@@ -116,6 +161,29 @@ function kvTable(rows) {
   return html + "</table>";
 }
 
+/* Planar midpoint (by half the path length) of a [lon, lat] line —
+   where the permanent section-name label sits. */
+function lineMidpoint(coords) {
+  var seg = [], total = 0, i, d;
+  for (i = 1; i < coords.length; i++) {
+    var dx = (coords[i][0] - coords[i - 1][0]) *
+      Math.cos(coords[i][1] * Math.PI / 180);
+    var dy = coords[i][1] - coords[i - 1][1];
+    d = Math.sqrt(dx * dx + dy * dy);
+    seg.push(d); total += d;
+  }
+  var half = total / 2, acc = 0;
+  for (i = 0; i < seg.length; i++) {
+    if (seg[i] > 0 && acc + seg[i] >= half) {
+      var t = (half - acc) / seg[i];
+      return [coords[i][0] + (coords[i + 1][0] - coords[i][0]) * t,
+              coords[i][1] + (coords[i + 1][1] - coords[i][1]) * t];
+    }
+    acc += seg[i];
+  }
+  return coords[Math.floor(coords.length / 2)];
+}
+
 function trailPopup(f) {
   var p = f.properties;
   var title = esc(p.seg_name) || "North Country Trail";
@@ -140,7 +208,10 @@ function parcelPopup(f) {
     ["Acres", p.acres],
     ["Trail corridor", p.corridor === "crossed"
       ? "Trail crosses this parcel" : "Adjoins a crossed parcel"],
-  ]) + "<p><em>Owner information is not shown on this map.</em></p>";
+    ["Owner", p.owner],
+    ["Owner address", p.owner_address],
+  ]) + "<p><em>Owner as published in the county parcel records " +
+    "(public record).</em></p>";
 }
 
 function accessPopup(f) {
@@ -169,14 +240,16 @@ function assetPopup(f) {
   ]);
 }
 
-/* Segment popups show section identity, lengths and access only.
-   Adopter names are not in the site copy at all (see the header
-   privacy note) — "Adopted" is all the public map says. */
+/* Segment popups show section identity, lengths, access, and the
+   PLACEHOLDER adopter names from the site copy ("Test adopter N")
+   — real adopter names are never in the site data (see the header
+   privacy note). */
 function stretchPopup(f) {
   var p = f.properties;
   var yn = function (b) { return b ? "Yes" : "No crossing recorded"; };
   return "<h3>" + (esc(p.name) || "Chapter section") + "</h3>" + kvTable([
     ["Status", p.has_adopter ? "Adopted" : "Not adopted"],
+    ["Adopted by", p.adopter_display ? p.adopter_display.join(", ") : null],
     ["Chapter tracker section", p.tracker_section],
     ["Length (on the official line)",
       p.length_mi != null ? p.length_mi + " mi" : null],
@@ -255,12 +328,81 @@ var LAYERS = [
   },
   {
     id: "stretches", label: "Adopted sections",
-    file: "data/stretches.geojson", onByDefault: true,
+    file: "data/stretches.geojson", onByDefault: false,
     build: function (gj) {
-      return L.geoJSON(gj, {
+      var lines = L.geoJSON(gj, {
         style: STRETCH_STYLE,
         onEachFeature: function (f, l) { l.bindPopup(stretchPopup(f)); },
       });
+      /* Permanent section-name labels at each stretch's midpoint,
+         plus the section-boundary markers (separate layer def,
+         shown/hidden with this toggle — see syncBoundaries). */
+      var labels = L.layerGroup();
+      gj.features.forEach(function (f) {
+        var coords = f.geometry.type === "MultiLineString"
+          ? f.geometry.coordinates[0] : f.geometry.coordinates;
+        if (!coords || coords.length < 2 || !f.properties.name) return;
+        var mid = lineMidpoint(coords);
+        labels.addLayer(L.marker([mid[1], mid[0]], {
+          interactive: false, keyboard: false,
+          icon: L.divIcon({
+            className: "map-label section-label", iconSize: [0, 0],
+            html: "<span>" + esc(f.properties.name) + "</span>",
+          }),
+        }));
+      });
+      var group = L.layerGroup([lines, labels]);
+      group.bringToFront = function () { lines.bringToFront(); };
+      return group;
+    },
+  },
+  {
+    /* Boundary markers ride with the Adopted sections toggle (no
+       checkbox of their own): they delineate the adopted sections,
+       so they appear when the sections do. Chapter termini are the
+       separate "termini" layer below and stay on independently. */
+    id: "boundaries", label: "Section boundaries",
+    file: "data/boundaries.geojson", onByDefault: false,
+    hiddenToggle: true,
+    build: function (gj) {
+      return L.geoJSON(gj, {
+        filter: function (f) { return !f.properties.chapter_end; },
+        pointToLayer: function (f, latlng) {
+          return L.marker(latlng, {
+            interactive: false, keyboard: false,
+            icon: L.divIcon({
+              className: "map-label boundary-label", iconSize: [0, 0],
+              html: "<i></i><span>" + esc(f.properties.name) + "</span>",
+            }),
+          });
+        },
+      });
+    },
+  },
+  {
+    id: "termini", label: "Chapter ends (Itasca Moraine west & east)",
+    file: "data/boundaries.geojson", onByDefault: true,
+    build: function (gj) {
+      var ends = gj.features.filter(function (f) {
+        return f.properties.chapter_end;
+      });
+      ends.sort(function (a, b) {
+        return a.geometry.coordinates[0] - b.geometry.coordinates[0];
+      });
+      var group = L.layerGroup();
+      ends.forEach(function (f, i) {
+        var c = f.geometry.coordinates;
+        var which = i === 0 ? "west end"
+          : (i === ends.length - 1 ? "east end" : "end");
+        group.addLayer(L.marker([c[1], c[0]], {
+          interactive: false, keyboard: false,
+          icon: L.divIcon({
+            className: "map-label terminus-label", iconSize: [0, 0],
+            html: "<i></i><span>Itasca Moraine — " + which + "</span>",
+          }),
+        }));
+      });
+      return group;
     },
   },
   {
@@ -281,8 +423,8 @@ var LAYERS = [
     },
   },
   {
-    id: "parcels", label: "Parcels (working view — no owner names)",
-    file: "data/parcels.geojson", onByDefault: true,
+    id: "parcels", label: "Parcels (owner names — public record)",
+    file: "data/parcels.geojson", onByDefault: false,
     build: function (gj) {
       return L.geoJSON(gj, {
         style: parcelStyle,
@@ -368,11 +510,12 @@ LAYERS.forEach(function (def) {
   box.checked = def.onByDefault;
   label.appendChild(box);
   label.appendChild(document.createTextNode(def.label));
-  togglesEl.appendChild(label);
+  if (!def.hiddenToggle) togglesEl.appendChild(label);
   def.box = box;
   box.addEventListener("change", function () {
     if (box.checked) { ensureLayer(def, true); }
     else if (def.layer) { map.removeLayer(def.layer); }
+    if (def.id === "stretches") syncBoundaries();
   });
   if (def.onByDefault) ensureLayer(def, false);
 });
@@ -398,6 +541,7 @@ var requestedView = null;
       ensureLayer(def, false);
     }
   });
+  syncBoundaries();
 })();
 
 function ensureLayer(def, announce) {
@@ -450,6 +594,20 @@ function layerById(id) {
   }
   return null;
 }
+
+/* Section-boundary markers delineate the ADOPTED sections, so they
+   follow that layer's toggle (boundaries has no checkbox of its
+   own). The chapter termini are independent and stay on. */
+function syncBoundaries() {
+  var s = layerById("stretches"), b = layerById("boundaries");
+  if (!s || !b) return;
+  /* Mirror the sections state onto the boundaries def's (hidden)
+     checkbox so ensureLayer's add-if-checked logic adds/removes it
+     exactly like a user-visible layer. */
+  b.box.checked = !!(s.box && s.box.checked);
+  if (b.box.checked) { ensureLayer(b, false); }
+  else if (b.layer) { map.removeLayer(b.layer); }
+}
 map.on("layeradd", function () {
   ["trail", "stretches", "gaps", "accesspoints"].forEach(function (id) {
     var d = layerById(id);
@@ -477,8 +635,12 @@ map.on("layeradd", function () {
   add(line(CHAPTER_COLORS.LLC), "Laurentian Lakes Chapter — off-road");
   add(line(CHAPTER_COLORS.LLC, true), "Laurentian Lakes Chapter — on-road");
   add("", "<strong>Chapter sections</strong>");
-  add(line("#e08214"), "Adopted section");
+  add(line("#e08214"), "Adopted section (name labelled on the line)");
   add(line("#d7301f", true), "Unadopted gap — unclaimed");
+  add("<span class='swatch pin dark'></span>",
+    "Section boundary (named; shows with Adopted sections)");
+  add("<span class='swatch pin terminus'></span>",
+    "Chapter end — Itasca Moraine terminus");
   add("<span class='swatch pin' style='background:#0570b0'></span>",
       "Access point (trail crossing)");
   add("<span class='swatch pin' style='background:#333333'></span>",
@@ -497,4 +659,30 @@ map.on("layeradd", function () {
   add("<span class='swatch pin' style='background:#e6550d'></span>",
       "Asset pin (photo inventory)");
   el.innerHTML = rows.join("");
+})();
+
+/* ---------------------------------------------------------- corner UI
+   The panel's reference material (data sources + legend) lives
+   behind two buttons fixed over the map's bottom-left corner, above
+   the scale control; the Leaflet attribution (bottom-right) is
+   separate and stays visible. Cards start closed, toggle
+   independently, and close on a second click. */
+(function cornerUi() {
+  var ui = document.getElementById("corner-ui");
+  if (!ui) return;
+  L.DomEvent.disableClickPropagation(ui);
+  L.DomEvent.disableScrollPropagation(ui);
+  function wire(btnId, cardId) {
+    var btn = document.getElementById(btnId);
+    var card = document.getElementById(cardId);
+    if (!btn || !card) return;
+    btn.addEventListener("click", function () {
+      var open = card.hidden;
+      card.hidden = !open;
+      btn.setAttribute("aria-pressed", open ? "true" : "false");
+      btn.classList.toggle("active", open);
+    });
+  }
+  wire("btn-sources", "sources-card");
+  wire("btn-legend", "legend-card");
 })();
