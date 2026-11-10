@@ -148,15 +148,12 @@ GetMap responses over the chapter's extent.
   of Natural Resources / MnGeo). Wired via `L.tileLayer.wms`,
   non-transparent base. Attribution: "Shaded relief (LiDAR
   hillshade): MnGeo / Minnesota DNR".
-- **Aerial — MN spring imagery (MnGeo)** — same WMS service, layer
-  `nw14` ("2014 color NW 50 cm"): Spring Aerial Imagery Program
-  spring 2013–14 leaf-off colour photography, 50 cm, covering NW
-  Minnesota (Becker, Cass, Clearwater, Hubbard and neighbours).
-  Attribution: "Spring aerial imagery 2013–14: MnGeo / Minnesota
-  DNR".
-- **Shaded relief (USGS)** — The National Map (USGS),
-  `https://basemap.nationalmap.gov/arcgis/rest/services/USGSShadedReliefOnly/MapServer/tile/{z}/{y}/{x}`.
-  Attribution: "Shaded relief: USGS, The National Map".
+- **Topo (USGS 1:24k)** — The National Map (USGS),
+  `https://basemap.nationalmap.gov/arcgis/rest/services/USGSTopo/MapServer/tile/{z}/{y}/{x}`:
+  the USGS topographic base built from the 1:24,000 quadrangle
+  series. Added Nov 10, 2026 (v3); sample tile over the chapter
+  verified live the same day. Attribution: "Topo: USGS, The
+  National Map".
 - **Aerial — USGS NAIP** — The National Map (USGS),
   `https://basemap.nationalmap.gov/arcgis/rest/services/USGSImageryOnly/MapServer/tile/{z}/{y}/{x}`
   (NAIP-based imagery). Attribution: "Aerial imagery: USGS, The
@@ -165,6 +162,14 @@ GetMap responses over the chapter's extent.
   `https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}`.
   Attribution: "Aerial imagery: Esri, Maxar, Earthstar
   Geographics".
+
+Removed bases (v3, Nov 10, 2026, Paul's calls): **Shaded relief
+(USGS)** — The National Map `USGSShadedReliefOnly` service; cut as
+poor data next to the 1 m LiDAR hillshade. **Aerial — MN spring
+imagery (MnGeo)** — the WMS `nw14` layer above ("2014 color NW
+50 cm", Spring Aerial Imagery Program 2013–14 leaf-off, 50 cm);
+the service answers, but the photography shows nothing useful over
+the chapter, so the base was cut.
 
 ### Chapter data (not external)
 

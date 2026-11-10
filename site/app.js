@@ -37,27 +37,25 @@ var topo = L.tileLayer("https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png", {
 
 /* Shaded relief + aerial base layers (v2). Endpoints verified live
    2026-11-10 (sample tiles / WMS GetMap fetched — see SOURCES.md).
-   The two MnGeo layers come from the Minnesota Geospatial Image
+   The MnGeo hillshade comes from the Minnesota Geospatial Image
    Service (WMS, Web Mercator endpoint): "hillshd" is the statewide
-   hillshade derived from 1 m LiDAR; "nw14" is the Spring Aerial
-   Imagery Program's 2013–14 leaf-off colour photography of NW
-   Minnesota (50 cm), which covers the chapter's counties. */
+   hillshade derived from 1 m LiDAR.
+   v3 (Nov 10, Paul's calls): the USGS shaded-relief base was cut
+   ("shit data" next to the 1 m LiDAR hillshade), the MnGeo spring
+   aerial (nw14) was cut (shows nothing useful over the chapter),
+   and the USGS Topo base was added — The National Map's topo,
+   built from the 1:24,000 quadrangle series. */
 var MN_WMS = "https://imageserver.gisdata.mn.gov/cgi-bin/wmswm?";
 var mnHillshade = L.tileLayer.wms(MN_WMS, {
   layers: "hillshd", format: "image/jpeg", transparent: false,
   version: "1.1.1",
   attribution: "Shaded relief (LiDAR hillshade): MnGeo / Minnesota DNR",
 });
-var mnSpring = L.tileLayer.wms(MN_WMS, {
-  layers: "nw14", format: "image/jpeg", transparent: false,
-  version: "1.1.1",
-  attribution: "Spring aerial imagery 2013–14: MnGeo / Minnesota DNR",
-});
-var usgsRelief = L.tileLayer(
+var usgsTopo = L.tileLayer(
   "https://basemap.nationalmap.gov/arcgis/rest/services/" +
-    "USGSShadedReliefOnly/MapServer/tile/{z}/{y}/{x}", {
+    "USGSTopo/MapServer/tile/{z}/{y}/{x}", {
     maxZoom: 16,
-    attribution: "Shaded relief: USGS, The National Map",
+    attribution: "Topo: USGS, The National Map",
   });
 var usgsImagery = L.tileLayer(
   "https://basemap.nationalmap.gov/arcgis/rest/services/" +
@@ -76,11 +74,10 @@ L.control.layers(
   {
     "OpenStreetMap": osm,
     "Topo (OpenTopoMap)": topo,
+    "Topo (USGS 1:24k)": usgsTopo,
     "Shaded relief (MN LiDAR)": mnHillshade,
-    "Shaded relief (USGS)": usgsRelief,
     "Aerial — USGS (NAIP)": usgsImagery,
     "Aerial — Esri World Imagery": esriImagery,
-    "Aerial — MN spring 2013–14 (MnGeo)": mnSpring,
   }, null,
   { position: "topright" }
 ).addTo(map);
@@ -121,18 +118,21 @@ function trailStyle(f) {
   };
 }
 
+/* Access lines drawn THIN (Paul, Nov 10, 2026): they're context for
+   reaching the trail, not the subject — hairlines that sit quietly
+   under the trail line. */
 var ACCESS_STYLES = {
-  state_forest_road:     { color: "#8c510a", weight: 2,   label: "State forest road" },
-  state_park_trail_or_road: { color: "#35978f", weight: 2, label: "State park trail / road" },
-  ohv_trail:             { color: "#d7301f", weight: 2,   label: "OHV / ATV-UTV trail" },
-  state_trail:           { color: "#2c7fb8", weight: 2.5, label: "State trail" },
-  snowmobile_trail:      { color: "#8856a7", weight: 1.5, dashArray: "2 5", label: "Snowmobile trail" },
-  hunter_walking_trail:  { color: "#31a354", weight: 1.5, dashArray: "8 4", label: "Hunter walking trail" },
+  state_forest_road:     { color: "#8c510a", weight: 1,   label: "State forest road" },
+  state_park_trail_or_road: { color: "#35978f", weight: 1, label: "State park trail / road" },
+  ohv_trail:             { color: "#d7301f", weight: 1,   label: "OHV / ATV-UTV trail" },
+  state_trail:           { color: "#2c7fb8", weight: 1.25, label: "State trail" },
+  snowmobile_trail:      { color: "#8856a7", weight: 0.75, dashArray: "2 5", label: "Snowmobile trail" },
+  hunter_walking_trail:  { color: "#31a354", weight: 0.75, dashArray: "8 4", label: "Hunter walking trail" },
 };
 
 function accessStyle(f) {
   var s = ACCESS_STYLES[f.properties.source_type] ||
-    { color: "#666666", weight: 1.5 };
+    { color: "#666666", weight: 1 };
   return { color: s.color, weight: s.weight, opacity: 0.75,
            dashArray: s.dashArray || null };
 }
@@ -237,6 +237,28 @@ function assetPopup(f) {
    PLACEHOLDER adopter names from the site copy ("Test adopter N")
    — real adopter names are never in the site data (see the header
    privacy note). */
+/* Hover card for a section (Paul, Nov 10, 2026: "when I mouse over
+   the segment name can you bring up information from the
+   spreadsheet?"). Content = the section's gazetteer record (the
+   tracker/spreadsheet fields, public-safe form), built by
+   gazPopupHtml once the index is loaded; before that, the stretch's
+   own popup content stands in. Interactive tooltips can't be
+   hovered themselves, so the card follows the cursor (sticky) and
+   dismisses on mouse-out; a click still opens the section's popup. */
+var sectionHoverTip = null;
+function sectionHoverHtml(feature, stretchProps) {
+  if (gazFeatures) {
+    var name = stretchProps && stretchProps.name;
+    for (var i = 0; i < gazFeatures.length; i++) {
+      var f = gazFeatures[i];
+      if (f.properties.kind === "Section" && f.properties.name === name) {
+        return gazPopupHtml(f);
+      }
+    }
+  }
+  return stretchPopup(feature);
+}
+
 function stretchPopup(f) {
   var p = f.properties;
   var yn = function (b) { return b ? "Yes" : "No crossing recorded"; };
@@ -285,23 +307,48 @@ function gapPopup(f) {
     ]) + (p.note ? "<p><em>" + esc(p.note) + "</em></p>" : "");
 }
 
-function accessPointPopup(f) {
-  var p = f.properties;
-  var s = ACCESS_STYLES[p.source_type];
-  var kindLabel = p.kind === "road" ? "Road crossing"
-    : (s ? s.label : "Trail crossing");
-  var forWhat = p.for_name
-    ? (p.for_type === "gap" ? "Gap " : "Section ") + p.for_name : null;
-  return "<h3>" + (esc(p.label) || kindLabel) + "</h3>" + kvTable([
-    ["Kind", kindLabel],
-    ["For", forWhat],
-    ["Position", p.position],
-    ["How", p.how === "near" ? "Passes near the end (no crossing)"
-                             : "Crosses the trail"],
-    ["Distance into section",
-      p.dist_from_start_mi != null ? p.dist_from_start_mi + " mi" : null],
-  ]);
+/* (The Access points layer was removed Nov 10, 2026 — Paul: "isn't
+   great. Let's get rid of it." The computed crossings live on in the
+   gazetteer as its Road/Trail crossing entries; the access-points
+   data file and its builder remain in the repo.) */
+
+/* Boundary tick bars scale with zoom (see the boundaries layer):
+   the group + item list live outside the layer def so layoutTicks()
+   can rebuild their geometry on every zoom change. Target: ~22 px
+   total on screen, floored at each tick's built length (140 m) so
+   zooming IN keeps the original geography. */
+var boundaryTickGroup = L.layerGroup();
+var boundaryTickItems = [];
+var terminusTickItems = [];
+function layoutTickSet(items, px) {
+  var z = map.getZoom();
+  var c = map.getCenter();
+  /* Web-Mercator metres per pixel at this latitude/zoom. */
+  var mpp = 156543.03392 * Math.cos(c.lat * Math.PI / 180) /
+            Math.pow(2, z);
+  items.forEach(function (it) {
+    var halfLen = Math.max(it.baseLen, (it.px || px) * mpp) / 2;
+    var ux = it.dir[0], uy = it.dir[1];
+    var ul = Math.sqrt(ux * ux + uy * uy) || 1;
+    ux /= ul; uy /= ul;
+    /* Metres → degrees at the tick's latitude (plate carrée is
+       close enough at these lengths). */
+    var latHalf = halfLen / 110540;
+    var lonHalf = halfLen /
+      (111320 * Math.cos(it.center.lat * Math.PI / 180));
+    var a = L.latLng(it.center.lat + uy * latHalf,
+                     it.center.lng + ux * lonHalf);
+    var b = L.latLng(it.center.lat - uy * latHalf,
+                     it.center.lng - ux * lonHalf);
+    it.casing.setLatLngs([a, b]);
+    it.core.setLatLngs([a, b]);
+  });
 }
+function layoutTicks() {
+  if (boundaryTickItems.length) layoutTickSet(boundaryTickItems, 22);
+  if (terminusTickItems.length) layoutTickSet(terminusTickItems, 56);
+}
+map.on("zoomend", layoutTicks);
 
 /* ------------------------------------------------------------ layers */
 /* Each layer: file under data/, builder, default-on flag. Files are
@@ -340,6 +387,31 @@ var LAYERS = [
               className: "section-name-label", interactive: false,
             });
           }
+          /* Hovering the section (its line or its name — canvas
+             paths and the name tooltip's anchor cover both) raises
+             the spreadsheet hover card. The gazetteer index loads
+             on first hover if it hasn't already. */
+          l.on("mouseover", function (e) {
+            var show = function () {
+              if (sectionHoverTip) {
+                map.closeTooltip(sectionHoverTip);
+                sectionHoverTip = null;
+              }
+              sectionHoverTip = L.tooltip({
+                sticky: true, direction: "top", offset: [0, -10],
+                className: "section-hover-card", opacity: 1,
+              }).setLatLng(e.latlng)
+                .setContent(sectionHoverHtml(f, f.properties));
+              map.openTooltip(sectionHoverTip);
+            };
+            if (gazFeatures) show(); else gazLoad(show);
+          });
+          l.on("mouseout", function () {
+            if (sectionHoverTip) {
+              map.closeTooltip(sectionHoverTip);
+              sectionHoverTip = null;
+            }
+          });
         },
       });
       var group = L.layerGroup([lines]);
@@ -356,27 +428,37 @@ var LAYERS = [
     file: "data/boundaries.geojson", onByDefault: false,
     hiddenToggle: true,
     build: function (gj) {
-      /* Each boundary is a short bar struck ACROSS the line —
-         a 140 m tick perpendicular to the trail's bearing at that
-         point (tick endpoints computed by the site-data build) —
-         with NO text: Paul's design corrections (2026-11-10):
-         bars, not dots, and nothing labelled at segment ends.
-         White casing under a dark core keeps the tick readable
-         over the amber/green lines; drawn on the shared canvas. */
-      var casing = [], core = [];
+      /* Each boundary is a bar struck ACROSS the line, perpendicular
+         to the trail's bearing at that point (tick endpoints computed
+         by the site-data build), with NO text: Paul's design
+         corrections (2026-11-10): bars, not dots, and nothing
+         labelled at segment ends. The bar's length SCALES WITH ZOOM
+         (Paul, Nov 10: "the bars need to be larger when zoomed out —
+         just big enough to see"): ~22 px on screen at any zoom,
+         never shorter than the built 140 m tick; geometry is rebuilt
+         on zoomend from each boundary's centre + tick direction.
+         White casing under a dark core keeps the tick readable over
+         the amber/green lines; drawn on the shared canvas. */
+      var items = [];
       gj.features.forEach(function (f) {
         if (f.properties.chapter_end || !f.properties.tick) return;
-        var ll = f.properties.tick.map(function (c) {
-          return L.latLng(c[1], c[0]);
-        });
-        casing.push(L.polyline(ll, { renderer: canvasFor(),
-          interactive: false, color: "#ffffff", weight: 5,
-          opacity: 0.9 }));
-        core.push(L.polyline(ll, { renderer: canvasFor(),
-          interactive: false, color: "#263238", weight: 3,
-          opacity: 1 }));
+        var t = f.properties.tick;
+        var casing = L.polyline([], { renderer: canvasFor(),
+          interactive: false, color: "#ffffff", weight: 6, opacity: 0.9 });
+        var core = L.polyline([], { renderer: canvasFor(),
+          interactive: false, color: "#263238", weight: 3.5, opacity: 1 });
+        items.push({ casing: casing, core: core, feature: f,
+          center: L.latLng(f.geometry.coordinates[1],
+                           f.geometry.coordinates[0]),
+          dir: [t[1][0] - t[0][0], t[1][1] - t[0][1]],
+          baseLen: map.distance(L.latLng(t[0][1], t[0][0]),
+                                L.latLng(t[1][1], t[1][0])) });
+        casing.addTo(boundaryTickGroup);
+        core.addTo(boundaryTickGroup);
       });
-      return L.layerGroup(casing.concat(core));
+      boundaryTickItems = items;
+      layoutTicks();
+      return boundaryTickGroup;
     },
   },
   {
@@ -390,28 +472,36 @@ var LAYERS = [
         return a.geometry.coordinates[0] - b.geometry.coordinates[0];
       });
       var group = L.layerGroup();
+      layoutTicks();
       ends.forEach(function (f, i) {
         var c = f.geometry.coordinates;
         var which = i === 0 ? "west end"
           : (i === ends.length - 1 ? "east end" : "end");
         /* The chapter's own ends get the same visual language as
-           the section boundaries, with more weight: the boundary
-           tick stretched to ~280 m, in chapter green with a white
-           casing, plus the terminus name (the chapter delineation
-           Paul asked for — section ends stay unlabelled, chapter
-           ends are labelled). */
+           the section boundaries, with more weight: the tick
+           stretched to ~56 px on screen (≈2.5× the section ticks,
+           floored at ~280 m), in chapter green with a white casing,
+           plus the terminus name (the chapter delineation Paul
+           asked for — section ends stay unlabelled, chapter ends
+           are labelled). Rebuilt on zoom like the section ticks. */
         if (f.properties.tick) {
           var t = f.properties.tick;
-          var mx = (t[0][0] + t[1][0]) / 2, my = (t[0][1] + t[1][1]) / 2;
-          var ext = t.map(function (p) {
-            return L.latLng(my + (p[1] - my) * 2, mx + (p[0] - mx) * 2);
+          var casing = L.polyline([], { renderer: canvasFor(),
+            interactive: false, color: "#ffffff", weight: 8,
+            opacity: 0.9 });
+          var core = L.polyline([], { renderer: canvasFor(),
+            interactive: false, color: "#1a9850", weight: 5,
+            opacity: 1 });
+          group.addLayer(casing);
+          group.addLayer(core);
+          terminusTickItems.push({
+            casing: casing, core: core,
+            center: L.latLng(c[1], c[0]),
+            dir: [t[1][0] - t[0][0], t[1][1] - t[0][1]],
+            baseLen: map.distance(L.latLng(t[0][1], t[0][0]),
+                                  L.latLng(t[1][1], t[1][0])) * 2,
+            px: 56,
           });
-          group.addLayer(L.polyline(ext, { renderer: canvasFor(),
-            interactive: false, color: "#ffffff", weight: 7,
-            opacity: 0.9 }));
-          group.addLayer(L.polyline(ext, { renderer: canvasFor(),
-            interactive: false, color: "#1a9850", weight: 4.5,
-            opacity: 1 }));
         }
         group.addLayer(L.marker([c[1], c[0]], {
           interactive: false, keyboard: false,
@@ -471,30 +561,16 @@ var LAYERS = [
     id: "roads", label: "Roads", file: "data/roads.geojson",
     onByDefault: false,
     build: function (gj) {
+      /* Darker + heavier than the v1–v2 styling (1 px at #999999):
+         the data was always there (5,902 MnDOT segments) but
+         effectively invisible against the base map (Paul, Nov 10,
+         2026: "doesn't seem to have any data"). */
       return L.geoJSON(gj, {
         renderer: canvasFor(),
-        style: { color: "#999999", weight: 1, opacity: 0.7 },
+        style: { color: "#616161", weight: 1.75, opacity: 0.85 },
         onEachFeature: function (f, l) {
           var html = roadPopup(f);
           if (html) l.bindPopup(html);
-        },
-      });
-    },
-  },
-  {
-    id: "accesspoints", label: "Access points (section crossings)",
-    file: "data/access-points.geojson", onByDefault: false,
-    build: function (gj) {
-      return L.geoJSON(gj, {
-        pointToLayer: function (f, latlng) {
-          var road = f.properties.kind === "road";
-          return L.circleMarker(latlng, {
-            radius: road ? 4 : 5, color: "#ffffff", weight: 1.5,
-            fillColor: road ? "#333333" : "#0570b0", fillOpacity: 0.95,
-          });
-        },
-        onEachFeature: function (f, l) {
-          l.bindPopup(accessPointPopup(f));
         },
       });
     },
@@ -648,10 +724,20 @@ function assertDrawOrder() {
   drawOrderQueued = true;
   requestAnimationFrame(function () {
     drawOrderQueued = false;
-    ["trail", "stretches", "gaps", "accesspoints"].forEach(function (id) {
+    /* Stacking, back → front: access context, roads, the official
+       trail line, the ADOPTED SECTIONS on top of the trail line
+       (Paul, Nov 10, 2026 — the amber highlight must read as lying
+       over the green), the gap, then the boundary ticks and chapter
+       ends uppermost so the bars stay visible across everything. */
+    ["access", "roads", "trail", "stretches", "gaps",
+     "boundaries", "termini"].forEach(function (id) {
       var d = layerById(id);
-      if (d && d.layer && map.hasLayer(d.layer) && d.layer.bringToFront) {
-        d.layer.bringToFront();
+      if (!d || !d.layer || !map.hasLayer(d.layer)) return;
+      if (d.layer.bringToFront) { d.layer.bringToFront(); return; }
+      if (d.layer.eachLayer) {
+        d.layer.eachLayer(function (l) {
+          if (l.bringToFront) l.bringToFront();
+        });
       }
     });
     /* Canvas and SVG share the overlay pane as sibling elements;

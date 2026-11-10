@@ -41,13 +41,13 @@ time their checkbox is switched on.
 |---|---|---|---|
 | Official trail line | `data/trail.geojson` | on | The official NCT depiction in the chapter extent, styled by chapter (Itasca Moraine green, Laurentian Lakes purple) and by kind (off-road solid, on-road dashed). Popup: chapter, type, certification, length, ownership, managing authority. |
 | Adopted sections | `data/stretches.geojson` | off | The chapter's adopted sections (from the adoption tracker joined onto the boundary-point overlay), drawn in amber over the official line, each with its name as a permanent tooltip floating **above** the line at mid-section. Popup: section name, status (adopted), **placeholder** adopted-by names, length measured on the official line, length in the chapter tracker, whether a crossing is recorded at each end (see Privacy for the placeholder rule). |
-| Section boundaries | `data/boundaries.geojson` | with sections | **No toggle of its own** — the boundary markers ride with the Adopted sections toggle: a short bar (140 m) struck **across** the line at every section start/end — perpendicular to the trail's bearing there, unlabelled, positioned on the stretch geometry endpoints (never at raw KMZ pin positions — one pin sits ~3.6 km off the line). The same file's two chapter termini are the separate layer below. |
-| Chapter ends (Itasca Moraine west & east) | `data/boundaries.geojson` | on | The boundary-bar language at chapter weight: a longer (~280 m) green bar across the line at each end, labelled "Itasca Moraine — west end" (chainage 0, at the GAP-W west end in Itasca State Park) and "Itasca Moraine — east end". Always available with the official line, independent of the sections toggle. |
+| Section boundaries | `data/boundaries.geojson` | with sections | **No toggle of its own** — the boundary markers ride with the Adopted sections toggle: a bar struck **across** the line at every section start/end — perpendicular to the trail's bearing there, unlabelled, positioned on the stretch geometry endpoints (never at raw KMZ pin positions — one pin sits ~3.6 km off the line). **The bar scales with zoom** (v3): ~22 px on screen at any zoom, floored at the built 140 m length, so it stays visible when zoomed out. The same file's two chapter termini are the separate layer below. |
+| Chapter ends (Itasca Moraine west & east) | `data/boundaries.geojson` | on | The boundary-bar language at chapter weight: a green bar across the line at each end (~56 px on screen, floored at ~280 m), labelled "Itasca Moraine — west end" (chainage 0, at the GAP-W west end in Itasca State Park) and "Itasca Moraine — east end". Always available with the official line, independent of the sections toggle. |
 | Unadopted gap (unclaimed) | `data/gaps.geojson` | on | Stretches of the depicted line no section covers, drawn bold dashed red — the recruiting layer. Currently one: GAP-W, 2.92 mi in Itasca State Park. Popup: length, land context, nearest access at each end, trails crossing it. |
 | Parcels | `data/parcels.geojson` | **UI-disabled** | **Built but UI-disabled as of Nov 10, 2026, pending a later re-enable** — the layer does not appear in the toggles, its legend swatches are removed, and nothing fetches `parcels.geojson` on load or toggle. The data, build logic, popup code and canvas rendering are all retained; re-enable by flipping `enabled: false` to `enabled: true` on the parcels entry in `app.js` (LAYERS). When enabled: trail-corridor parcels (crossed + adjoining ring), off by default. Popup: parcel ID, county, land class, acres, and the **owner name + mailing address as published in the county parcel records** (public record — see Privacy). 919 of the 1,038 site parcels carry a published owner; the rest (mostly public land) show no owner row. |
-| Access lines | `data/access.geojson` | off | MN DNR lines: state forest roads, state park trails/roads, OHV trails, state trails, snowmobile trails, hunter walking trails, styled by kind. |
-| Roads | `data/roads.geojson` | off | Road centerlines. Off by default: it is the visually busiest layer and the map opens faster without it. |
-| Access points (section crossings) | `data/access-points.geojson` | off | The computed crossing points where roads and DNR trails meet each section or the gap (111 points). Popup: name, kind, which section, position (start/mid/end), crossing vs near-approach. A crossing is a line on a map, not a drivable route — see the caution in `../docs/segment-gap-analysis.md` §5 before planning a mower run from it. |
+| Access lines | `data/access.geojson` | off | MN DNR lines: state forest roads, state park trails/roads, OHV trails, state trails, snowmobile trails, hunter walking trails, styled by kind — drawn thin (v3, ~1 px hairlines: context, not subject). |
+| Roads | `data/roads.geojson` | off | Road centerlines (5,902 MnDOT segments), drawn mid-grey at 1.75 px (v3 — the earlier 1 px #999999 styling was effectively invisible). Off by default: it is the visually busiest layer and the map opens faster without it. |
+| Access points (section crossings) | `data/access-points.geojson` | **removed** | **Layer removed Nov 10, 2026 (Paul's call)** — no toggle, nothing fetches the file. The computed crossings (111 points) remain available as the gazetteer's Road/Trail crossing entries (searchable via Find), and the data file + builder stay in the repo. The §5 caution in `../docs/segment-gap-analysis.md` still applies to the crossing data wherever it appears: a crossing is a line on a map, not a drivable route. |
 | Asset pins | `data/assets.geojson` | on | Photo-inventory pins. **This file does not exist yet** — until the first real photo batch runs, the layer simply shows empty. The pipeline writes `data/assets/assets.geojson` in the repo; copying it to `site/data/assets.geojson` publishes the pins. |
 
 So the map opens (default view) with just the official line, the
@@ -58,14 +58,25 @@ the Parcels row above).
 
 The URL hash also accepts `#view=lat,lon,zoom` to open at a
 particular view instead of fitting the whole trail (combinable with
-`#layers=`, e.g. `#layers=accesspoints&view=47.152,-95.195,13`).
+`#layers=`, e.g. `#layers=access,roads&view=47.152,-95.195,13`).
 
-Base maps (switcher, top right): OpenStreetMap and OpenTopoMap,
-plus — new in v2 — two shaded-relief bases (MnGeo's LiDAR-derived
-statewide hillshade; USGS The National Map shaded relief) and three
-aerial bases (USGS NAIP imagery; Esri World Imagery; MnGeo's
-Spring Aerial Imagery Program 2013–14 leaf-off photography of NW
-Minnesota). Providers, vintages and endpoints: `../SOURCES.md`.
+Base maps (switcher, top right): OpenStreetMap, OpenTopoMap, the
+**USGS Topo** base (The National Map, built from the 1:24,000
+quadrangle series — added in v3), MnGeo's LiDAR-derived statewide
+hillshade, and two aerial bases (USGS NAIP imagery; Esri World
+Imagery). Cut in v3 on Paul's calls: the USGS shaded-relief base
+(poor next to the 1 m LiDAR hillshade) and MnGeo's Spring Aerial
+Imagery Program photography (nw14 — nothing useful over the
+chapter). Providers, vintages and endpoints: `../SOURCES.md`.
+
+**Section hover card (v3):** hovering a section (its line or its
+floating name, sections layer on) raises a card with the section's
+spreadsheet record — the same public-safe gazetteer card the Find
+box opens (description, tracker section, NCT map refs and miles,
+both lengths, placeholder adopters/sawyer, 2026 maintenance, help
+requested, land, tracker comments, "What's here" contents). The
+card follows the cursor and dismisses on mouse-out; a click still
+opens the section's own popup.
 
 ## Gazetteer (the Find box)
 
