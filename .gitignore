@@ -25,6 +25,9 @@ data/parcels/*.geojson
 # Adopter-joined segment data carries adopter names.
 data/segments/segments.geojson
 data/segments/segment-stretches.geojson
+# Derived from the adopter-joined working data above (segment access
+# points carry adopter-section detail) — same working-view class.
+data/segments/access-points.geojson
 # The chapter's adoption tracker spreadsheet and the pristine
 # adopter-boundary KMZ as delivered.
 data/segments/*.xlsx
