@@ -1,0 +1,2081 @@
+{
+ "type": "FeatureCollection",
+ "metadata": {
+  "dataset": "NCTA public waypoint points, clipped to the chapter working extent, properties cleaned",
+  "source_service": "https://services2.arcgis.com/UfGVyqUm4GHa2zrj/arcgis/rest/services/nct_public/FeatureServer",
+  "source_layer_id": 1,
+  "source_layer_name": "Point Data - Public",
+  "pulled_utc_date": "2026-11-10",
+  "extent_wgs84": {
+   "min_lon": -95.6,
+   "max_lon": -94.3,
+   "min_lat": 46.7,
+   "max_lat": 47.35
+  },
+  "clip_method": "Envelope selection (object-id fetch, chunk-verified); point geometries kept whole",
+  "feature_count": 114,
+  "counts_by_type": {
+   "Camping": 36,
+   "POI": 29,
+   "Parking": 43,
+   "Shelter": 2,
+   "Water": 4
+  },
+  "mile_marker_name_hits": [],
+  "mile_marker_note": "Names scanned with /mile|marker|MP/i. Raw substring hits are all Camp-/Ramp-/Impoundment-type words; word-boundary hits (genuine mile markers) are listed in mile_marker_name_hits."
+ },
+ "features": [
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -95.231161,
+     47.168462
+    ]
+   },
+   "properties": {
+    "name": "BP1",
+    "type": "Camping",
+    "subtype": null,
+    "owner": "State",
+    "description": null,
+    "chapter": "ITM"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -95.184862,
+     47.176559
+    ]
+   },
+   "properties": {
+    "name": "BP10",
+    "type": "Camping",
+    "subtype": null,
+    "owner": "State",
+    "description": null,
+    "chapter": "ITM"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -95.178847,
+     47.181061
+    ]
+   },
+   "properties": {
+    "name": "BP11",
+    "type": "Camping",
+    "subtype": null,
+    "owner": "State",
+    "description": null,
+    "chapter": "ITM"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -95.231195,
+     47.168294
+    ]
+   },
+   "properties": {
+    "name": "BP2",
+    "type": "Camping",
+    "subtype": null,
+    "owner": "State",
+    "description": null,
+    "chapter": "ITM"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -95.219389,
+     47.148852
+    ]
+   },
+   "properties": {
+    "name": "BP3",
+    "type": "Camping",
+    "subtype": null,
+    "owner": "State",
+    "description": null,
+    "chapter": "ITM"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -95.219536,
+     47.148718
+    ]
+   },
+   "properties": {
+    "name": "BP4",
+    "type": "Camping",
+    "subtype": null,
+    "owner": "State",
+    "description": null,
+    "chapter": "ITM"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -95.195157,
+     47.163009
+    ]
+   },
+   "properties": {
+    "name": "BP5",
+    "type": "Camping",
+    "subtype": null,
+    "owner": "State",
+    "description": null,
+    "chapter": "ITM"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -95.181088,
+     47.174833
+    ]
+   },
+   "properties": {
+    "name": "BP7",
+    "type": "Camping",
+    "subtype": null,
+    "owner": "State",
+    "description": null,
+    "chapter": "ITM"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -95.181135,
+     47.17405
+    ]
+   },
+   "properties": {
+    "name": "BP8",
+    "type": "Camping",
+    "subtype": null,
+    "owner": "State",
+    "description": null,
+    "chapter": "ITM"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -95.180792,
+     47.173671
+    ]
+   },
+   "properties": {
+    "name": "BP9",
+    "type": "Camping",
+    "subtype": null,
+    "owner": "State",
+    "description": null,
+    "chapter": "ITM"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -94.834035,
+     47.1592
+    ]
+   },
+   "properties": {
+    "name": "Bass Lake Group Campsite",
+    "type": "Camping",
+    "subtype": null,
+    "owner": null,
+    "description": null,
+    "chapter": null
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -95.189788,
+     47.218636
+    ]
+   },
+   "properties": {
+    "name": "Bear Paw Campground",
+    "type": "Camping",
+    "subtype": null,
+    "owner": null,
+    "description": null,
+    "chapter": null
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -94.822409,
+     47.059426
+    ]
+   },
+   "properties": {
+    "name": "Camping",
+    "type": "Camping",
+    "subtype": "water",
+    "owner": null,
+    "description": null,
+    "chapter": null
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -95.088237,
+     47.145351
+    ]
+   },
+   "properties": {
+    "name": "Camping",
+    "type": "Camping",
+    "subtype": null,
+    "owner": null,
+    "description": null,
+    "chapter": null
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -94.514117,
+     46.994291
+    ]
+   },
+   "properties": {
+    "name": "Camping",
+    "type": "Camping",
+    "subtype": null,
+    "owner": null,
+    "description": null,
+    "chapter": null
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -94.841559,
+     47.156754
+    ]
+   },
+   "properties": {
+    "name": "Camping",
+    "type": "Camping",
+    "subtype": null,
+    "owner": null,
+    "description": null,
+    "chapter": "ITM"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -94.326602,
+     46.980975
+    ]
+   },
+   "properties": {
+    "name": "Camping",
+    "type": "Camping",
+    "subtype": null,
+    "owner": null,
+    "description": null,
+    "chapter": "ITM"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -95.561539,
+     46.934356
+    ]
+   },
+   "properties": {
+    "name": "Camping",
+    "type": "Camping",
+    "subtype": null,
+    "owner": null,
+    "description": null,
+    "chapter": "LLC"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -94.841169,
+     47.155584
+    ]
+   },
+   "properties": {
+    "name": "Camping (Fee)",
+    "type": "Camping",
+    "subtype": null,
+    "owner": null,
+    "description": null,
+    "chapter": "ITM"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -95.439402,
+     47.148824
+    ]
+   },
+   "properties": {
+    "name": "Campsite",
+    "type": "Camping",
+    "subtype": null,
+    "owner": null,
+    "description": null,
+    "chapter": null
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -95.227297,
+     47.192223
+    ]
+   },
+   "properties": {
+    "name": "Elk Group Campsite",
+    "type": "Camping",
+    "subtype": null,
+    "owner": "State",
+    "description": null,
+    "chapter": "ITM"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -95.469938,
+     47.048519
+    ]
+   },
+   "properties": {
+    "name": "Flooded Woods Campsite",
+    "type": "Camping",
+    "subtype": null,
+    "owner": null,
+    "description": null,
+    "chapter": null
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -95.336665,
+     47.15793
+    ]
+   },
+   "properties": {
+    "name": "Gardner Lake",
+    "type": "Camping",
+    "subtype": "water",
+    "owner": null,
+    "description": null,
+    "chapter": null
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -94.32687,
+     46.991119
+    ]
+   },
+   "properties": {
+    "name": "Goose Lake Campsite",
+    "type": "Camping",
+    "subtype": "water",
+    "owner": null,
+    "description": null,
+    "chapter": null
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -94.836596,
+     47.160393
+    ]
+   },
+   "properties": {
+    "name": "Gulch Lakes Campground",
+    "type": "Camping",
+    "subtype": null,
+    "owner": null,
+    "description": null,
+    "chapter": "ITM"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -94.42726,
+     47.004584
+    ]
+   },
+   "properties": {
+    "name": "Gut Lake",
+    "type": "Camping",
+    "subtype": null,
+    "owner": null,
+    "description": null,
+    "chapter": null
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -94.287346,
+     46.998735
+    ]
+   },
+   "properties": {
+    "name": "Hazel Lake Campsite",
+    "type": "Camping",
+    "subtype": null,
+    "owner": null,
+    "description": null,
+    "chapter": null
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -95.445679,
+     47.11355
+    ]
+   },
+   "properties": {
+    "name": "Horseshoe Lake Campsite",
+    "type": "Camping",
+    "subtype": null,
+    "owner": null,
+    "description": null,
+    "chapter": null
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -94.447863,
+     47.007381
+    ]
+   },
+   "properties": {
+    "name": "Hovde Lake",
+    "type": "Camping",
+    "subtype": "water",
+    "owner": null,
+    "description": null,
+    "chapter": null
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -95.17073,
+     47.151973
+    ]
+   },
+   "properties": {
+    "name": "Iron Corner Lake Campsite",
+    "type": "Camping",
+    "subtype": null,
+    "owner": "State",
+    "description": null,
+    "chapter": "ITM"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -94.360427,
+     47.002192
+    ]
+   },
+   "properties": {
+    "name": "Moccasin Lake",
+    "type": "Camping",
+    "subtype": "water",
+    "owner": null,
+    "description": null,
+    "chapter": null
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -95.283894,
+     47.17081
+    ]
+   },
+   "properties": {
+    "name": "No State Park Reservations Required",
+    "type": "Camping",
+    "subtype": null,
+    "owner": null,
+    "description": null,
+    "chapter": null
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -95.4123,
+     47.166169
+    ]
+   },
+   "properties": {
+    "name": "Old Headquarters Campsite",
+    "type": "Camping",
+    "subtype": null,
+    "owner": null,
+    "description": null,
+    "chapter": null
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -95.190536,
+     47.234546
+    ]
+   },
+   "properties": {
+    "name": "Pine Ridge Campground",
+    "type": "Camping",
+    "subtype": null,
+    "owner": null,
+    "description": null,
+    "chapter": null
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -94.629034,
+     47.038226
+    ]
+   },
+   "properties": {
+    "name": "Shingobee Campsite",
+    "type": "Camping",
+    "subtype": null,
+    "owner": null,
+    "description": null,
+    "chapter": null
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -94.701747,
+     47.07755
+    ]
+   },
+   "properties": {
+    "name": "Sprinkle Road Campsite",
+    "type": "Camping",
+    "subtype": null,
+    "owner": null,
+    "description": null,
+    "chapter": null
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -95.251669,
+     47.158673
+    ]
+   },
+   "properties": {
+    "name": "Bridge",
+    "type": "POI",
+    "subtype": null,
+    "owner": null,
+    "description": null,
+    "chapter": null
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -95.526769,
+     46.955622
+    ]
+   },
+   "properties": {
+    "name": "Bridge",
+    "type": "POI",
+    "subtype": null,
+    "owner": null,
+    "description": null,
+    "chapter": "LLC"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -94.643816,
+     47.035581
+    ]
+   },
+   "properties": {
+    "name": "Chalet",
+    "type": "POI",
+    "subtype": null,
+    "owner": null,
+    "description": null,
+    "chapter": "ITM"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -95.605451,
+     46.963042
+    ]
+   },
+   "properties": {
+    "name": "Chippewa Lake Picnic Area",
+    "type": "POI",
+    "subtype": "restrooms",
+    "owner": null,
+    "description": null,
+    "chapter": null
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -94.544718,
+     47.030092
+    ]
+   },
+   "properties": {
+    "name": "Cyphers Lake",
+    "type": "POI",
+    "subtype": null,
+    "owner": null,
+    "description": null,
+    "chapter": null
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -95.219202,
+     47.148768
+    ]
+   },
+   "properties": {
+    "name": "DeSoto Cabin Ruins",
+    "type": "POI",
+    "subtype": null,
+    "owner": null,
+    "description": null,
+    "chapter": null
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -95.254832,
+     47.145006
+    ]
+   },
+   "properties": {
+    "name": "Gate",
+    "type": "POI",
+    "subtype": null,
+    "owner": null,
+    "description": null,
+    "chapter": "LLC"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -94.427773,
+     47.003057
+    ]
+   },
+   "properties": {
+    "name": "Gut Lake",
+    "type": "POI",
+    "subtype": null,
+    "owner": null,
+    "description": null,
+    "chapter": null
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -94.628931,
+     47.037644
+    ]
+   },
+   "properties": {
+    "name": "Henry Jennings Crockett Memorial",
+    "type": "POI",
+    "subtype": null,
+    "owner": null,
+    "description": null,
+    "chapter": "ITM"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -95.140043,
+     47.151591
+    ]
+   },
+   "properties": {
+    "name": "Little Mantraip Lookout Tower",
+    "type": "POI",
+    "subtype": null,
+    "owner": null,
+    "description": null,
+    "chapter": null
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -95.211614,
+     47.239532
+    ]
+   },
+   "properties": {
+    "name": "Mary Gibbs Headwaters Center",
+    "type": "POI",
+    "subtype": null,
+    "owner": "State",
+    "description": null,
+    "chapter": null
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -94.836084,
+     47.082997
+    ]
+   },
+   "properties": {
+    "name": "Old Growth Pines",
+    "type": "POI",
+    "subtype": null,
+    "owner": null,
+    "description": null,
+    "chapter": null
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -94.820377,
+     47.055217
+    ]
+   },
+   "properties": {
+    "name": "Old Growth Pines",
+    "type": "POI",
+    "subtype": null,
+    "owner": null,
+    "description": null,
+    "chapter": null
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -95.196162,
+     47.229921
+    ]
+   },
+   "properties": {
+    "name": "Pioneer Cemetery",
+    "type": "POI",
+    "subtype": null,
+    "owner": null,
+    "description": null,
+    "chapter": null
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -95.137524,
+     47.149662
+    ]
+   },
+   "properties": {
+    "name": "Pipeline",
+    "type": "POI",
+    "subtype": null,
+    "owner": null,
+    "description": null,
+    "chapter": null
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -94.733732,
+     47.065681
+    ]
+   },
+   "properties": {
+    "name": "Powerline",
+    "type": "POI",
+    "subtype": null,
+    "owner": null,
+    "description": null,
+    "chapter": null
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -94.840515,
+     47.157467
+    ]
+   },
+   "properties": {
+    "name": "Restroom",
+    "type": "POI",
+    "subtype": null,
+    "owner": null,
+    "description": null,
+    "chapter": "ITM"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -94.841802,
+     47.16129
+    ]
+   },
+   "properties": {
+    "name": "Restroom",
+    "type": "POI",
+    "subtype": null,
+    "owner": null,
+    "description": null,
+    "chapter": null
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -95.009987,
+     47.178759
+    ]
+   },
+   "properties": {
+    "name": "Schoolcraft River Valley Bridge",
+    "type": "POI",
+    "subtype": null,
+    "owner": null,
+    "description": null,
+    "chapter": null
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -94.640865,
+     47.037669
+    ]
+   },
+   "properties": {
+    "name": "Sledding Hill",
+    "type": "POI",
+    "subtype": null,
+    "owner": null,
+    "description": null,
+    "chapter": "ITM"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -94.361459,
+     47.00369
+    ]
+   },
+   "properties": {
+    "name": "Spur to Moccasin Lake Campsite",
+    "type": "POI",
+    "subtype": null,
+    "owner": null,
+    "description": null,
+    "chapter": null
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -94.819012,
+     47.060023
+    ]
+   },
+   "properties": {
+    "name": "Spur to Waboose Lake Campsite",
+    "type": "POI",
+    "subtype": null,
+    "owner": null,
+    "description": null,
+    "chapter": null
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -95.447839,
+     47.113661
+    ]
+   },
+   "properties": {
+    "name": "Spurt to Horse Shoe Lake Campsite",
+    "type": "POI",
+    "subtype": null,
+    "owner": null,
+    "description": null,
+    "chapter": null
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -95.562641,
+     46.934341
+    ]
+   },
+   "properties": {
+    "name": "Tamarac National Wildlife Refuge",
+    "type": "POI",
+    "subtype": null,
+    "owner": null,
+    "description": null,
+    "chapter": null
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -94.853918,
+     47.096372
+    ]
+   },
+   "properties": {
+    "name": "Thorpe Lookout Tower",
+    "type": "POI",
+    "subtype": null,
+    "owner": null,
+    "description": null,
+    "chapter": null
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -95.324267,
+     47.167393
+    ]
+   },
+   "properties": {
+    "name": "Tim Don Del Hill Vista",
+    "type": "POI",
+    "subtype": null,
+    "owner": null,
+    "description": null,
+    "chapter": null
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -95.195322,
+     47.226032
+    ]
+   },
+   "properties": {
+    "name": "University of Minnesota Forestry School",
+    "type": "POI",
+    "subtype": null,
+    "owner": null,
+    "description": null,
+    "chapter": null
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -94.739824,
+     47.060207
+    ]
+   },
+   "properties": {
+    "name": "Vista",
+    "type": "POI",
+    "subtype": null,
+    "owner": null,
+    "description": null,
+    "chapter": null
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -95.543436,
+     46.946344
+    ]
+   },
+   "properties": {
+    "name": "Vista",
+    "type": "POI",
+    "subtype": null,
+    "owner": null,
+    "description": null,
+    "chapter": "LLC"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -95.562927,
+     46.934501
+    ]
+   },
+   "properties": {
+    "name": "400th Ave. Trailhead",
+    "type": "Parking",
+    "subtype": null,
+    "owner": null,
+    "description": null,
+    "chapter": null
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -94.812421,
+     47.062025
+    ]
+   },
+   "properties": {
+    "name": "Akeley Cutoff Trailhead",
+    "type": "Parking",
+    "subtype": null,
+    "owner": null,
+    "description": null,
+    "chapter": null
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -95.381913,
+     47.165604
+    ]
+   },
+   "properties": {
+    "name": "Anchor Hill Rd",
+    "type": "Parking",
+    "subtype": null,
+    "owner": null,
+    "description": null,
+    "chapter": null
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -95.310124,
+     47.172589
+    ]
+   },
+   "properties": {
+    "name": "Anchor Matson Trailhead",
+    "type": "Parking",
+    "subtype": null,
+    "owner": null,
+    "description": null,
+    "chapter": null
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -95.617429,
+     46.948896
+    ]
+   },
+   "properties": {
+    "name": "Blackbird Wildlife Trail",
+    "type": "Parking",
+    "subtype": null,
+    "owner": null,
+    "description": null,
+    "chapter": null
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -95.414077,
+     47.166
+    ]
+   },
+   "properties": {
+    "name": "CR-39 / Old Headquarters Trailhead",
+    "type": "Parking",
+    "subtype": null,
+    "owner": null,
+    "description": null,
+    "chapter": null
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -94.981208,
+     47.166358
+    ]
+   },
+   "properties": {
+    "name": "CR-4 / Halverson Road Trailhead",
+    "type": "Parking",
+    "subtype": null,
+    "owner": null,
+    "description": null,
+    "chapter": null
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -94.565622,
+     47.015439
+    ]
+   },
+   "properties": {
+    "name": "CR-50",
+    "type": "Parking",
+    "subtype": null,
+    "owner": "Federal",
+    "description": null,
+    "chapter": "ITM"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -94.574765,
+     47.022566
+    ]
+   },
+   "properties": {
+    "name": "CR-50",
+    "type": "Parking",
+    "subtype": null,
+    "owner": "Federal",
+    "description": null,
+    "chapter": "ITM"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -95.467039,
+     47.031187
+    ]
+   },
+   "properties": {
+    "name": "Camp 6 Rd Trailhead",
+    "type": "Parking",
+    "subtype": null,
+    "owner": null,
+    "description": null,
+    "chapter": null
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -94.650439,
+     47.056205
+    ]
+   },
+   "properties": {
+    "name": "Co. 12",
+    "type": "Parking",
+    "subtype": null,
+    "owner": null,
+    "description": null,
+    "chapter": null
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -94.595685,
+     47.029111
+    ]
+   },
+   "properties": {
+    "name": "Co. 50",
+    "type": "Parking",
+    "subtype": null,
+    "owner": null,
+    "description": null,
+    "chapter": null
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -94.877072,
+     47.156883
+    ]
+   },
+   "properties": {
+    "name": "County Road 91",
+    "type": "Parking",
+    "subtype": null,
+    "owner": null,
+    "description": null,
+    "chapter": null
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -94.514703,
+     47.000371
+    ]
+   },
+   "properties": {
+    "name": "FR2107 (Woodtick Trail)",
+    "type": "Parking",
+    "subtype": null,
+    "owner": null,
+    "description": null,
+    "chapter": null
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -94.487066,
+     46.996601
+    ]
+   },
+   "properties": {
+    "name": "FR2107 (Woodtick Trail)",
+    "type": "Parking",
+    "subtype": null,
+    "owner": null,
+    "description": null,
+    "chapter": null
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -94.435332,
+     47.008164
+    ]
+   },
+   "properties": {
+    "name": "FR3790",
+    "type": "Parking",
+    "subtype": null,
+    "owner": null,
+    "description": null,
+    "chapter": null
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -95.490435,
+     46.984365
+    ]
+   },
+   "properties": {
+    "name": "Greenwater Trailhead - Co Hwy 35",
+    "type": "Parking",
+    "subtype": null,
+    "owner": null,
+    "description": null,
+    "chapter": null
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -95.437133,
+     47.143895
+    ]
+   },
+   "properties": {
+    "name": "Hwy 113 Trailhead",
+    "type": "Parking",
+    "subtype": null,
+    "owner": null,
+    "description": null,
+    "chapter": null
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -94.731923,
+     47.069555
+    ]
+   },
+   "properties": {
+    "name": "Hwy 64",
+    "type": "Parking",
+    "subtype": null,
+    "owner": null,
+    "description": null,
+    "chapter": null
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -95.261219,
+     47.137815
+    ]
+   },
+   "properties": {
+    "name": "Hwy113 Trailhead",
+    "type": "Parking",
+    "subtype": null,
+    "owner": null,
+    "description": null,
+    "chapter": "ITM"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -94.812431,
+     47.050166
+    ]
+   },
+   "properties": {
+    "name": "Ingress Forest Rd. Parking Area",
+    "type": "Parking",
+    "subtype": null,
+    "owner": null,
+    "description": null,
+    "chapter": null
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -94.535697,
+     47.016199
+    ]
+   },
+   "properties": {
+    "name": "Lake Erin",
+    "type": "Parking",
+    "subtype": null,
+    "owner": null,
+    "description": null,
+    "chapter": null
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -94.841332,
+     47.161814
+    ]
+   },
+   "properties": {
+    "name": "Lake Twentyone Day Use Area",
+    "type": "Parking",
+    "subtype": null,
+    "owner": null,
+    "description": null,
+    "chapter": "ITM"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -95.072137,
+     47.14449
+    ]
+   },
+   "properties": {
+    "name": "NCT Parking",
+    "type": "Parking",
+    "subtype": null,
+    "owner": null,
+    "description": "0.2 mi south of NCT",
+    "chapter": null
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -94.840361,
+     47.157741
+    ]
+   },
+   "properties": {
+    "name": "Nelson Lake Public Access",
+    "type": "Parking",
+    "subtype": null,
+    "owner": null,
+    "description": null,
+    "chapter": "ITM"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -95.15108,
+     47.154254
+    ]
+   },
+   "properties": {
+    "name": "Parking",
+    "type": "Parking",
+    "subtype": null,
+    "owner": null,
+    "description": null,
+    "chapter": null
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -94.936012,
+     47.145601
+    ]
+   },
+   "properties": {
+    "name": "Parking",
+    "type": "Parking",
+    "subtype": null,
+    "owner": null,
+    "description": "100 yds south of trail",
+    "chapter": null
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -95.451265,
+     47.088434
+    ]
+   },
+   "properties": {
+    "name": "Parking",
+    "type": "Parking",
+    "subtype": null,
+    "owner": null,
+    "description": null,
+    "chapter": null
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -94.636098,
+     47.042124
+    ]
+   },
+   "properties": {
+    "name": "Parking",
+    "type": "Parking",
+    "subtype": null,
+    "owner": null,
+    "description": null,
+    "chapter": null
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -95.497254,
+     46.969787
+    ]
+   },
+   "properties": {
+    "name": "Parking",
+    "type": "Parking",
+    "subtype": null,
+    "owner": null,
+    "description": null,
+    "chapter": null
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -94.296462,
+     46.981981
+    ]
+   },
+   "properties": {
+    "name": "Parking",
+    "type": "Parking",
+    "subtype": null,
+    "owner": null,
+    "description": null,
+    "chapter": "ITM"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -94.374755,
+     47.003893
+    ]
+   },
+   "properties": {
+    "name": "Parking",
+    "type": "Parking",
+    "subtype": null,
+    "owner": "Federal",
+    "description": null,
+    "chapter": null
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -94.303222,
+     46.990598
+    ]
+   },
+   "properties": {
+    "name": "Parking",
+    "type": "Parking",
+    "subtype": null,
+    "owner": null,
+    "description": "Plowed in Winter",
+    "chapter": null
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -95.575986,
+     46.917002
+    ]
+   },
+   "properties": {
+    "name": "Parking",
+    "type": "Parking",
+    "subtype": null,
+    "owner": "Federal",
+    "description": null,
+    "chapter": "LLC"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -95.211893,
+     47.138217
+    ]
+   },
+   "properties": {
+    "name": "Parking",
+    "type": "Parking",
+    "subtype": null,
+    "owner": null,
+    "description": null,
+    "chapter": "ITM"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -94.573034,
+     47.020462
+    ]
+   },
+   "properties": {
+    "name": "Parking",
+    "type": "Parking",
+    "subtype": null,
+    "owner": "Federal",
+    "description": null,
+    "chapter": "ITM"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -94.704999,
+     47.073969
+    ]
+   },
+   "properties": {
+    "name": "Parkway Forest Rd. Parking Area",
+    "type": "Parking",
+    "subtype": null,
+    "owner": null,
+    "description": null,
+    "chapter": "ITM"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -94.652463,
+     47.03122
+    ]
+   },
+   "properties": {
+    "name": "Picnic Area Parking",
+    "type": "Parking",
+    "subtype": null,
+    "owner": null,
+    "description": null,
+    "chapter": null
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -94.64678,
+     47.035883
+    ]
+   },
+   "properties": {
+    "name": "Shingobee Recreation Area",
+    "type": "Parking",
+    "subtype": null,
+    "owner": null,
+    "description": null,
+    "chapter": null
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -94.850842,
+     47.10821
+    ]
+   },
+   "properties": {
+    "name": "Steamboat Forest Rd.",
+    "type": "Parking",
+    "subtype": null,
+    "owner": null,
+    "description": null,
+    "chapter": null
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -94.832717,
+     47.058122
+    ]
+   },
+   "properties": {
+    "name": "Waboose Public Access Trailhead",
+    "type": "Parking",
+    "subtype": null,
+    "owner": null,
+    "description": null,
+    "chapter": null
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -95.203487,
+     47.189991
+    ]
+   },
+   "properties": {
+    "name": "Wilderness Drive",
+    "type": "Parking",
+    "subtype": null,
+    "owner": null,
+    "description": null,
+    "chapter": null
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -94.308344,
+     46.996078
+    ]
+   },
+   "properties": {
+    "name": "Woodtick Trail 4th Crossing Trailhead",
+    "type": "Parking",
+    "subtype": null,
+    "owner": null,
+    "description": null,
+    "chapter": null
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -94.958615,
+     47.155305
+    ]
+   },
+   "properties": {
+    "name": "Amikwik Shelter/Campsite",
+    "type": "Shelter",
+    "subtype": "tenting",
+    "owner": null,
+    "description": null,
+    "chapter": "ITM"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -94.544479,
+     47.030867
+    ]
+   },
+   "properties": {
+    "name": "Cyphers Lake  Warming Shelter (no overnight)",
+    "type": "Shelter",
+    "subtype": null,
+    "owner": "Federal",
+    "description": null,
+    "chapter": "ITM"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -94.623921,
+     47.037744
+    ]
+   },
+   "properties": {
+    "name": "Anoway Bridge",
+    "type": "Water",
+    "subtype": "bridge",
+    "owner": null,
+    "description": null,
+    "chapter": "ITM"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -95.61037,
+     46.952021
+    ]
+   },
+   "properties": {
+    "name": "Blackbird Lake Impoundment",
+    "type": "Water",
+    "subtype": null,
+    "owner": null,
+    "description": null,
+    "chapter": null
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -94.84098,
+     47.157996
+    ]
+   },
+   "properties": {
+    "name": "Boat Ramp",
+    "type": "Water",
+    "subtype": null,
+    "owner": null,
+    "description": null,
+    "chapter": "ITM"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -94.596431,
+     47.030618
+    ]
+   },
+   "properties": {
+    "name": "Shingobee River",
+    "type": "Water",
+    "subtype": null,
+    "owner": null,
+    "description": null,
+    "chapter": null
+   }
+  }
+ ]
+}
