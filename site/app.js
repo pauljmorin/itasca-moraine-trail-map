@@ -359,7 +359,13 @@ function layoutTickSet(items, px) {
   var mpp = 156543.03392 * Math.cos(c.lat * Math.PI / 180) /
             Math.pow(2, z);
   items.forEach(function (it) {
-    var halfLen = Math.max(it.baseLen, (it.px || px) * mpp) / 2;
+    /* Grow with zoom-out only up to a cap (Paul, Nov 10, 2026):
+       past the cap the bar's geographic size freezes, so zooming
+       further out shrinks it on screen instead of letting the bars
+       swell until they merge into each other. */
+    var target = Math.max(it.baseLen, (it.px || px) * mpp);
+    if (it.maxLen) target = Math.min(target, it.maxLen);
+    var halfLen = target / 2;
     var ux = it.dir[0], uy = it.dir[1];
     var ul = Math.sqrt(ux * ux + uy * uy) || 1;
     ux /= ul; uy /= ul;
@@ -381,6 +387,41 @@ function layoutTicks() {
   if (terminusTickItems.length) layoutTickSet(terminusTickItems, 56);
 }
 map.on("zoomend", layoutTicks);
+
+/* Text follows the same rule as the bars (Paul, Nov 10, 2026):
+   labels must stop swelling relative to the ground as you zoom
+   out, or they merge. Section names shrink a step at a time below
+   z12, and a declutter pass hides a name when it would collide
+   with a longer section's name nearby (longest sections keep
+   their names). Chapter-end labels shrink too but never hide —
+   there are only two, at opposite ends of the chapter. */
+var sectionLabelItems = [];
+function layoutSectionLabels() {
+  var z = map.getZoom();
+  var font = z >= 12 ? 11 : z === 11 ? 10 : z === 10 ? 9 : 8;
+  var placed = [];
+  var sorted = sectionLabelItems.slice().sort(function (a, b) {
+    return (b.len || 0) - (a.len || 0);
+  });
+  sorted.forEach(function (it) {
+    var tt = it.layer.getTooltip();
+    var el = tt && tt.getElement();
+    if (!el) return;
+    var pt = map.latLngToContainerPoint(it.layer.getCenter());
+    var w = it.name.length * font * 0.62 + 8, h = font + 7;
+    var collides = placed.some(function (p) {
+      return Math.abs(p.x - pt.x) < (p.w + w) / 2 &&
+             Math.abs(p.y - pt.y) < (p.h + h) / 2;
+    });
+    el.style.display = collides ? "none" : "";
+    el.style.fontSize = font + "px";
+    if (!collides) placed.push({ x: pt.x, y: pt.y, w: w, h: h });
+  });
+  var tFont = z >= 11 ? 12 : z === 10 ? 11 : 10;
+  document.querySelectorAll(".terminus-label span").forEach(
+    function (el) { el.style.fontSize = tFont + "px"; });
+}
+map.on("zoomend", layoutSectionLabels);
 
 /* ------------------------------------------------------------ layers */
 /* Each layer: file under data/, builder, default-on flag. Files are
@@ -420,6 +461,10 @@ var LAYERS = [
               offset: place.offset,
               className: "section-name-label", interactive: false,
             });
+            sectionLabelItems.push({
+              layer: l, name: f.properties.name,
+              len: f.properties.length_mi || 0,
+            });
           }
           /* Hovering the section (its line or its name — canvas
              paths and the name tooltip's anchor cover both) raises
@@ -450,6 +495,9 @@ var LAYERS = [
       });
       var group = L.layerGroup([lines]);
       group.bringToFront = function () { lines.bringToFront(); };
+      group.on("add", function () {
+        window.setTimeout(layoutSectionLabels, 60);
+      });
       return group;
     },
   },
@@ -485,6 +533,7 @@ var LAYERS = [
           center: L.latLng(f.geometry.coordinates[1],
                            f.geometry.coordinates[0]),
           dir: [t[1][0] - t[0][0], t[1][1] - t[0][1]],
+          maxLen: 1600,
           baseLen: map.distance(L.latLng(t[0][1], t[0][0]),
                                 L.latLng(t[1][1], t[1][0])) });
         casing.addTo(boundaryTickGroup);
@@ -534,7 +583,7 @@ var LAYERS = [
             dir: [t[1][0] - t[0][0], t[1][1] - t[0][1]],
             baseLen: map.distance(L.latLng(t[0][1], t[0][0]),
                                   L.latLng(t[1][1], t[1][0])) * 2,
-            px: 56,
+            px: 56, maxLen: 4200,
           });
         }
         group.addLayer(L.marker([c[1], c[0]], {
