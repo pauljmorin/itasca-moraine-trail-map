@@ -259,6 +259,38 @@ function sectionHoverHtml(feature, stretchProps) {
   return stretchPopup(feature);
 }
 
+/* Where a section's name label sits (Paul, Nov 10, 2026): above the
+   line works on east–west segments, but on a north–south segment
+   "above" parks the name on the tread's end — so vertical segments
+   get the name BESIDE the line instead. Judged from the segment
+   direction at the section's length-centroid (where Leaflet
+   anchors the tooltip): |dy| > |dx| → beside (direction right);
+   otherwise above (direction top). */
+function sectionLabelPlacement(f) {
+  var coords = (f.geometry && f.geometry.coordinates) || [];
+  if (coords.length < 2) return { direction: "top", offset: [0, -6] };
+  var pts = coords.map(function (c) {
+    var k = Math.cos(c[1] * Math.PI / 180);
+    return [c[0] * k, c[1]];
+  });
+  var total = 0, segs = [];
+  for (var i = 1; i < pts.length; i++) {
+    var dx = pts[i][0] - pts[i - 1][0], dy = pts[i][1] - pts[i - 1][1];
+    var len = Math.sqrt(dx * dx + dy * dy);
+    segs.push({ dx: dx, dy: dy, len: len });
+    total += len;
+  }
+  var half = total / 2, acc = 0, chosen = segs[segs.length - 1];
+  for (var j = 0; j < segs.length; j++) {
+    acc += segs[j].len;
+    if (acc >= half) { chosen = segs[j]; break; }
+  }
+  if (Math.abs(chosen.dy) > Math.abs(chosen.dx)) {
+    return { direction: "right", offset: [10, 0] };
+  }
+  return { direction: "top", offset: [0, -6] };
+}
+
 function stretchPopup(f) {
   var p = f.properties;
   var yn = function (b) { return b ? "Yes" : "No crossing recorded"; };
@@ -382,8 +414,10 @@ var LAYERS = [
              never stamped on the tread). Leaflet anchors a path
              tooltip at the line's length-centroid. */
           if (f.properties.name) {
+            var place = sectionLabelPlacement(f);
             l.bindTooltip(f.properties.name, {
-              permanent: true, direction: "top", offset: [0, -6],
+              permanent: true, direction: place.direction,
+              offset: place.offset,
               className: "section-name-label", interactive: false,
             });
           }
