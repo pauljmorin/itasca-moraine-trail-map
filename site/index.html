@@ -3,32 +3,54 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Itasca Moraine Chapter — Trail Map (working draft)</title>
+<title>Itasca Moraine Chapter — Trail Map</title>
 <link rel="stylesheet" href="leaflet.css">
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
 <div id="panel">
-  <h1>Itasca Moraine Chapter — Trail Map <span class="draft">(working draft)</span></h1>
+  <h1>Itasca Moraine Chapter — Trail Map</h1>
   <p class="notice"><strong>Working draft — not an official NCTA or
     National Park Service map.</strong> A project of the Itasca Moraine
     Chapter of the North Country Trail Association, built from public
     data for chapter planning.</p>
-  <p class="mileage">Chapter sections: <strong>73.2 mi adopted</strong>
-    of the 76.2 mi of trail in the official depiction. One stretch —
-    2.9 mi at the west end, in Itasca State Park — has no adopter
-    (shown in red).</p>
+  <div class="mileage">
+    <div class="adopt-bar" aria-hidden="true">
+      <div class="adopt-gap-seg"></div><div class="adopt-fill-seg"></div>
+    </div>
+    <p>Chapter sections: <strong>73.2 mi adopted</strong>
+      of the 76.2 mi of trail in the official depiction. One stretch —
+      2.9 mi at the west end, in Itasca State Park — has no adopter
+      (shown in red).</p>
+    <p class="context-line">Purple: Laurentian Lakes Chapter, shown
+      for context.</p>
+    <div id="mini-legend"><!-- mini legend injected by app.js --></div>
+  </div>
 
   <h2>Find</h2>
   <div id="gazetteer">
     <input id="gaz-search" type="search" autocomplete="off"
+      role="combobox" aria-expanded="false" aria-controls="gaz-results"
+      aria-autocomplete="list"
       placeholder="Find a place, section, crossing…">
-    <div id="gaz-results" hidden></div>
+    <div id="gaz-results" role="listbox" hidden></div>
   </div>
+  <p class="gaz-hint" id="gaz-hint">257 places: sections, crossings,
+    parking, camping, water. Press / to search.</p>
+
+  <div id="inspector" tabindex="-1"><!-- inspector injected by app.js --></div>
 
   <h2>Layers</h2>
   <div id="layer-toggles"><!-- checkboxes injected by app.js --></div>
   <p id="load-status" class="status"></p>
+
+  <div id="legend-print" aria-hidden="true">
+    <h2>Legend</h2>
+    <div id="legend-print-body"><!-- print legend injected by app.js --></div>
+  </div>
+  <p class="print-header">Itasca Moraine Chapter — printed from the
+    chapter trail map<span id="print-date"></span>. For paper use,
+    the USGS Topo base prints cleanest.</p>
 </div>
 <div id="map">
   <!-- Reference material (sources + legend) lives behind these
@@ -41,7 +63,8 @@
           National Park Service (official public depiction)</li>
         <li>Parcels: Minnesota Geospatial Commons (MnGeo) compiled county
           parcels; Hubbard County open data (Hubbard is not in the state
-          compilation)</li>
+          compilation). The parcels layer is currently disabled on this
+          map.</li>
         <li>Access lines: Minnesota DNR — state forest roads, state park
           trails &amp; roads, OHV trails, state trails, snowmobile trails,
           hunter walking trails</li>
@@ -51,20 +74,23 @@
         <li>Waypoints (parking, camping, shelters, water, points of
           interest) and the Find index: North Country Trail Association
           public point data, plus the layers above</li>
-        <li>Base maps: © OpenStreetMap contributors; OpenTopoMap
-          (CC-BY-SA)</li>
-        <li>Shaded relief &amp; spring aerial base maps: Minnesota
-          Geospatial Image Service (MnGeo / Minnesota DNR) — hillshade
-          derived from 1&nbsp;m LiDAR; Spring Aerial Imagery Program
-          2013–14 leaf-off colour photography</li>
-        <li>Aerial &amp; shaded-relief base maps: USGS The National Map
-          (NAIP imagery, shaded relief); Esri World Imagery</li>
+        <li>Base map — Topo (default): OpenTopoMap (CC-BY-SA); map data
+          © OpenStreetMap contributors, SRTM</li>
+        <li>Base map — Streets: © OpenStreetMap contributors</li>
+        <li>Base maps — USGS Topo 1:24k and Aerial (NAIP imagery):
+          USGS The National Map</li>
+        <li>Base map — Hillshade: Minnesota Geospatial Image Service
+          (MnGeo / Minnesota DNR), derived from 1&nbsp;m LiDAR. The
+          terrain view — the moraine itself; recommended for reading
+          the land.</li>
+        <li>Base map — Aerial: Esri World Imagery</li>
       </ul>
-      <p class="privacy">Parcel popups show the owner's name and mailing
-        address as published in the county parcel records (public
-        record). Adopted sections show placeholder adopter names
+      <p class="privacy">Adopted sections show placeholder adopter names
         (Test adopter 1, 2, …) — the chapter's real adopter names are
-        kept in its working files and never appear on this map.</p>
+        kept in its working files and never appear on this map. Parcel
+        owner names and addresses, as published in the county parcel
+        records (public record), will appear in parcel popups if the
+        currently disabled parcels layer is re-enabled.</p>
     </div>
     <div id="legend-card" class="corner-card" hidden>
       <h2>Legend</h2>

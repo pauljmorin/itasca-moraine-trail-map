@@ -140,7 +140,21 @@ downloaded into the repo). Every endpoint was verified from the
 project sandbox on 2026-11-10 by fetching sample tiles / WMS
 GetMap responses over the chapter's extent.
 
-- **Shaded relief (MN LiDAR)** — Minnesota Geospatial Image
+**v4 (Nov 10, 2026):** the default base is now **Topo
+(OpenTopoMap)** — a new visitor meets terrain first — and the
+switcher's six entries carry the plain names used below (Streets
+(OSM), USGS Topo 1:24k, Hillshade (MN LiDAR), Aerial (USGS NAIP),
+Aerial (Esri)).
+
+- **Topo (OpenTopoMap)** — the DEFAULT base since v4.
+  `https://tile.opentopomap.org/{z}/{x}/{y}.png`: OpenStreetMap
+  data rendered with SRTM contours and hillshading. Attribution:
+  "Map data: © OpenStreetMap contributors, SRTM | map style: ©
+  OpenTopoMap (CC-BY-SA)".
+- **Streets (OSM)** — the standard OpenStreetMap rendering,
+  `https://tile.openstreetmap.org/{z}/{x}/{y}.png`. Attribution:
+  "© OpenStreetMap contributors".
+- **Hillshade (MN LiDAR)** — Minnesota Geospatial Image
   Service (MnGeo), WMS 1.1.1, Web Mercator endpoint
   `https://imageserver.gisdata.mn.gov/cgi-bin/wmswm?`, layer
   `hillshd` ("Statewide"): hillshade derived from 1 m LiDAR
@@ -148,17 +162,17 @@ GetMap responses over the chapter's extent.
   of Natural Resources / MnGeo). Wired via `L.tileLayer.wms`,
   non-transparent base. Attribution: "Shaded relief (LiDAR
   hillshade): MnGeo / Minnesota DNR".
-- **Topo (USGS 1:24k)** — The National Map (USGS),
+- **USGS Topo 1:24k** — The National Map (USGS),
   `https://basemap.nationalmap.gov/arcgis/rest/services/USGSTopo/MapServer/tile/{z}/{y}/{x}`:
   the USGS topographic base built from the 1:24,000 quadrangle
   series. Added Nov 10, 2026 (v3); sample tile over the chapter
   verified live the same day. Attribution: "Topo: USGS, The
   National Map".
-- **Aerial — USGS NAIP** — The National Map (USGS),
+- **Aerial (USGS NAIP)** — The National Map (USGS),
   `https://basemap.nationalmap.gov/arcgis/rest/services/USGSImageryOnly/MapServer/tile/{z}/{y}/{x}`
   (NAIP-based imagery). Attribution: "Aerial imagery: USGS, The
   National Map (NAIP)".
-- **Aerial — Esri World Imagery** —
+- **Aerial (Esri)** — Esri World Imagery —
   `https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}`.
   Attribution: "Aerial imagery: Esri, Maxar, Earthstar
   Geographics".

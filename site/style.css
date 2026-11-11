@@ -1,13 +1,54 @@
-/* Itasca Moraine Chapter trail map — working view (v1).
+/* Itasca Moraine Chapter trail map — v4.
    Plain CSS, no build step. Layout: fixed info panel left, map fills
-   the rest of the viewport. */
+   the rest of the viewport. Design tokens per DESIGN-REVIEW §1 —
+   app.js carries matching constants (COLORS) at its head. */
+
+:root {
+  --paper: #f7f5ee;        /* panel background */
+  --paper-line: #c9c2ab;   /* panel borders */
+  --paper-hover: #f1eee1;  /* quiet hover / notice background */
+  --ink: #1c2a1e;          /* body text */
+  --ink-soft: #5a665c;     /* keys, captions */
+  --trail: #1a9850;        /* Itasca Moraine green */
+  --trail-deep: #14532d;   /* termini, emphasis */
+  --adopted: #e08214;      /* amber */
+  --adopted-deep: #6e4400; /* section label text */
+  --gap: #d7301f;          /* red */
+  --neighbour: #7e6a9e;    /* Laurentian Lakes */
+  --tick: #37474f;         /* boundary bars */
+  --header-tint: #eef3e6;  /* record-sheet header band */
+}
 
 html, body {
   margin: 0;
   padding: 0;
   height: 100%;
-  font-family: "Segoe UI", "Helvetica Neue", Arial, sans-serif;
-  color: #1c2a1e;
+  font-family: -apple-system, "Segoe UI", Roboto, "Helvetica Neue",
+    Arial, sans-serif;
+  color: var(--ink);
+}
+
+/* Unify the six base maps into the panel's warm register
+   (DESIGN-REVIEW D3). Overlays live in other panes, unaffected. */
+.leaflet-tile-pane { filter: saturate(0.82) sepia(0.06) brightness(1.01); }
+
+/* Leaflet chrome recoloured to the paper system (DESIGN-REVIEW §5). */
+.leaflet-bar a,
+.leaflet-control-layers {
+  background: var(--paper);
+  border-color: var(--paper-line);
+}
+.leaflet-bar { border-radius: 8px; overflow: hidden; }
+.leaflet-control-layers { border-radius: 8px; }
+.leaflet-control-scale-line {
+  background: rgba(247, 245, 238, 0.88);
+  border-color: var(--paper-line);
+  font-size: 10px;
+}
+
+:focus-visible {
+  outline: 2px solid var(--trail);
+  outline-offset: 2px;
 }
 
 #panel {
@@ -17,8 +58,8 @@ html, body {
   width: 320px;
   height: 100%;
   overflow-y: auto;
-  background: #f7f5ee;
-  border-right: 1px solid #c9c2ab;
+  background: var(--paper);
+  border-right: 1px solid var(--paper-line);
   padding: 14px 16px 20px;
   box-sizing: border-box;
   z-index: 1000;
@@ -26,10 +67,11 @@ html, body {
 
 #panel h1 {
   font-size: 1.15rem;
+  font-weight: 650;
+  letter-spacing: -0.01em;
   line-height: 1.3;
   margin: 0 0 8px;
 }
-#panel h1 .draft { color: #8a6d1f; font-size: 0.95rem; }
 #panel h2 {
   font-size: 0.95rem;
   margin: 16px 0 6px;
@@ -38,34 +80,108 @@ html, body {
 }
 
 .notice {
-  background: #fdf3d7;
-  border: 1px solid #d9c169;
+  background: var(--paper-hover);
+  border: 1px solid #d8d2bd;
+  border-left: 3px solid #8a6d1f;
   border-radius: 4px;
   padding: 8px 10px;
-  font-size: 0.85rem;
+  font-size: 0.82rem;
 }
 
 .mileage {
-  background: #eef3e6;
+  background: var(--header-tint);
   border: 1px solid #b9cba5;
   border-radius: 4px;
   padding: 8px 10px;
   font-size: 0.88rem;
 }
+.mileage p { margin: 6px 0 0; font-size: 0.85rem; }
+.mileage .context-line { color: var(--ink-soft); font-size: 0.8rem; }
 
+/* Adoption story bar: the chapter's one-glance headline — amber
+   adopted, hatched red gap at the west (left) end. */
+.adopt-bar {
+  display: flex;
+  height: 10px;
+  border-radius: 5px;
+  overflow: hidden;
+  background: #fff;
+  border: 1px solid #b9cba5;
+}
+.adopt-gap-seg {
+  flex: 0 0 4%;
+  background: repeating-linear-gradient(45deg,
+    var(--gap) 0 4px, #ffffff 4px 6px, var(--gap) 6px 10px);
+}
+.adopt-fill-seg { flex: 1 1 auto; background: var(--adopted); }
+
+/* Mini-legend: five always-visible swatches under the story box. */
+#mini-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 12px;
+  margin-top: 8px;
+  font-size: 11.5px;
+  color: var(--ink);
+}
+#mini-legend .ml-item { display: inline-flex; align-items: center; gap: 5px; }
+#mini-legend .ml-line {
+  display: inline-block; width: 18px; height: 0;
+  border-top: 4px solid #888;
+}
+#mini-legend .ml-line.dashed { border-top-style: dashed; }
+#mini-legend .ml-bar {
+  display: inline-block; width: 4px; height: 13px; background: var(--trail);
+}
+
+/* ---------------------------------------------------------- layers */
+
+.tog-group {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--ink-soft);
+  margin: 10px 0 2px;
+}
+.tog-group:first-child { margin-top: 2px; }
 #layer-toggles label {
-  display: block;
+  display: flex;
+  align-items: center;
+  gap: 6px;
   font-size: 0.9rem;
-  padding: 3px 0;
+  padding: 5px 4px;
+  border-radius: 4px;
   cursor: pointer;
 }
-#layer-toggles input { margin-right: 6px; }
+#layer-toggles label:hover { background: var(--paper-hover); }
+#layer-toggles input { accent-color: var(--trail); margin: 0; }
+#layer-toggles label.disabled { color: var(--ink-soft); cursor: default; }
+.tog-swatch-line {
+  flex: 0 0 auto;
+  display: inline-block; width: 16px; height: 0;
+  border-top: 4px solid #888;
+}
+.tog-swatch-line.dashed { border-top-style: dashed; }
+.tog-swatch-bar {
+  flex: 0 0 auto;
+  display: inline-block; width: 4px; height: 13px;
+}
+.tog-swatch-pin {
+  flex: 0 0 auto;
+  display: inline-block; width: 10px; height: 10px; border-radius: 50%;
+  border: 2px solid #fff; box-shadow: 0 0 2px #333; margin: 0 3px;
+}
+.tog-suffix { color: var(--ink-soft); font-size: 0.8rem; }
+.tog-error {
+  color: #b2182b;
+  font-size: 11.5px;
+  padding: 0 4px 4px 26px;
+}
 
-.status { font-size: 0.8rem; color: #5a665c; min-height: 1em; }
+.status { font-size: 0.8rem; color: var(--ink-soft); min-height: 1em; }
 
-/* Gazetteer (Find box): the index loads lazily on first focus;
-   results are a simple dropdown list under the input, and a
-   section result's popup carries a scrollable contents list. */
+/* ---------------------------------------------------------- Find */
+
 #gazetteer { position: relative; }
 #gaz-search {
   width: 100%;
@@ -76,6 +192,15 @@ html, body {
   border-radius: 14px;
   background: #fff;
 }
+#gaz-search:focus {
+  outline: 2px solid var(--trail);
+  outline-offset: 1px;
+}
+.gaz-hint {
+  font-size: 11.5px;
+  color: var(--ink-soft);
+  margin: 5px 2px 0;
+}
 #gaz-results {
   position: absolute;
   left: 0;
@@ -83,10 +208,10 @@ html, body {
   top: 100%;
   margin-top: 4px;
   background: #fff;
-  border: 1px solid #c9c2ab;
+  border: 1px solid var(--paper-line);
   border-radius: 6px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
-  max-height: 320px;
+  max-height: 340px;
   overflow-y: auto;
   z-index: 1100;
 }
@@ -103,32 +228,287 @@ html, body {
 }
 .gaz-result:last-child { border-bottom: none; }
 .gaz-result:hover { background: #f3efdd; }
-.gaz-kind { color: #5a665c; }
-.gaz-mile { color: #8a6d1f; float: right; }
-.gaz-contents {
-  margin-top: 6px;
-  border-top: 1px solid #d8d2bd;
-  padding-top: 5px;
-  max-height: 170px;
-  overflow-y: auto;
-  font-size: 0.83rem;
+.gaz-result.active {
+  background: #f3efdd;
+  outline: 2px solid var(--trail);
+  outline-offset: -2px;
 }
-.gaz-contents div { margin: 2px 0; }
+.gaz-name {
+  display: flex; align-items: center; gap: 7px;
+  font-weight: 600;
+}
+.gaz-dot {
+  flex: 0 0 auto;
+  width: 8px; height: 8px; border-radius: 50%; background: #888;
+}
+.gaz-sub {
+  display: block;
+  color: var(--ink-soft);
+  font-size: 0.8rem;
+  margin: 1px 0 0 15px;
+}
+.gaz-nomatch {
+  padding: 8px 10px;
+  font-size: 0.85rem;
+  color: var(--ink-soft);
+}
+.gaz-footer {
+  padding: 5px 10px;
+  font-size: 0.78rem;
+  color: var(--ink-soft);
+  background: var(--paper);
+}
 
-#legend { font-size: 0.85rem; }
-#legend .row { display: flex; align-items: center; gap: 8px; padding: 2px 0; }
-#legend .swatch {
+/* "What's here" contents list (inspector details tier). */
+.gaz-contents { font-size: 0.83rem; }
+.gaz-contents .gc-row {
+  display: flex; align-items: baseline; gap: 6px; margin: 3px 0;
+}
+.gaz-contents .gc-count {
+  flex: 0 0 auto;
+  background: var(--paper-hover);
+  border: 1px solid var(--paper-line);
+  border-radius: 999px;
+  padding: 0 7px;
+  font-size: 0.72rem;
+  font-weight: 700;
+}
+.gaz-contents .gc-names { color: var(--ink-soft); }
+
+/* ---------------------------------------------------------- inspector
+   The section record's fixed home (UX-REVIEW Part 1), wearing the
+   record-sheet visual form (DESIGN-REVIEW §4) at panel width. */
+
+#inspector { margin-top: 12px; }
+#inspector:empty { display: none; }
+#inspector:focus { outline: none; }
+#inspector:focus-visible {
+  outline: 2px solid var(--trail);
+  outline-offset: 2px;
+}
+
+.insp-empty {
+  border: 1px dashed var(--paper-line);
+  border-radius: 8px;
+  padding: 9px 11px;
+  font-size: 0.85rem;
+  color: var(--ink-soft);
+  background: #fff;
+}
+.insp-gap-callout {
+  display: block;
+  width: 100%;
+  text-align: left;
+  margin-top: 8px;
+  background: #fdf0ec;
+  border: 1px solid #eec5bb;
+  border-left: 3px solid var(--gap);
+  border-radius: 4px;
+  padding: 6px 9px;
+  font-size: 0.85rem;
+  color: #8f1d10;
+  cursor: pointer;
+}
+.insp-gap-callout:hover { background: #fbe4dc; }
+
+.insp-sheet {
+  background: #fff;
+  border: 1px solid var(--paper-line);
+  border-left: 4px solid var(--adopted);
+  border-radius: 10px;
+  box-shadow: 0 8px 28px rgba(28, 42, 30, 0.18);
+  overflow: hidden;
+}
+.insp-sheet.is-gap { border-left-color: var(--gap); }
+.insp-head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--header-tint);
+  padding: 8px 10px;
+}
+.insp-title { font-size: 17px; font-weight: 600; line-height: 1.2; }
+.insp-code {
+  font-size: 10.5px;
+  font-weight: 700;
+  background: #fff;
+  border: 1px solid var(--paper-line);
+  border-radius: 4px;
+  padding: 1px 5px;
+  color: var(--ink-soft);
+  white-space: nowrap;
+}
+.insp-pill {
+  margin-left: auto;
+  font-size: 10.5px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  border-radius: 999px;
+  padding: 2px 9px;
+  white-space: nowrap;
+}
+.insp-pill.adopted {
+  background: var(--adopted); color: #fff;
+}
+.insp-pill.adopted.soft {
+  background: #e6f4ea; color: var(--trail-deep);
+  border: 1px solid #a9c295;
+}
+.insp-pill.unadopted { background: var(--gap); color: #fff; }
+.insp-close {
+  flex: 0 0 auto;
+  width: 28px; height: 28px;
+  border: none;
+  background: none;
+  font-size: 18px;
+  line-height: 1;
+  color: var(--ink-soft);
+  cursor: pointer;
+  border-radius: 6px;
+}
+.insp-close:hover { background: var(--paper-hover); color: var(--ink); }
+
+.insp-body { padding: 8px 11px 10px; }
+.insp-caption {
+  font-size: 11px;
+  color: var(--ink-soft);
+  margin: 0 0 7px;
+}
+.insp-keystrip {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 7px 12px;
+  margin-bottom: 8px;
+}
+.insp-keystrip .ks-label {
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--ink-soft);
+}
+.insp-keystrip .ks-value { font-size: 13.5px; font-weight: 600; }
+.insp-keystrip .ks-value .muted {
+  font-weight: 400; color: var(--ink-soft); font-size: 11.5px;
+}
+.insp-help {
+  border-left: 3px solid var(--gap);
+  background: #fdf0ec;
+  border-radius: 0 4px 4px 0;
+  padding: 6px 9px;
+  font-size: 13px;
+  margin: 0 0 8px;
+}
+.insp-standing {
+  border-left: 3px solid var(--gap);
+  background: #fdf0ec;
+  border-radius: 0 4px 4px 0;
+  padding: 6px 9px;
+  font-size: 13px;
+  margin: 0 0 8px;
+}
+.insp-desc { font-size: 13px; line-height: 1.45; margin: 0 0 8px; }
+.insp-desc.clamped {
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.insp-more {
+  background: none; border: none; padding: 0;
+  color: var(--trail-deep); font-size: 12px; font-weight: 600;
+  cursor: pointer;
+  margin: -4px 0 8px;
+  display: block;
+}
+.insp-details {
+  border-top: 1px solid #eee7d2;
+  padding-top: 6px;
+  margin-top: 2px;
+}
+.insp-details summary {
+  font-size: 12.5px;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 3px 0;
+}
+.insp-rows { margin-top: 4px; }
+.insp-row {
+  display: grid;
+  grid-template-columns: 104px 1fr;
+  gap: 8px;
+  padding: 3px 0;
+  border-bottom: 1px solid #f3efe0;
+  font-size: 12.5px;
+}
+.insp-row:last-child { border-bottom: none; }
+.insp-row .k {
+  font-size: 10.5px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--ink-soft);
+  padding-top: 2px;
+}
+.insp-foot {
+  display: flex;
+  gap: 6px;
+  padding: 8px 11px 10px;
+  border-top: 1px solid #eee7d2;
+}
+.insp-foot button {
+  background: var(--paper);
+  border: 1px solid #a89a5b;
+  border-radius: 14px;
+  padding: 4px 12px;
+  font-size: 0.83rem;
+  cursor: pointer;
+}
+.insp-foot button:hover { background: var(--paper-hover); }
+.insp-foot button:disabled { opacity: 0.45; cursor: default; }
+.insp-foot .spacer { flex: 1 1 auto; }
+.insp-prov {
+  font-size: 10.5px;
+  font-style: italic;
+  color: var(--ink-soft);
+  padding: 0 11px 9px;
+  margin-top: -4px;
+}
+
+/* Label highlight while its section's record is up (DESIGN §4). */
+.leaflet-tooltip.section-name-label.label-active {
+  color: var(--ink);
+  font-weight: 700;
+}
+
+/* ---------------------------------------------------------- legend */
+
+#legend, #legend-print-body { font-size: 0.85rem; }
+#legend .row, #legend-print-body .row {
+  display: flex; align-items: center; gap: 8px; padding: 2px 0;
+}
+#legend .swatch, #legend-print-body .swatch {
   flex: 0 0 auto;
   width: 30px;
   height: 0;
   border-top: 4px solid #888;
 }
-#legend .swatch.dashed { border-top-style: dashed; }
-#legend .swatch.fill {
+#legend .swatch.dashed, #legend-print-body .swatch.dashed {
+  border-top-style: dashed;
+}
+#legend .swatch.bar, #legend-print-body .swatch.bar {
+  width: 4px;
+  height: 14px;
+  border-top: none;
+  margin: 0 13px;
+}
+#legend .swatch.bar.wide, #legend-print-body .swatch.bar.wide {
+  width: 6px; height: 16px; margin: 0 12px;
+}
+#legend .swatch.fill, #legend-print-body .swatch.fill {
   height: 12px;
   border: 1px solid #7a744f;
 }
-#legend .swatch.pin {
+#legend .swatch.pin, #legend-print-body .swatch.pin {
   width: 12px;
   height: 12px;
   border-radius: 50%;
@@ -136,13 +516,13 @@ html, body {
   box-shadow: 0 0 2px #333;
   margin: 0 9px;
 }
-#legend .group { font-weight: 600; margin-top: 8px; }
-#legend .swatch.pin.dark { background: #263238; }
-#legend .swatch.pin.terminus { background: #1a9850; }
 
 .credits { font-size: 0.8rem; padding-left: 18px; margin: 4px 0; }
 .credits li { margin-bottom: 4px; }
 .privacy { font-size: 0.8rem; font-style: italic; color: #4c5a4e; }
+
+/* Screen-only/print-only scaffolding. */
+#legend-print, .print-header { display: none; }
 
 /* Corner UI: sources + legend behind buttons over the map's
    bottom-left corner, stacked above the scale control (bottom: 42px
@@ -158,8 +538,8 @@ html, body {
   gap: 6px;
 }
 .corner-card {
-  background: #f7f5ee;
-  border: 1px solid #c9c2ab;
+  background: var(--paper);
+  border: 1px solid var(--paper-line);
   border-radius: 6px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
   padding: 10px 12px;
@@ -174,23 +554,31 @@ html, body {
   padding-bottom: 3px;
   border-bottom: 1px solid #d8d2bd;
 }
-#corner-buttons { display: flex; gap: 6px; }
+#corner-buttons { display: flex; }
 #corner-buttons button {
-  background: #f7f5ee;
+  background: var(--paper);
   border: 1px solid #a89a5b;
-  border-radius: 14px;
   padding: 4px 12px;
   font-size: 0.85rem;
   cursor: pointer;
   box-shadow: 0 1px 4px rgba(0, 0, 0, 0.25);
 }
-#corner-buttons button.active { background: #e8e2c8; }
+#corner-buttons button:first-child {
+  border-radius: 14px 0 0 14px;
+}
+#corner-buttons button:last-child {
+  border-radius: 0 14px 14px 0;
+  margin-left: -1px;
+}
+#corner-buttons button.active {
+  background: var(--trail-deep);
+  color: #fff;
+}
 
-/* Map-face text (divIcons, non-interactive): only the terminus
-   NAME labels remain — boundary and terminus markers themselves
-   are tick bars drawn as canvas polylines in app.js. (Section
-   names are Leaflet tooltips, styled separately below.)
-   Children are absolutely positioned on the 0x0 icon anchor. */
+/* Map-face text (divIcons, non-interactive): terminus names and the
+   gap's name label. (Section names are Leaflet tooltips, styled
+   separately below.) Children are absolutely positioned on the 0x0
+   icon anchor. */
 .map-label { background: none; border: none; }
 .map-label span {
   position: absolute;
@@ -200,9 +588,10 @@ html, body {
   font-weight: 600;
   text-shadow: 0 0 3px #fff, 0 0 3px #fff, 0 0 4px #fff;
 }
-/* Section names: permanent Leaflet tooltips floating above the
-   line at mid-section (direction "top", offset [0,-6] in app.js).
-   Styled as bare haloed text — no box — and click-through. */
+/* Section names: permanent Leaflet tooltips at mid-section —
+   above the line on east–west segments, beside it on north–south
+   (app.js: sectionLabelPlacement). Bare haloed text, click-through;
+   the halo is the panel's paper, not clinical white (DESIGN §3). */
 .leaflet-tooltip.section-name-label {
   background: transparent;
   border: none;
@@ -210,41 +599,67 @@ html, body {
   pointer-events: none;
   font-size: 11px;
   font-weight: 600;
-  color: #6e4400;
-  text-shadow: 0 0 3px #fff, 0 0 3px #fff, 0 0 4px #fff;
+  letter-spacing: 0.02em;
+  color: var(--adopted-deep);
+  text-shadow: 0 0 3px rgba(247, 245, 238, 0.92),
+    0 0 3px rgba(247, 245, 238, 0.92),
+    0 0 4px rgba(247, 245, 238, 0.92);
   padding: 0;
 }
 .leaflet-tooltip.section-name-label::before { display: none; }
-/* Section hover card (app.js: spreadsheet record on hover). Looks
-   like a popup — white card, table rows — but follows the cursor
-   and vanishes on mouse-out. */
-.leaflet-tooltip.section-hover-card {
-  background: #fff;
-  border: 1px solid rgba(0, 0, 0, 0.25);
-  border-radius: 6px;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.25);
-  padding: 8px 10px;
-  max-width: 380px;
-  white-space: normal;
-  font-size: 12.5px;
-  line-height: 1.45;
-  color: #263238;
-}
-.leaflet-tooltip.section-hover-card::before { display: none; }
-.leaflet-tooltip.section-hover-card h3 {
-  margin: 0 0 4px; font-size: 13.5px;
-}
-.leaflet-tooltip.section-hover-card table { border-collapse: collapse; }
-.leaflet-tooltip.section-hover-card td {
-  padding: 1px 8px 1px 0; vertical-align: top;
-}
-.leaflet-tooltip.section-hover-card td.k {
-  color: #5a665c; white-space: nowrap;
-}
 .terminus-label span {
   transform: translate(-50%, -260%);
   font-size: 12px;
-  color: #14532d;
+  font-weight: 700;
+  color: var(--trail-deep);
+}
+/* The gap's own name on the map (DESIGN D4), in the gap's voice. */
+.gap-label span {
+  transform: translate(-50%, -160%);
+  font-size: 12px;
+  font-weight: 700;
+  color: #b2182b;
+  text-shadow: 0 0 3px rgba(247, 245, 238, 0.92),
+    0 0 3px rgba(247, 245, 238, 0.92),
+    0 0 4px rgba(247, 245, 238, 0.92);
+}
+
+/* Hover-lite chip (UX-REVIEW Part 1): small, static, non-interactive.
+   Replaces the v3 cursor-following full-record hover card. */
+.leaflet-tooltip.hover-chip {
+  background: #fff;
+  border: 1px solid var(--paper-line);
+  border-radius: 8px;
+  box-shadow: 0 4px 14px rgba(28, 42, 30, 0.22);
+  padding: 6px 9px;
+  max-width: 280px;
+  white-space: normal;
+  font-size: 12px;
+  line-height: 1.4;
+  color: var(--ink);
+  pointer-events: none;
+}
+.leaflet-tooltip.hover-chip::before { display: none; }
+.hover-chip .hc-name { font-size: 13.5px; font-weight: 600; }
+.hover-chip .hc-code { color: var(--ink-soft); font-weight: 400; }
+.hover-chip .hc-facts { display: block; margin-top: 1px; }
+.hover-chip .hc-hint {
+  display: block; margin-top: 2px;
+  font-size: 11px; color: var(--ink-soft);
+}
+
+/* Imagery bases: flip map-face labels to near-white with a dark
+   halo so names survive dark aerial photography (UX P5). */
+body.base-imagery .leaflet-tooltip.section-name-label {
+  color: #fdfdf8;
+  text-shadow: 0 0 3px rgba(20, 30, 20, 0.9),
+    0 0 3px rgba(20, 30, 20, 0.9), 0 0 5px rgba(20, 30, 20, 0.9);
+}
+body.base-imagery .terminus-label span,
+body.base-imagery .gap-label span {
+  color: #fdfdf8;
+  text-shadow: 0 0 3px rgba(20, 30, 20, 0.9),
+    0 0 3px rgba(20, 30, 20, 0.9), 0 0 5px rgba(20, 30, 20, 0.9);
 }
 
 #map {
@@ -256,20 +671,48 @@ html, body {
 .leaflet-popup-content h3 { margin: 0 0 4px; font-size: 0.95rem; }
 .leaflet-popup-content table { border-collapse: collapse; }
 .leaflet-popup-content td { padding: 1px 8px 1px 0; vertical-align: top; }
-.leaflet-popup-content td.k { color: #5a665c; white-space: nowrap; }
+.leaflet-popup-content td.k { color: var(--ink-soft); white-space: nowrap; }
+.leaflet-popup-content-wrapper { border-radius: 8px; }
+
+/* ---------------------------------------------------------- mobile */
 
 @media (max-width: 720px) {
-  #panel { position: static; width: auto; height: auto; }
-  #map { margin-left: 0; height: 70vh; }
+  #panel {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    width: auto;
+    height: 38vh;
+    max-height: 38vh;
+    border-right: none;
+    border-bottom: 1px solid var(--paper-line);
+  }
+  #map { margin-left: 0; margin-top: 38vh; height: 62dvh; }
+  #layer-toggles { columns: 2; }
+  #layer-toggles label { min-height: 40px; }
+  #gaz-search { font-size: 16px; }
+  /* Inspector becomes a bottom sheet when a selection exists. */
+  #inspector.has-selection {
+    position: fixed;
+    left: 0; right: 0; bottom: 0;
+    box-sizing: border-box;
+    max-height: 45vh;
+    overflow-y: auto;
+    z-index: 1200;
+    background: var(--paper);
+    padding: 8px 10px calc(8px + env(safe-area-inset-bottom));
+    box-shadow: 0 -4px 18px rgba(28, 42, 30, 0.3);
+    margin-top: 0;
+  }
 }
 
-/* Print: this chapter recruits with paper maps at events, so the map
-   plus the legend/notice panel must survive printing legibly.
-   NOTE (v1): verified only by inspection of these rules — print
-   rendering has not been proofed on paper. Leaflet prints the tiles
-   and vector layers visible in the current viewport; pan/zoom to the
-   area you want before printing. */
+/* ---------------------------------------------------------- print
+   Recruiting handouts: panel text + legend + map, legend visible,
+   attribution kept (UX P7 / DESIGN §6). */
+
+@page { size: landscape; margin: 12mm; }
+
 @media print {
+  .leaflet-tile-pane { filter: grayscale(0.25) contrast(1.02); }
   #panel {
     position: static;
     width: auto;
@@ -277,14 +720,30 @@ html, body {
     overflow: visible;
     border-right: none;
   }
+  .notice { font-size: 9pt; background: none; }
+  .print-header { display: block; font-size: 9pt; color: var(--ink-soft); }
+  #legend-print { display: block; margin-top: 10px; }
   #map {
     margin-left: 0;
+    margin-top: 0;
     width: 100%;
-    height: 70vh;
+    height: 60vh;
     page-break-before: always;
   }
-  .leaflet-control-container { display: none; }
-  #layer-toggles { display: none; }
+  /* Hide controls selectively — the attribution must stay. */
+  .leaflet-control-layers,
+  .leaflet-control-zoom,
+  .leaflet-control-scale { display: none; }
+  .leaflet-control-attribution {
+    display: block;
+    background: rgba(255, 255, 255, 0.8);
+  }
+  #layer-toggles, .tog-group { display: none; }
   #corner-ui { display: none; }
-  #gazetteer { display: none; }
+  #gazetteer, .gaz-hint { display: none; }
+  #inspector { page-break-before: always; }
+  #inspector.has-selection .insp-sheet {
+    box-shadow: none;
+    max-width: 560px;
+  }
 }

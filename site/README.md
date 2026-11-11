@@ -1,4 +1,4 @@
-# The map site (v2 — chapter working view)
+# The map site (v4 — chapter working view)
 
 A single-page Leaflet map in plain HTML/CSS/JS. No build step, no
 API keys, nothing to install: `index.html` + `app.js` + `style.css`.
@@ -9,9 +9,10 @@ portability rule. Base-map tiles come from public tile servers
 connection. Append `#layers=access,roads` to the URL to open with
 those layers already switched on.
 
-The side panel is deliberately short — title, the working-draft
-notice, the mileage summary, the layer toggles, and the load
-status. The reference material lives over the map instead: two
+The side panel carries the title, the working-draft notice, the
+adoption story box with its mini-legend, the Find box, the
+section inspector, the layer toggles, and the load status. The
+reference material lives over the map instead: two
 buttons in the map's bottom-left corner, **ⓘ Sources** and
 **Legend**, each open a small floating card (the data-source
 credits; the legend). Both start closed; a second click closes a
@@ -40,43 +41,61 @@ time their checkbox is switched on.
 | Toggle | File | Default | Contents |
 |---|---|---|---|
 | Official trail line | `data/trail.geojson` | on | The official NCT depiction in the chapter extent, styled by chapter (Itasca Moraine green, Laurentian Lakes purple) and by kind (off-road solid, on-road dashed). Popup: chapter, type, certification, length, ownership, managing authority. |
-| Adopted sections | `data/stretches.geojson` | off | The chapter's adopted sections (from the adoption tracker joined onto the boundary-point overlay), drawn in amber over the official line, each with its name as a permanent tooltip at mid-section — floating **above** the line on east–west segments, **beside** the line on north–south segments (v3, judged from the segment direction at the label anchor). Popup: section name, status (adopted), **placeholder** adopted-by names, length measured on the official line, length in the chapter tracker, whether a crossing is recorded at each end (see Privacy for the placeholder rule). |
-| Section boundaries | `data/boundaries.geojson` | with sections | **No toggle of its own** — the boundary markers ride with the Adopted sections toggle: a bar struck **across** the line at every section start/end — perpendicular to the trail's bearing there, unlabelled, positioned on the stretch geometry endpoints (never at raw KMZ pin positions — one pin sits ~3.6 km off the line). **The bar scales with zoom** (v3): ~22 px on screen at any zoom, floored at the built 140 m length, so it stays visible when zoomed out. The same file's two chapter termini are the separate layer below. |
+| Adopted sections | `data/stretches.geojson` | on | The chapter's adopted sections (from the adoption tracker joined onto the boundary-point overlay), drawn in amber over the official line, each with its name as a permanent tooltip at mid-section — floating **above** the line on east–west segments, **beside** the line on north–south segments (v3, judged from the segment direction at the label anchor). **No popup (v4): clicking a section selects it into the panel inspector** (see "Section inspector" below); hovering shows only a small name/facts chip. Default ON since v4 — the adopted sections are the chapter's story. |
+| Section boundaries | `data/boundaries.geojson` | with sections | **No toggle of its own** — the boundary markers ride with the Adopted sections toggle: a bar struck **across** the line at every section start/end — perpendicular to the trail's bearing there, unlabelled, positioned on the stretch geometry endpoints (never at raw KMZ pin positions — one pin sits ~3.6 km off the line). **The bar scales with zoom** (v3): ~22 px on screen at any zoom, floored at the built 140 m length and capped at 1.6 km (chapter termini cap at 4.2 km), so it stays visible when zoomed out without sprawling across the map when zoomed in. Softened in v4 to a slate core with a lighter casing. The same file's two chapter termini are the separate layer below. |
 | Chapter ends (Itasca Moraine west & east) | `data/boundaries.geojson` | on | The boundary-bar language at chapter weight: a green bar across the line at each end (~56 px on screen, floored at ~280 m), labelled "Itasca Moraine — west end" (chainage 0, at the GAP-W west end in Itasca State Park) and "Itasca Moraine — east end". Always available with the official line, independent of the sections toggle. |
-| Unadopted gap (unclaimed) | `data/gaps.geojson` | on | Stretches of the depicted line no section covers, drawn bold dashed red — the recruiting layer. Currently one: GAP-W, 2.92 mi in Itasca State Park. Popup: length, land context, nearest access at each end, trails crossing it. |
+| Unadopted gap (unclaimed) | `data/gaps.geojson` | on | Stretches of the depicted line no section covers, drawn bold dashed red — the recruiting layer. Currently one: GAP-W, 2.92 mi in Itasca State Park. It carries a permanent on-map label ("Unadopted — 2.9 mi", shown at zoom ≥ 9) and, like a section, **clicking it selects it into the panel inspector** (length, land context, nearest access at each end, trails crossing it). |
 | Parcels | `data/parcels.geojson` | **UI-disabled** | **Built but UI-disabled as of Nov 10, 2026, pending a later re-enable** — the layer does not appear in the toggles, its legend swatches are removed, and nothing fetches `parcels.geojson` on load or toggle. The data, build logic, popup code and canvas rendering are all retained; re-enable by flipping `enabled: false` to `enabled: true` on the parcels entry in `app.js` (LAYERS). When enabled: trail-corridor parcels (crossed + adjoining ring), off by default. Popup: parcel ID, county, land class, acres, and the **owner name + mailing address as published in the county parcel records** (public record — see Privacy). 919 of the 1,038 site parcels carry a published owner; the rest (mostly public land) show no owner row. |
 | Access lines | `data/access.geojson` | off | MN DNR lines: state forest roads, state park trails/roads, OHV trails, state trails, snowmobile trails, hunter walking trails, styled by kind — drawn thin (v3, ~1 px hairlines: context, not subject). |
 | Roads | `data/roads.geojson` | off | Road centerlines (5,902 MnDOT segments), drawn mid-grey at 1.75 px (v3 — the earlier 1 px #999999 styling was effectively invisible). Off by default: it is the visually busiest layer and the map opens faster without it. |
 | Access points (section crossings) | `data/access-points.geojson` | **removed** | **Layer removed Nov 10, 2026 (Paul's call)** — no toggle, nothing fetches the file. The computed crossings (111 points) remain available as the gazetteer's Road/Trail crossing entries (searchable via Find), and the data file + builder stay in the repo. The §5 caution in `../docs/segment-gap-analysis.md` still applies to the crossing data wherever it appears: a crossing is a line on a map, not a drivable route. |
-| Asset pins | `data/assets.geojson` | on | Photo-inventory pins. **This file does not exist yet** — until the first real photo batch runs, the layer simply shows empty. The pipeline writes `data/assets/assets.geojson` in the repo; copying it to `site/data/assets.geojson` publishes the pins. |
+| Asset pins | `data/assets.geojson` | off | Photo-inventory pins. **This file does not exist yet** — until the first real photo batch runs, the toggle sits disabled in the panel, labelled "(no photos yet)"; a one-time probe enables it if the file appears. The pipeline writes `data/assets/assets.geojson` in the repo; copying it to `site/data/assets.geojson` publishes the pins. |
 
-So the map opens (default view) with just the official line, the
-unadopted gap, the two chapter-end markers, and the (still empty)
-asset-pins layer — sections are one click away. Parcels are built
-but UI-disabled as of Nov 10, 2026, pending a later re-enable (see
-the Parcels row above).
+So the map opens (default view, v4) with the official line, the
+adopted sections over it, the unadopted gap, and the two
+chapter-end markers — the panel tells the adoption story up front
+(73.2 of 76.2 depicted miles adopted, one 2.9 mi gap) with a
+five-item mini-legend under it. The opening fit leaves room for
+both chapter-end labels. Parcels are built but UI-disabled as of
+Nov 10, 2026, pending a later re-enable (see the Parcels row
+above). Toggles are grouped (Chapter / Context) and each wears a
+swatch generated from the same style constants the layer draws
+with, so the panel, the legend, and the map cannot drift apart.
 
 The URL hash also accepts `#view=lat,lon,zoom` to open at a
 particular view instead of fitting the whole trail (combinable with
 `#layers=`, e.g. `#layers=access,roads&view=47.152,-95.195,13`).
 
-Base maps (switcher, top right): OpenStreetMap, OpenTopoMap, the
-**USGS Topo** base (The National Map, built from the 1:24,000
-quadrangle series — added in v3), MnGeo's LiDAR-derived statewide
-hillshade, and two aerial bases (USGS NAIP imagery; Esri World
-Imagery). Cut in v3 on Paul's calls: the USGS shaded-relief base
-(poor next to the 1 m LiDAR hillshade) and MnGeo's Spring Aerial
-Imagery Program photography (nw14 — nothing useful over the
-chapter). Providers, vintages and endpoints: `../SOURCES.md`.
+Base maps (switcher, top right): **Topo (OpenTopoMap) is the
+default since v4** — a new visitor meets terrain first. Then
+Streets (OSM), **USGS Topo 1:24k** (The National Map, built from
+the 1:24,000 quadrangle series — added in v3), Hillshade (MN
+LiDAR), and two aerial bases (USGS NAIP imagery; Esri World
+Imagery — on either aerial base the section labels flip to a
+light-on-dark treatment so they stay readable over photography).
+Cut in v3 on Paul's calls: the USGS shaded-relief base (poor next
+to the 1 m LiDAR hillshade) and MnGeo's Spring Aerial Imagery
+Program photography (nw14 — nothing useful over the chapter).
+Providers, vintages and endpoints: `../SOURCES.md`.
 
-**Section hover card (v3):** hovering a section (its line or its
-floating name, sections layer on) raises a card with the section's
-spreadsheet record — the same public-safe gazetteer card the Find
-box opens (description, tracker section, NCT map refs and miles,
-both lengths, placeholder adopters/sawyer, 2026 maintenance, help
-requested, land, tracker comments, "What's here" contents). The
-card follows the cursor and dismisses on mouse-out; a click still
-opens the section's own popup.
+**Section inspector (v4, replaces the v3 hover card and section
+popups):** one selection model serves the whole map. Clicking a
+section line (or the gap) selects it: a white-and-amber highlight
+hugs the line on the map, and the section's full public-safe
+tracker record renders as a "record sheet" in the left panel,
+below Find — name + tracker code + Adopted/Unadopted pill, a key
+strip (length with the tracker length in parentheses, NCT miles +
+map refs, **placeholder** adopter and sawyer), a red "Help
+requested" callout when the tracker asks for help, the
+description, a "Section details" disclosure (land, 2026
+maintenance, tracker comments, distances from each chapter end,
+access at each end) and a "What's here" contents list, with
+Zoom / Prev / Next buttons that walk the sections in trail order.
+Clicking empty map, pressing Esc, or the × clears it; on phones
+the inspector becomes a bottom sheet. Hovering a section shows
+only a small chip — name, length, adopter (or "Unadopted"),
+"Click for the full record" — after a 300 ms dwell; it never
+follows the cursor and never covers the line you are tracing.
 
 ## Gazetteer (the Find box)
 
@@ -89,12 +108,17 @@ the depicted chain from its west end) and the **NCT virtual mile**
 that section's declared `nct_mile_start/end` by chainage fraction;
 in GAP-W, interpolated 166.58 → 169.5 across the gap; never
 extrapolated — where the calibration doesn't cover a point, the
-field is null). Selecting a result flies the map to it, drops a
-temporary highlight, and opens an info card (kind, NCT mile,
-section, distance from each chapter end); a **section** result's
-card shows the section's full tracker record (below) plus a
-**"What's here"** contents list — every crossing, waypoint and
-boundary the index places inside that section.
+field is null). Selecting a result is a real combobox interaction
+(arrow keys move the active row, Enter selects through the same
+path as a click; `/` focuses the box from anywhere). A
+**section** result selects that section into the panel inspector
+and fits the map to the section's shape — its full tracker record
+plus the **"What's here"** contents list (every crossing,
+waypoint and boundary the index places inside it) live there now.
+Any other result flies the map to it, drops a temporary
+highlight, and opens an info card (kind, NCT mile, section,
+distance from each chapter end). A search with no hits says so
+explicitly and suggests a section, a road, or a lake.
 
 Entries (257 in the 2026-11-10 build): 32 section records
 (31 sections + GAP-W), 32 section boundaries, 2 chapter ends, 114
@@ -242,13 +266,18 @@ Moraine **Chapter** project.
 
 ## Printing
 
-`style.css` has basic `@media print` rules (the panel's notice and
-mileage summary, then the map) because the chapter recruits with
-paper maps at events. The corner buttons and their cards do not
-print — open the Legend card on screen first if you need it beside
-the paper map. Print renders whatever is in the current viewport —
-pan/zoom first. **Untested on paper**; proof before relying on it
-for an event.
+`style.css` has `@media print` rules because the chapter recruits
+with paper maps at events: landscape, the panel's notice (shrunk
+to plain 9 pt text) and mileage summary, a print-only header line
+("Itasca Moraine Chapter — chapter trail map" + the print date),
+the map in the current viewport, and a **print-only legend** in
+the panel (the on-screen corner cards stay screen-only). The
+Leaflet attribution still prints — it is a licence condition, not
+chrome. If a section is selected, its inspector sheet prints on a
+following page as a hand-out card for a prospective adopter.
+Pan/zoom first — print renders whatever is in the current
+viewport. **Untested on paper**; proof before relying on it for
+an event.
 
 ## Known data notes
 
