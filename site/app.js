@@ -529,10 +529,35 @@ function kvTable(rows) {
    past 70 vh and breathing room from the panel/controls. */
 function bindPop(layer, html, maxWidth) {
   layer.bindPopup(html, {
-    maxWidth: maxWidth || 340,
+    maxWidth: maxWidth || 300,
     maxHeight: Math.round(window.innerHeight * 0.7),
     autoPanPadding: [24, 24],
   });
+}
+
+/* Name-tag door (pop-up spec §5): a gazetteer point whose `section`
+   names a section gets one door at the foot of its card — "Open
+   {Section} record" — which closes the popup and runs the same
+   selection path Find uses. Wired by delegation on the popup pane
+   so popup/gazetteer-marker/What's-here doors all share it. */
+document.addEventListener("click", function (e) {
+  var t = e.target;
+  if (!t || !t.classList || !t.classList.contains("pop-door")) return;
+  var name = t.getAttribute("data-section");
+  if (!name) return;
+  map.closePopup();
+  var f = gazFeatureByName(name, "Section");
+  if (f) gazSelectSection(f);
+});
+
+function gazFeatureByName(name, kind) {
+  if (!gazFeatures) return null;
+  for (var i = 0; i < gazFeatures.length; i++) {
+    var f = gazFeatures[i];
+    if (f.properties.name === name &&
+        (!kind || f.properties.kind === kind)) return f;
+  }
+  return null;
 }
 
 function trailPopup(f) {
@@ -542,12 +567,6 @@ function trailPopup(f) {
   return "<h3>" + title + "</h3>" + kvTable([
     ["Chapter", CHAPTER_NAMES[p.chapter] || p.chapter],
     ["Type", kind + (p.trail_type ? " (" + p.trail_type + ")" : "")],
-    ["Certification", p.cert_stat],
-    ["Length", p.len_miles ? p.len_miles + " mi" : null],
-    ["Ownership", p.ownership],
-    ["Managing authority", p.mng_auth],
-    ["Surface", p.trail_surf],
-    ["Closure", p.closure],
   ]);
 }
 
@@ -557,10 +576,7 @@ function parcelPopup(f) {
     ["County", p.county],
     ["Land class", p.land_class],
     ["Acres", p.acres],
-    ["Trail corridor", p.corridor === "crossed"
-      ? "Trail crosses this parcel" : "Adjoins a crossed parcel"],
     ["Owner", p.owner],
-    ["Owner address", p.owner_address],
   ]) + "<p><em>Owner as published in the county parcel records " +
     "(public record).</em></p>";
 }
@@ -568,30 +584,32 @@ function parcelPopup(f) {
 function accessPopup(f) {
   var p = f.properties;
   var s = ACCESS_STYLES[p.source_type];
-  return "<h3>" + (esc(p.name) || (s ? s.label : "Access line")) + "</h3>" +
+  var html = "<h3>" + (esc(p.name) || (s ? s.label : "Access line")) + "</h3>" +
     kvTable([
       ["Kind", s ? s.label : p.source_type],
-      ["Class", p.road_class],
       ["Length", p.miles ? p.miles + " mi" : null],
-      ["Source", p.dataset],
-      ["Shown", p.cut ? "Within the trail corridor — this line " +
-        "continues beyond it" : null],
-      ["Shown", p.connector ? "Kept whole — a connector that " +
-        "crosses the trail" : null],
     ]);
+  if (p.cut) html += "<p class='pop-note'>Continues beyond the corridor</p>";
+  if (p.connector) {
+    html += "<p class='pop-note'>Kept whole — a connector that " +
+      "crosses the trail</p>";
+  }
+  return html;
 }
 
 function roadPopup(f) {
   var p = f.properties;
   var s = ROAD_CLASS_STYLES[p.road_class];
-  return "<h3>" + (esc(p.name) || (s ? s.label : "Road")) + "</h3>" +
+  var html = "<h3>" + (esc(p.name) || (s ? s.label : "Road")) + "</h3>" +
     kvTable([
       ["Class", s ? s.label : p.road_class],
-      ["Shown", p.cut ? "Within the trail corridor — this road " +
-        "continues beyond it" : null],
-      ["Shown", p.connector ? "Kept whole — a connector that " +
-        "crosses the trail" : null],
     ]);
+  if (p.cut) html += "<p class='pop-note'>Continues beyond the corridor</p>";
+  if (p.connector) {
+    html += "<p class='pop-note'>Kept whole — a connector that " +
+      "crosses the trail</p>";
+  }
+  return html;
 }
 
 function assetPopup(f) {
@@ -599,7 +617,6 @@ function assetPopup(f) {
   return "<h3>" + (esc(p.type) || "Asset") + "</h3>" + kvTable([
     ["Condition", p.condition],
     ["Photographed", p.datetime],
-    ["Photographer", p.photographer],
   ]);
 }
 
@@ -1285,16 +1302,225 @@ function renderInspector() {
   wireInspector();
 }
 
-function inspectorFoot(idx) {
+/* The action row (pop-up spec §1.2): directly under the header
+   band, replacing the old footer. Five actions, in meeting order —
+   walk, frame, share. Zoom is the row's one primary button. */
+function inspectorActions(idx, isGap) {
   var prevDis = idx <= 0 ? " disabled" : "";
   var nextDis = idx < 0 || idx >= walkItems.length - 1 ? " disabled" : "";
-  return "<div class='insp-foot'>" +
-    "<button type='button' id='insp-zoom'>Zoom to section</button>" +
-    "<span class='spacer'></span>" +
+  return "<div class='insp-actions'>" +
+    "<span class='insp-walk'>" +
     "<button type='button' id='insp-prev'" + prevDis + ">‹ Prev</button>" +
     "<button type='button' id='insp-next'" + nextDis + ">Next ›</button>" +
-    "</div>" +
-    "<div class='insp-prov'>From the chapter adoption tracker.</div>";
+    "</span>" +
+    "<button type='button' class='primary' id='insp-zoom'>" +
+    (isGap ? "Zoom to the gap" : "Zoom to section") + "</button>" +
+    "<button type='button' id='insp-copy'>" +
+    (isGap ? "Copy the story" : "Copy brief") + "</button>" +
+    "<button type='button' id='insp-print'>Print</button>" +
+    "</div>";
+}
+
+function inspProv() {
+  return "<div class='insp-prov'>From the chapter adoption tracker.</div>";
+}
+
+/* Position line (§4): chainage from each end, each half omitted
+   when its value is absent, no line when both are. */
+function positionLine(r) {
+  var bits = [];
+  if (r.from_west_mi != null) {
+    bits.push(r.from_west_mi + " mi from the west end");
+  }
+  if (r.from_east_mi != null) {
+    bits.push(r.from_east_mi + " mi from the east end");
+  }
+  if (!bits.length) return "";
+  return "<p class='insp-caption'>" + esc(bits.join(" · ")) + "</p>";
+}
+
+/* Getting in (§1.4): the crew leader's first question as a named
+   block. Sections carry boolean end access only, and the copy says
+   exactly that much; the gap carries its named gapEndAccess()
+   strings verbatim. */
+function accessStripHtml(startVal, endVal, oneEndOnly) {
+  var html = "<div class='insp-block insp-access-wrap'>" +
+    "<div class='insp-block-label'>Getting in</div>" +
+    "<div class='insp-access'>" +
+    "<div class='acc-cell'><div class='acc-end'>West end</div>" +
+    "<div class='acc-val'>" + esc(startVal) + "</div></div>" +
+    "<div class='acc-cell'><div class='acc-end'>East end</div>" +
+    "<div class='acc-val'>" + esc(endVal) + "</div></div>" +
+    "</div>";
+  if (oneEndOnly) {
+    html += "<p class='acc-note'>Access at one end only.</p>";
+  }
+  return html + "</div>";
+}
+
+function endAccessText(b) {
+  if (b == null) return "No crossing recorded";
+  return b ? "Crossing recorded" : "No crossing recorded";
+}
+
+/* What's here (§1.6): out of the fold, always visible when the
+   section has contents, kinds in action order, at most 8 names
+   per kind, and every name a button that runs the gazSelect()
+   path — the same jump choosing it in Find performs. */
+var CONTENTS_KIND_ORDER = ["Parking", "Road crossing", "Trail crossing",
+  "Camping", "Water", "Shelter", "POI", "Section boundary",
+  "Chapter end"];
+function contentsHtml(sectionName) {
+  if (!gazFeatures) return "";
+  var contents = gazContents(sectionName);
+  var kinds = CONTENTS_KIND_ORDER.filter(function (k) {
+    return contents[k] && contents[k].length;
+  });
+  Object.keys(contents).forEach(function (k) {
+    if (kinds.indexOf(k) < 0 && contents[k].length) kinds.push(k);
+  });
+  if (!kinds.length) return "";
+  var html = "<div class='insp-block gaz-contents'>" +
+    "<div class='insp-block-label'>What's here</div>";
+  kinds.forEach(function (k) {
+    var feats = contents[k];
+    var shown = feats.slice(0, 8);
+    html += "<div class='gc-row'><span class='gc-kind'>" + esc(k) +
+      " (" + feats.length + ")</span><span class='gc-names'>";
+    shown.forEach(function (f, i) {
+      if (i) html += " · ";
+      html += "<button type='button' class='gc-name' " +
+        "data-gaz='" + esc(f.properties.name) + "'>" +
+        esc(f.properties.name) + "</button>";
+    });
+    if (feats.length > shown.length) {
+      html += " and " + (feats.length - shown.length) + " more";
+    }
+    html += "</span></div>";
+  });
+  return html + "</div>";
+}
+
+function lengthText(r) {
+  var t = r.length_mi != null ? r.length_mi + " mi" : null;
+  if (t && r.tracker_length_mi != null &&
+      r.tracker_length_mi !== r.length_mi) {
+    t += " (tracker " + r.tracker_length_mi + ")";
+  }
+  return t;
+}
+
+/* Copy brief (§1.3): plain text from the record's real fields
+   only; a line whose fields are empty is omitted, never padded. */
+function sectionBrief(r) {
+  var lines = [];
+  var head = r.name + (r.tracker_section
+    ? " (" + r.tracker_section + ")" : "") + " — Itasca Moraine Chapter";
+  lines.push(head);
+  var bits = [];
+  var len = lengthText(r);
+  if (len) bits.push("Length " + len);
+  if (r.nct_mile_start != null && r.nct_mile_end != null) {
+    bits.push("Chapter tracker miles " + r.nct_mile_start + "–" +
+      r.nct_mile_end);
+  }
+  if (r.from_west_mi != null) {
+    bits.push(r.from_west_mi + " mi from the west end");
+  }
+  if (bits.length) lines.push(bits.join(" · "));
+  var crew = [];
+  if (r.adopter_display && r.adopter_display.length) {
+    crew.push("Adopted by " + r.adopter_display.join(", "));
+  }
+  if (r.sawyer_display && r.sawyer_display.length) {
+    crew.push("Sawyer " + r.sawyer_display.join(", "));
+  }
+  if (crew.length) lines.push(crew.join(" · "));
+  if (r.help_requested != null && r.help_requested !== "") {
+    lines.push("Help requested: " + String(r.help_requested));
+  }
+  if (r.access_at_start != null || r.access_at_end != null) {
+    lines.push("Access: crossing " +
+      (r.access_at_start ? "recorded" : "not recorded") +
+      " at the west end; crossing " +
+      (r.access_at_end ? "recorded" : "not recorded") +
+      " at the east end.");
+  }
+  if (gazFeatures) {
+    var contents = gazContents(r.name);
+    var kinds = CONTENTS_KIND_ORDER.filter(function (k) {
+      return contents[k] && contents[k].length;
+    });
+    Object.keys(contents).forEach(function (k) {
+      if (kinds.indexOf(k) < 0 && contents[k].length) kinds.push(k);
+    });
+    if (kinds.length) {
+      lines.push("What's here: " + kinds.map(function (k) {
+        return k + " (" + contents[k].length + ")";
+      }).join(", "));
+    }
+  }
+  if (r.description) { lines.push(""); lines.push(r.description); }
+  lines.push("");
+  lines.push("From the chapter trail map.");
+  return lines.join("\n");
+}
+
+/* Copy the story (§2): the gap's brief — the recruiting text,
+   assembled from the gap feature's real fields, ending on the
+   header spec's ask, verbatim. */
+function gapBrief(p) {
+  var lines = [];
+  lines.push("The chapter's one unadopted stretch: " + p.gap_id +
+    " — " + p.length_mi + " mi at the west end");
+  lines.push("of the Itasca Moraine Chapter line, in " +
+    p.land_context + ".");
+  lines.push("");
+  lines.push("West end: " + gapEndAccess(p, "start"));
+  lines.push("East end: " + gapEndAccess(p, "end"));
+  var crossings = (p.crossings || []).map(function (c) {
+    return c.label + (c.dist_mi != null ? " (" + c.dist_mi + " mi in)" : "");
+  });
+  if (crossings.length) {
+    lines.push("Trails crossing it: " + crossings.join("; "));
+  }
+  lines.push("");
+  lines.push("It needs an adopter.");
+  return lines.join("\n");
+}
+
+/* One shared copy routine (§1.2): clipboard first; on failure the
+   brief lands in a temporary selected textarea for manual copy —
+   never a silent no-op. The button reads "Copied" for two
+   seconds, then reverts. */
+function copyBriefText(text, btn) {
+  function done() {
+    if (!btn) return;
+    var orig = btn.getAttribute("data-label") || btn.textContent;
+    btn.setAttribute("data-label", orig);
+    btn.textContent = "Copied";
+    window.setTimeout(function () { btn.textContent = orig; }, 2000);
+  }
+  function fallback() {
+    var ta = document.createElement("textarea");
+    ta.value = text;
+    ta.setAttribute("readonly", "");
+    ta.style.position = "fixed";
+    ta.style.left = "8px";
+    ta.style.bottom = "8px";
+    ta.style.zIndex = "3000";
+    document.body.appendChild(ta);
+    ta.focus();
+    ta.select();
+    try { document.execCommand("copy"); } catch (e) {}
+    window.setTimeout(function () { ta.remove(); }, 8000);
+    done();
+  }
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(text).then(done, fallback);
+  } else {
+    fallback();
+  }
 }
 
 function sectionInspectorHtml(item) {
@@ -1307,60 +1533,65 @@ function sectionInspectorHtml(item) {
   if (r.tracker_section) {
     html += "<span class='insp-code'>" + esc(r.tracker_section) + "</span>";
   }
-  html += "<span class='insp-pill " + (adopted ? "adopted" : "unadopted") +
+  /* Adopted wears the soft green tint (§1.1) — it is the normal,
+     good state; red stays the colour of exception, spent once. */
+  html += "<span class='insp-pill " +
+    (adopted ? "adopted soft" : "unadopted") +
     "'>" + (adopted ? "Adopted" : "Unadopted") + "</span>";
   html += "<button type='button' class='insp-close' id='insp-close' " +
     "aria-label='Clear selection'>×</button></div>";
+  html += inspectorActions(idx, false);
   html += "<div class='insp-body'>";
-  if (r.nct_mile != null || r.from_west_mi != null) {
-    var cap = [];
-    /* M3: a tracker mile figure always carries its source label
-       when it appears — the two reckonings differ by ~46–48 mi. */
-    if (r.nct_mile != null) {
-      cap.push("NCT " + r.nct_mile + " (chapter tracker miles)");
-    }
-    if (r.from_west_mi != null) {
-      cap.push(r.from_west_mi + " mi from the west end");
-    }
-    html += "<p class='insp-caption'>" + esc(cap.join(" · ")) + "</p>";
-  }
-  /* Key strip: the four facts a meeting actually asks about. */
+  html += positionLine(r);
+  /* Key strip (§1.1/§3): three cells — Length, Chapter tracker
+     miles, Adopted by. Sawyer and map refs ride the crew line. */
   var ks = "";
-  var lenVal = fmtMi(r.length_mi);
-  if (lenVal && r.tracker_length_mi != null &&
-      r.tracker_length_mi !== r.length_mi) {
-    lenVal += " <span class='muted'>(tracker " +
-      r.tracker_length_mi + ")</span>";
-  }
-  if (lenVal) {
+  var len = lengthText(r);
+  if (len) {
+    var lenHtml = esc(len);
+    if (r.tracker_length_mi != null &&
+        r.tracker_length_mi !== r.length_mi) {
+      lenHtml = esc(r.length_mi + " mi") +
+        " <span class='muted'>(tracker " + r.tracker_length_mi +
+        ")</span>";
+    }
     ks += "<div><div class='ks-label'>Length</div>" +
-      "<div class='ks-value'>" + lenVal + "</div></div>";
+      "<div class='ks-value'>" + lenHtml + "</div></div>";
   }
   if (r.nct_mile_start != null && r.nct_mile_end != null) {
-    var nct = r.nct_mile_start + "–" + r.nct_mile_end;
-    if (r.map_refs && r.map_refs.length) {
-      nct += " <span class='muted'>· map " +
-        esc(r.map_refs.join(", ")) + "</span>";
-    }
-    ks += "<div><div class='ks-label'>NCT miles (tracker)</div>" +
-      "<div class='ks-value'>" + nct + "</div></div>";
+    ks += "<div><div class='ks-label'>Chapter tracker miles</div>" +
+      "<div class='ks-value'>" + r.nct_mile_start + "–" +
+      r.nct_mile_end + "</div></div>";
   }
   if (r.adopter_display && r.adopter_display.length) {
     ks += "<div><div class='ks-label'>Adopted by</div>" +
       "<div class='ks-value'>" +
       esc(r.adopter_display.join(", ")) + "</div></div>";
   }
-  if (r.sawyer_display && r.sawyer_display.length) {
-    ks += "<div><div class='ks-label'>Sawyer</div>" +
-      "<div class='ks-value'>" +
-      esc(r.sawyer_display.join(", ")) + "</div></div>";
-  }
   if (ks) html += "<div class='insp-keystrip'>" + ks + "</div>";
-  /* Help callout: the recruiting signal, out of row 13. */
-  if (r.help_requested != null && r.help_requested !== "") {
-    html += "<div class='insp-help'><strong>Help requested: " +
-      esc(String(r.help_requested)) + "</strong></div>";
+  var crew = "";
+  if (r.sawyer_display && r.sawyer_display.length) {
+    crew = "Sawyer: <span class='crew-names'>" +
+      esc(r.sawyer_display.join(", ")) + "</span>";
   }
+  if (r.map_refs && r.map_refs.length) {
+    crew += (crew ? " · " : "") + "Map " +
+      esc(r.map_refs.join(", "));
+  }
+  if (crew) html += "<p class='insp-crew'>" + crew + "</p>";
+  /* Ask band (§1.5): the tracker value verbatim, red spent on the
+     label only, one honest action — the same Copy brief. */
+  if (r.help_requested != null && r.help_requested !== "") {
+    var hv = String(r.help_requested);
+    var sentence = /[a-z]/i.test(hv) && hv.trim().indexOf(" ") >= 0;
+    html += "<div class='insp-ask'><div class='ask-label'>" +
+      "Help requested</div><div class='ask-value" +
+      (sentence ? " prose" : "") + "'>" + esc(hv) + "</div>" +
+      "<button type='button' class='ask-copy' id='insp-ask-copy'>" +
+      "Copy a brief for the crew</button></div>";
+  }
+  html += accessStripHtml(endAccessText(r.access_at_start),
+    endAccessText(r.access_at_end), r.both_ends_access === false);
   if (r.description) {
     var long = String(r.description).length > 160;
     html += "<p class='insp-desc" + (long ? " clamped" : "") +
@@ -1370,10 +1601,8 @@ function sectionInspectorHtml(item) {
         "id='insp-more'>More</button>";
     }
   }
-  /* Details tier: reference trivia, demoted not deleted. */
-  var yn = function (b) {
-    return b == null ? null : (b ? "Yes" : "No crossing recorded");
-  };
+  html += contentsHtml(item.name);
+  /* Record details (§3): only what the hierarchy demotes here. */
   var rows = "";
   rows += inspRow("Land", r.land_context);
   rows += inspRow("2026 maintenance", r.maintenance_2026);
@@ -1382,59 +1611,33 @@ function sectionInspectorHtml(item) {
     rows += inspRow("Tracker comments",
       "Withheld from the public map");
   }
-  if (r.help_requested != null && r.help_requested !== "") {
-    rows += inspRow("Help requested (as recorded in tracker)",
-      String(r.help_requested));
-  }
-  rows += inspRow("From the west end",
-    r.from_west_mi != null ? r.from_west_mi + " mi along the trail" : null);
-  rows += inspRow("From the east end",
-    r.from_east_mi != null ? r.from_east_mi + " mi along the trail" : null);
-  rows += inspRow("Access at start", yn(r.access_at_start));
-  rows += inspRow("Access at end", yn(r.access_at_end));
   if (rows) {
-    html += "<details class='insp-details'><summary>Section " +
+    html += "<details class='insp-details'><summary>Record " +
       "details</summary><div class='insp-rows'>" + rows +
       "</div></details>";
   }
-  if (gazFeatures) {
-    var contents = gazContents(item.name);
-    var kinds = Object.keys(contents).sort();
-    if (kinds.length) {
-      var ch = "";
-      kinds.forEach(function (k) {
-        var names = contents[k];
-        ch += "<div class='gc-row'><span class='gc-count'>" +
-          names.length + "</span><span><strong>" + esc(k) +
-          "</strong> <span class='gc-names'>" +
-          names.slice(0, 25).map(esc).join("; ") +
-          (names.length > 25 ? "; …" : "") +
-          "</span></span></div>";
-      });
-      html += "<details class='insp-details'><summary>What's " +
-        "here</summary><div class='gaz-contents'>" + ch +
-        "</div></details>";
-    }
-  }
-  html += "</div>" + inspectorFoot(idx) + "</div>";
+  html += "<p class='insp-print-note'>Maintenance notes and tracker " +
+    "comments are in the chapter adoption tracker.</p>";
+  html += "</div>" + inspProv() + "</div>";
   return html;
 }
 
 function gapInspectorHtml(item) {
   var p = item.feature.properties || {};
+  var gz = gazSectionRecord(p.gap_id) || {};
   var idx = walkItems.indexOf(item);
-  var crossings = (p.crossings || []).map(function (c) {
-    return c.label + (c.dist_mi != null ? " (" + c.dist_mi + " mi in)" : "");
-  }).join("; ");
   var html = "<div class='insp-sheet is-gap'>";
   html += "<div class='insp-head'><span class='insp-title'>" +
     (esc(p.gap_id) || "Gap") + "</span>" +
     "<span class='insp-pill unadopted'>Unadopted</span>" +
     "<button type='button' class='insp-close' id='insp-close' " +
     "aria-label='Clear selection'>×</button></div>";
+  html += inspectorActions(idx, true);
   html += "<div class='insp-body'>";
   html += "<div class='insp-standing'><strong>No adopter — this is " +
-    "the chapter's recruiting gap.</strong></div>";
+    "the chapter's recruiting gap.</strong></div>" +
+    "<p class='insp-ask-print'>It needs an adopter.</p>";
+  html += positionLine(gz);
   var ks = "";
   if (p.length_mi != null) {
     ks += "<div><div class='ks-label'>Length</div>" +
@@ -1445,11 +1648,12 @@ function gapInspectorHtml(item) {
       "<div class='ks-value'>" + esc(p.land_context) + "</div></div>";
   }
   if (ks) html += "<div class='insp-keystrip'>" + ks + "</div>";
+  /* Getting in — named, because the gap's data is named (§2). */
+  html += accessStripHtml(gapEndAccess(p, "start"),
+    gapEndAccess(p, "end"), false);
   if (p.name) html += "<p class='insp-desc'>" + esc(p.name) + "</p>";
+  html += contentsHtml(p.gap_id);
   var rows = "";
-  rows += inspRow("West end access", gapEndAccess(p, "start"));
-  rows += inspRow("East end access", gapEndAccess(p, "end"));
-  rows += inspRow("Trails crossing it", crossings || null);
   rows += inspRow("Type",
     p.trail_stat === "off-road" ? "Off-road trail" : p.trail_stat);
   rows += inspRow("Note", p.note);
@@ -1458,8 +1662,18 @@ function gapInspectorHtml(item) {
       "details</summary><div class='insp-rows'>" + rows +
       "</div></details>";
   }
-  html += "</div>" + inspectorFoot(idx) + "</div>";
+  html += "<p class='insp-print-note'>Maintenance notes and tracker " +
+    "comments are in the chapter adoption tracker.</p>";
+  html += "</div>" + inspProv() + "</div>";
   return html;
+}
+
+function currentBrief() {
+  if (!selection) return "";
+  if (selection.type === "gap") {
+    return gapBrief(selection.feature.properties || {});
+  }
+  return sectionBrief(sectionRecord(selection));
 }
 
 function wireInspector() {
@@ -1471,12 +1685,34 @@ function wireInspector() {
   if (prev) prev.addEventListener("click", function () { selectStep(-1); });
   var next = document.getElementById("insp-next");
   if (next) next.addEventListener("click", function () { selectStep(1); });
+  var copy = document.getElementById("insp-copy");
+  if (copy) copy.addEventListener("click", function () {
+    copyBriefText(currentBrief(), copy);
+  });
+  var askCopy = document.getElementById("insp-ask-copy");
+  if (askCopy) askCopy.addEventListener("click", function () {
+    copyBriefText(currentBrief(), askCopy);
+  });
+  var print = document.getElementById("insp-print");
+  if (print) print.addEventListener("click", function () {
+    window.print();
+  });
   var more = document.getElementById("insp-more");
   if (more) more.addEventListener("click", function () {
     var d = document.getElementById("insp-desc");
     if (!d) return;
     var clamped = d.classList.toggle("clamped");
     more.textContent = clamped ? "More" : "Less";
+  });
+  /* What's-here name buttons: the gazSelect() path, exactly what
+     choosing the feature in Find performs (§1.6). The section
+     selection is untouched. */
+  var names = document.querySelectorAll("#inspector .gc-name");
+  names.forEach(function (btn) {
+    btn.addEventListener("click", function () {
+      var f = gazFeatureByName(btn.getAttribute("data-gaz"));
+      if (f) gazSelect(f);
+    });
   });
 }
 
@@ -1507,8 +1743,8 @@ function chipFacts(p, isGap) {
   var bits = [];
   if (p.length_mi != null) bits.push(p.length_mi + " mi");
   if (isGap) bits.push("Unadopted");
-  else if (p.adopter_display && p.adopter_display.length) {
-    bits.push(p.adopter_display[0]);
+  else if (p.chainage_start_mi != null) {
+    bits.push("starts " + p.chainage_start_mi + " mi from the west end");
   }
   return bits.join(" · ");
 }
@@ -1533,7 +1769,7 @@ function armChip(layer, feature, latlng, place) {
     }
     var facts = chipFacts(p, isGap);
     if (facts) html += "<span class='hc-facts'>" + esc(facts) + "</span>";
-    html += "<span class='hc-hint'>Click for the full record</span>";
+    html += "<span class='hc-hint'>Click to open the record</span>";
     chipTip = L.tooltip({
       direction: place.direction, offset: place.offset,
       className: "hover-chip", opacity: 1,
@@ -2122,7 +2358,7 @@ var LAYERS = [
             }),
           });
         }
-        bindPop(mk, gazPopupHtml(f), 320);
+        bindPop(mk, gazPopupHtml(f));
         inner.addLayer(mk);
       });
       outer.addLayer(inner);
@@ -2566,7 +2802,7 @@ function gazContents(sectionName) {
     var inside = p.section === sectionName ||
       (p.sections && p.sections.indexOf(sectionName) >= 0);
     if (!inside) return;
-    (byKind[p.kind] = byKind[p.kind] || []).push(p.name);
+    (byKind[p.kind] = byKind[p.kind] || []).push(f);
   });
   return byKind;
 }
@@ -2575,23 +2811,32 @@ function gazPopupHtml(f) {
   var p = f.properties;
   var rows = [
     ["Kind", p.kind],
-    ["NCT mile (chapter tracker)",
+    ["Chapter tracker mile",
       p.nct_mile != null ? p.nct_mile : null],
-    ["Section", p.section],
     ["From the west end",
       p.from_west_mi != null ? p.from_west_mi + " mi along the trail" : null],
-    ["From the east end",
-      p.from_east_mi != null ? p.from_east_mi + " mi along the trail" : null],
   ];
-  if (p.sections && p.sections.length) {
-    rows[2] = ["Sections meeting here", p.sections.join(" / ")];
-  }
   if (p.off_chain) {
     rows.push(["Position", "Off the depicted chapter chain — nearest " +
       "depicted point ≈ " + (p.snap_m / 1000).toFixed(1) + " km"]);
   }
   rows.push(["Description", p.description]);
-  return "<h3>" + (esc(p.name) || "Place") + "</h3>" + kvTable(rows);
+  var html = "<h3>" + (esc(p.name) || "Place") + "</h3>" + kvTable(rows);
+  /* The door (§5): the section is opened, not named in a row. A
+     point on a section boundary names both — the first that
+     resolves to a walk item is the door. */
+  var door = null;
+  if (p.section && walkByName[p.section]) door = p.section;
+  else if (p.sections) {
+    for (var i = 0; i < p.sections.length && !door; i++) {
+      if (walkByName[p.sections[i]]) door = p.sections[i];
+    }
+  }
+  if (door) {
+    html += "<button type='button' class='pop-door' data-section='" +
+      esc(door) + "'>Open " + esc(door) + " record</button>";
+  }
+  return html;
 }
 
 /* Non-section results: fly, highlight, popup (unchanged role). */
@@ -2604,7 +2849,7 @@ function gazSelect(f) {
     radius: 10, color: COLORS.gap, weight: 3,
     fillColor: "#fc8d59", fillOpacity: 0.55,
   }).addTo(map);
-  bindPop(gazMarker, gazPopupHtml(f), 320);
+  bindPop(gazMarker, gazPopupHtml(f));
   window.setTimeout(function () { gazMarker.openPopup(); }, 850);
 }
 
@@ -2644,14 +2889,14 @@ function gazResultSub(p) {
   var bits = [p.kind];
   if (p.kind === "Section") {
     if (p.nct_mile_start != null && p.nct_mile_end != null) {
-      bits.push("NCT (tracker) " + p.nct_mile_start + "–" +
+      bits.push("Tracker miles " + p.nct_mile_start + "–" +
         p.nct_mile_end);
     } else if (p.nct_mile != null) {
-      bits.push("NCT (tracker) " + p.nct_mile);
+      bits.push("Tracker miles " + p.nct_mile);
     }
     if (p.length_mi != null) bits.push(p.length_mi + " mi");
   } else {
-    if (p.nct_mile != null) bits.push("NCT (tracker) " + p.nct_mile);
+    if (p.nct_mile != null) bits.push("Tracker miles " + p.nct_mile);
     else if (p.off_chain) bits.push("off-chain");
     if (p.section) bits.push("in " + p.section);
   }

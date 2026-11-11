@@ -343,21 +343,24 @@ html, body {
   background: var(--paper);
 }
 
-/* "What's here" contents list (inspector details tier). */
+/* "What's here" contents block (pop-up spec §1.6): always
+   visible, kinds in action order, every name a door. */
 .gaz-contents { font-size: 0.83rem; }
 .gaz-contents .gc-row {
   display: flex; align-items: baseline; gap: 6px; margin: 3px 0;
 }
-.gaz-contents .gc-count {
-  flex: 0 0 auto;
-  background: var(--paper-hover);
-  border: 1px solid var(--paper-line);
-  border-radius: 999px;
-  padding: 0 7px;
-  font-size: 0.72rem;
-  font-weight: 700;
+.gaz-contents .gc-kind { font-weight: 600; white-space: nowrap; }
+.gaz-contents .gc-names { color: var(--ink-soft); font-size: 13px; }
+.gaz-contents .gc-name {
+  background: none; border: none; padding: 0;
+  font: inherit; color: var(--ink); cursor: pointer;
+  text-align: left;
 }
-.gaz-contents .gc-names { color: var(--ink-soft); }
+.gaz-contents .gc-name:hover { text-decoration: underline; }
+.gaz-contents .gc-name:focus-visible {
+  color: var(--trail-deep); outline: none;
+  text-decoration: underline;
+}
 
 /* ---------------------------------------------------------- inspector
    The section record's fixed home (UX-REVIEW Part 1), wearing the
@@ -386,8 +389,7 @@ html, body {
   margin-top: 8px;
   background: #fdf0ec;
   border: 1px solid #eec5bb;
-  border-left: 3px solid var(--gap);
-  border-radius: 4px;
+  border-radius: 6px;
   padding: 6px 9px;
   font-size: 0.85rem;
   color: #8f1d10;
@@ -411,7 +413,7 @@ html, body {
   background: var(--header-tint);
   padding: 8px 10px;
 }
-.insp-title { font-size: 17px; font-weight: 600; line-height: 1.2; }
+.insp-title { font-size: 18px; font-weight: 650; line-height: 1.2; }
 .insp-code {
   font-size: 10.5px;
   font-weight: 700;
@@ -453,17 +455,67 @@ html, body {
 }
 .insp-close:hover { background: var(--paper-hover); color: var(--ink); }
 
-.insp-body { padding: 8px 11px 10px; }
+.insp-body { padding: 10px 12px 12px; }
 .insp-caption {
   font-size: 11px;
   color: var(--ink-soft);
-  margin: 0 0 7px;
+  margin: 0 0 10px;
+}
+/* Ruled blocks (§6): the body is a sequence of blocks separated
+   by the hairline, not floating margins. */
+.insp-block {
+  border-top: 1px solid #eee7d2;
+  padding-top: 10px;
+  margin-top: 10px;
+}
+.insp-block-label {
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--ink-soft);
+  margin-bottom: 6px;
+}
+/* Action row (§1.2/§6): paper ground under the header band, one
+   primary button, Prev/Next as a segmented pair. */
+.insp-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  align-items: center;
+  background: var(--paper);
+  padding: 7px 11px;
+  border-bottom: 1px solid #eee7d2;
+}
+.insp-actions button {
+  background: var(--paper);
+  border: 1px solid #a89a5b;
+  border-radius: 14px;
+  padding: 4px 12px;
+  font-size: 0.83rem;
+  cursor: pointer;
+}
+.insp-actions button:hover { background: var(--paper-hover); }
+.insp-actions button:disabled { opacity: 0.45; cursor: default; }
+.insp-actions button.primary {
+  background: var(--trail-deep);
+  border-color: var(--trail-deep);
+  color: #fff;
+}
+.insp-actions button.primary:hover { background: var(--trail-deep); }
+.insp-walk { display: inline-flex; }
+.insp-walk button { border-radius: 0; }
+.insp-walk button:first-child {
+  border-radius: 14px 0 0 14px;
+}
+.insp-walk button:last-child {
+  border-radius: 0 14px 14px 0;
+  border-left: none;
 }
 .insp-keystrip {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 7px 12px;
-  margin-bottom: 8px;
+  margin-bottom: 10px;
 }
 .insp-keystrip .ks-label {
   font-size: 10px;
@@ -471,17 +523,65 @@ html, body {
   letter-spacing: 0.05em;
   color: var(--ink-soft);
 }
-.insp-keystrip .ks-value { font-size: 13.5px; font-weight: 600; }
+.insp-keystrip .ks-value { font-size: 14px; font-weight: 650; }
 .insp-keystrip .ks-value .muted {
   font-weight: 400; color: var(--ink-soft); font-size: 11.5px;
 }
-.insp-help {
-  border-left: 3px solid var(--gap);
+.insp-crew {
+  font-size: 12px;
+  color: var(--ink-soft);
+  margin: -4px 0 10px;
+}
+.insp-crew .crew-names { color: var(--ink); }
+/* Ask band (§1.5): a bordered invitation; red on the label only,
+   the tracker value verbatim beneath it. */
+.insp-ask {
+  border: 1px solid #eec5bb;
   background: #fdf0ec;
-  border-radius: 0 4px 4px 0;
-  padding: 6px 9px;
-  font-size: 13px;
-  margin: 0 0 8px;
+  border-radius: 6px;
+  padding: 8px 10px;
+  margin: 0 0 10px;
+}
+.insp-ask .ask-label {
+  font-size: 10.5px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: #b2182b;
+  margin-bottom: 3px;
+}
+.insp-ask .ask-value { font-size: 13.5px; font-weight: 650; }
+.insp-ask .ask-value.prose {
+  font-size: 13px; font-weight: 400; line-height: 1.45;
+}
+.insp-ask .ask-copy {
+  background: none; border: none; padding: 0;
+  margin-top: 6px;
+  color: var(--trail-deep); font-size: 12.5px; font-weight: 600;
+  cursor: pointer;
+}
+.insp-ask .ask-copy:hover { text-decoration: underline; }
+/* Getting in (§1.4/§6). */
+.insp-access {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+.insp-access .acc-cell {
+  background: var(--paper);
+  border-radius: 6px;
+  padding: 7px 9px;
+}
+.insp-access .acc-end {
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--ink-soft);
+}
+.insp-access .acc-val { font-size: 12.5px; font-weight: 550; }
+.insp-access-wrap .acc-note {
+  font-size: 12px; font-weight: 600; color: var(--ink);
+  margin: 6px 0 0;
 }
 .insp-standing {
   border-left: 3px solid var(--gap);
@@ -491,7 +591,8 @@ html, body {
   font-size: 13px;
   margin: 0 0 8px;
 }
-.insp-desc { font-size: 13px; line-height: 1.45; margin: 0 0 8px; }
+.insp-desc { font-size: 13px; line-height: 1.45; margin: 10px 0 8px; }
+.insp-ask-print, .insp-print-note { display: none; }
 .insp-desc.clamped {
   display: -webkit-box;
   -webkit-line-clamp: 3;
@@ -533,29 +634,11 @@ html, body {
   color: var(--ink-soft);
   padding-top: 2px;
 }
-.insp-foot {
-  display: flex;
-  gap: 6px;
-  padding: 8px 11px 10px;
-  border-top: 1px solid #eee7d2;
-}
-.insp-foot button {
-  background: var(--paper);
-  border: 1px solid #a89a5b;
-  border-radius: 14px;
-  padding: 4px 12px;
-  font-size: 0.83rem;
-  cursor: pointer;
-}
-.insp-foot button:hover { background: var(--paper-hover); }
-.insp-foot button:disabled { opacity: 0.45; cursor: default; }
-.insp-foot .spacer { flex: 1 1 auto; }
 .insp-prov {
   font-size: 10.5px;
   font-style: italic;
   color: var(--ink-soft);
-  padding: 0 11px 9px;
-  margin-top: -4px;
+  padding: 0 12px 10px;
 }
 
 /* Label highlight while its section's record is up (DESIGN §4). */
@@ -841,11 +924,28 @@ body.base-imagery.gap-chip .gap-label span {
 }
 
 .leaflet-popup-content { font-size: 0.88rem; line-height: 1.45; }
-.leaflet-popup-content h3 { margin: 0 0 4px; font-size: 0.95rem; }
+.leaflet-popup-content h3 {
+  margin: 0 0 4px; font-size: 15px; font-weight: 600; color: var(--ink);
+}
 .leaflet-popup-content table { border-collapse: collapse; }
 .leaflet-popup-content td { padding: 1px 8px 1px 0; vertical-align: top; }
-.leaflet-popup-content td.k { color: var(--ink-soft); white-space: nowrap; }
-.leaflet-popup-content-wrapper { border-radius: 8px; }
+.leaflet-popup-content td.k {
+  color: var(--ink-soft); white-space: nowrap;
+  font-size: 10.5px; text-transform: uppercase; letter-spacing: 0.05em;
+  padding-top: 3px;
+}
+.leaflet-popup-content-wrapper {
+  border-radius: 10px;
+  border: 1px solid var(--paper-line);
+}
+.leaflet-popup-content .pop-note { margin: 4px 0 0; font-size: 12.5px; }
+.leaflet-popup-content .pop-door {
+  background: none; border: none; padding: 0;
+  margin-top: 6px;
+  color: var(--trail-deep); font-size: 13px; font-weight: 600;
+  cursor: pointer;
+}
+.leaflet-popup-content .pop-door:hover { text-decoration: underline; }
 
 /* ---------------------------------------------------------- mobile */
 
@@ -882,6 +982,19 @@ body.base-imagery.gap-chip .gap-label span {
     box-shadow: 0 -4px 18px rgba(28, 42, 30, 0.3);
     margin-top: 0;
   }
+  /* The action row stays under the thumb while the sheet's
+     record scrolls beneath it (§8); 40px targets on touch. */
+  #inspector .insp-actions {
+    position: sticky;
+    top: 0;
+    z-index: 5;
+  }
+  #inspector .insp-actions button { min-height: 40px; }
+  .insp-access { grid-template-columns: 1fr; }
+}
+
+@media (pointer: coarse) {
+  .insp-actions button { min-height: 40px; }
 }
 
 /* ---------------------------------------------------------- print
@@ -947,5 +1060,30 @@ body.base-imagery.gap-chip .gap-label span {
   #inspector.has-selection .insp-sheet {
     box-shadow: none;
     max-width: 560px;
+  }
+  /* The record as a handout (pop-up spec §8): screen furniture
+     never prints; the description prints in full; the fold is
+     replaced by one line pointing at the tracker. */
+  .insp-actions, .insp-close, .insp-more { display: none; }
+  .insp-head, .insp-pill { print-color-adjust: exact; }
+  .insp-desc.clamped {
+    display: block;
+    -webkit-line-clamp: unset;
+    overflow: visible;
+  }
+  .insp-details { display: none; }
+  .insp-print-note {
+    display: block;
+    font-size: 10.5px; font-style: italic; color: var(--ink-soft);
+    margin: 10px 0 0;
+  }
+  .insp-ask-print {
+    display: block;
+    font-size: 13px; font-weight: 650;
+    margin: 0 0 8px;
+  }
+  .gaz-contents .gc-name {
+    color: var(--ink);
+    text-decoration: none;
   }
 }
