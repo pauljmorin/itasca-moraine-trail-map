@@ -1,0 +1,106 @@
+{
+ "type": "FeatureCollection",
+ "metadata": {
+  "dataset": "NCTA trail alerts (alert points), clipped to the chapter working extent",
+  "source_layer_id": 1,
+  "source_layer_name": "trail_alerts",
+  "date_note": "date_ms is the service's stored instant verbatim; date is its America/Chicago calendar date (the service stores UTC midnight of the following day \u2014 see pull_trail_alerts.py).",
+  "feature_count": 5,
+  "source_service": "https://services2.arcgis.com/UfGVyqUm4GHa2zrj/arcgis/rest/services/trail_alerts/FeatureServer",
+  "pulled_utc_date": "2026-11-11",
+  "extent_wgs84": {
+   "min_lon": -95.6,
+   "max_lon": -94.3,
+   "min_lat": 46.7,
+   "max_lat": 47.35
+  },
+  "clip_method": "Envelope selection (object-id fetch, chunk-verified); positions from GeoJSON geometry requested with outSR=4326"
+ },
+ "features": [
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -95.291023,
+     47.067437
+    ]
+   },
+   "properties": {
+    "title": "Trail Alert - Tamarac NWR to Lake George",
+    "location": "Tamarac NWR to Lake George",
+    "date": "2025-07-26",
+    "date_ms": 1753574400000,
+    "description": "A bad windstorm recently hit the North Country Trail in the Tamarac NWR-Itasca-Lake George-Bemidji area. Hikers should expect downed trees on the trail. "
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -95.417646,
+     47.169349
+    ]
+   },
+   "properties": {
+    "title": "Trail Alert - Clearwater County Forest",
+    "location": "Clearwater County Forest",
+    "date": "2025-09-08",
+    "date_ms": 1757376000000,
+    "description": "Salvage logging to occur west of CR-39 this fall - closing the NCT between Mackenzie Forest Rd and CR-39."
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -95.561531,
+     46.934347
+    ]
+   },
+   "properties": {
+    "title": "Trail Alert: Tamarac National Wildlife Refuge",
+    "location": "Tamarac National Wildlife Refuge",
+    "date": "2026-04-12",
+    "date_ms": 1776038400000,
+    "description": "The 400th Ave. / Rogstad Campsite is CLOSED as the property is now owned by the U.S. Fish & Wildlife Service, which does not allow overnight use."
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -95.55196,
+     46.93648
+    ]
+   },
+   "properties": {
+    "title": "Trail Alert: Tamarac NWR",
+    "location": "Tamarac NWR",
+    "date": "2026-06-11",
+    "date_ms": 1781222400000,
+    "description": "The new NCT route and campsite east of Tamarac NWR is now open"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -94.8224,
+     47.059418
+    ]
+   },
+   "properties": {
+    "title": "Trail Alert: Waboose Lake",
+    "location": "Waboose Lake, Paul Bunyan State Forest",
+    "date": "2026-08-11",
+    "date_ms": 1786492800000,
+    "description": "The campsite and adjacent trail was recently vandalized with graffiti.  It is currently being addressed by the Minnesota DNR and the ITM Chapter hopes that it will be rehabbed soon.  Please know that the graffiti is very inappropriate and is pervasive."
+   }
+  }
+ ]
+}

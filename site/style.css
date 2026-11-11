@@ -244,6 +244,12 @@ html, body {
   display: inline-block; width: 14px; height: 10px;
   border: 1px solid #7a744f; margin: 0 1px;
 }
+.tog-swatch-alert {
+  flex: 0 0 auto;
+  display: inline-block; width: 9px; height: 9px;
+  transform: rotate(45deg);
+  border: 1.5px solid #fff; box-shadow: 0 0 2px #333; margin: 0 3.5px;
+}
 .tog-suffix { color: var(--ink-soft); font-size: 0.8rem; }
 .tog-error {
   color: #b2182b;
@@ -683,6 +689,16 @@ html, body {
   box-shadow: 0 0 2px #333;
   margin: 0 9px;
 }
+#legend .swatch.alert, #legend-print-body .swatch.alert {
+  width: 11px;
+  height: 11px;
+  border-top: none;
+  transform: rotate(45deg);
+  background: var(--gap);
+  border: 1.5px solid #fff;
+  box-shadow: 0 0 2px #333;
+  margin: 0 9.5px;
+}
 /* Numeral swatches (mileage rows): the legend shows the label
    typography itself — a bare slate number. */
 #legend .swatch.num, #legend-print-body .swatch.num {
@@ -869,6 +885,30 @@ body.gap-chip .gap-label span {
   box-shadow: 0 1px 2px rgba(28, 42, 30, 0.35);
 }
 
+/* Trail alert markers: a red warning diamond in the gap red —
+   deliberately unlike the round Places letter discs and the
+   orange asset pins. The glyph is counter-rotated upright. */
+.alert-marker-wrap { background: none; border: none; }
+.alert-marker {
+  display: block;
+  width: 16px;
+  height: 16px;
+  transform: rotate(45deg);
+  background: var(--gap);
+  border: 1.5px solid #fff;
+  border-radius: 3px;
+  box-shadow: 0 1px 3px rgba(28, 42, 30, 0.45);
+}
+.alert-glyph {
+  display: block;
+  transform: rotate(-45deg);
+  color: #fff;
+  font-size: 11px;
+  font-weight: 800;
+  line-height: 16px;
+  text-align: center;
+}
+
 /* Hover-lite chip (UX-REVIEW Part 1): small, static, non-interactive.
    Replaces the v3 cursor-following full-record hover card. */
 .leaflet-tooltip.hover-chip {
@@ -939,6 +979,7 @@ body.base-imagery.gap-chip .gap-label span {
   border: 1px solid var(--paper-line);
 }
 .leaflet-popup-content .pop-note { margin: 4px 0 0; font-size: 12.5px; }
+.leaflet-popup-content .alert-desc { margin: 6px 0 0; }
 .leaflet-popup-content .pop-door {
   background: none; border: none; padding: 0;
   margin-top: 6px;

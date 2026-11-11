@@ -1,0 +1,19 @@
+{
+ "type": "FeatureCollection",
+ "metadata": {
+  "dataset": "NCTA trail alerts (reroute lines), clipped to the chapter working extent",
+  "source_layer_id": 2,
+  "source_layer_name": "trail_alerts_new_rte",
+  "feature_count": 0,
+  "source_service": "https://services2.arcgis.com/UfGVyqUm4GHa2zrj/arcgis/rest/services/trail_alerts/FeatureServer",
+  "pulled_utc_date": "2026-11-11",
+  "extent_wgs84": {
+   "min_lon": -95.6,
+   "max_lon": -94.3,
+   "min_lat": 46.7,
+   "max_lat": 47.35
+  },
+  "clip_method": "Envelope selection (object-id fetch, chunk-verified); positions from GeoJSON geometry requested with outSR=4326"
+ },
+ "features": []
+}

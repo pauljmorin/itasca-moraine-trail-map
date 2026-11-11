@@ -581,6 +581,49 @@ function parcelPopup(f) {
     "(public record).</em></p>";
 }
 
+/* Trail alerts (NCTA trail_alerts service, pulled by
+   scripts/pull_trail_alerts.py): the alert's own title, date and
+   description, quoted verbatim — the map never rewrites an alert.
+   The stored `date` is the intended calendar date (the service
+   stores UTC midnight of the following day; the pull derives the
+   America/Chicago date — see the pull script's header). */
+var ALERT_MONTHS = ["January", "February", "March", "April", "May",
+  "June", "July", "August", "September", "October", "November",
+  "December"];
+
+function alertDateText(p) {
+  if (p.date) {
+    var m = /^(\d{4})-(\d{2})-(\d{2})/.exec(p.date);
+    if (m) {
+      return ALERT_MONTHS[parseInt(m[2], 10) - 1] + " " +
+        parseInt(m[3], 10) + ", " + m[1];
+    }
+    return p.date;
+  }
+  if (p.date_ms != null) {
+    return new Date(p.date_ms).toLocaleDateString("en-US", {
+      timeZone: "America/Chicago", year: "numeric",
+      month: "long", day: "numeric",
+    });
+  }
+  return null;
+}
+
+function alertPopup(f) {
+  var p = f.properties;
+  var html = "<h3>" + (esc(p.title) || "Trail alert") + "</h3>" +
+    kvTable([
+      ["Date", alertDateText(p)],
+      ["Location", p.location],
+    ]);
+  if (p.description) {
+    html += "<p class='alert-desc'>" + esc(p.description) + "</p>";
+  }
+  html += "<p class='pop-note'><em>Trail alert from the North " +
+    "Country Trail Association.</em></p>";
+  return html;
+}
+
 function accessPopup(f) {
   var p = f.properties;
   var s = ACCESS_STYLES[p.source_type];
@@ -1866,6 +1909,10 @@ function swatchFor(def) {
       s.color + ";border-color:" + (s.border || s.color) +
       "'></span>";
   }
+  if (s.kind === "alert") {
+    return "<span class='tog-swatch-alert' style='background:" +
+      s.color + "'></span>";
+  }
   return "<span class='tog-swatch-line" + (s.dashed ? " dashed" : "") +
     "' style='border-top-color:" + s.color + "'></span>";
 }
@@ -2367,6 +2414,39 @@ var LAYERS = [
     },
   },
   {
+    /* Trail alerts (Paul, Nov 10, 2026 — "add a Trail alerts
+       layer next round"): NCTA's own alert points (closures,
+       storm damage, reroutes, new routes), pulled verbatim by
+       scripts/pull_trail_alerts.py. OFF by default and LAZY like
+       parcels — nothing fetches data/trail-alerts.geojson until
+       the box is first checked. The marker is a red warning
+       diamond in the gap red — deliberately unlike the Places
+       letter discs and the orange asset pins. No zoom gate:
+       five markers should never hide. */
+    id: "alerts", label: "Trail alerts",
+    title: "Trail alerts from the North Country Trail Association" +
+      " — closures, storm damage, reroutes",
+    file: "data/trail-alerts.geojson", onByDefault: false,
+    group: "Context",
+    swatch: { kind: "alert", color: COLORS.gap },
+    build: function (gj) {
+      return L.geoJSON(gj, {
+        pointToLayer: function (f, latlng) {
+          return L.marker(latlng, {
+            keyboard: false,
+            icon: L.divIcon({
+              className: "alert-marker-wrap", iconSize: [18, 18],
+              iconAnchor: [9, 9],
+              html: "<span class='alert-marker'>" +
+                "<span class='alert-glyph'>!</span></span>",
+            }),
+          });
+        },
+        onEachFeature: function (f, l) { bindPop(l, alertPopup(f)); },
+      });
+    },
+  },
+  {
     id: "assets", label: "Asset pins",
     file: "data/assets.geojson", onByDefault: false, missingOk: true,
     emptyUntilData: true, group: "Context",
@@ -2573,11 +2653,11 @@ function assertDrawOrder() {
        roads, the official trail line, the ADOPTED SECTIONS on top
        of the trail line (Paul, Nov 10, 2026 — the amber highlight
        must read as lying over the green), the gap, boundary ticks
-       and chapter ends, mile markers with the ticks, then Places
-       and asset pins uppermost. */
+       and chapter ends, mile markers with the ticks, then Places,
+       trail alerts and asset pins uppermost. */
     ["parcels", "access", "roads", "trail", "stretches", "gaps",
      "boundaries", "termini", "milemarkers", "chainage", "places",
-     "assets"].forEach(function (id) {
+     "alerts", "assets"].forEach(function (id) {
       var d = layerById(id);
       if (!d || !d.layer || !map.hasLayer(d.layer)) return;
       if (d.layer.bringToFront) { d.layer.bringToFront(); return; }
@@ -2664,6 +2744,9 @@ function legendHtml() {
   add("<span class='swatch fill' style='background:#e7e1c3'></span>",
     "Adjoining parcel (corridor ring)");
   add(pin(COLORS.assetPin), "Asset pin (photo inventory)");
+  add("", "<strong>Trail alerts</strong>");
+  add("<span class='swatch alert'></span>",
+    "Trail alert — closure, storm damage, reroute (NCTA)");
   return rows.join("");
 }
 
