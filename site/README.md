@@ -96,16 +96,16 @@ The URL hash also accepts `#view=lat,lon,zoom` to open at a
 particular view instead of fitting the whole trail (combinable with
 `#layers=`, e.g. `#layers=access,roads&view=47.152,-95.195,13`).
 
-Base maps (switcher, top right): nine bases in four task groups,
+Base maps (switcher, top right): eleven bases in four task groups,
 in this order — **Topographic:** Topo (OpenTopoMap, **the default
 since v4** — a new visitor meets terrain first), USGS Topo 1:24k
 (The National Map, built from the 1:24,000 quadrangle series —
 added in v3), National Geographic (Esri); **Relief:** MN LiDAR
 Hillshade; **Aerial:** Aerial (USGS NAIP), Aerial (Esri), Aerial +
-Topo (USGS ImageryTopo) — on any aerial base the section labels
-flip to a light-on-dark treatment so they stay readable over
-photography; **Streets & trails:** Streets (OSM), Trails
-(CyclOSM). The chooser is the Leaflet radio control grouped under
+Topo (USGS ImageryTopo), Aerial (2014) — on any aerial base the
+section labels flip to a light-on-dark treatment so they stay
+readable over photography; **Streets & trails:** Streets (OSM),
+Trails (CyclOSM), Winter (snow trails). The chooser is the Leaflet radio control grouped under
 small headings in the panel's style, with the current base shown
 as a tinted row (app.js post-pass; style.css `.base-group` /
 `.base-active`).
@@ -114,6 +114,16 @@ sixteen-candidate review round): Esri World Topographic, Stamen
 Terrain, CARTO Voyager, CARTO Positron, Thunderforest Outdoors,
 Esri World Hillshade, OSM Humanitarian — definitions and the two
 placeholder API keys removed; no base needs a key.
+**Added Nov 11, 2026** (Paul approved the pair): **Aerial
+(2014)** — Esri World Imagery Wayback release 5844 (2014-12-30),
+the dated-imagery archive's release closest to the end of 2014;
+and **Winter (snow trails)** — a composed base: OpenSnowMap's
+transparent pistes tiles stacked over the MN LiDAR Hillshade
+(the pistes carry no cartography of their own, and OpenSnowMap's
+base snow map is deliberately not used — its author discourages
+outside use). OSM's mapped pistes in the chapter extent are the
+nordic ski trails around Itasca State Park and the Leech Lake
+shore; where none are mapped the base reads as plain hillshade.
 Cut in v3 on Paul's calls: the USGS shaded-relief base (poor next
 to the 1 m LiDAR hillshade) and MnGeo's Spring Aerial Imagery
 Program photography (nw14 — nothing useful over the chapter).

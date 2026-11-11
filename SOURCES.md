@@ -211,14 +211,17 @@ GetMap responses over the chapter's extent.
 **v4 (Nov 10, 2026):** the default base is now **Topo
 (OpenTopoMap)** — a new visitor meets terrain first.
 
-**Nov 11, 2026 prune (Paul's calls):** the switcher carries nine
+**Nov 11, 2026 prune (Paul's calls):** the switcher carried nine
 bases in four task groups — Topographic (Topo (OpenTopoMap),
 USGS Topo 1:24k, National Geographic (Esri)), Relief (MN LiDAR
 Hillshade), Aerial (Aerial (USGS NAIP), Aerial (Esri), Aerial +
 Topo (USGS ImageryTopo)), Streets & trails (Streets (OSM),
 Trails (CyclOSM)). Seven entries from the Nov 10 review round
 were removed outright (see "Removed bases" below), including the
-two key-gated ones and their placeholder keys.
+two key-gated ones and their placeholder keys. **Two bases were
+added later the same day** (Paul approved the pair): Aerial
+(2014) in the Aerial group and Winter (snow trails) in Streets
+& trails — eleven bases in all, same four groups.
 
 - **Topo (OpenTopoMap)** — the DEFAULT base since v4.
   `https://tile.opentopomap.org/{z}/{x}/{y}.png`: OpenStreetMap
@@ -260,6 +263,37 @@ two key-gated ones and their placeholder keys.
   `.../NatGeo_World_Map/MapServer/tile/{z}/{y}/{x}`.
 - **Trails (CyclOSM)** —
   `https://{s}.tile-cyclosm.openstreetmap.fr/cyclosm/{z}/{x}/{y}.png`.
+- **Aerial (2014)** — Esri World Imagery Wayback, release
+  **5844**, dated **2014-12-30** — the release closest to (and
+  on/before) 2014-12-31 in the Wayback config
+  (`https://s3-us-west-2.amazonaws.com/config.maptiles.arcgis.com/waybackconfig.json`,
+  198 releases listed when checked 2026-11-11). WMTS tiles:
+  `https://wayback.maptiles.arcgis.com/arcgis/rest/services/World_Imagery/WMTS/1.0.0/default028mm/MapServer/tile/5844/{z}/{y}/{x}`.
+  The service answers a tile request with a 301 to the release
+  that actually published that tile (over the chapter, tiles
+  resolve to the 2014-06-11 and 2014-02-20 releases); browsers
+  follow it, and every resolved tile is 2014-or-earlier imagery.
+  Keyless. Verified live 2026-11-11: sample tiles over the
+  chapter returned HTTP 200 JPEGs (256×256). Attribution:
+  "Aerial imagery (2014): Esri World Imagery Wayback, release
+  of 2014-12-30".
+- **Winter (snow trails)** — a COMPOSED base: OpenSnowMap
+  pistes tiles
+  `https://tiles.opensnowmap.org/pistes/{z}/{x}/{y}.png`
+  stacked over the MN LiDAR Hillshade above, as one radio entry
+  (an `L.layerGroup` sharing the hillshade layer object with
+  the Relief entry). The pistes are a transparent overlay with
+  no base cartography; OpenSnowMap's own "base snow map" is
+  deliberately NOT used (its author discourages use outside
+  opensnowmap.org). Presence verified 2026-11-11 by sweeping
+  all 192 z12 tiles over the chapter extent: 7 carry drawn
+  pistes — the nordic ski trails around Itasca State Park
+  (west edge) and the Leech Lake shore (east edge), with
+  denser linework confirmed at z14 near Itasca State Park.
+  Most of the corridor has no OSM pistes mapped; there the
+  base reads as plain hillshade. Attribution: "Snow trails:
+  OpenSnowMap, © OpenStreetMap contributors" (shown alongside
+  the hillshade's own credit).
 
 Removed bases (Nov 11, 2026, Paul's prune of the Nov 10 candidate
 round; definitions and placeholder keys deleted from app.js):

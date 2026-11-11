@@ -137,6 +137,39 @@ var cyclosm = L.tileLayer(
     attribution: "© OpenStreetMap contributors, CyclOSM",
   });
 
+/* Added Nov 11, 2026 (Paul approved the pair): two bases that
+   fill the chooser's real gaps -- a winter view and time depth.
+   Neither needs a key; both endpoints verified live over the
+   chapter the day they landed (see SOURCES.md). */
+var esriWayback2014 = L.tileLayer(
+  "https://wayback.maptiles.arcgis.com/arcgis/rest/services/" +
+    "World_Imagery/WMTS/1.0.0/default028mm/MapServer/tile/5844/" +
+    "{z}/{y}/{x}", {
+    maxZoom: 18,
+    attribution: "Aerial imagery (2014): Esri World Imagery " +
+      "Wayback, release of 2014-12-30",
+  });
+
+/* Winter is a COMPOSED base: OpenSnowMap's pistes are a
+   transparent overlay tile set with no cartography of their own
+   (OpenSnowMap's own base snow map stays unused -- its author
+   discourages outside use), so this radio entry stacks the
+   pistes over the MN LiDAR Hillshade, the site's relief
+   register. The hillshade layer object is shared with the
+   Relief entry: Leaflet moves a layer between parents, never
+   duplicates it, so switching between the two entries behaves.
+   Verified over the chapter: OSM pistes (nordic ski trails)
+   are drawn around Itasca State Park and the Leech Lake shore;
+   much of the corridor has none mapped, and there the base
+   reads as plain hillshade. */
+var snowPistes = L.tileLayer(
+  "https://tiles.opensnowmap.org/pistes/{z}/{x}/{y}.png", {
+    maxZoom: 18,
+    attribution: "Snow trails: OpenSnowMap, " +
+      "© OpenStreetMap contributors",
+  });
+var winterBase = L.layerGroup([mnHillshade, snowPistes]);
+
 var baseControl = L.control.layers(
   {
     "Topo (OpenTopoMap)": topo,
@@ -146,8 +179,10 @@ var baseControl = L.control.layers(
     "Aerial (USGS NAIP)": usgsImagery,
     "Aerial (Esri)": esriImagery,
     "Aerial + Topo (USGS ImageryTopo)": usgsImageryTopo,
+    "Aerial (2014)": esriWayback2014,
     "Streets (OSM)": osm,
     "Trails (CyclOSM)": cyclosm,
+    "Winter (snow trails)": winterBase,
   }, null,
   { position: "topright" }
 ).addTo(map);
@@ -232,6 +267,8 @@ var CASING_BY_BASE = {
   "Aerial (USGS NAIP)": "photo",
   "Aerial (Esri)": "photo",
   "Aerial + Topo (USGS ImageryTopo)": "photo",
+  "Aerial (2014)": "photo",
+  "Winter (snow trails)": "relief",
   "MN LiDAR Hillshade": "relief",
   "USGS Topo 1:24k": "relief",
   "National Geographic (Esri)": "relief",
