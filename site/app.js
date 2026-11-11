@@ -293,6 +293,26 @@ function applyPlacesGate() {
   }
 }
 
+/* NCTA map sheets: the 22 sheet IMAGES draw at zoom 11+ only —
+   below that the toggle shows just the sheet outlines and number
+   labels (a locator), so the chapter view is never buried under
+   a near-white blanket. Leaflet loads an image overlay's <img>
+   only while the layer is on the map, so gating here also keeps
+   the 13 MB of sheet JPEGs off the wire until they can be read. */
+var sheetImages = [];
+function applySheetImageGate() {
+  var show = map.getZoom() >= 11;
+  sheetImages.forEach(function (img) {
+    var onMap = img._map != null;
+    if (show && !onMap && img._sheetGroup &&
+        map.hasLayer(img._sheetGroup)) {
+      img._sheetGroup.addLayer(img);
+    }
+    if (!show && onMap) img._sheetGroup.removeLayer(img);
+  });
+}
+map.on("zoomend", applySheetImageGate);
+
 /* Heavy vector layers draw on CANVAS, not SVG: parcels (1,038
    features), roads (5,902) and access lines (3,670) as thousands of
    DOM paths made layer toggles visibly slow, while a canvas redraws
@@ -1236,6 +1256,7 @@ function sectionRecord(item) {
     sawyer_display: gz.sawyer_display || null,
     description: gz.description || null,
     map_refs: gz.map_refs || null,
+    ncta_sheets: gz.ncta_sheets || sp.ncta_sheets || null,
     nct_mile: gz.nct_mile != null ? gz.nct_mile : null,
     nct_mile_start: gz.nct_mile_start != null ? gz.nct_mile_start : null,
     nct_mile_end: gz.nct_mile_end != null ? gz.nct_mile_end : null,
@@ -1625,6 +1646,42 @@ function copyBriefText(text, btn) {
   }
 }
 
+/* NCTA map-sheet line (Phase 3, Nov 11, 2026): the section's
+   official sheet(s) in the NCTA Minnesota map series, computed by
+   line-vs-sheet-frame intersection (scripts live in
+   working/ncta-sheets/; the mapping rides the section records as
+   ncta_sheets). Each sheet id links the series PDF at the sheet's
+   own page — in the 3/16/2026 edition PDF page N is sheet MN-0NN.
+   The printed mile ranges are the NCTA reckoning from the sheets
+   themselves, never the chapter tracker miles. */
+var NCTA_SHEET_PDF = "https://northcountrytrail.org/maps/mn_map_series.pdf";
+var NCTA_SHEET_MILES = {
+  "MN-023": "MN-121\u2013127", "MN-024": "MN-127\u2013133",
+  "MN-025": "MN-134\u2013140", "MN-026": "MN-140\u2013146",
+  "MN-027": "MN-146\u2013152", "MN-028": "MN-152\u2013157",
+  "MN-029": "MN-157\u2013162", "MN-030": "MN-162\u2013167",
+  "MN-031": "MN-168\u2013172", "MN-032": "MN-172\u2013176",
+  "MN-033": "MN-177\u2013183", "MN-034": "MN-183\u2013189",
+  "MN-035": "MN-189\u2013195", "MN-036": "MN-195\u2013202",
+  "MN-037": "MN-198\u2013204", "MN-038": "MN-205\u2013210",
+  "MN-039": "MN-210\u2013216", "MN-040": "MN-217\u2013223",
+  "MN-041": "MN-224\u2013229", "MN-042": "MN-230\u2013234",
+  "MN-043": "MN-234\u2013239", "MN-044": "MN-239\u2013246",
+};
+function nctaSheetLine(ids) {
+  if (!ids || !ids.length) return "";
+  var links = ids.map(function (sid) {
+    var page = parseInt(sid.slice(3), 10);
+    var miles = NCTA_SHEET_MILES[sid];
+    return "<a href='" + NCTA_SHEET_PDF + "#page=" + page +
+      "' target='_blank' rel='noopener'>" + esc(sid) + "</a>" +
+      (miles ? " <span class='muted'>(" + miles + ")</span>" : "");
+  });
+  return "<p class='insp-crew'>Official NCTA sheet" +
+    (ids.length > 1 ? "s" : "") + ": " + links.join(", ") +
+    " <span class='muted'>(PDF)</span></p>";
+}
+
 function sectionInspectorHtml(item) {
   var r = sectionRecord(item);
   var idx = walkItems.indexOf(item);
@@ -1681,6 +1738,7 @@ function sectionInspectorHtml(item) {
       esc(r.map_refs.join(", "));
   }
   if (crew) html += "<p class='insp-crew'>" + crew + "</p>";
+  html += nctaSheetLine(r.ncta_sheets);
   /* Ask band (§1.5): the tracker value verbatim, red spent on the
      label only, one honest action — the same Copy brief. */
   if (r.help_requested != null && r.help_requested !== "") {
@@ -1750,6 +1808,7 @@ function gapInspectorHtml(item) {
       "<div class='ks-value'>" + esc(p.land_context) + "</div></div>";
   }
   if (ks) html += "<div class='insp-keystrip'>" + ks + "</div>";
+  html += nctaSheetLine(p.ncta_sheets);
   /* Getting in — named, because the gap's data is named (§2). */
   html += accessStripHtml(gapEndAccess(p, "start"),
     gapEndAccess(p, "end"), false);
@@ -1922,12 +1981,12 @@ function armContextChip(layer, feature, latlng, kind) {
     if (klass && klass !== title) bits.push(klass);
     if (p.cut) bits.push("continues beyond the corridor");
     if (p.connector) bits.push("connector — kept whole");
-    var html = "<span class='hc-name'>" + (esc(title) || "") + "</span>";
-    if (bits.length) {
-      html += "<span class='hc-facts'>" + esc(bits.join(" · ")) +
-        "</span>";
-    }
-    html += "<span class='hc-hint'>Click for details</span>";
+    /* Content unchanged (Nov 10 §7 ruled it right); only the
+       Nov 11 geometry applies — head-row name, token facts, and
+       the hint line is gone with the section chip's. */
+    var html = "<span class='hc-head'><span class='hc-name'>" +
+      (esc(title) || "") + "</span></span>";
+    html += chipFactsHtml(bits);
     chipTip = L.tooltip({
       direction: "top", offset: [0, -8],
       className: "hover-chip", opacity: 1,
@@ -2577,6 +2636,79 @@ var LAYERS = [
       });
     },
   },
+  {
+    /* NCTA map sheets (Paul, Nov 11, 2026 — "make it another
+       layer"): NCTA's own Minnesota map-series sheets MN-023 to
+       MN-044 as image overlays, one per sheet, over any base.
+       OFF by default and LAZY like parcels — nothing fetches
+       data/ncta-sheets.geojson (or any sheet image) until the box
+       is first checked. The source is the series GeoPDF
+       (northcountrytrail.org/maps/mn_map_series.pdf, 3/16/2026
+       edition): each page's georeferencing viewport gives the
+       sheet frame's true lat/lon quad; the web derivative is the
+       frame crop rendered at 200 dpi, <=1600 px wide, JPEG.
+       Alignment was verified against the sheet's own printed
+       MN-170/MN-171 mile diamonds before shipping: predicted
+       positions land ~50 m from the NCTA mile-point data (the
+       residual is the diamonds' own snap-to-line tolerance).
+       The image overlay consumes the quad's axis-aligned bounds;
+       the UTM grid convergence inside one sheet is ~0.24 deg, so
+       sheet corners can sit up to ~150 m off the true quad —
+       fine for reading the sheet, not a survey product. Sheet
+       outlines + number labels ride the same toggle and stay
+       visible at low zoom where 22 near-white sheets would just
+       be a blanket. Overlay opacity 0.92 keeps the base faintly
+       present at sheet seams. */
+    id: "nctasheets", label: "NCTA map sheets",
+    title: "The North Country Trail Association's printed " +
+      "Minnesota map sheets (MN-023 to MN-044), laid over the map",
+    file: "data/ncta-sheets.geojson", onByDefault: false,
+    group: "Context",
+    swatch: { kind: "fill", color: "#fdf6d8", border: "#8a6d1a" },
+    build: function (gj) {
+      var group = L.layerGroup();
+      gj.features.forEach(function (f) {
+        var p = f.properties;
+        var b = p.bounds;
+        var bounds = L.latLngBounds(
+          L.latLng(b[0][0], b[0][1]), L.latLng(b[1][0], b[1][1]));
+        var img = L.imageOverlay(p.image, bounds, {
+          opacity: 0.92, interactive: false,
+        });
+        img._sheetGroup = group;
+        sheetImages.push(img);
+        if (map.getZoom() >= 11) group.addLayer(img);
+        var outline = L.geoJSON(f, {
+          interactive: true,
+          style: { color: "#8a6d1a", weight: 1.5, dashArray: "6 4",
+                   fill: false },
+          onEachFeature: function (feat, l) {
+            bindPop(l, "<strong>Official NCTA sheet " +
+              esc(p.sheet) + "</strong><br>NCTA miles " +
+              esc(p.miles) + "<br><a href='" + NCTA_SHEET_PDF +
+              "#page=" + p.page + "' target='_blank' " +
+              "rel='noopener'>Open this sheet in the NCTA " +
+              "Minnesota series PDF</a>");
+          },
+        });
+        group.addLayer(outline);
+        var ring = f.geometry.coordinates[0];
+        var clat = (ring[0][1] + ring[2][1]) / 2;
+        var clon = (ring[0][0] + ring[2][0]) / 2;
+        var lab = L.marker(L.latLng(clat, clon), {
+          keyboard: false, interactive: false,
+          icon: L.divIcon({
+            className: "sheet-label-wrap", iconSize: [64, 18],
+            iconAnchor: [32, 9],
+            html: "<span class='sheet-label'>" + esc(p.sheet) +
+              "</span>",
+          }),
+        });
+        group.addLayer(lab);
+      });
+      return group;
+    },
+  },
 ];
 
 /* The site copy of the inventory lives at site/data/assets.geojson.
@@ -2789,7 +2921,8 @@ function assertDrawOrder() {
        must read as lying over the green), the gap, boundary ticks
        and chapter ends, mile markers with the ticks, then Places,
        trail alerts and asset pins uppermost. */
-    ["parcels", "access", "roads", "trail", "stretches", "gaps",
+    ["parcels", "access", "roads", "nctasheets", "trail",
+     "stretches", "gaps",
      "boundaries", "termini", "milemarkers", "chainage", "places",
      "alerts", "chapterplaces", "assets"].forEach(function (id) {
       var d = layerById(id);

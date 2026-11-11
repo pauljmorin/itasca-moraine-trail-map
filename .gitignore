@@ -32,3 +32,8 @@ data/segments/access-points.geojson
 # adopter-boundary KMZ as delivered.
 data/segments/*.xlsx
 data/segments/*.kmz
+
+# NCTA map-sheet build intermediates: the 159 MB series GeoPDF and
+# its full-size renders stay out of version control; only the web
+# derivatives (site/data/sheets/*.jpg, <=1600 px) are committed.
+working/

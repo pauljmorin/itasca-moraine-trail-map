@@ -479,6 +479,12 @@ html, body {
 }
 .insp-pill {
   margin-left: auto;
+}
+/* Shared status-pill voice (Nov 11 hover-chip spec §2.3): the
+   inspector's pill and the hover chip's pill are one vocabulary —
+   the visual properties live here so the two surfaces can never
+   drift; .insp-pill adds only its layout margin. */
+.insp-pill, .status-pill {
   font-size: 10.5px;
   font-weight: 700;
   text-transform: uppercase;
@@ -487,14 +493,23 @@ html, body {
   padding: 2px 9px;
   white-space: nowrap;
 }
-.insp-pill.adopted {
+.status-pill { flex: 0 0 auto; }
+.insp-pill.adopted, .status-pill.adopted {
   background: var(--adopted); color: #fff;
 }
-.insp-pill.adopted.soft {
+.insp-pill.adopted.soft, .status-pill.adopted.soft {
   background: #e6f4ea; color: var(--trail-deep);
   border: 1px solid #a9c295;
 }
-.insp-pill.unadopted { background: var(--gap); color: #fff; }
+.insp-pill.unadopted, .status-pill.unadopted {
+  background: var(--gap); color: #fff;
+}
+/* Help requested — the ask band's colours (Nov 10 §1.5): a
+   bordered invitation, red spent on the words, never a fill. */
+.status-pill.help {
+  background: #fdf0ec; color: #b2182b;
+  border: 1px solid #eec5bb;
+}
 .insp-close {
   flex: 0 0 auto;
   width: 28px; height: 28px;
@@ -977,6 +992,25 @@ body.gap-chip .gap-label span {
   text-align: center;
 }
 
+/* NCTA map-sheet number labels: a small parchment tag at each
+   sheet's centre — the locator face of the sheets layer, visible
+   at the zooms where the sheet images themselves are gated off. */
+.sheet-label-wrap { background: none; border: none; }
+.sheet-label {
+  display: block;
+  width: 64px;
+  text-align: center;
+  background: rgba(253, 246, 216, 0.92);
+  border: 1px solid #8a6d1a;
+  border-radius: 3px;
+  color: #5c4a10;
+  font-size: 11px;
+  font-weight: 700;
+  line-height: 16px;
+  letter-spacing: 0.04em;
+  box-shadow: 0 1px 2px rgba(28, 42, 30, 0.3);
+}
+
 /* Chapter place markers: deep-green rounded squares with a kind
    letter — the chapter's own family, distinct from the paper
    Places discs, the red alert diamonds and the orange asset
@@ -1015,15 +1049,19 @@ body.gap-chip .gap-label span {
 }
 .chapter-dot.closed { background: #6e6e66; border-color: var(--gap); }
 
-/* Hover-lite chip (UX-REVIEW Part 1): small, static, non-interactive.
-   Replaces the v3 cursor-following full-record hover card. */
+/* Hover chip (Nov 11 redesign — docs/design-notes-2026-11-11-
+   hover-chip.md): small, static, non-interactive triage card.
+   The old chip's ribbon failure was structural — max-width with
+   no floor and inline flow — so the chip now has a width floor,
+   block structure, and nowrap everywhere it matters. */
 .leaflet-tooltip.hover-chip {
   background: #fff;
   border: 1px solid var(--paper-line);
   border-radius: 8px;
   box-shadow: 0 4px 14px rgba(28, 42, 30, 0.22);
-  padding: 6px 9px;
-  max-width: 280px;
+  padding: 7px 10px 8px;
+  min-width: 190px;
+  max-width: 300px;
   white-space: normal;
   font-size: 12px;
   line-height: 1.4;
@@ -1031,13 +1069,20 @@ body.gap-chip .gap-label span {
   pointer-events: none;
 }
 .leaflet-tooltip.hover-chip::before { display: none; }
-.hover-chip .hc-name { font-size: 13.5px; font-weight: 600; }
-.hover-chip .hc-code { color: var(--ink-soft); font-weight: 400; }
-.hover-chip .hc-facts { display: block; margin-top: 1px; }
-.hover-chip .hc-hint {
-  display: block; margin-top: 2px;
-  font-size: 11px; color: var(--ink-soft);
+.hover-chip .hc-head {
+  display: flex; align-items: baseline; gap: 8px;
 }
+.hover-chip .hc-name {
+  font-size: 14px; font-weight: 650;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.hover-chip .hc-sub {
+  display: block; margin-top: 1px;
+  font-size: 12px; color: var(--ink-soft);
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.hover-chip .hc-facts { display: block; margin-top: 2px; }
+.hover-chip .hc-fact { white-space: nowrap; }
 
 /* Imagery bases: flip map-face labels to near-white with a dark
    halo so names survive dark aerial photography (UX P5). */
