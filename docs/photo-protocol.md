@@ -22,8 +22,12 @@ Do it once, at home, before your first outing.
 2. Open **your named subfolder** inside it (the one with your name).
 3. Add the test photo there.
 
-**Important:** Always add the photo to the folder itself.
-Never send it by text message. Texting removes the location.
+**Important:** Always add the photo to the folder itself, as the
+original file from your phone. Never send it by text message,
+chat, or any app's share button — those routes re-encode the
+photo and remove the location (proven in testing, Nov 10, 2026:
+chat copies arrive with the entire metadata block gone, even
+when the phone's original carries the location).
 
 ## Step 3 — Wait for your green light
 
@@ -81,8 +85,11 @@ call the coordinator — it is a two-minute fix together.)*
 
 ## The Standing Rules
 
-1. **Originals go to the folder.** Never by text message — texting
-   strips the location off the photo.
+1. **Originals go to the folder.** Never by text message, chat, or
+   share button — those strip the location off the photo. If you
+   work from Google Photos, use **Download** (never a share link —
+   share links strip the location too), then add the downloaded
+   file to the folder.
 2. **Use your named subfolder**, so we know whose photos they are.
 3. **If the camera ever asks about location, say yes.**
 4. Out on the trail, just take the photo. One clear photo of each
