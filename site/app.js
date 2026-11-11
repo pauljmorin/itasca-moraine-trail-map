@@ -66,8 +66,12 @@ var CHAPTER_NAMES = {
 
 var map = L.map("map", { center: [47.02, -94.95], zoom: 10 });
 
+/* Zoom ceiling (Paul, Nov 11, 2026 — "one more notch"): each base
+   goes one level past its server's native max and upscales the
+   native tiles there (maxNativeZoom), same pattern as the LiDAR
+   canopy pair — so the map tops out at z18 on the default Topo. */
 var topo = L.tileLayer("https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png", {
-  maxZoom: 17,
+  maxZoom: 18, maxNativeZoom: 17,
   attribution: "Map data: © OpenStreetMap contributors, SRTM | " +
     "map style: © OpenTopoMap (CC-BY-SA)",
 }).addTo(map);
@@ -92,13 +96,13 @@ var mnHillshade = L.tileLayer.wms(MN_WMS, {
 var usgsTopo = L.tileLayer(
   "https://basemap.nationalmap.gov/arcgis/rest/services/" +
     "USGSTopo/MapServer/tile/{z}/{y}/{x}", {
-    maxZoom: 16,
+    maxZoom: 17, maxNativeZoom: 16,
     attribution: "Topo: USGS, The National Map",
   });
 var usgsImagery = L.tileLayer(
   "https://basemap.nationalmap.gov/arcgis/rest/services/" +
     "USGSImageryOnly/MapServer/tile/{z}/{y}/{x}", {
-    maxZoom: 16,
+    maxZoom: 17, maxNativeZoom: 16,
     attribution: "Aerial imagery: USGS, The National Map (NAIP)",
   });
 var esriImagery = L.tileLayer(
@@ -120,13 +124,13 @@ var esriImagery = L.tileLayer(
 var usgsImageryTopo = L.tileLayer(
   "https://basemap.nationalmap.gov/arcgis/rest/services/" +
     "USGSImageryTopo/MapServer/tile/{z}/{y}/{x}", {
-    maxZoom: 16,
+    maxZoom: 17, maxNativeZoom: 16,
     attribution: "Imagery + topo: USGS, The National Map (NAIP)",
   });
 var esriNatGeo = L.tileLayer(
   "https://server.arcgisonline.com/ArcGIS/rest/services/" +
     "NatGeo_World_Map/MapServer/tile/{z}/{y}/{x}", {
-    maxZoom: 16,
+    maxZoom: 17, maxNativeZoom: 16,
     attribution: "National Geographic, Esri, DeLorme, HERE, " +
       "UNEP-WCMC, USGS",
   });
