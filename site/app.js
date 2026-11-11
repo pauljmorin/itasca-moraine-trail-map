@@ -2776,19 +2776,24 @@ var LAYERS = [
   {
     /* Leech Lake Reservation (Paul, Nov 11, 2026 — "put a
        specific polygon in for native nations"): the federal
-       reservation boundary as published by the U.S. Census
-       Bureau (TIGER/Line AIANNH, BAS 2026, GEOID 1940R),
-       pulled by scripts/pull_leech_lake_reservation.py.
-       OFF by default and LAZY like parcels — nothing fetches
+       reservation boundary as published by the Bureau of
+       Indian Affairs (AIAN Land Area Representation, LAR0033
+       "Leech Lake"), pulled by
+       scripts/pull_leech_lake_reservation.py. Switched from
+       Census TIGER/Line the same day: the Census polygon
+       stitched its southern lobe on with a ~5 m bridge that
+       rendered as the boundary crossing itself; BIA draws the
+       lobe as a separate polygon with a ~210 m gap. OFF by
+       default and LAZY like parcels — nothing fetches
        data/leech-lake-reservation.geojson until the box is
        first checked. A quiet violet fill + outline, under the
        trail: a context layer, not a claim. The popup carries
        the source + vintage and the honest line (published
-       boundary, not a legal survey). 2.28 mi of the depicted
+       boundary, not a legal survey). 2.34 mi of the depicted
        trail (Chip-12) lies inside. */
     id: "leechlake", label: "Leech Lake Reservation",
     title: "Leech Lake Reservation boundary (Leech Lake Band " +
-      "of Ojibwe) — U.S. Census Bureau, TIGER/Line, 2026",
+      "of Ojibwe) — Bureau of Indian Affairs, AIAN-LAR",
     file: "data/leech-lake-reservation.geojson",
     onByDefault: false, group: "Context",
     swatch: { kind: "fill", color: "#8e86c2", border: "#5e548e" },

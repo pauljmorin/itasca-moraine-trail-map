@@ -201,56 +201,61 @@ neither mileage reckoning above.
   (layer 0)
 - **Owner / publisher:** MnGeo.
 
-## Leech Lake Reservation — boundary polygon (added 2026-11-11)
+## Leech Lake Reservation — boundary polygon (added 2026-11-11, switched to BIA 2026-11-11)
 
 - **What:** The external boundary of the Leech Lake Reservation
-  (Leech Lake Band of Ojibwe), one polygon, drawn as a separate
+  (Leech Lake Band of Ojibwe), drawn as a separate
   toggleable context layer ("Leech Lake Reservation", off by
   default, lazy like parcels).
-- **URL:** https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/AIANNHA/MapServer
-  (layer 2, "Federal American Indian Reservations", queried
-  `GEOID = '1940R'`, outSR 4326, GeoJSON)
-- **Owner / publisher:** U.S. Census Bureau, TIGER/Line American
-  Indian Areas (AIANNH). Public federal data; no licence
-  restriction.
-- **Vintage:** TIGERweb current (Boundary and Annexation Survey
-  2026). The geometry is **identical** in the Census 2020
-  (layer 26) and ACS 2025 (layer 14) vintages on the same
-  service — same 9,685 vertices, same published areas
-  (land 622,953 ac, water 215,678 ac, total 838,631 ac).
-- **Why this source, and what lost:** the Census polygon is the
-  pick because it is a single clean polygon of the reservation
-  proper at the highest vertex density available, and it is
-  stable across three vintages. Cross-checked against the
-  **BIA AIAN-LAR national dataset**
-  (https://biamaps.geoplatform.gov/server/rest/services/DivLTR/BIA_AIAN_National_LAR/FeatureServer,
-  feature LAR0033 "Leech Lake"): same overall extent, geometry
-  area within 1.8% (819,037 ac), boundary median separation
-  37 m (p90 262 m, max 1,832 m; 73% of sampled vertices within
-  100 m). BIA lost as primary because its feature is coarser
-  (3,999 vertices in 3 polygons) and its GISACRES attribute
-  (1,794,106) contradicts its own geometry (~819,000 ac).
-  **PAD-US** was not fetched separately: its tribal lands
-  derive from BIA AIAN-LAR, so it would duplicate that
+- **URL:** https://biamaps.geoplatform.gov/server/rest/services/DivLTR/BIA_AIAN_National_LAR/FeatureServer
+  (layer 0, "BIA AIAN National LAR", queried
+  `LARID = 'LAR0033'`, outSR 4326, GeoJSON)
+- **Owner / publisher:** Bureau of Indian Affairs, American
+  Indian and Alaska Native Land Area Representation (AIAN-LAR).
+  Public federal data; no licence restriction.
+- **Vintage:** AIAN-LAR national dataset, feature LAR0033
+  "Leech Lake", fetched 2026-11-11. Three polygons, 3,999
+  vertices; geometry-measured area 823,249 ac (UTM 15N).
+  BIA's own GISACRES attribute (1,794,106) contradicts its
+  own geometry and is NOT used.
+- **Why this source, and what lost:** the layer STARTED on the
+  Census TIGER/Line AIANNH polygon (GEOID 1940R, BAS 2026;
+  single polygon, 9,685 vertices, published total 838,631 ac;
+  identical across Census 2020 / ACS 2025 / BAS 2026). It was
+  switched to BIA the same day because the Census polygon
+  stitches its southern lobe to the main body with a bridge
+  ~5 m wide at (-94.377, 47.223), which renders as the
+  boundary crossing over itself. BIA draws the lobe as a
+  separate polygon with a ~210 m gap — no pinch — while the
+  boundary LINES agree closely (median 19 m near the neck;
+  37 m overall). BIA is coarser and has no interior hole:
+  the Census hole (~10,158 ac) sits outside BIA's polygons
+  (only 78 ac of it falls inside BIA), so nothing is wrongly
+  added. **PAD-US** was not fetched separately: its tribal
+  lands derive from BIA AIAN-LAR, so it would duplicate that
   geometry. The Minnesota Geospatial Commons / LCC-GIS
   reservation dataset (`amerind2010`) is 2010 TIGER-derived
   and stale — not used. The Census **off-reservation trust
   land** feature for Leech Lake (GEOID 1940T, 0.05 sq km) is
   deliberately excluded: this layer is the reservation itself.
-- **Trail overlap (measured 2026-11-11, geometry-measured
-  against the depicted chain):** 2.28 mi inside the
-  reservation, all of it on **Chip-12** (2.28 of its 3.98 mi);
-  GAP-W and every other section are outside. The official line
-  gives the same 2.28 mi. **White Earth check:** the White
+  Neither source came from the tribe itself: both are federal
+  publications. The Census file is preserved in git history
+  (commit 91e3468) if the switch ever needs reversing.
+- **Trail overlap (measured 2026-11-11, UTM 15N against the
+  depicted chain):** 2.34 mi inside the reservation, all of
+  it on **Chip-12** (2.34 of its 3.98 mi); GAP-W and every
+  other section are outside. Census re-measures 2.27 mi by
+  the same method, so the switch adds 0.07 mi. The official
+  line gives 2.28 mi. **White Earth check:** the White
   Earth Reservation (GEOID 4595R) touches the map extent's
   western margin but no depicted trail mileage falls inside
   it (0.00 mi; closest trail point 9.7 km from its boundary)
   — the obvious next polygon, not built here.
-- **Use here:** Full unclipped polygon, pulled by
+- **Use here:** Full unclipped geometry, pulled by
   `scripts/pull_leech_lake_reservation.py` into
   `data/native-nations/leech-lake-reservation.geojson` (working)
   and `site/data/leech-lake-reservation.geojson` (site copy,
-  379 KB, lazy). The popup and the Sources card carry the
+  lazy). The popup and the Sources card carry the
   line: *the federal reservation boundary as published — not
   a legal survey.* Tribal management/forestry data is NOT in
   scope here — that stays relationship-only, per the
