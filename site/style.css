@@ -1011,6 +1011,25 @@ body.gap-chip .gap-label span {
   box-shadow: 0 1px 2px rgba(28, 42, 30, 0.3);
 }
 
+/* Reservation label: the same tag idiom as the sheet labels, in
+   the reservation violet — one label at the polygon's computed
+   interior point, visible whenever the layer is on. */
+.reservation-label-wrap { background: none; border: none; }
+.reservation-label {
+  display: block;
+  width: 170px;
+  text-align: center;
+  background: rgba(238, 236, 248, 0.92);
+  border: 1px solid #5e548e;
+  border-radius: 3px;
+  color: #3f3a6b;
+  font-size: 11px;
+  font-weight: 700;
+  line-height: 16px;
+  letter-spacing: 0.04em;
+  box-shadow: 0 1px 2px rgba(28, 42, 30, 0.3);
+}
+
 /* Chapter place markers: deep-green rounded squares with a kind
    letter — the chapter's own family, distinct from the paper
    Places discs, the red alert diamonds and the orange asset

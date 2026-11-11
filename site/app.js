@@ -668,6 +668,27 @@ function parcelPopup(f) {
   ]);
 }
 
+/* Leech Lake Reservation: name the nation and the source, give the
+   trail fact that makes the layer worth switching on, and carry
+   the honest line — the federal boundary as published, not a
+   legal survey. */
+function leechLakePopup(f) {
+  var p = f.properties;
+  var trail = (p.trail_miles_inside != null)
+    ? p.trail_miles_inside + " mi of the depicted trail lies " +
+      "inside the reservation (" +
+      (p.trail_sections_inside || []).join(", ") + ")"
+    : null;
+  return "<h3>Leech Lake Reservation</h3>" + kvTable([
+    ["Nation", p.band],
+    ["Boundary", p.source],
+    ["Vintage", p.vintage],
+    ["Area", p.area_acres != null
+      ? Number(p.area_acres).toLocaleString("en-US") + " acres" : null],
+    ["Trail inside", trail],
+  ]) + "<p class='pop-note'>" + esc(p.note) + "</p>";
+}
+
 /* Trail alerts (NCTA trail_alerts service, pulled by
    scripts/pull_trail_alerts.py): the alert's own title, date and
    description, quoted verbatim — the map never rewrites an alert.
@@ -2604,6 +2625,55 @@ var LAYERS = [
     },
   },
   {
+    /* Leech Lake Reservation (Paul, Nov 11, 2026 — "put a
+       specific polygon in for native nations"): the federal
+       reservation boundary as published by the U.S. Census
+       Bureau (TIGER/Line AIANNH, BAS 2026, GEOID 1940R),
+       pulled by scripts/pull_leech_lake_reservation.py.
+       OFF by default and LAZY like parcels — nothing fetches
+       data/leech-lake-reservation.geojson until the box is
+       first checked. A quiet violet fill + outline, under the
+       trail: a context layer, not a claim. The popup carries
+       the source + vintage and the honest line (published
+       boundary, not a legal survey). 2.28 mi of the depicted
+       trail (Chip-12) lies inside. */
+    id: "leechlake", label: "Leech Lake Reservation",
+    title: "Leech Lake Reservation boundary (Leech Lake Band " +
+      "of Ojibwe) — U.S. Census Bureau, TIGER/Line, 2026",
+    file: "data/leech-lake-reservation.geojson",
+    onByDefault: false, group: "Context",
+    swatch: { kind: "fill", color: "#8e86c2", border: "#5e548e" },
+    build: function (gj) {
+      var group = L.layerGroup();
+      var poly = L.geoJSON(gj, {
+        renderer: canvasFor(),
+        style: {
+          color: "#5e548e", weight: 2,
+          fillColor: "#8e86c2", fillOpacity: 0.13,
+        },
+        onEachFeature: function (f, l) {
+          bindPop(l, leechLakePopup(f));
+        },
+      });
+      group.addLayer(poly);
+      gj.features.forEach(function (f) {
+        var p = f.properties;
+        if (p.label_lat == null || p.label_lon == null) return;
+        group.addLayer(L.marker(
+          L.latLng(p.label_lat, p.label_lon), {
+            keyboard: false, interactive: false,
+            icon: L.divIcon({
+              className: "reservation-label-wrap",
+              iconSize: [170, 18], iconAnchor: [85, 9],
+              html: "<span class='reservation-label'>" +
+                "Leech Lake Reservation</span>",
+            }),
+          }));
+      });
+      return group;
+    },
+  },
+  {
     id: "access", label: "Non-road access",
     title: "Forest roads, OHV, other trails",
     file: "data/access.geojson", onByDefault: false, group: "Context",
@@ -3075,13 +3145,16 @@ function assertDrawOrder() {
   drawOrderQueued = true;
   requestAnimationFrame(function () {
     drawOrderQueued = false;
-    /* Stacking, back → front (§2.12): parcels, access context,
-       roads, the official trail line, the ADOPTED SECTIONS on top
-       of the trail line (Paul, Nov 10, 2026 — the amber highlight
-       must read as lying over the green), the gap, boundary ticks
-       and chapter ends, mile markers with the ticks, then Places,
-       trail alerts and asset pins uppermost. */
-    ["parcels", "access", "roads", "nctasheets", "trail",
+    /* Stacking, back → front (§2.12): the reservation polygon
+       first (it is the largest context fill and must sit under
+       everything, parcels included), then parcels, access
+       context, roads, the official trail line, the ADOPTED
+       SECTIONS on top of the trail line (Paul, Nov 10, 2026 —
+       the amber highlight must read as lying over the green),
+       the gap, boundary ticks and chapter ends, mile markers
+       with the ticks, then Places, trail alerts and asset pins
+       uppermost. */
+    ["leechlake", "parcels", "access", "roads", "nctasheets", "trail",
      "stretches", "gaps",
      "boundaries", "termini", "milemarkers", "chainage", "places",
      "alerts", "chapterplaces", "assets"].forEach(function (id) {
