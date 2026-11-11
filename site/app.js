@@ -980,21 +980,53 @@ function roadPopup(f) {
   return html;
 }
 
+/* Type codes to display names (registry data/assets/registry.json).
+   Shared by the popup title and the hover chip. */
+var ASSET_TYPE_NAMES = {
+  BN: "Bench", BR: "Bridge", BW: "Boardwalk", CP: "Carsonite post",
+  CS: "Campsite", KI: "Kiosk", LT: "Latrine", PK: "Parking area",
+  PO: "Post", SG: "Sign", SH: "Shelter", UN: "Unclassified",
+  WT: "Water source",
+};
+function assetTypeName(code) {
+  if (!code) return "Asset";
+  return ASSET_TYPE_NAMES[String(code).toUpperCase()] ||
+    (String(code).charAt(0).toUpperCase() + String(code).slice(1));
+}
+
 function assetPopup(f) {
   var p = f.properties || {};
-  var typeName = esc(p.type) || "Asset";
-  typeName = typeName.charAt(0).toUpperCase() + typeName.slice(1);
+  var typeName = assetTypeName(p.type);
   var title = p.serial ? esc(p.serial) + " — " + typeName : typeName;
   var html = "<h3>" + title + "</h3>";
-  if (p.derivative) {
-    html += "<img src=\"assets-photos/" + esc(p.derivative) +
+  /* Every photo of the item, not just the primary: the inventory
+     collapses duplicate photos onto one pin (Nov 11, 2026), and
+     the extra photos live in p.photos. Pins without a photos
+     array (unclassified, fresh from the pipeline) fall back to
+     the single derivative. */
+  var photos = (p.photos && p.photos.length) ? p.photos :
+    (p.derivative ? [{ derivative: p.derivative }] : []);
+  if (photos.length === 1 && photos[0].derivative) {
+    html += "<img src=\"assets-photos/" + esc(photos[0].derivative) +
       "\" alt=\"\" style=\"max-width:100%;display:block;margin:6px 0 2px\">";
+  } else if (photos.length > 1) {
+    html += "<div style=\"display:flex;flex-wrap:wrap;gap:4px;" +
+      "margin:6px 0 2px\">";
+    photos.forEach(function (ph) {
+      if (ph.derivative) {
+        html += "<img src=\"assets-photos/" + esc(ph.derivative) +
+          "\" alt=\"\" style=\"flex:1 1 30%;max-width:32%;display:block\">";
+      }
+    });
+    html += "</div>";
   }
-  return html + kvTable([
+  var rows = [
     ["Condition", p.condition],
     ["Photographed", p.datetime],
     ["Section", p.section],
-  ]);
+  ];
+  if (photos.length > 1) rows.push(["Photos", photos.length + " photos"]);
+  return html + kvTable(rows);
 }
 
 /* §2.11: an asset pin whose photo was condition-graded wears a
@@ -2341,6 +2373,55 @@ function wireContextHover(l, f, kind) {
   l.on("mouseout", closeChip);
 }
 
+/* §2.14: asset pins get the same 300 ms dwell chip as the
+   sections and context lines (Paul, Nov 11, 2026 — "not seeing
+   bubbles when I mouse over the points"): serial + type in the
+   head row, condition / section / chainage / photo count as
+   facts. Same machinery, same rules: static chip, never follows
+   the cursor, no chips on coarse pointers. The chip binds to the
+   pin's interactive child layer(s) — a graded pin is a
+   layerGroup whose rings are interactive:false, so the mouseover
+   is wired on every child and only the dot fires. */
+function armAssetChip(layer, feature, latlng) {
+  if (COARSE_POINTER) return;
+  disarmChip();
+  chipLayer = layer;
+  chipTimer = window.setTimeout(function () {
+    chipTimer = null;
+    var p = feature.properties || {};
+    var title = p.serial ? p.serial + " — " + assetTypeName(p.type)
+                         : assetTypeName(p.type);
+    var bits = [];
+    if (p.condition) {
+      bits.push(p.condition.charAt(0).toUpperCase() +
+        p.condition.slice(1) + " condition");
+    }
+    if (p.section) bits.push(p.section);
+    if (p.chainage_mi != null) bits.push("mi " + p.chainage_mi);
+    var n = (p.photos && p.photos.length) || 0;
+    if (n > 1) bits.push(n + " photos");
+    var html = "<span class='hc-head'><span class='hc-name'>" +
+      esc(title) + "</span></span>";
+    html += chipFactsHtml(bits);
+    chipTip = L.tooltip({
+      direction: "top", offset: [0, -8],
+      className: "hover-chip", opacity: 1,
+    }).setLatLng(latlng).setContent(html);
+    map.openTooltip(chipTip);
+  }, 300);
+}
+
+function wireAssetHover(l, f) {
+  if (COARSE_POINTER) return;
+  var layers = l.getLayers ? l.getLayers() : [l];
+  layers.forEach(function (child) {
+    child.on("mouseover", function (e) {
+      armAssetChip(l, f, e.latlng);
+    });
+    child.on("mouseout", closeChip);
+  });
+}
+
 /* ------------------------------------------------------------ layers */
 /* Each layer: file under data/, builder, default-on flag, panel
    group (Chapter / Context), and the swatch its toggle wears —
@@ -3025,7 +3106,10 @@ var LAYERS = [
         pointToLayer: function (f, latlng) {
           return assetMarker(f, latlng);
         },
-        onEachFeature: function (f, l) { bindPop(l, assetPopup(f)); },
+        onEachFeature: function (f, l) {
+          bindPop(l, assetPopup(f));
+          wireAssetHover(l, f);
+        },
       });
     },
   },
