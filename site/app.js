@@ -1401,7 +1401,7 @@ function renderInspector() {
       "<div class='insp-empty'>Select a section: click the amber " +
       "line, or find it above. ← → walk the trail." +
       "<button type='button' class='insp-gap-callout' id='insp-gap-btn'>" +
-      "Unadopted: GAP-W, 2.9 mi — Itasca State Park</button></div>";
+      "Not adopted: GAP-W, 2.9 mi — Itasca State Park</button></div>";
     var btn = document.getElementById("insp-gap-btn");
     if (btn) btn.addEventListener("click", function () {
       if (gapWalkItem) selectSection(gapWalkItem, "inspector");
@@ -1649,7 +1649,7 @@ function sectionInspectorHtml(item) {
      good state; red stays the colour of exception, spent once. */
   html += "<span class='insp-pill " +
     (adopted ? "adopted soft" : "unadopted") +
-    "'>" + (adopted ? "Adopted" : "Unadopted") + "</span>";
+    "'>" + (adopted ? "Adopted" : "Not adopted") + "</span>";
   html += "<button type='button' class='insp-close' id='insp-close' " +
     "aria-label='Clear selection'>×</button></div>";
   html += inspectorActions(idx, false);
@@ -1741,7 +1741,7 @@ function gapInspectorHtml(item) {
   var html = "<div class='insp-sheet is-gap'>";
   html += "<div class='insp-head'><span class='insp-title'>" +
     (esc(p.gap_id) || "Gap") + "</span>" +
-    "<span class='insp-pill unadopted'>Unadopted</span>" +
+    "<span class='insp-pill unadopted'>Not adopted</span>" +
     "<button type='button' class='insp-close' id='insp-close' " +
     "aria-label='Clear selection'>×</button></div>";
   html += inspectorActions(idx, true);
@@ -1854,7 +1854,7 @@ var chipLayer = null;
 function chipFacts(p, isGap) {
   var bits = [];
   if (p.length_mi != null) bits.push(p.length_mi + " mi");
-  if (isGap) bits.push("Unadopted");
+  if (isGap) bits.push("Not adopted");
   else if (p.chainage_start_mi != null) {
     bits.push("starts " + p.chainage_start_mi + " mi from the west end");
   }
@@ -1994,7 +1994,7 @@ var gapLabelGroupRef = null;
 
 var LAYERS = [
   {
-    id: "trail", label: "Official trail line", file: "data/trail.geojson",
+    id: "trail", label: "NCTA Trail", file: "data/trail.geojson",
     onByDefault: true, group: "Chapter",
     swatch: { kind: "line", color: CHAPTER_COLORS.ITM },
     build: function (gj) {
@@ -2203,7 +2203,7 @@ var LAYERS = [
     },
   },
   {
-    id: "termini", label: "Chapter ends",
+    id: "termini", label: "Chapter boundaries",
     file: "data/boundaries.geojson", onByDefault: true, group: "Chapter",
     swatch: { kind: "bar", color: CHAPTER_COLORS.ITM },
     build: function (gj) {
@@ -2258,7 +2258,7 @@ var LAYERS = [
     },
   },
   {
-    id: "gaps", label: "Unadopted gap (unclaimed)",
+    id: "gaps", label: "Not adopted",
     file: "data/gaps.geojson", onByDefault: true, group: "Chapter",
     swatch: { kind: "line", color: GAP_CORE_STYLE.color, dashed: true },
     build: function (gj) {
@@ -2301,7 +2301,7 @@ var LAYERS = [
           keyboard: false,
           icon: L.divIcon({
             className: "map-label gap-label", iconSize: [0, 0],
-            html: "<span>Unadopted — " + lenTxt + " mi</span>",
+            html: "<span>Not adopted — " + lenTxt + " mi</span>",
           }),
         });
         m.on("click", function () {
@@ -2335,8 +2335,8 @@ var LAYERS = [
        at Z4), placed by the unified annotation pass at the lowest
        priority. Default OFF — this is a second mileage reckoning
        on the face (see M3 in the spec) and stays opt-in. */
-    id: "milemarkers", label: "Mile markers (state)",
-    title: "State (NCTA) mileage — a different reckoning from the " +
+    id: "milemarkers", label: "NCTA mile markers",
+    title: "NCTA mileage — a different reckoning from the " +
       "chapter tracker's miles",
     file: "data/milemarkers.geojson", onByDefault: false,
     group: "Chapter",
@@ -2376,7 +2376,7 @@ var LAYERS = [
        fetches data/parcels.geojson until the box is first checked
        (ensureLayer is only called from the toggle handler or a
        #layers=parcels hash, never at startup). */
-    id: "parcels", label: "Parcels (owner names — public record)",
+    id: "parcels", label: "Public parcels",
     file: "data/parcels.geojson", onByDefault: false, group: "Context",
     swatch: { kind: "fill", color: "#fdbb84", border: "#b35806" },
     build: function (gj) {
@@ -2829,25 +2829,25 @@ function legendHtml() {
     return "<span class='swatch pin' style='background:" +
       color + "'></span>";
   }
-  add("", "<strong>Trail (official line)</strong>");
+  add("", "<strong>NCTA Trail</strong>");
   add(line(CHAPTER_COLORS.ITM), "Itasca Moraine Chapter — off-road");
   add(line(CHAPTER_COLORS.ITM, true), "Itasca Moraine Chapter — on-road");
   add(line(CHAPTER_COLORS.LLC), "Laurentian Lakes Chapter — off-road");
   add(line(CHAPTER_COLORS.LLC, true), "Laurentian Lakes Chapter — on-road");
   add("", "<strong>Chapter sections</strong>");
   add(line(STRETCH_STYLE.color), "Adopted section");
-  add(line(GAP_CORE_STYLE.color, true), "Unadopted gap — unclaimed");
+  add(line(GAP_CORE_STYLE.color, true), "Not adopted");
   add(bar(COLORS.tick),
     "Section boundary — bar across the line (shows with Adopted sections)");
   add(bar(CHAPTER_COLORS.ITM, true),
-    "Chapter end — longer bar across the line (Itasca Moraine terminus)");
+    "Chapter boundary — longer bar across the line (Itasca Moraine terminus)");
   /* The Access points rows are gone with their layer (v3); the
      crossings live in Find now. */
   add("", "<strong>Mileage</strong>");
   add(pin(COLORS.tick),
-    "Mile marker — whole mile (state reckoning)");
+    "Mile marker — whole mile (NCTA)");
   add("<span class='swatch num'>187</span>",
-    "State mile number (NCTA reckoning)");
+    "NCTA mile number");
   add("<span class='swatch num'>30</span>",
     "— miles from the west end (chapter chainage)");
   add("", "<strong>Non-road access</strong>");
@@ -2860,7 +2860,7 @@ function legendHtml() {
     var s = ROAD_CLASS_STYLES[cls];
     add(line(s.color), s.short);
   });
-  add("", "<strong>Parcels</strong>");
+  add("", "<strong>Public parcels</strong>");
   add("<span class='swatch fill' style='background:#fdbb84'></span>",
     "Parcel the trail crosses");
   add("<span class='swatch fill' style='background:#e7e1c3'></span>",
@@ -2899,7 +2899,7 @@ function legendHtml() {
     line(CHAPTER_COLORS.ITM) + "Trail",
     line(STRETCH_STYLE.color) + "Adopted",
     line(GAP_CORE_STYLE.color, true) + "Gap",
-    "<span class='ml-bar'></span>Chapter end",
+    "<span class='ml-bar'></span>Chapter boundary",
     line(CHAPTER_COLORS.LLC) + "Neighbor chapter",
   ];
   el.innerHTML = items.map(function (h) {
