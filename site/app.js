@@ -373,17 +373,19 @@ function trailCasingStyle(f) {
    (OHV burnt orange #a63603 — the old #d7301f WAS the gap red;
    hunter-walking sage #6e8b67 — the old green sat on the trail
    green) and per-kind zoom-band gates. Weights are the Z3 values;
-   Z2 reads 0.25 lighter. Layer opacity 0.75 except park (0.65).
+   Z2 reads 20% lighter. Layer opacity 0.75 except park (0.65).
    State forest roads are no longer here — they draw as Roads
-   class F (§2.9 move). */
+   class F (§2.9 move). Weights raised across the table Nov 10,
+   2026 (Paul: "roads and non road access should be heavier
+   lines") — colours, dashes, opacities and band gates unchanged. */
 var ACCESS_STYLES = {
-  state_park_trail_or_road: { color: "#35978f", weight: 0.9, opacity: 0.65, minBand: 3, label: "State park trail / road" },
-  ohv_trail:             { color: "#a63603", weight: 1, dashArray: "6 3 1.5 3", minBand: 2, label: "OHV / ATV-UTV trail" },
-  state_trail:           { color: "#2c7fb8", weight: 1.25, minBand: 1, label: "State trail" },
-  snowmobile_trail:      { color: "#8856a7", weight: 0.75, dashArray: "2 5", minBand: 2, label: "Snowmobile trail" },
-  hunter_walking_trail:  { color: "#6e8b67", weight: 0.75, dashArray: "8 4", minBand: 3, label: "Hunter walking trail" },
+  state_park_trail_or_road: { color: "#35978f", weight: 1.6, opacity: 0.65, minBand: 3, label: "State park trail / road" },
+  ohv_trail:             { color: "#a63603", weight: 1.75, dashArray: "6 3 1.5 3", minBand: 2, label: "OHV / ATV-UTV trail" },
+  state_trail:           { color: "#2c7fb8", weight: 2.25, minBand: 1, label: "State trail" },
+  snowmobile_trail:      { color: "#8856a7", weight: 1.4, dashArray: "2 5", minBand: 2, label: "Snowmobile trail" },
+  hunter_walking_trail:  { color: "#6e8b67", weight: 1.4, dashArray: "8 4", minBand: 3, label: "Hunter walking trail" },
 };
-var ACCESS_DEFAULT = { color: "#666666", weight: 1, minBand: 1,
+var ACCESS_DEFAULT = { color: "#666666", weight: 1.75, minBand: 1,
                        label: "Access line" };
 
 function accessStyle(f) {
@@ -393,12 +395,12 @@ function accessStyle(f) {
     return { color: s.color, weight: 0, opacity: 0, dashArray: null };
   }
   var w = s.weight;
-  if (currentBand === 2) w = Math.max(0.5, w - 0.25);
+  if (currentBand === 2) w = Math.max(0.75, w * 0.8);
   var dash = s.dashArray || null;
   /* S5 Winter: snowmobile promoted on screen when the season
      toggle is on (weight + filled-season dash). */
   if (winterMode && f.properties.source_type === "snowmobile_trail") {
-    w = 1.25; dash = "4 2";
+    w = 2; dash = "4 2";
   }
   return { color: s.color, weight: w,
            opacity: s.opacity != null ? s.opacity : 0.75,
@@ -410,10 +412,10 @@ function accessStyle(f) {
 function printAccessStyle(f, s) {
   var t = f.properties.source_type;
   if (t === "state_trail") {
-    return { color: s.color, weight: 1, opacity: 0.9, dashArray: null };
+    return { color: s.color, weight: 1.75, opacity: 0.9, dashArray: null };
   }
   if (winterMode && t === "snowmobile_trail") {
-    return { color: s.color, weight: 1.25, opacity: 0.9,
+    return { color: s.color, weight: 2, opacity: 0.9,
              dashArray: "4 2" };
   }
   return { color: s.color, weight: 0, opacity: 0, dashArray: null };
@@ -458,15 +460,15 @@ var STRETCH_HOVER_STYLE = { color: COLORS.adoptedHover, weight: 8, opacity: 1 };
    corridor-clipped feature (cut:true) draws at 0.6× its class
    opacity — the visible cue for "this line continues". */
 var ROAD_CLASS_STYLES = {
-  A: { color: "#616161", weight: 1.75, opacity: 0.85, minBand: 1,
+  A: { color: "#616161", weight: 2.75, opacity: 0.85, minBand: 1,
        label: "Arterial — trunk highway / county state-aid",
        short: "Roads — trunk / county state-aid" },
-  B: { color: "#83837a", weight: 1.1, opacity: 0.7, minBand: 2,
+  B: { color: "#83837a", weight: 2, opacity: 0.7, minBand: 2,
        label: "Local road", short: "Roads — local" },
-  C: { color: "#a9a396", weight: 0.75, opacity: 0.55, minBand: 3,
+  C: { color: "#a9a396", weight: 1.5, opacity: 0.55, minBand: 3,
        label: "Minor road — township / unnamed",
        short: "Roads — minor / township" },
-  F: { color: "#8c510a", weight: 1, opacity: 0.8, minBand: 2,
+  F: { color: "#8c510a", weight: 1.75, opacity: 0.8, minBand: 2,
        label: "State forest road", short: "State forest road" },
 };
 var ROADS_STYLE = ROAD_CLASS_STYLES.A;
@@ -477,11 +479,11 @@ function roadStyle(f) {
   if (printMode) {
     /* S5 print collapse: classes A + F only, in one grey. */
     if (p.road_class === "A") {
-      return { color: "#616161", weight: 1.2, opacity: 0.9,
+      return { color: "#616161", weight: 2.2, opacity: 0.9,
                dashArray: null };
     }
     if (p.road_class === "F") {
-      return { color: "#616161", weight: 1, opacity: 0.9,
+      return { color: "#616161", weight: 2, opacity: 0.9,
                dashArray: null };
     }
     return { color: "#616161", weight: 0, opacity: 0, dashArray: null };
@@ -577,8 +579,7 @@ function parcelPopup(f) {
     ["Land class", p.land_class],
     ["Acres", p.acres],
     ["Owner", p.owner],
-  ]) + "<p><em>Owner as published in the county parcel records " +
-    "(public record).</em></p>";
+  ]);
 }
 
 /* Trail alerts (NCTA trail_alerts service, pulled by
@@ -621,6 +622,74 @@ function alertPopup(f) {
   }
   html += "<p class='pop-note'><em>Trail alert from the North " +
     "Country Trail Association.</em></p>";
+  return html;
+}
+
+/* Chapter places (the chapter's own place records —
+   data/points/chapter-places.geojson, seeded from the NCTA
+   camping points and hand-maintained since; emitted to the site
+   by scripts/build_chapter_places.py). One card serves both the
+   layer's own features and the gazetteer twins (whose record
+   provenance rides in place_source instead of source), so the
+   layer, Find and What's here can never disagree. A chapter
+   entry SUPERSEDES its NCTA point: the gazetteer build drops the
+   NCTA version and the Places layer skips chapter entries, so a
+   place shows exactly once — as its chapter version. */
+/* Directions (Paul, Nov 10, 2026 — "so we can share the
+   trailheads and navigate there by driving"): every point card
+   — gazetteer points and chapter places — offers a Google Maps
+   driving link. The destination is the point's OWN coordinates
+   at 6 dp, plain signed decimals, never the place name: names
+   can mis-geocode in rural areas, and the pin must land on the
+   real spot. The name rides only in the card the link sits in. */
+function directionsHtml(f) {
+  var c = f.geometry && f.geometry.coordinates;
+  if (!c) return "";
+  return "<a class='pop-directions' target='_blank' rel='noopener' " +
+    "href='https://www.google.com/maps/dir/?api=1&destination=" +
+    c[1].toFixed(6) + "," + c[0].toFixed(6) +
+    "'>Directions (Google Maps)</a>";
+}
+
+function chapterPopupHtml(f) {
+  var p = f.properties;
+  var source = p.source != null && p.source !== "chapter"
+    ? p.source : p.place_source;
+  var seeded = !!source && source.indexOf("seeded from NCTA") === 0;
+  var closed = p.status === "closed";
+  var html = "<h3>" + (esc(p.name) || "Chapter place") + "</h3>";
+  if (closed) html += "<p class='chapter-closed'>CLOSED</p>";
+  var rows = [
+    ["Kind", p.kind],
+    ["Status", !closed && p.status
+      ? p.status.charAt(0).toUpperCase() + p.status.slice(1) : null],
+    ["Capacity", p.capacity],
+    ["Water", p.water_note],
+    ["Chapter tracker mile",
+      p.nct_mile != null ? p.nct_mile : null],
+    ["From the west end",
+      p.from_west_mi != null ? p.from_west_mi + " mi along the trail" : null],
+  ];
+  if (p.off_chain) {
+    rows.push(["Position", "Off the depicted chapter chain — nearest " +
+      "depicted point ≈ " + (p.snap_m / 1000).toFixed(1) + " km"]);
+  }
+  html += kvTable(rows);
+  if (p.description) {
+    html += "<p class='chapter-desc'>" + esc(p.description) + "</p>";
+  }
+  var actions = "";
+  if (p.section && walkByName[p.section]) {
+    actions += "<button type='button' class='pop-door' data-section='" +
+      esc(p.section) + "'>Open " + esc(p.section) + " record</button>";
+  }
+  actions += directionsHtml(f);
+  if (actions) html += "<div class='pop-actions'>" + actions + "</div>";
+  html += seeded
+    ? "<p class='pop-note'><em>Seeded from NCTA data — chapter " +
+      "record to be confirmed.</em></p>"
+    : "<p class='pop-note'><em>Chapter record — Itasca Moraine " +
+      "Chapter.</em></p>";
   return html;
 }
 
@@ -1913,6 +1982,10 @@ function swatchFor(def) {
     return "<span class='tog-swatch-alert' style='background:" +
       s.color + "'></span>";
   }
+  if (s.kind === "chapter") {
+    return "<span class='tog-swatch-chapter' style='background:" +
+      s.color + "'></span>";
+  }
   return "<span class='tog-swatch-line" + (s.dashed ? " dashed" : "") +
     "' style='border-top-color:" + s.color + "'></span>";
 }
@@ -2385,6 +2458,9 @@ var LAYERS = [
                      Shelter: "S" };
       gj.features.forEach(function (f) {
         var p = f.properties;
+        /* Chapter entries ride the gazetteer for Find, but the
+           Chapter places layer draws them — never both. */
+        if (p.source === "chapter") return;
         var glyph = glyphs[p.kind];
         if (p.kind !== "POI" && !glyph) return;
         var c = f.geometry.coordinates;
@@ -2443,6 +2519,52 @@ var LAYERS = [
           });
         },
         onEachFeature: function (f, l) { bindPop(l, alertPopup(f)); },
+      });
+    },
+  },
+  {
+    /* Chapter places (Paul, Nov 10, 2026 — "we need to be able
+       to add campsites"): the chapter's OWN place records,
+       separate from NCTA's data so re-pulls never overwrite
+       them. Seeded from the NCTA camping points (each seed
+       supersedes its NCTA point — see build_gazetteer.py), then
+       hand-maintained through Paul; no editing UI on the public
+       map. OFF by default and LAZY like parcels and alerts —
+       nothing fetches data/chapter-places.geojson until the box
+       is first checked. Markers are deep-green chapter discs —
+       deliberately unlike the paper Places discs, the red alert
+       diamonds and the orange asset pins; a CLOSED place greys
+       out under a red ring and a diagonal bar. No zoom gate:
+       the chapter's own places should never hide. */
+    id: "chapterplaces", label: "Chapter places",
+    title: "Places the chapter itself records — campsites first",
+    file: "data/chapter-places.geojson", onByDefault: false,
+    group: "Context",
+    swatch: { kind: "chapter", color: COLORS.trailDeep },
+    build: function (gj) {
+      var glyphs = { Parking: "P", Camping: "C", Water: "W",
+                     Shelter: "S", Privy: "R" };
+      return L.geoJSON(gj, {
+        pointToLayer: function (f, latlng) {
+          var p = f.properties;
+          var glyph = glyphs[p.kind];
+          var closedCls = p.status === "closed" ? " closed" : "";
+          var html = glyph
+            ? "<span class='chapter-disc" + closedCls + "'>" +
+              glyph + "</span>"
+            : "<span class='chapter-dot" + closedCls + "'></span>";
+          return L.marker(latlng, {
+            keyboard: false,
+            icon: L.divIcon({
+              className: "chapter-disc-wrap", iconSize: [19, 19],
+              iconAnchor: [10, 10],
+              html: html,
+            }),
+          });
+        },
+        onEachFeature: function (f, l) {
+          bindPop(l, chapterPopupHtml(f));
+        },
       });
     },
   },
@@ -2657,7 +2779,7 @@ function assertDrawOrder() {
        trail alerts and asset pins uppermost. */
     ["parcels", "access", "roads", "trail", "stretches", "gaps",
      "boundaries", "termini", "milemarkers", "chainage", "places",
-     "alerts", "assets"].forEach(function (id) {
+     "alerts", "chapterplaces", "assets"].forEach(function (id) {
       var d = layerById(id);
       if (!d || !d.layer || !map.hasLayer(d.layer)) return;
       if (d.layer.bringToFront) { d.layer.bringToFront(); return; }
@@ -2747,6 +2869,12 @@ function legendHtml() {
   add("", "<strong>Trail alerts</strong>");
   add("<span class='swatch alert'></span>",
     "Trail alert — closure, storm damage, reroute (NCTA)");
+  add("", "<strong>Chapter places</strong>");
+  add("<span class='swatch chapterdisc'>C</span>",
+    "Chapter place — the chapter's own record (C camping, " +
+    "W water, P parking, S shelter)");
+  add("<span class='swatch chapterdisc closed'>C</span>",
+    "Chapter place — CLOSED");
   return rows.join("");
 }
 
@@ -2892,6 +3020,9 @@ function gazContents(sectionName) {
 
 function gazPopupHtml(f) {
   var p = f.properties;
+  /* A chapter place selected through Find or What's here gets
+     its chapter card, not the NCTA waypoint card. */
+  if (p.source === "chapter") return chapterPopupHtml(f);
   var rows = [
     ["Kind", p.kind],
     ["Chapter tracker mile",
@@ -2915,10 +3046,13 @@ function gazPopupHtml(f) {
       if (walkByName[p.sections[i]]) door = p.sections[i];
     }
   }
+  var actions = "";
   if (door) {
-    html += "<button type='button' class='pop-door' data-section='" +
+    actions += "<button type='button' class='pop-door' data-section='" +
       esc(door) + "'>Open " + esc(door) + " record</button>";
   }
+  actions += directionsHtml(f);
+  if (actions) html += "<div class='pop-actions'>" + actions + "</div>";
   return html;
 }
 
@@ -2982,6 +3116,10 @@ function gazResultSub(p) {
     if (p.nct_mile != null) bits.push("Tracker miles " + p.nct_mile);
     else if (p.off_chain) bits.push("off-chain");
     if (p.section) bits.push("in " + p.section);
+    if (p.source === "chapter") {
+      bits.push("Chapter record");
+      if (p.status === "closed") bits.push("CLOSED");
+    }
   }
   return bits.join(" · ");
 }

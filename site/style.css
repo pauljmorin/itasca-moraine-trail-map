@@ -250,6 +250,12 @@ html, body {
   transform: rotate(45deg);
   border: 1.5px solid #fff; box-shadow: 0 0 2px #333; margin: 0 3.5px;
 }
+.tog-swatch-chapter {
+  flex: 0 0 auto;
+  display: inline-block; width: 11px; height: 11px;
+  border-radius: 3px;
+  border: 1.5px solid #fff; box-shadow: 0 0 2px #333; margin: 0 2.5px;
+}
 .tog-suffix { color: var(--ink-soft); font-size: 0.8rem; }
 .tog-error {
   color: #b2182b;
@@ -699,6 +705,27 @@ html, body {
   box-shadow: 0 0 2px #333;
   margin: 0 9.5px;
 }
+#legend .swatch.chapterdisc, #legend-print-body .swatch.chapterdisc {
+  width: 15px;
+  height: 15px;
+  border-top: none;
+  border-radius: 4px;
+  background: var(--trail-deep);
+  border: 1.5px solid #fff;
+  box-shadow: 0 0 2px #333;
+  color: #fff;
+  font-size: 9px;
+  font-weight: 700;
+  line-height: 15px;
+  text-align: center;
+  margin: 0 7.5px;
+  padding: 0;
+}
+#legend .swatch.chapterdisc.closed,
+#legend-print-body .swatch.chapterdisc.closed {
+  background: #6e6e66;
+  border-color: var(--gap);
+}
 /* Numeral swatches (mileage rows): the legend shows the label
    typography itself — a bare slate number. */
 #legend .swatch.num, #legend-print-body .swatch.num {
@@ -909,6 +936,44 @@ body.gap-chip .gap-label span {
   text-align: center;
 }
 
+/* Chapter place markers: deep-green rounded squares with a kind
+   letter — the chapter's own family, distinct from the paper
+   Places discs, the red alert diamonds and the orange asset
+   pins. A CLOSED place greys out under a red ring with a
+   diagonal bar: unmistakably shut at a glance. */
+.chapter-disc-wrap { background: none; border: none; }
+.chapter-disc {
+  display: block;
+  width: 17px;
+  height: 17px;
+  border-radius: 4px;
+  background: var(--trail-deep);
+  border: 1.5px solid #fff;
+  color: #fff;
+  font-size: 10px;
+  font-weight: 700;
+  line-height: 17px;
+  text-align: center;
+  box-shadow: 0 1px 3px rgba(28, 42, 30, 0.45);
+}
+.chapter-disc.closed {
+  background-color: #6e6e66;
+  border-color: var(--gap);
+  background-image: linear-gradient(to top right,
+    transparent 43%, var(--gap) 46%, var(--gap) 54%, transparent 57%);
+}
+.chapter-dot {
+  display: block;
+  width: 9px;
+  height: 9px;
+  margin: 5px;
+  border-radius: 50%;
+  background: var(--trail-deep);
+  border: 1.5px solid #fff;
+  box-shadow: 0 1px 2px rgba(28, 42, 30, 0.4);
+}
+.chapter-dot.closed { background: #6e6e66; border-color: var(--gap); }
+
 /* Hover-lite chip (UX-REVIEW Part 1): small, static, non-interactive.
    Replaces the v3 cursor-following full-record hover card. */
 .leaflet-tooltip.hover-chip {
@@ -980,6 +1045,17 @@ body.base-imagery.gap-chip .gap-label span {
 }
 .leaflet-popup-content .pop-note { margin: 4px 0 0; font-size: 12.5px; }
 .leaflet-popup-content .alert-desc { margin: 6px 0 0; }
+.leaflet-popup-content .chapter-desc { margin: 6px 0 0; }
+.leaflet-popup-content .chapter-closed {
+  margin: 6px 0 2px;
+  padding: 4px 8px;
+  background: #fdf0ec;
+  border: 1px solid #eec5bb;
+  border-radius: 6px;
+  color: #b2182b;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+}
 .leaflet-popup-content .pop-door {
   background: none; border: none; padding: 0;
   margin-top: 6px;
@@ -987,6 +1063,18 @@ body.base-imagery.gap-chip .gap-label span {
   cursor: pointer;
 }
 .leaflet-popup-content .pop-door:hover { text-decoration: underline; }
+.leaflet-popup-content .pop-actions { margin-top: 6px; }
+.leaflet-popup-content .pop-actions .pop-door { margin-top: 0; }
+.leaflet-popup-content .pop-directions {
+  color: var(--trail-deep); font-size: 13px; font-weight: 600;
+  text-decoration: none; margin-left: 12px;
+}
+.leaflet-popup-content .pop-actions .pop-directions:first-child {
+  margin-left: 0;
+}
+.leaflet-popup-content .pop-directions:hover {
+  text-decoration: underline;
+}
 
 /* ---------------------------------------------------------- mobile */
 
@@ -1124,6 +1212,12 @@ body.base-imagery.gap-chip .gap-label span {
     margin: 0 0 8px;
   }
   .gaz-contents .gc-name {
+    color: var(--ink);
+    text-decoration: none;
+  }
+  /* Interactive card actions print as plain text, like the
+     What's-here names above. */
+  .leaflet-popup-content .pop-directions {
     color: var(--ink);
     text-decoration: none;
   }

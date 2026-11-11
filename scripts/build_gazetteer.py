@@ -45,6 +45,22 @@ the working data at all: they are not even read here.
 Dedupe: a computed access crossing within 100 m of an NCTA parking
 point is dropped in favour of the named NCTA entry (count printed).
 
+Chapter places (data/points/chapter-places.geojson, the chapter's
+own records — seeded from the NCTA camping points Nov 10, 2026,
+then hand-maintained) SUPERSEDE the NCTA points they name: the
+NCTA layer carries no id field, so a chapter entry's `supersedes`
+is the composite key "ncta-points:<name>@<lon>,<lat>" (six
+decimals, exactly as recorded in data/points/ncta-points.geojson;
+see scripts/seed_chapter_places.py). A superseded NCTA waypoint is
+dropped here (count printed) and the chapter entry takes its
+place — source "chapter", the chapter's fields (status,
+description, capacity, water note, record source) carried across —
+so a place appears exactly once, as its chapter version, in the
+index, in Find and in the What's-here lists. The Places map layer
+skips source-"chapter" entries (the Chapter places layer draws
+them from site/data/chapter-places.geojson, emitted by
+scripts/build_chapter_places.py from this build's output).
+
 Also built from site/data/boundaries.geojson (the v2 build's
 points): the 32 KMZ boundary pins as "Section boundary" entries
 (positions are the v2 stretch-endpoint positions, never raw pins)
@@ -59,6 +75,7 @@ either (1,038 of them; the parcels layer is their home).
 Run from the repository root:  python3 scripts/build_gazetteer.py
 Inputs: data/segments/{segment-stretches,gaps}.geojson,
 data/points/ncta-points.geojson,
+data/points/chapter-places.geojson,
 site/data/{boundaries,stretches,access-points}.geojson.
 Standard library only.
 """
@@ -403,6 +420,7 @@ def main():
     boundaries = load("site/data/boundaries.geojson")["features"]
     access_pts = load("site/data/access-points.geojson")["features"]
     ncta = load("data/points/ncta-points.geojson")["features"]
+    chapter_places = load("data/points/chapter-places.geojson")["features"]
 
     pieces, total_chain = build_chain(stretches, gaps)
     mapping = recover_placeholder_map()
@@ -570,9 +588,20 @@ def main():
     # along the chapter's trail.
     parking_coords = []
     off_chain = 0
+    superseded = {}
+    for cf in chapter_places:
+        cp = cf["properties"]
+        if cp.get("supersedes"):
+            superseded[cp["supersedes"]] = cp.get("id")
+    superseded_dropped = 0
     for f in ncta:
         p = f["properties"]
         coord = f["geometry"]["coordinates"]
+        key = "ncta-points:%s@%.6f,%.6f" % (
+            clean(p.get("name")) or "", coord[0], coord[1])
+        if key in superseded:
+            superseded_dropped += 1
+            continue  # the chapter entry below replaces this point
         kind = clean(p.get("type")) or "POI"
         if kind == "Parking":
             parking_coords.append(coord)
@@ -589,6 +618,37 @@ def main():
                 snap, extra)
         else:
             add(name, kind, "ncta-points", coord, ch,
+                nct_from_chainage(pieces, ch), piece.name, snap, extra)
+
+    # ---- chapter places ----
+    # The chapter's own records, projected exactly like the NCTA
+    # waypoints (same SNAP_LIMIT_M off-chain rule). Source is
+    # "chapter"; the record's own provenance rides in place_source.
+    chapter_off_chain = 0
+    for f in chapter_places:
+        p = f["properties"]
+        coord = f["geometry"]["coordinates"]
+        kind = clean(p.get("kind")) or "POI"
+        name = clean(p.get("name")) or kind
+        extra = {
+            "place_id": p.get("id"),
+            "status": clean(p.get("status")),
+            "capacity": clean(p.get("capacity")),
+            "water_note": clean(p.get("water_note")),
+            "place_source": clean(p.get("source")),
+            "photo_drive_id": p.get("photo_drive_id"),
+        }
+        desc = clean(p.get("description"))
+        if desc:
+            extra["description"] = desc
+        piece, ch, snap = project(pieces, coord)
+        if snap > SNAP_LIMIT_M:
+            chapter_off_chain += 1
+            extra["off_chain"] = True
+            add(name, kind, "chapter", coord, None, None, None,
+                snap, extra)
+        else:
+            add(name, kind, "chapter", coord, ch,
                 nct_from_chainage(pieces, ch), piece.name, snap, extra)
 
     # ---- access crossings (deduped against NCTA parking) ----
@@ -633,6 +693,10 @@ def main():
           f"an NCTA parking point): {deduped}")
     print(f"NCTA waypoints off-chain (> {SNAP_LIMIT_M:.0f} m snap; "
           f"chainage/NCT/section null): {off_chain}")
+    print(f"NCTA waypoints superseded by chapter places (dropped; "
+          f"the chapter entry replaces each): {superseded_dropped}")
+    print(f"chapter places indexed: {len(chapter_places)} "
+          f"(off-chain: {chapter_off_chain})")
     print(f"tracker texts with an unresolvable first-name residue "
           f"(left as recorded): {stats.get('name_residues', 0)}")
     print(f"contact patterns stripped from tracker text: "

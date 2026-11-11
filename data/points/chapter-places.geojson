@@ -1,0 +1,841 @@
+{
+ "type": "FeatureCollection",
+ "metadata": {
+  "dataset": "Chapter places — the Itasca Moraine Chapter's own place records (campsites first). Chapter-owned: re-pulls of NCTA data never overwrite this file.",
+  "seeded_from": "data/points/ncta-points.geojson (NCTA public point data, layer 1)",
+  "seeded_date": "2026-11-10",
+  "seed_rule": "every NCTA Camping point, verbatim name, same coordinates, enrichment fields empty",
+  "supersedes_key": "ncta-points:<name>@<lon>,<lat> at six decimals — the NCTA layer has no id field, so name+coordinates are the point's identity",
+  "maintenance": "hand-edited; see docs/chapter-places-guide.md"
+ },
+ "features": [
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -95.231161,
+     47.168462
+    ]
+   },
+   "properties": {
+    "id": "cp-bp1",
+    "name": "BP1",
+    "kind": "Camping",
+    "status": null,
+    "description": null,
+    "capacity": null,
+    "water_note": null,
+    "source": "seeded from NCTA — chapter to confirm",
+    "added": "2026-11-10",
+    "supersedes": "ncta-points:BP1@-95.231161,47.168462",
+    "photo_drive_id": null
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -95.184862,
+     47.176559
+    ]
+   },
+   "properties": {
+    "id": "cp-bp10",
+    "name": "BP10",
+    "kind": "Camping",
+    "status": null,
+    "description": null,
+    "capacity": null,
+    "water_note": null,
+    "source": "seeded from NCTA — chapter to confirm",
+    "added": "2026-11-10",
+    "supersedes": "ncta-points:BP10@-95.184862,47.176559",
+    "photo_drive_id": null
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -95.178847,
+     47.181061
+    ]
+   },
+   "properties": {
+    "id": "cp-bp11",
+    "name": "BP11",
+    "kind": "Camping",
+    "status": null,
+    "description": null,
+    "capacity": null,
+    "water_note": null,
+    "source": "seeded from NCTA — chapter to confirm",
+    "added": "2026-11-10",
+    "supersedes": "ncta-points:BP11@-95.178847,47.181061",
+    "photo_drive_id": null
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -95.231195,
+     47.168294
+    ]
+   },
+   "properties": {
+    "id": "cp-bp2",
+    "name": "BP2",
+    "kind": "Camping",
+    "status": null,
+    "description": null,
+    "capacity": null,
+    "water_note": null,
+    "source": "seeded from NCTA — chapter to confirm",
+    "added": "2026-11-10",
+    "supersedes": "ncta-points:BP2@-95.231195,47.168294",
+    "photo_drive_id": null
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -95.219389,
+     47.148852
+    ]
+   },
+   "properties": {
+    "id": "cp-bp3",
+    "name": "BP3",
+    "kind": "Camping",
+    "status": null,
+    "description": null,
+    "capacity": null,
+    "water_note": null,
+    "source": "seeded from NCTA — chapter to confirm",
+    "added": "2026-11-10",
+    "supersedes": "ncta-points:BP3@-95.219389,47.148852",
+    "photo_drive_id": null
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -95.219536,
+     47.148718
+    ]
+   },
+   "properties": {
+    "id": "cp-bp4",
+    "name": "BP4",
+    "kind": "Camping",
+    "status": null,
+    "description": null,
+    "capacity": null,
+    "water_note": null,
+    "source": "seeded from NCTA — chapter to confirm",
+    "added": "2026-11-10",
+    "supersedes": "ncta-points:BP4@-95.219536,47.148718",
+    "photo_drive_id": null
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -95.195157,
+     47.163009
+    ]
+   },
+   "properties": {
+    "id": "cp-bp5",
+    "name": "BP5",
+    "kind": "Camping",
+    "status": null,
+    "description": null,
+    "capacity": null,
+    "water_note": null,
+    "source": "seeded from NCTA — chapter to confirm",
+    "added": "2026-11-10",
+    "supersedes": "ncta-points:BP5@-95.195157,47.163009",
+    "photo_drive_id": null
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -95.181088,
+     47.174833
+    ]
+   },
+   "properties": {
+    "id": "cp-bp7",
+    "name": "BP7",
+    "kind": "Camping",
+    "status": null,
+    "description": null,
+    "capacity": null,
+    "water_note": null,
+    "source": "seeded from NCTA — chapter to confirm",
+    "added": "2026-11-10",
+    "supersedes": "ncta-points:BP7@-95.181088,47.174833",
+    "photo_drive_id": null
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -95.181135,
+     47.17405
+    ]
+   },
+   "properties": {
+    "id": "cp-bp8",
+    "name": "BP8",
+    "kind": "Camping",
+    "status": null,
+    "description": null,
+    "capacity": null,
+    "water_note": null,
+    "source": "seeded from NCTA — chapter to confirm",
+    "added": "2026-11-10",
+    "supersedes": "ncta-points:BP8@-95.181135,47.174050",
+    "photo_drive_id": null
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -95.180792,
+     47.173671
+    ]
+   },
+   "properties": {
+    "id": "cp-bp9",
+    "name": "BP9",
+    "kind": "Camping",
+    "status": null,
+    "description": null,
+    "capacity": null,
+    "water_note": null,
+    "source": "seeded from NCTA — chapter to confirm",
+    "added": "2026-11-10",
+    "supersedes": "ncta-points:BP9@-95.180792,47.173671",
+    "photo_drive_id": null
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -94.834035,
+     47.1592
+    ]
+   },
+   "properties": {
+    "id": "cp-bass-lake-group-campsite",
+    "name": "Bass Lake Group Campsite",
+    "kind": "Camping",
+    "status": null,
+    "description": null,
+    "capacity": null,
+    "water_note": null,
+    "source": "seeded from NCTA — chapter to confirm",
+    "added": "2026-11-10",
+    "supersedes": "ncta-points:Bass Lake Group Campsite@-94.834035,47.159200",
+    "photo_drive_id": null
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -95.189788,
+     47.218636
+    ]
+   },
+   "properties": {
+    "id": "cp-bear-paw-campground",
+    "name": "Bear Paw Campground",
+    "kind": "Camping",
+    "status": null,
+    "description": null,
+    "capacity": null,
+    "water_note": null,
+    "source": "seeded from NCTA — chapter to confirm",
+    "added": "2026-11-10",
+    "supersedes": "ncta-points:Bear Paw Campground@-95.189788,47.218636",
+    "photo_drive_id": null
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -94.822409,
+     47.059426
+    ]
+   },
+   "properties": {
+    "id": "cp-camping",
+    "name": "Camping",
+    "kind": "Camping",
+    "status": null,
+    "description": null,
+    "capacity": null,
+    "water_note": null,
+    "source": "seeded from NCTA — chapter to confirm",
+    "added": "2026-11-10",
+    "supersedes": "ncta-points:Camping@-94.822409,47.059426",
+    "photo_drive_id": null
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -95.088237,
+     47.145351
+    ]
+   },
+   "properties": {
+    "id": "cp-camping-2",
+    "name": "Camping",
+    "kind": "Camping",
+    "status": null,
+    "description": null,
+    "capacity": null,
+    "water_note": null,
+    "source": "seeded from NCTA — chapter to confirm",
+    "added": "2026-11-10",
+    "supersedes": "ncta-points:Camping@-95.088237,47.145351",
+    "photo_drive_id": null
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -94.514117,
+     46.994291
+    ]
+   },
+   "properties": {
+    "id": "cp-camping-3",
+    "name": "Camping",
+    "kind": "Camping",
+    "status": null,
+    "description": null,
+    "capacity": null,
+    "water_note": null,
+    "source": "seeded from NCTA — chapter to confirm",
+    "added": "2026-11-10",
+    "supersedes": "ncta-points:Camping@-94.514117,46.994291",
+    "photo_drive_id": null
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -94.841559,
+     47.156754
+    ]
+   },
+   "properties": {
+    "id": "cp-camping-4",
+    "name": "Camping",
+    "kind": "Camping",
+    "status": null,
+    "description": null,
+    "capacity": null,
+    "water_note": null,
+    "source": "seeded from NCTA — chapter to confirm",
+    "added": "2026-11-10",
+    "supersedes": "ncta-points:Camping@-94.841559,47.156754",
+    "photo_drive_id": null
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -94.326602,
+     46.980975
+    ]
+   },
+   "properties": {
+    "id": "cp-camping-5",
+    "name": "Camping",
+    "kind": "Camping",
+    "status": null,
+    "description": null,
+    "capacity": null,
+    "water_note": null,
+    "source": "seeded from NCTA — chapter to confirm",
+    "added": "2026-11-10",
+    "supersedes": "ncta-points:Camping@-94.326602,46.980975",
+    "photo_drive_id": null
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -95.561539,
+     46.934356
+    ]
+   },
+   "properties": {
+    "id": "cp-camping-6",
+    "name": "Rogstad Campsite",
+    "kind": "Camping",
+    "status": "closed",
+    "description": "The 400th Ave. / Rogstad Campsite is CLOSED as the property is now owned by the U.S. Fish & Wildlife Service, which does not allow overnight use.",
+    "capacity": null,
+    "water_note": null,
+    "source": "chapter — closed per NCTA trail alert, April 12, 2026",
+    "added": "2026-11-10",
+    "supersedes": "ncta-points:Camping@-95.561539,46.934356",
+    "photo_drive_id": null
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -94.841169,
+     47.155584
+    ]
+   },
+   "properties": {
+    "id": "cp-camping-fee",
+    "name": "Camping (Fee)",
+    "kind": "Camping",
+    "status": null,
+    "description": null,
+    "capacity": null,
+    "water_note": null,
+    "source": "seeded from NCTA — chapter to confirm",
+    "added": "2026-11-10",
+    "supersedes": "ncta-points:Camping (Fee)@-94.841169,47.155584",
+    "photo_drive_id": null
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -95.439402,
+     47.148824
+    ]
+   },
+   "properties": {
+    "id": "cp-campsite",
+    "name": "Campsite",
+    "kind": "Camping",
+    "status": null,
+    "description": null,
+    "capacity": null,
+    "water_note": null,
+    "source": "seeded from NCTA — chapter to confirm",
+    "added": "2026-11-10",
+    "supersedes": "ncta-points:Campsite@-95.439402,47.148824",
+    "photo_drive_id": null
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -95.227297,
+     47.192223
+    ]
+   },
+   "properties": {
+    "id": "cp-elk-group-campsite",
+    "name": "Elk Group Campsite",
+    "kind": "Camping",
+    "status": null,
+    "description": null,
+    "capacity": null,
+    "water_note": null,
+    "source": "seeded from NCTA — chapter to confirm",
+    "added": "2026-11-10",
+    "supersedes": "ncta-points:Elk Group Campsite@-95.227297,47.192223",
+    "photo_drive_id": null
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -95.469938,
+     47.048519
+    ]
+   },
+   "properties": {
+    "id": "cp-flooded-woods-campsite",
+    "name": "Flooded Woods Campsite",
+    "kind": "Camping",
+    "status": null,
+    "description": null,
+    "capacity": null,
+    "water_note": null,
+    "source": "seeded from NCTA — chapter to confirm",
+    "added": "2026-11-10",
+    "supersedes": "ncta-points:Flooded Woods Campsite@-95.469938,47.048519",
+    "photo_drive_id": null
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -95.336665,
+     47.15793
+    ]
+   },
+   "properties": {
+    "id": "cp-gardner-lake",
+    "name": "Gardner Lake",
+    "kind": "Camping",
+    "status": null,
+    "description": null,
+    "capacity": null,
+    "water_note": null,
+    "source": "seeded from NCTA — chapter to confirm",
+    "added": "2026-11-10",
+    "supersedes": "ncta-points:Gardner Lake@-95.336665,47.157930",
+    "photo_drive_id": null
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -94.32687,
+     46.991119
+    ]
+   },
+   "properties": {
+    "id": "cp-goose-lake-campsite",
+    "name": "Goose Lake Campsite",
+    "kind": "Camping",
+    "status": null,
+    "description": null,
+    "capacity": null,
+    "water_note": null,
+    "source": "seeded from NCTA — chapter to confirm",
+    "added": "2026-11-10",
+    "supersedes": "ncta-points:Goose Lake Campsite@-94.326870,46.991119",
+    "photo_drive_id": null
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -94.836596,
+     47.160393
+    ]
+   },
+   "properties": {
+    "id": "cp-gulch-lakes-campground",
+    "name": "Gulch Lakes Campground",
+    "kind": "Camping",
+    "status": null,
+    "description": null,
+    "capacity": null,
+    "water_note": null,
+    "source": "seeded from NCTA — chapter to confirm",
+    "added": "2026-11-10",
+    "supersedes": "ncta-points:Gulch Lakes Campground@-94.836596,47.160393",
+    "photo_drive_id": null
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -94.42726,
+     47.004584
+    ]
+   },
+   "properties": {
+    "id": "cp-gut-lake",
+    "name": "Gut Lake",
+    "kind": "Camping",
+    "status": null,
+    "description": null,
+    "capacity": null,
+    "water_note": null,
+    "source": "seeded from NCTA — chapter to confirm",
+    "added": "2026-11-10",
+    "supersedes": "ncta-points:Gut Lake@-94.427260,47.004584",
+    "photo_drive_id": null
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -94.287346,
+     46.998735
+    ]
+   },
+   "properties": {
+    "id": "cp-hazel-lake-campsite",
+    "name": "Hazel Lake Campsite",
+    "kind": "Camping",
+    "status": null,
+    "description": null,
+    "capacity": null,
+    "water_note": null,
+    "source": "seeded from NCTA — chapter to confirm",
+    "added": "2026-11-10",
+    "supersedes": "ncta-points:Hazel Lake Campsite@-94.287346,46.998735",
+    "photo_drive_id": null
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -95.445679,
+     47.11355
+    ]
+   },
+   "properties": {
+    "id": "cp-horseshoe-lake-campsite",
+    "name": "Horseshoe Lake Campsite",
+    "kind": "Camping",
+    "status": null,
+    "description": null,
+    "capacity": null,
+    "water_note": null,
+    "source": "seeded from NCTA — chapter to confirm",
+    "added": "2026-11-10",
+    "supersedes": "ncta-points:Horseshoe Lake Campsite@-95.445679,47.113550",
+    "photo_drive_id": null
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -94.447863,
+     47.007381
+    ]
+   },
+   "properties": {
+    "id": "cp-hovde-lake",
+    "name": "Hovde Lake",
+    "kind": "Camping",
+    "status": null,
+    "description": null,
+    "capacity": null,
+    "water_note": null,
+    "source": "seeded from NCTA — chapter to confirm",
+    "added": "2026-11-10",
+    "supersedes": "ncta-points:Hovde Lake@-94.447863,47.007381",
+    "photo_drive_id": null
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -95.17073,
+     47.151973
+    ]
+   },
+   "properties": {
+    "id": "cp-iron-corner-lake-campsite",
+    "name": "Iron Corner Lake Campsite",
+    "kind": "Camping",
+    "status": null,
+    "description": null,
+    "capacity": null,
+    "water_note": null,
+    "source": "seeded from NCTA — chapter to confirm",
+    "added": "2026-11-10",
+    "supersedes": "ncta-points:Iron Corner Lake Campsite@-95.170730,47.151973",
+    "photo_drive_id": null
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -94.360427,
+     47.002192
+    ]
+   },
+   "properties": {
+    "id": "cp-moccasin-lake",
+    "name": "Moccasin Lake",
+    "kind": "Camping",
+    "status": null,
+    "description": null,
+    "capacity": null,
+    "water_note": null,
+    "source": "seeded from NCTA — chapter to confirm",
+    "added": "2026-11-10",
+    "supersedes": "ncta-points:Moccasin Lake@-94.360427,47.002192",
+    "photo_drive_id": null
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -95.283894,
+     47.17081
+    ]
+   },
+   "properties": {
+    "id": "cp-no-state-park-reservations-required",
+    "name": "No State Park Reservations Required",
+    "kind": "Camping",
+    "status": null,
+    "description": null,
+    "capacity": null,
+    "water_note": null,
+    "source": "seeded from NCTA — chapter to confirm",
+    "added": "2026-11-10",
+    "supersedes": "ncta-points:No State Park Reservations Required@-95.283894,47.170810",
+    "photo_drive_id": null
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -95.4123,
+     47.166169
+    ]
+   },
+   "properties": {
+    "id": "cp-old-headquarters-campsite",
+    "name": "Old Headquarters Campsite",
+    "kind": "Camping",
+    "status": null,
+    "description": null,
+    "capacity": null,
+    "water_note": null,
+    "source": "seeded from NCTA — chapter to confirm",
+    "added": "2026-11-10",
+    "supersedes": "ncta-points:Old Headquarters Campsite@-95.412300,47.166169",
+    "photo_drive_id": null
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -95.190536,
+     47.234546
+    ]
+   },
+   "properties": {
+    "id": "cp-pine-ridge-campground",
+    "name": "Pine Ridge Campground",
+    "kind": "Camping",
+    "status": null,
+    "description": null,
+    "capacity": null,
+    "water_note": null,
+    "source": "seeded from NCTA — chapter to confirm",
+    "added": "2026-11-10",
+    "supersedes": "ncta-points:Pine Ridge Campground@-95.190536,47.234546",
+    "photo_drive_id": null
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -94.629034,
+     47.038226
+    ]
+   },
+   "properties": {
+    "id": "cp-shingobee-campsite",
+    "name": "Shingobee Campsite",
+    "kind": "Camping",
+    "status": null,
+    "description": null,
+    "capacity": null,
+    "water_note": null,
+    "source": "seeded from NCTA — chapter to confirm",
+    "added": "2026-11-10",
+    "supersedes": "ncta-points:Shingobee Campsite@-94.629034,47.038226",
+    "photo_drive_id": null
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -94.701747,
+     47.07755
+    ]
+   },
+   "properties": {
+    "id": "cp-sprinkle-road-campsite",
+    "name": "Sprinkle Road Campsite",
+    "kind": "Camping",
+    "status": null,
+    "description": null,
+    "capacity": null,
+    "water_note": null,
+    "source": "seeded from NCTA — chapter to confirm",
+    "added": "2026-11-10",
+    "supersedes": "ncta-points:Sprinkle Road Campsite@-94.701747,47.077550",
+    "photo_drive_id": null
+   }
+  }
+ ]
+}
