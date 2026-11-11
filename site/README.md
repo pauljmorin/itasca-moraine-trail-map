@@ -266,16 +266,20 @@ documented in the build script's header. Verified on the
 working data anywhere under `site/`, zero email patterns, zero
 phone-number patterns, and zero `@` characters in `site/data/`.
 
-The panel carries the standing notice: *Working draft — not an
-official NCTA or National Park Service map.* The map is an Itasca
-Moraine **Chapter** project.
+The panel opens with a masthead: the North Country Trail
+Association logo (the association's own site file, used
+unaltered) beside the chapter wordmark — the logo carries the
+association, the wordmark carries the chapter (design-notes
+2026-11-10 §1). The old "Working draft — not an official NCTA or
+National Park Service map" notice was removed Nov 10, 2026 on
+Paul's word; the map is an Itasca Moraine **Chapter** project,
+and the Sources card credits the trail line to NCTA/NPS.
 
 ## Printing
 
 `style.css` has `@media print` rules because the chapter recruits
-with paper maps at events: landscape, the panel's notice (shrunk
-to plain 9 pt text) and mileage summary, a print-only header line
-("Itasca Moraine Chapter — chapter trail map" + the print date),
+with paper maps at events: landscape, the panel's print masthead
+(logo + wordmark + the print date line) and adoption story box,
 the map in the current viewport, and a **print-only legend** in
 the panel (the on-screen corner cards stay screen-only). The
 Leaflet attribution still prints — it is a licence condition, not

@@ -718,6 +718,15 @@ function inspRow(k, v) {
     "</span><span>" + val + "</span></div>";
 }
 
+/* Story-box ask (design-notes §2.4): the gap annotation + line in
+   the panel header select the gap, same as the inspector callout. */
+(function wireGapStory() {
+  var btn = document.getElementById("gap-story");
+  if (btn) btn.addEventListener("click", function () {
+    if (gapWalkItem) selectSection(gapWalkItem, "inspector");
+  });
+})();
+
 function renderInspector() {
   var el = document.getElementById("inspector");
   if (!el) return;

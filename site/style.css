@@ -65,12 +65,45 @@ html, body {
   z-index: 1000;
 }
 
+/* Masthead (design-notes 2026-11-10 §1): the association logo
+   carries the association, the wordmark carries the chapter —
+   one row on plain paper, closed by a hairline so the story box
+   keeps sole ownership of the green tint. */
+.masthead {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding-bottom: 10px;
+  margin-bottom: 10px;
+  border-bottom: 1px solid var(--paper-line);
+}
+.masthead-logo {
+  height: 44px;
+  width: auto;
+  max-width: 128px;
+  object-fit: contain;
+  object-position: left center;
+}
 #panel h1 {
-  font-size: 1.15rem;
-  font-weight: 650;
-  letter-spacing: -0.01em;
-  line-height: 1.3;
-  margin: 0 0 8px;
+  font-size: 17px;
+  font-weight: 700;
+  color: var(--trail-deep);
+  letter-spacing: 0.01em;
+  line-height: 1.15;
+  margin: 0;
+}
+.masthead-desc {
+  font-size: 10.5px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  color: var(--ink-soft);
+  margin: 3px 0 0;
+}
+.masthead-assoc {
+  font-size: 10px;
+  color: var(--ink-soft);
+  margin: 2px 0 0;
 }
 #panel h2 {
   font-size: 0.95rem;
@@ -79,48 +112,88 @@ html, body {
   padding-bottom: 3px;
 }
 
-.notice {
-  background: var(--paper-hover);
-  border: 1px solid #d8d2bd;
-  border-left: 3px solid #8a6d1f;
-  border-radius: 4px;
-  padding: 8px 10px;
-  font-size: 0.82rem;
-}
-
+/* Adoption story (design-notes 2026-11-10 §2): three beats —
+   the achievement in big numbers, the bar with its gap labelled,
+   the ask as a single clickable line. */
 .mileage {
   background: var(--header-tint);
   border: 1px solid #b9cba5;
   border-radius: 4px;
-  padding: 8px 10px;
+  padding: 10px 12px;
   font-size: 0.88rem;
 }
-.mileage p { margin: 6px 0 0; font-size: 0.85rem; }
-.mileage .context-line { color: var(--ink-soft); font-size: 0.8rem; }
+.adopt-headline { margin: 0 0 8px; font-size: 15px; font-weight: 650; }
+.adopt-big {
+  font-size: 28px;
+  font-weight: 750;
+  color: var(--adopted-deep);
+  letter-spacing: -0.01em;
+}
+.adopt-of { font-size: 13px; font-weight: 400; color: var(--ink-soft); }
 
-/* Adoption story bar: the chapter's one-glance headline — amber
-   adopted, hatched red gap at the west (left) end. */
 .adopt-bar {
   display: flex;
-  height: 10px;
-  border-radius: 5px;
+  height: 14px;
+  border-radius: 7px;
   overflow: hidden;
   background: #fff;
   border: 1px solid #b9cba5;
 }
 .adopt-gap-seg {
   flex: 0 0 4%;
+  min-width: 14px;
   background: repeating-linear-gradient(45deg,
     var(--gap) 0 4px, #ffffff 4px 6px, var(--gap) 6px 10px);
 }
 .adopt-fill-seg { flex: 1 1 auto; background: var(--adopted); }
 
-/* Mini-legend: five always-visible swatches under the story box. */
+/* The ask: annotation + line as one unstyled button (§2.4). */
+.gap-story {
+  display: block;
+  width: 100%;
+  background: none;
+  border: none;
+  padding: 0 4px;
+  margin: 0 -4px;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+  border-radius: 4px;
+}
+.gap-story:hover { background: #fdf0ec; }
+.gap-annot {
+  display: block;
+  font-size: 11.5px;
+  font-weight: 700;
+  color: #b2182b;
+  margin-top: 2px;
+}
+.gap-caret {
+  display: block;
+  width: 6px;
+  height: 6px;
+  margin: 1px 0 2px 4px;
+  background: #b2182b;
+  transform: rotate(45deg);
+}
+.gap-ask {
+  display: block;
+  font-size: 13px;
+  line-height: 1.4;
+  margin-top: 6px;
+}
+.gap-ask strong { color: #b2182b; }
+
+/* Mini-legend: five always-visible swatches under the story box,
+   behind a hairline — the story is the story, the legend is
+   apparatus (design-notes §2.2). */
 #mini-legend {
   display: flex;
   flex-wrap: wrap;
   gap: 4px 12px;
-  margin-top: 8px;
+  margin-top: 10px;
+  padding-top: 8px;
+  border-top: 1px solid #b9cba5;
   font-size: 11.5px;
   color: var(--ink);
 }
@@ -687,6 +760,12 @@ body.base-imagery .gap-label span {
     border-bottom: 1px solid var(--paper-line);
   }
   #map { margin-left: 0; margin-top: 38vh; height: 62dvh; }
+  /* Masthead compresses, never stacks (design-notes §1.5). */
+  .masthead { padding-bottom: 6px; margin-bottom: 6px; gap: 10px; }
+  .masthead-logo { height: 32px; max-width: 96px; }
+  #panel h1 { font-size: 15px; white-space: nowrap; }
+  .masthead-desc { font-size: 10px; }
+  .adopt-big { font-size: 24px; }
   #layer-toggles { columns: 2; }
   #layer-toggles label { min-height: 40px; }
   #gaz-search { font-size: 16px; }
@@ -720,8 +799,24 @@ body.base-imagery .gap-label span {
     overflow: visible;
     border-right: none;
   }
-  .notice { font-size: 9pt; background: none; }
-  .print-header { display: block; font-size: 9pt; color: var(--ink-soft); }
+  /* Print masthead (design-notes §1.6): logo + wordmark, then the
+     existing sentence; the story box prints beneath as the
+     handout's headline. */
+  .print-header { display: block; }
+  .print-masthead { display: flex; align-items: center; gap: 4mm; }
+  .print-logo { height: 11mm; width: auto; }
+  .print-name {
+    font-size: 13pt; font-weight: 700; color: var(--trail-deep);
+    margin: 0;
+  }
+  .print-desc {
+    font-size: 8pt; font-weight: 700; text-transform: uppercase;
+    letter-spacing: 0.14em; color: var(--ink-soft); margin: 1mm 0 0;
+  }
+  .print-line { font-size: 9pt; color: var(--ink-soft); margin: 2mm 0 0; }
+  .adopt-bar, .mileage { print-color-adjust: exact; }
+  .gap-story { cursor: default; }
+  .gap-story:hover { background: none; }
   #legend-print { display: block; margin-top: 10px; }
   #map {
     margin-left: 0;
