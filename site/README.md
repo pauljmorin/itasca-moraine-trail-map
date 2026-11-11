@@ -1,4 +1,4 @@
-# The map site (v4 — chapter working view)
+# The map site (v7 — chapter working view)
 
 A single-page Leaflet map in plain HTML/CSS/JS. No build step, no
 API keys, nothing to install: `index.html` + `app.js` + `style.css`.
@@ -9,7 +9,7 @@ portability rule. Base-map tiles come from public tile servers
 connection. Append `#layers=access,roads` to the URL to open with
 those layers already switched on.
 
-The side panel carries the title, the working-draft notice, the
+The side panel carries the masthead, the
 adoption story box with its mini-legend, the Find box, the
 section inspector, the layer toggles, and the load status. The
 reference material lives over the map instead: two
@@ -44,12 +44,41 @@ time their checkbox is switched on.
 | Adopted sections | `data/stretches.geojson` | on | The chapter's adopted sections (from the adoption tracker joined onto the boundary-point overlay), drawn in amber over the official line, each with its name as a permanent tooltip at mid-section — floating **above** the line on east–west segments, **beside** the line on north–south segments (v3, judged from the segment direction at the label anchor). **No popup (v4): clicking a section selects it into the panel inspector** (see "Section inspector" below); hovering shows only a small name/facts chip. Default ON since v4 — the adopted sections are the chapter's story. |
 | Section boundaries | `data/boundaries.geojson` | with sections | **No toggle of its own** — the boundary markers ride with the Adopted sections toggle: a bar struck **across** the line at every section start/end — perpendicular to the trail's bearing there, unlabelled, positioned on the stretch geometry endpoints (never at raw KMZ pin positions — one pin sits ~3.6 km off the line). **The bar scales with zoom** (v3): ~22 px on screen at any zoom, floored at the built 140 m length and capped at 1.6 km (chapter termini cap at 4.2 km), so it stays visible when zoomed out without sprawling across the map when zoomed in. Softened in v4 to a slate core with a lighter casing. The same file's two chapter termini are the separate layer below. |
 | Chapter ends (Itasca Moraine west & east) | `data/boundaries.geojson` | on | The boundary-bar language at chapter weight: a green bar across the line at each end (~56 px on screen, floored at ~280 m), labelled "Itasca Moraine — west end" (chainage 0, at the GAP-W west end in Itasca State Park) and "Itasca Moraine — east end". Always available with the official line, independent of the sections toggle. |
-| Unadopted gap (unclaimed) | `data/gaps.geojson` | on | Stretches of the depicted line no section covers, drawn bold dashed red — the recruiting layer. Currently one: GAP-W, 2.92 mi in Itasca State Park. It carries a permanent on-map label ("Unadopted — 2.9 mi", shown at zoom ≥ 9) and, like a section, **clicking it selects it into the panel inspector** (length, land context, nearest access at each end, trails crossing it). |
+| Unadopted gap (unclaimed) | `data/gaps.geojson` | on | Stretches of the depicted line no section covers, drawn bold dashed red — the recruiting layer. Currently one: GAP-W, 2.92 mi in Itasca State Park. It carries a permanent on-map label ("Unadopted — 2.9 mi", shown at zoom ≥ 9) and, like a section, **clicking it selects it into the panel inspector** (length, land context, nearest access at each end, trails crossing it). **v7:** the core's dashes slowly march westward while the layer is on (stopped by reduced-motion settings, a hidden tab, or print), and at zoom ≥ 11 the label becomes a Carsonite-style sign chip (paper fill, red border). |
 | Parcels | `data/parcels.geojson` | **UI-disabled** | **Built but UI-disabled as of Nov 10, 2026, pending a later re-enable** — the layer does not appear in the toggles, its legend swatches are removed, and nothing fetches `parcels.geojson` on load or toggle. The data, build logic, popup code and canvas rendering are all retained; re-enable by flipping `enabled: false` to `enabled: true` on the parcels entry in `app.js` (LAYERS). When enabled: trail-corridor parcels (crossed + adjoining ring), off by default. Popup: parcel ID, county, land class, acres, and the **owner name + mailing address as published in the county parcel records** (public record — see Privacy). 919 of the 1,038 site parcels carry a published owner; the rest (mostly public land) show no owner row. |
-| Non-road access | `data/access.geojson` | off | MN DNR lines: state forest roads, state park trails/roads, OHV trails, state trails, snowmobile trails, hunter walking trails, styled by kind — drawn thin (v3, ~1 px hairlines: context, not subject). Renamed from "Access lines" Nov 10, 2026 (Paul: "call access lines non road access"). |
-| Roads | `data/roads.geojson` | off | Road centerlines (5,902 MnDOT segments), drawn mid-grey at 1.75 px (v3 — the earlier 1 px #999999 styling was effectively invisible). Off by default: it is the visually busiest layer and the map opens faster without it. |
+| Non-road access | `data/access.geojson` | off | MN DNR lines: state park trails/roads, OHV trails, state trails, snowmobile trails, hunter walking trails, styled by kind — hairlines with per-kind zoom gates (state trails from zoom 10, OHV/snowmobile from 11, park/hunter from 13). **Corridor-clipped in the site build (v7)** to ±800 m around the drawn lines — see "Corridor crop" below. State forest roads are **no longer in this layer** — they moved to Roads as class F (v7). Renamed from "Access lines" Nov 10, 2026 (Paul: "call access lines non road access"). |
+| Roads | `data/roads.geojson` | off | Road centerlines **corridor-clipped in the site build (v7)** to ±1.6 km around the drawn lines and drawn in four classes derived at build time from the source `route_sys` codes + name patterns: **A** arterial (trunk highways + county state-aid, the old v3 mid-grey 1.75 px), **B** local named, **C** minor/township/unnamed, **F** state forest roads (moved from the access data). Classes appear by zoom (A from 10, B/F from 11, C from 13); corridor-clipped roads draw faded (`cut` feather). Popup and hover chip carry the road's name + class. Off by default. |
+| Mile markers (state) | `data/milemarkers.geojson` | off | The NCTA Minnesota half-mile points snapped to the drawn lines in the site build (244 pulled for the extent, 239 retained; points more than 250 m from a drawn line follow an authorised route the map doesn't draw and are excluded — count printed by the build). Whole miles: slate disc with a white ring + the bare state-mile number as a label at zoom ≥ 13; halves: small dot, labelled only at zoom ≥ 15. **This is the state (NCTA) reckoning** — it differs from the chapter tracker's miles by roughly 46–48 mi; the two are never mixed (tracker figures are labelled "chapter tracker miles" wherever they appear). |
+| Places | `data/gazetteer.geojson` | off | The gazetteer's 114 NCTA waypoints drawn as a layer (v7): 15 px paper discs with a slate ring and a letter — **P** parking, **C** camping, **W** water, **S** shelter — and plain slate dots for POIs. Zoom ≥ 13 only. Popups are the same gazetteer records Find shows. |
+| Chainage numerals | `data/chainage.geojson` | always | **No toggle** — annotation, like the section names: a small slate numeral on the line every 10 chapter miles from the west end (10, 20, … 70), shown at zoom ≥ 11 and placed by the same collision pass as the section names. These are *relative* miles from the chapter's west end — not NCT miles in either reckoning. On printouts the cadence tightens to every 5 miles. |
 | Access points (section crossings) | `data/access-points.geojson` | **removed** | **Layer removed Nov 10, 2026 (Paul's call)** — no toggle, nothing fetches the file. The computed crossings (111 points) remain available as the gazetteer's Road/Trail crossing entries (searchable via Find), and the data file + builder stay in the repo. The §5 caution in `../docs/segment-gap-analysis.md` still applies to the crossing data wherever it appears: a crossing is a line on a map, not a drivable route. |
 | Asset pins | `data/assets.geojson` | off | Photo-inventory pins. **This file does not exist yet** — until the first real photo batch runs, the toggle sits disabled in the panel, labelled "(no photos yet)"; a one-time probe enables it if the file appears. The pipeline writes `data/assets/assets.geojson` in the repo; copying it to `site/data/assets.geojson` publishes the pins. |
+
+### Corridor crop (v7)
+
+The working data under `../data/` is **never cropped** — the
+corridor is a view the site build applies to the two context
+layers, exactly like the parcels corridor is a view the parcels
+pull applies. In `scripts/build_site_data.py`, after the usual
+simplification, non-road access is clipped to **±800 m** and
+roads to **±1.6 km** around **both drawn lines** (the Itasca
+Moraine chain and the Laurentian Lakes chain the map draws):
+lines are cut at their vertices with the exact boundary-crossing
+point interpolated, kept runs under 25 m are dropped, roads get a
+≤250 m "finish the block" extension to their segment's end
+vertex, access lines get ≤150 m junction stubs where those reach
+another retained line, and a line that *crosses* the trail is a
+connector — kept whole if ≤ 3 km long, otherwise its crossing
+run is extended 1.5 km past the corridor edge (such features
+carry `connector: true`; clipped features carry `cut: true` and
+draw faded). The design contract is
+`../docs/cartography-notes-2026-11-10.md` (Part 1); its §0 counts
+were raster any-touch estimates — the build's exact geometric
+counts run lower (318 of 3,670 access features touch ±800 m, 34
+of them state forest roads; 259 of 5,902 roads touch ±1.6 km),
+and C2's under-25 m rule drops a few glancing touches more
+(access ships 267 features; roads ship 289 including the 33
+forest roads) — the build prints its counts every run.
 
 So the map opens (default view, v4) with the official line, the
 adopted sections over it, the unadopted gap, and the two
@@ -228,11 +257,17 @@ and cached — re-toggling never refetches.
   see the Layers table). `site/data/gazetteer.geojson` is built
   separately by `scripts/build_gazetteer.py` (see Gazetteer).
 
-Sizes after simplification (2026-11-10 v2 build): trail 0.07 MB,
-parcels 0.49 MB, access 1.68 MB, roads 0.97 MB, stretches 0.04 MB,
-gaps 0.002 MB, access points 0.03 MB, boundaries 0.007 MB,
-gazetteer 0.10 MB — 3.41 MB total, down from 30.1 MB of source
-data. Three tiny parcels
+Sizes after simplification (2026-11-10 v7 build): trail 0.07 MB,
+parcels 0.49 MB, access 0.12 MB, roads 0.08 MB (both after the
+corridor crop — v2 was 1.68 MB / 0.97 MB uncropped), stretches
+0.04 MB, gaps 0.002 MB, access points 0.03 MB, boundaries
+0.007 MB, gazetteer 0.10 MB, mile markers 0.04 MB, chainage
+0.002 MB. `site/data/milemarkers.geojson` is emitted in the same
+run from `../data/points/mile-markers.geojson` (pulled by
+`scripts/pull_mile_markers.py`; only points snapping within
+250 m of the drawn lines are kept), and
+`site/data/chainage.geojson` is built from the site stretches
+copy (a point every 5 chapter miles from the west end). Three tiny parcels
 (of 1,041) were dropped by polygon simplification; they remain in
 the source file. One stretch (CHP-13) is absent from the site copy
 because its source geometry is a single point — see Known data
@@ -288,6 +323,16 @@ following page as a hand-out card for a prospective adopter.
 Pan/zoom first — print renders whatever is in the current
 viewport. **Untested on paper**; proof before relying on it for
 an event.
+
+**Print cartography (v7):** the printout is its own map, not a
+screenshot. Roads collapse to classes A + F in one grey; non-road
+access collapses to the state trails as solid hairlines and drops
+snowmobile/hunter lines entirely — **unless** the panel's
+**Winter** toggle is on (snowmobile season: snowmobile lines are
+promoted on screen and survive into print). Chainage numerals
+print every 5 miles instead of 10. The gap's dashes print
+statically (the march is screen-only) and its sign chip prints in
+full colour.
 
 ## Known data notes
 

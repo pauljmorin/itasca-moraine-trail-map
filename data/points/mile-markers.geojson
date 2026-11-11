@@ -1,0 +1,3926 @@
+{
+ "type": "FeatureCollection",
+ "metadata": {
+  "dataset": "NCTA Minnesota half-mile points (state mile markers), clipped to the chapter working extent",
+  "source_service": "https://services2.arcgis.com/UfGVyqUm4GHa2zrj/arcgis/rest/services/mn_halfmile_points/FeatureServer",
+  "source_layer_id": 0,
+  "source_layer_name": "halfmile_mn",
+  "pulled_utc_date": "2026-11-11",
+  "extent_wgs84": {
+   "min_lon": -95.6,
+   "max_lon": -94.3,
+   "min_lat": 46.7,
+   "max_lat": 47.35
+  },
+  "clip_method": "Envelope selection (object-id fetch, chunk-verified); positions from GeoJSON geometry requested with outSR=4326",
+  "corrupt_columns_warning": "The service's lat/long ATTRIBUTE columns are corrupt (longitude duplicates latitude) and were never read; outFields was limited to ident, index_, wypnt_id.",
+  "reckoning_note": "State (NCTA) miles. The chapter tracker's virtual markers differ by roughly 46-48 miles; never merged (M3).",
+  "feature_count": 244
+ },
+ "features": [
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -95.639058,
+     46.952433
+    ]
+   },
+   "properties": {
+    "ident": "MN-120.5",
+    "index_": "Interval",
+    "wypnt_id": "120.5",
+    "mile": 120.5
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -95.631073,
+     46.955261
+    ]
+   },
+   "properties": {
+    "ident": "MN-121",
+    "index_": "Index",
+    "wypnt_id": "121",
+    "mile": 121.0
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -95.623384,
+     46.952685
+    ]
+   },
+   "properties": {
+    "ident": "MN-121.5",
+    "index_": "Interval",
+    "wypnt_id": "121.5",
+    "mile": 121.5
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -95.619635,
+     46.948538
+    ]
+   },
+   "properties": {
+    "ident": "MN-122",
+    "index_": "Index",
+    "wypnt_id": "122",
+    "mile": 122.0
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -95.612512,
+     46.951637
+    ]
+   },
+   "properties": {
+    "ident": "MN-122.5",
+    "index_": "Interval",
+    "wypnt_id": "122.5",
+    "mile": 122.5
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -95.603728,
+     46.951592
+    ]
+   },
+   "properties": {
+    "ident": "MN-123",
+    "index_": "Index",
+    "wypnt_id": "123",
+    "mile": 123.0
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -95.595837,
+     46.950422
+    ]
+   },
+   "properties": {
+    "ident": "MN-123.5",
+    "index_": "Interval",
+    "wypnt_id": "123.5",
+    "mile": 123.5
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -95.590721,
+     46.94492
+    ]
+   },
+   "properties": {
+    "ident": "MN-124",
+    "index_": "Index",
+    "wypnt_id": "124",
+    "mile": 124.0
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -95.592282,
+     46.941113
+    ]
+   },
+   "properties": {
+    "ident": "MN-124.5",
+    "index_": "Interval",
+    "wypnt_id": "124.5",
+    "mile": 124.5
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -95.588762,
+     46.93579
+    ]
+   },
+   "properties": {
+    "ident": "MN-125",
+    "index_": "Index",
+    "wypnt_id": "125",
+    "mile": 125.0
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -95.580815,
+     46.932258
+    ]
+   },
+   "properties": {
+    "ident": "MN-125.5",
+    "index_": "Interval",
+    "wypnt_id": "125.5",
+    "mile": 125.5
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -95.571641,
+     46.935151
+    ]
+   },
+   "properties": {
+    "ident": "MN-126",
+    "index_": "Index",
+    "wypnt_id": "126",
+    "mile": 126.0
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -95.563171,
+     46.934455
+    ]
+   },
+   "properties": {
+    "ident": "MN-126.5",
+    "index_": "Interval",
+    "wypnt_id": "126.5",
+    "mile": 126.5
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -95.555151,
+     46.937363
+    ]
+   },
+   "properties": {
+    "ident": "MN-127",
+    "index_": "Index",
+    "wypnt_id": "127",
+    "mile": 127.0
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -95.549466,
+     46.940638
+    ]
+   },
+   "properties": {
+    "ident": "MN-127.5",
+    "index_": "Interval",
+    "wypnt_id": "127.5",
+    "mile": 127.5
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -95.543873,
+     46.946439
+    ]
+   },
+   "properties": {
+    "ident": "MN-128",
+    "index_": "Index",
+    "wypnt_id": "128",
+    "mile": 128.0
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -95.536582,
+     46.949824
+    ]
+   },
+   "properties": {
+    "ident": "MN-128.5",
+    "index_": "Interval",
+    "wypnt_id": "128.5",
+    "mile": 128.5
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -95.529156,
+     46.954013
+    ]
+   },
+   "properties": {
+    "ident": "MN-129",
+    "index_": "Index",
+    "wypnt_id": "129",
+    "mile": 129.0
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -95.524386,
+     46.95831
+    ]
+   },
+   "properties": {
+    "ident": "MN-129.5",
+    "index_": "Interval",
+    "wypnt_id": "129.5",
+    "mile": 129.5
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -95.517476,
+     46.960185
+    ]
+   },
+   "properties": {
+    "ident": "MN-130",
+    "index_": "Index",
+    "wypnt_id": "130",
+    "mile": 130.0
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -95.508579,
+     46.960495
+    ]
+   },
+   "properties": {
+    "ident": "MN-130.5",
+    "index_": "Interval",
+    "wypnt_id": "130.5",
+    "mile": 130.5
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -95.498966,
+     46.961849
+    ]
+   },
+   "properties": {
+    "ident": "MN-131",
+    "index_": "Index",
+    "wypnt_id": "131",
+    "mile": 131.0
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -95.496747,
+     46.967129
+    ]
+   },
+   "properties": {
+    "ident": "MN-131.5",
+    "index_": "Interval",
+    "wypnt_id": "131.5",
+    "mile": 131.5
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -95.496336,
+     46.972874
+    ]
+   },
+   "properties": {
+    "ident": "MN-132",
+    "index_": "Index",
+    "wypnt_id": "132",
+    "mile": 132.0
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -95.493556,
+     46.977955
+    ]
+   },
+   "properties": {
+    "ident": "MN-132.5",
+    "index_": "Interval",
+    "wypnt_id": "132.5",
+    "mile": 132.5
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -95.484553,
+     46.979773
+    ]
+   },
+   "properties": {
+    "ident": "MN-133",
+    "index_": "Index",
+    "wypnt_id": "133",
+    "mile": 133.0
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -95.488228,
+     46.983169
+    ]
+   },
+   "properties": {
+    "ident": "MN-133.5",
+    "index_": "Interval",
+    "wypnt_id": "133.5",
+    "mile": 133.5
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -95.491854,
+     46.987704
+    ]
+   },
+   "properties": {
+    "ident": "MN-134",
+    "index_": "Index",
+    "wypnt_id": "134",
+    "mile": 134.0
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -95.489995,
+     46.992832
+    ]
+   },
+   "properties": {
+    "ident": "MN-134.5",
+    "index_": "Interval",
+    "wypnt_id": "134.5",
+    "mile": 134.5
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -95.483079,
+     46.997199
+    ]
+   },
+   "properties": {
+    "ident": "MN-135",
+    "index_": "Index",
+    "wypnt_id": "135",
+    "mile": 135.0
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -95.476508,
+     47.001163
+    ]
+   },
+   "properties": {
+    "ident": "MN-135.5",
+    "index_": "Interval",
+    "wypnt_id": "135.5",
+    "mile": 135.5
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -95.476355,
+     47.006333
+    ]
+   },
+   "properties": {
+    "ident": "MN-136",
+    "index_": "Index",
+    "wypnt_id": "136",
+    "mile": 136.0
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -95.475495,
+     47.012767
+    ]
+   },
+   "properties": {
+    "ident": "MN-136.5",
+    "index_": "Interval",
+    "wypnt_id": "136.5",
+    "mile": 136.5
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -95.471625,
+     47.018397
+    ]
+   },
+   "properties": {
+    "ident": "MN-137",
+    "index_": "Index",
+    "wypnt_id": "137",
+    "mile": 137.0
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -95.469953,
+     47.024672
+    ]
+   },
+   "properties": {
+    "ident": "MN-137.5",
+    "index_": "Interval",
+    "wypnt_id": "137.5",
+    "mile": 137.5
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -95.467039,
+     47.030812
+    ]
+   },
+   "properties": {
+    "ident": "MN-138",
+    "index_": "Index",
+    "wypnt_id": "138",
+    "mile": 138.0
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -95.469713,
+     47.035904
+    ]
+   },
+   "properties": {
+    "ident": "MN-138.5",
+    "index_": "Interval",
+    "wypnt_id": "138.5",
+    "mile": 138.5
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -95.467791,
+     47.042299
+    ]
+   },
+   "properties": {
+    "ident": "MN-139",
+    "index_": "Index",
+    "wypnt_id": "139",
+    "mile": 139.0
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -95.471382,
+     47.045206
+    ]
+   },
+   "properties": {
+    "ident": "MN-139.5",
+    "index_": "Interval",
+    "wypnt_id": "139.5",
+    "mile": 139.5
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -95.467872,
+     47.048651
+    ]
+   },
+   "properties": {
+    "ident": "MN-140",
+    "index_": "Index",
+    "wypnt_id": "140",
+    "mile": 140.0
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -95.458694,
+     47.050043
+    ]
+   },
+   "properties": {
+    "ident": "MN-140.5",
+    "index_": "Interval",
+    "wypnt_id": "140.5",
+    "mile": 140.5
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -95.459621,
+     47.055848
+    ]
+   },
+   "properties": {
+    "ident": "MN-141",
+    "index_": "Index",
+    "wypnt_id": "141",
+    "mile": 141.0
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -95.456344,
+     47.060857
+    ]
+   },
+   "properties": {
+    "ident": "MN-141.5",
+    "index_": "Interval",
+    "wypnt_id": "141.5",
+    "mile": 141.5
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -95.453875,
+     47.06644
+    ]
+   },
+   "properties": {
+    "ident": "MN-142",
+    "index_": "Index",
+    "wypnt_id": "142",
+    "mile": 142.0
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -95.452688,
+     47.071238
+    ]
+   },
+   "properties": {
+    "ident": "MN-142.5",
+    "index_": "Interval",
+    "wypnt_id": "142.5",
+    "mile": 142.5
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -95.452494,
+     47.077905
+    ]
+   },
+   "properties": {
+    "ident": "MN-143",
+    "index_": "Index",
+    "wypnt_id": "143",
+    "mile": 143.0
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -95.451157,
+     47.084356
+    ]
+   },
+   "properties": {
+    "ident": "MN-143.5",
+    "index_": "Interval",
+    "wypnt_id": "143.5",
+    "mile": 143.5
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -95.449839,
+     47.089657
+    ]
+   },
+   "properties": {
+    "ident": "MN-144",
+    "index_": "Index",
+    "wypnt_id": "144",
+    "mile": 144.0
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -95.44845,
+     47.09639
+    ]
+   },
+   "properties": {
+    "ident": "MN-144.5",
+    "index_": "Interval",
+    "wypnt_id": "144.5",
+    "mile": 144.5
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -95.450486,
+     47.10305
+    ]
+   },
+   "properties": {
+    "ident": "MN-145",
+    "index_": "Index",
+    "wypnt_id": "145",
+    "mile": 145.0
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -95.451777,
+     47.109883
+    ]
+   },
+   "properties": {
+    "ident": "MN-145.5",
+    "index_": "Interval",
+    "wypnt_id": "145.5",
+    "mile": 145.5
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -95.445187,
+     47.115258
+    ]
+   },
+   "properties": {
+    "ident": "MN-146",
+    "index_": "Index",
+    "wypnt_id": "146",
+    "mile": 146.0
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -95.442337,
+     47.12107
+    ]
+   },
+   "properties": {
+    "ident": "MN-146.5",
+    "index_": "Interval",
+    "wypnt_id": "146.5",
+    "mile": 146.5
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -95.440419,
+     47.127858
+    ]
+   },
+   "properties": {
+    "ident": "MN-147",
+    "index_": "Index",
+    "wypnt_id": "147",
+    "mile": 147.0
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -95.441822,
+     47.134774
+    ]
+   },
+   "properties": {
+    "ident": "MN-147.5",
+    "index_": "Interval",
+    "wypnt_id": "147.5",
+    "mile": 147.5
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -95.441698,
+     47.14027
+    ]
+   },
+   "properties": {
+    "ident": "MN-148",
+    "index_": "Index",
+    "wypnt_id": "148",
+    "mile": 148.0
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -95.437538,
+     47.144758
+    ]
+   },
+   "properties": {
+    "ident": "MN-148.5",
+    "index_": "Interval",
+    "wypnt_id": "148.5",
+    "mile": 148.5
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -95.437949,
+     47.149584
+    ]
+   },
+   "properties": {
+    "ident": "MN-149",
+    "index_": "Index",
+    "wypnt_id": "149",
+    "mile": 149.0
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -95.441355,
+     47.155809
+    ]
+   },
+   "properties": {
+    "ident": "MN-149.5",
+    "index_": "Interval",
+    "wypnt_id": "149.5",
+    "mile": 149.5
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -95.446208,
+     47.160412
+    ]
+   },
+   "properties": {
+    "ident": "MN-150",
+    "index_": "Index",
+    "wypnt_id": "150",
+    "mile": 150.0
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -95.443554,
+     47.166423
+    ]
+   },
+   "properties": {
+    "ident": "MN-150.5",
+    "index_": "Interval",
+    "wypnt_id": "150.5",
+    "mile": 150.5
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -95.438373,
+     47.171364
+    ]
+   },
+   "properties": {
+    "ident": "MN-151",
+    "index_": "Index",
+    "wypnt_id": "151",
+    "mile": 151.0
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -95.430419,
+     47.170809
+    ]
+   },
+   "properties": {
+    "ident": "MN-151.5",
+    "index_": "Interval",
+    "wypnt_id": "151.5",
+    "mile": 151.5
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -95.420447,
+     47.169917
+    ]
+   },
+   "properties": {
+    "ident": "MN-152",
+    "index_": "Index",
+    "wypnt_id": "152",
+    "mile": 152.0
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -95.412778,
+     47.16632
+    ]
+   },
+   "properties": {
+    "ident": "MN-152.5",
+    "index_": "Interval",
+    "wypnt_id": "152.5",
+    "mile": 152.5
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -95.406457,
+     47.162317
+    ]
+   },
+   "properties": {
+    "ident": "MN-153",
+    "index_": "Index",
+    "wypnt_id": "153",
+    "mile": 153.0
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -95.39991,
+     47.15828
+    ]
+   },
+   "properties": {
+    "ident": "MN-153.5",
+    "index_": "Interval",
+    "wypnt_id": "153.5",
+    "mile": 153.5
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -95.390643,
+     47.157706
+    ]
+   },
+   "properties": {
+    "ident": "MN-154",
+    "index_": "Index",
+    "wypnt_id": "154",
+    "mile": 154.0
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -95.383391,
+     47.16156
+    ]
+   },
+   "properties": {
+    "ident": "MN-154.5",
+    "index_": "Interval",
+    "wypnt_id": "154.5",
+    "mile": 154.5
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -95.377457,
+     47.165964
+    ]
+   },
+   "properties": {
+    "ident": "MN-155",
+    "index_": "Index",
+    "wypnt_id": "155",
+    "mile": 155.0
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -95.369286,
+     47.163293
+    ]
+   },
+   "properties": {
+    "ident": "MN-155.5",
+    "index_": "Interval",
+    "wypnt_id": "155.5",
+    "mile": 155.5
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -95.363382,
+     47.158962
+    ]
+   },
+   "properties": {
+    "ident": "MN-156",
+    "index_": "Index",
+    "wypnt_id": "156",
+    "mile": 156.0
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -95.356684,
+     47.15429
+    ]
+   },
+   "properties": {
+    "ident": "MN-156.5",
+    "index_": "Interval",
+    "wypnt_id": "156.5",
+    "mile": 156.5
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -95.347881,
+     47.155859
+    ]
+   },
+   "properties": {
+    "ident": "MN-157",
+    "index_": "Index",
+    "wypnt_id": "157",
+    "mile": 157.0
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -95.338843,
+     47.157328
+    ]
+   },
+   "properties": {
+    "ident": "MN-157.5",
+    "index_": "Interval",
+    "wypnt_id": "157.5",
+    "mile": 157.5
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -95.335278,
+     47.162398
+    ]
+   },
+   "properties": {
+    "ident": "MN-158",
+    "index_": "Index",
+    "wypnt_id": "158",
+    "mile": 158.0
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -95.332896,
+     47.167013
+    ]
+   },
+   "properties": {
+    "ident": "MN-158.5",
+    "index_": "Interval",
+    "wypnt_id": "158.5",
+    "mile": 158.5
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -95.323601,
+     47.167484
+    ]
+   },
+   "properties": {
+    "ident": "MN-159",
+    "index_": "Index",
+    "wypnt_id": "159",
+    "mile": 159.0
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -95.317192,
+     47.171909
+    ]
+   },
+   "properties": {
+    "ident": "MN-159.5",
+    "index_": "Interval",
+    "wypnt_id": "159.5",
+    "mile": 159.5
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -95.308551,
+     47.173298
+    ]
+   },
+   "properties": {
+    "ident": "MN-160",
+    "index_": "Index",
+    "wypnt_id": "160",
+    "mile": 160.0
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -95.299005,
+     47.174079
+    ]
+   },
+   "properties": {
+    "ident": "MN-160.5",
+    "index_": "Interval",
+    "wypnt_id": "160.5",
+    "mile": 160.5
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -95.291924,
+     47.170204
+    ]
+   },
+   "properties": {
+    "ident": "MN-161",
+    "index_": "Index",
+    "wypnt_id": "161",
+    "mile": 161.0
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -95.283583,
+     47.168779
+    ]
+   },
+   "properties": {
+    "ident": "MN-161.5",
+    "index_": "Interval",
+    "wypnt_id": "161.5",
+    "mile": 161.5
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -95.27801,
+     47.16277
+    ]
+   },
+   "properties": {
+    "ident": "MN-162",
+    "index_": "Index",
+    "wypnt_id": "162",
+    "mile": 162.0
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -95.269924,
+     47.160716
+    ]
+   },
+   "properties": {
+    "ident": "MN-162.5",
+    "index_": "Interval",
+    "wypnt_id": "162.5",
+    "mile": 162.5
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -95.260886,
+     47.160784
+    ]
+   },
+   "properties": {
+    "ident": "MN-163",
+    "index_": "Index",
+    "wypnt_id": "163",
+    "mile": 163.0
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -95.251371,
+     47.158519
+    ]
+   },
+   "properties": {
+    "ident": "MN-163.5",
+    "index_": "Interval",
+    "wypnt_id": "163.5",
+    "mile": 163.5
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -95.253264,
+     47.153123
+    ]
+   },
+   "properties": {
+    "ident": "MN-164",
+    "index_": "Index",
+    "wypnt_id": "164",
+    "mile": 164.0
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -95.251122,
+     47.149187
+    ]
+   },
+   "properties": {
+    "ident": "MN-164.5",
+    "index_": "Interval",
+    "wypnt_id": "164.5",
+    "mile": 164.5
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -95.241005,
+     47.149225
+    ]
+   },
+   "properties": {
+    "ident": "MN-165",
+    "index_": "Index",
+    "wypnt_id": "165",
+    "mile": 165.0
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -95.233545,
+     47.147545
+    ]
+   },
+   "properties": {
+    "ident": "MN-165.5",
+    "index_": "Interval",
+    "wypnt_id": "165.5",
+    "mile": 165.5
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -95.225526,
+     47.149957
+    ]
+   },
+   "properties": {
+    "ident": "MN-166",
+    "index_": "Index",
+    "wypnt_id": "166",
+    "mile": 166.0
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -95.217914,
+     47.149433
+    ]
+   },
+   "properties": {
+    "ident": "MN-166.5",
+    "index_": "Interval",
+    "wypnt_id": "166.5",
+    "mile": 166.5
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -95.210131,
+     47.150851
+    ]
+   },
+   "properties": {
+    "ident": "MN-167",
+    "index_": "Index",
+    "wypnt_id": "167",
+    "mile": 167.0
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -95.200744,
+     47.150157
+    ]
+   },
+   "properties": {
+    "ident": "MN-167.5",
+    "index_": "Interval",
+    "wypnt_id": "167.5",
+    "mile": 167.5
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -95.192171,
+     47.149639
+    ]
+   },
+   "properties": {
+    "ident": "MN-168",
+    "index_": "Index",
+    "wypnt_id": "168",
+    "mile": 168.0
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -95.184076,
+     47.152033
+    ]
+   },
+   "properties": {
+    "ident": "MN-168.5",
+    "index_": "Interval",
+    "wypnt_id": "168.5",
+    "mile": 168.5
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -95.174416,
+     47.150868
+    ]
+   },
+   "properties": {
+    "ident": "MN-169",
+    "index_": "Index",
+    "wypnt_id": "169",
+    "mile": 169.0
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -95.168186,
+     47.154186
+    ]
+   },
+   "properties": {
+    "ident": "MN-169.5",
+    "index_": "Interval",
+    "wypnt_id": "169.5",
+    "mile": 169.5
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -95.159553,
+     47.151792
+    ]
+   },
+   "properties": {
+    "ident": "MN-170",
+    "index_": "Index",
+    "wypnt_id": "170",
+    "mile": 170.0
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -95.151056,
+     47.152324
+    ]
+   },
+   "properties": {
+    "ident": "MN-170.5",
+    "index_": "Interval",
+    "wypnt_id": "170.5",
+    "mile": 170.5
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -95.142786,
+     47.150393
+    ]
+   },
+   "properties": {
+    "ident": "MN-171",
+    "index_": "Index",
+    "wypnt_id": "171",
+    "mile": 171.0
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -95.133002,
+     47.149335
+    ]
+   },
+   "properties": {
+    "ident": "MN-171.5",
+    "index_": "Interval",
+    "wypnt_id": "171.5",
+    "mile": 171.5
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -95.123127,
+     47.148517
+    ]
+   },
+   "properties": {
+    "ident": "MN-172",
+    "index_": "Index",
+    "wypnt_id": "172",
+    "mile": 172.0
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -95.115338,
+     47.14646
+    ]
+   },
+   "properties": {
+    "ident": "MN-172.5",
+    "index_": "Interval",
+    "wypnt_id": "172.5",
+    "mile": 172.5
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -95.105819,
+     47.14621
+    ]
+   },
+   "properties": {
+    "ident": "MN-173",
+    "index_": "Index",
+    "wypnt_id": "173",
+    "mile": 173.0
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -95.096523,
+     47.145182
+    ]
+   },
+   "properties": {
+    "ident": "MN-173.5",
+    "index_": "Interval",
+    "wypnt_id": "173.5",
+    "mile": 173.5
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -95.088064,
+     47.14607
+    ]
+   },
+   "properties": {
+    "ident": "MN-174",
+    "index_": "Index",
+    "wypnt_id": "174",
+    "mile": 174.0
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -95.07997,
+     47.143557
+    ]
+   },
+   "properties": {
+    "ident": "MN-174.5",
+    "index_": "Interval",
+    "wypnt_id": "174.5",
+    "mile": 174.5
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -95.072,
+     47.145795
+    ]
+   },
+   "properties": {
+    "ident": "MN-175",
+    "index_": "Index",
+    "wypnt_id": "175",
+    "mile": 175.0
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -95.062952,
+     47.146239
+    ]
+   },
+   "properties": {
+    "ident": "MN-175.5",
+    "index_": "Interval",
+    "wypnt_id": "175.5",
+    "mile": 175.5
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -95.05465,
+     47.147701
+    ]
+   },
+   "properties": {
+    "ident": "MN-176",
+    "index_": "Index",
+    "wypnt_id": "176",
+    "mile": 176.0
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -95.046113,
+     47.151352
+    ]
+   },
+   "properties": {
+    "ident": "MN-176.5",
+    "index_": "Interval",
+    "wypnt_id": "176.5",
+    "mile": 176.5
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -95.039705,
+     47.15606
+    ]
+   },
+   "properties": {
+    "ident": "MN-177",
+    "index_": "Index",
+    "wypnt_id": "177",
+    "mile": 177.0
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -95.033467,
+     47.160502
+    ]
+   },
+   "properties": {
+    "ident": "MN-177.5",
+    "index_": "Interval",
+    "wypnt_id": "177.5",
+    "mile": 177.5
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -95.026837,
+     47.163775
+    ]
+   },
+   "properties": {
+    "ident": "MN-178",
+    "index_": "Index",
+    "wypnt_id": "178",
+    "mile": 178.0
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -95.018933,
+     47.164525
+    ]
+   },
+   "properties": {
+    "ident": "MN-178.5",
+    "index_": "Interval",
+    "wypnt_id": "178.5",
+    "mile": 178.5
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -95.017308,
+     47.169953
+    ]
+   },
+   "properties": {
+    "ident": "MN-179",
+    "index_": "Index",
+    "wypnt_id": "179",
+    "mile": 179.0
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -95.012812,
+     47.172731
+    ]
+   },
+   "properties": {
+    "ident": "MN-179.5",
+    "index_": "Interval",
+    "wypnt_id": "179.5",
+    "mile": 179.5
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -95.010123,
+     47.178458
+    ]
+   },
+   "properties": {
+    "ident": "MN-180",
+    "index_": "Index",
+    "wypnt_id": "180",
+    "mile": 180.0
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -95.004841,
+     47.180372
+    ]
+   },
+   "properties": {
+    "ident": "MN-180.5",
+    "index_": "Interval",
+    "wypnt_id": "180.5",
+    "mile": 180.5
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -95.003882,
+     47.174074
+    ]
+   },
+   "properties": {
+    "ident": "MN-181",
+    "index_": "Index",
+    "wypnt_id": "181",
+    "mile": 181.0
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -94.996364,
+     47.169854
+    ]
+   },
+   "properties": {
+    "ident": "MN-181.5",
+    "index_": "Interval",
+    "wypnt_id": "181.5",
+    "mile": 181.5
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -94.989774,
+     47.165852
+    ]
+   },
+   "properties": {
+    "ident": "MN-182",
+    "index_": "Index",
+    "wypnt_id": "182",
+    "mile": 182.0
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -94.980428,
+     47.165971
+    ]
+   },
+   "properties": {
+    "ident": "MN-182.5",
+    "index_": "Interval",
+    "wypnt_id": "182.5",
+    "mile": 182.5
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -94.972479,
+     47.162482
+    ]
+   },
+   "properties": {
+    "ident": "MN-183",
+    "index_": "Index",
+    "wypnt_id": "183",
+    "mile": 183.0
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -94.965063,
+     47.161182
+    ]
+   },
+   "properties": {
+    "ident": "MN-183.5",
+    "index_": "Interval",
+    "wypnt_id": "183.5",
+    "mile": 183.5
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -94.960871,
+     47.156977
+    ]
+   },
+   "properties": {
+    "ident": "MN-184",
+    "index_": "Index",
+    "wypnt_id": "184",
+    "mile": 184.0
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -94.955053,
+     47.153434
+    ]
+   },
+   "properties": {
+    "ident": "MN-184.5",
+    "index_": "Interval",
+    "wypnt_id": "184.5",
+    "mile": 184.5
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -94.948436,
+     47.148891
+    ]
+   },
+   "properties": {
+    "ident": "MN-185",
+    "index_": "Index",
+    "wypnt_id": "185",
+    "mile": 185.0
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -94.939464,
+     47.14647
+    ]
+   },
+   "properties": {
+    "ident": "MN-185.5",
+    "index_": "Interval",
+    "wypnt_id": "185.5",
+    "mile": 185.5
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -94.929681,
+     47.144506
+    ]
+   },
+   "properties": {
+    "ident": "MN-186",
+    "index_": "Index",
+    "wypnt_id": "186",
+    "mile": 186.0
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -94.920579,
+     47.143691
+    ]
+   },
+   "properties": {
+    "ident": "MN-186.5",
+    "index_": "Interval",
+    "wypnt_id": "186.5",
+    "mile": 186.5
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -94.917063,
+     47.147344
+    ]
+   },
+   "properties": {
+    "ident": "MN-187",
+    "index_": "Index",
+    "wypnt_id": "187",
+    "mile": 187.0
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -94.915987,
+     47.152951
+    ]
+   },
+   "properties": {
+    "ident": "MN-187.5",
+    "index_": "Interval",
+    "wypnt_id": "187.5",
+    "mile": 187.5
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -94.912215,
+     47.15795
+    ]
+   },
+   "properties": {
+    "ident": "MN-188",
+    "index_": "Index",
+    "wypnt_id": "188",
+    "mile": 188.0
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -94.904726,
+     47.161275
+    ]
+   },
+   "properties": {
+    "ident": "MN-188.5",
+    "index_": "Interval",
+    "wypnt_id": "188.5",
+    "mile": 188.5
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -94.897345,
+     47.161648
+    ]
+   },
+   "properties": {
+    "ident": "MN-189",
+    "index_": "Index",
+    "wypnt_id": "189",
+    "mile": 189.0
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -94.891016,
+     47.161531
+    ]
+   },
+   "properties": {
+    "ident": "MN-189.5",
+    "index_": "Interval",
+    "wypnt_id": "189.5",
+    "mile": 189.5
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -94.883398,
+     47.158365
+    ]
+   },
+   "properties": {
+    "ident": "MN-190",
+    "index_": "Index",
+    "wypnt_id": "190",
+    "mile": 190.0
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -94.875244,
+     47.158087
+    ]
+   },
+   "properties": {
+    "ident": "MN-190.5",
+    "index_": "Interval",
+    "wypnt_id": "190.5",
+    "mile": 190.5
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -94.866427,
+     47.15838
+    ]
+   },
+   "properties": {
+    "ident": "MN-191",
+    "index_": "Index",
+    "wypnt_id": "191",
+    "mile": 191.0
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -94.857481,
+     47.157378
+    ]
+   },
+   "properties": {
+    "ident": "MN-191.5",
+    "index_": "Interval",
+    "wypnt_id": "191.5",
+    "mile": 191.5
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -94.849829,
+     47.154754
+    ]
+   },
+   "properties": {
+    "ident": "MN-192",
+    "index_": "Index",
+    "wypnt_id": "192",
+    "mile": 192.0
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -94.846401,
+     47.150531
+    ]
+   },
+   "properties": {
+    "ident": "MN-192.5",
+    "index_": "Interval",
+    "wypnt_id": "192.5",
+    "mile": 192.5
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -94.842342,
+     47.14484
+    ]
+   },
+   "properties": {
+    "ident": "MN-193",
+    "index_": "Index",
+    "wypnt_id": "193",
+    "mile": 193.0
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -94.835608,
+     47.140068
+    ]
+   },
+   "properties": {
+    "ident": "MN-193.5",
+    "index_": "Interval",
+    "wypnt_id": "193.5",
+    "mile": 193.5
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -94.836779,
+     47.134246
+    ]
+   },
+   "properties": {
+    "ident": "MN-194",
+    "index_": "Index",
+    "wypnt_id": "194",
+    "mile": 194.0
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -94.843319,
+     47.129334
+    ]
+   },
+   "properties": {
+    "ident": "MN-194.5",
+    "index_": "Interval",
+    "wypnt_id": "194.5",
+    "mile": 194.5
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -94.84664,
+     47.124409
+    ]
+   },
+   "properties": {
+    "ident": "MN-195",
+    "index_": "Index",
+    "wypnt_id": "195",
+    "mile": 195.0
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -94.851856,
+     47.119283
+    ]
+   },
+   "properties": {
+    "ident": "MN-195.5",
+    "index_": "Interval",
+    "wypnt_id": "195.5",
+    "mile": 195.5
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -94.849772,
+     47.114037
+    ]
+   },
+   "properties": {
+    "ident": "MN-196",
+    "index_": "Index",
+    "wypnt_id": "196",
+    "mile": 196.0
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -94.8508,
+     47.108301
+    ]
+   },
+   "properties": {
+    "ident": "MN-196.5",
+    "index_": "Interval",
+    "wypnt_id": "196.5",
+    "mile": 196.5
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -94.853795,
+     47.103141
+    ]
+   },
+   "properties": {
+    "ident": "MN-197",
+    "index_": "Index",
+    "wypnt_id": "197",
+    "mile": 197.0
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -94.853928,
+     47.096488
+    ]
+   },
+   "properties": {
+    "ident": "MN-197.5",
+    "index_": "Interval",
+    "wypnt_id": "197.5",
+    "mile": 197.5
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -94.845782,
+     47.093088
+    ]
+   },
+   "properties": {
+    "ident": "MN-198",
+    "index_": "Index",
+    "wypnt_id": "198",
+    "mile": 198.0
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -94.838548,
+     47.088666
+    ]
+   },
+   "properties": {
+    "ident": "MN-198.5",
+    "index_": "Interval",
+    "wypnt_id": "198.5",
+    "mile": 198.5
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -94.835004,
+     47.083459
+    ]
+   },
+   "properties": {
+    "ident": "MN-199",
+    "index_": "Index",
+    "wypnt_id": "199",
+    "mile": 199.0
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -94.83213,
+     47.078088
+    ]
+   },
+   "properties": {
+    "ident": "MN-199.5",
+    "index_": "Interval",
+    "wypnt_id": "199.5",
+    "mile": 199.5
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -94.830737,
+     47.072203
+    ]
+   },
+   "properties": {
+    "ident": "MN-200",
+    "index_": "Index",
+    "wypnt_id": "200",
+    "mile": 200.0
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -94.829309,
+     47.066225
+    ]
+   },
+   "properties": {
+    "ident": "MN-200.5",
+    "index_": "Interval",
+    "wypnt_id": "200.5",
+    "mile": 200.5
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -94.821661,
+     47.063308
+    ]
+   },
+   "properties": {
+    "ident": "MN-201",
+    "index_": "Index",
+    "wypnt_id": "201",
+    "mile": 201.0
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -94.816566,
+     47.06086
+    ]
+   },
+   "properties": {
+    "ident": "MN-201.5",
+    "index_": "Interval",
+    "wypnt_id": "201.5",
+    "mile": 201.5
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -94.808416,
+     47.062965
+    ]
+   },
+   "properties": {
+    "ident": "MN-202",
+    "index_": "Index",
+    "wypnt_id": "202",
+    "mile": 202.0
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -94.799666,
+     47.062925
+    ]
+   },
+   "properties": {
+    "ident": "MN-202.5",
+    "index_": "Interval",
+    "wypnt_id": "202.5",
+    "mile": 202.5
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -94.79079,
+     47.062436
+    ]
+   },
+   "properties": {
+    "ident": "MN-203",
+    "index_": "Index",
+    "wypnt_id": "203",
+    "mile": 203.0
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -94.783424,
+     47.065725
+    ]
+   },
+   "properties": {
+    "ident": "MN-203.5",
+    "index_": "Interval",
+    "wypnt_id": "203.5",
+    "mile": 203.5
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -94.774964,
+     47.065874
+    ]
+   },
+   "properties": {
+    "ident": "MN-204",
+    "index_": "Index",
+    "wypnt_id": "204",
+    "mile": 204.0
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -94.766492,
+     47.063283
+    ]
+   },
+   "properties": {
+    "ident": "MN-204.5",
+    "index_": "Interval",
+    "wypnt_id": "204.5",
+    "mile": 204.5
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -94.758116,
+     47.065066
+    ]
+   },
+   "properties": {
+    "ident": "MN-205",
+    "index_": "Index",
+    "wypnt_id": "205",
+    "mile": 205.0
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -94.749088,
+     47.062639
+    ]
+   },
+   "properties": {
+    "ident": "MN-205.5",
+    "index_": "Interval",
+    "wypnt_id": "205.5",
+    "mile": 205.5
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -94.740342,
+     47.060448
+    ]
+   },
+   "properties": {
+    "ident": "MN-206",
+    "index_": "Index",
+    "wypnt_id": "206",
+    "mile": 206.0
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -94.736603,
+     47.064655
+    ]
+   },
+   "properties": {
+    "ident": "MN-206.5",
+    "index_": "Interval",
+    "wypnt_id": "206.5",
+    "mile": 206.5
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -94.732728,
+     47.0688
+    ]
+   },
+   "properties": {
+    "ident": "MN-207",
+    "index_": "Index",
+    "wypnt_id": "207",
+    "mile": 207.0
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -94.72399,
+     47.068838
+    ]
+   },
+   "properties": {
+    "ident": "MN-207.5",
+    "index_": "Interval",
+    "wypnt_id": "207.5",
+    "mile": 207.5
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -94.715467,
+     47.069171
+    ]
+   },
+   "properties": {
+    "ident": "MN-208",
+    "index_": "Index",
+    "wypnt_id": "208",
+    "mile": 208.0
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -94.708673,
+     47.071637
+    ]
+   },
+   "properties": {
+    "ident": "MN-208.5",
+    "index_": "Interval",
+    "wypnt_id": "208.5",
+    "mile": 208.5
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -94.703031,
+     47.0757
+    ]
+   },
+   "properties": {
+    "ident": "MN-209",
+    "index_": "Index",
+    "wypnt_id": "209",
+    "mile": 209.0
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -94.696065,
+     47.078937
+    ]
+   },
+   "properties": {
+    "ident": "MN-209.5",
+    "index_": "Interval",
+    "wypnt_id": "209.5",
+    "mile": 209.5
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -94.688607,
+     47.080156
+    ]
+   },
+   "properties": {
+    "ident": "MN-210",
+    "index_": "Index",
+    "wypnt_id": "210",
+    "mile": 210.0
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -94.680085,
+     47.077405
+    ]
+   },
+   "properties": {
+    "ident": "MN-210.5",
+    "index_": "Interval",
+    "wypnt_id": "210.5",
+    "mile": 210.5
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -94.671779,
+     47.076132
+    ]
+   },
+   "properties": {
+    "ident": "MN-211",
+    "index_": "Index",
+    "wypnt_id": "211",
+    "mile": 211.0
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -94.663471,
+     47.073979
+    ]
+   },
+   "properties": {
+    "ident": "MN-211.5",
+    "index_": "Interval",
+    "wypnt_id": "211.5",
+    "mile": 211.5
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -94.659272,
+     47.068759
+    ]
+   },
+   "properties": {
+    "ident": "MN-212",
+    "index_": "Index",
+    "wypnt_id": "212",
+    "mile": 212.0
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -94.654805,
+     47.062846
+    ]
+   },
+   "properties": {
+    "ident": "MN-212.5",
+    "index_": "Interval",
+    "wypnt_id": "212.5",
+    "mile": 212.5
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -94.652145,
+     47.057081
+    ]
+   },
+   "properties": {
+    "ident": "MN-213",
+    "index_": "Index",
+    "wypnt_id": "213",
+    "mile": 213.0
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -94.645273,
+     47.053275
+    ]
+   },
+   "properties": {
+    "ident": "MN-213.5",
+    "index_": "Interval",
+    "wypnt_id": "213.5",
+    "mile": 213.5
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -94.642253,
+     47.048569
+    ]
+   },
+   "properties": {
+    "ident": "MN-214",
+    "index_": "Index",
+    "wypnt_id": "214",
+    "mile": 214.0
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -94.636519,
+     47.046382
+    ]
+   },
+   "properties": {
+    "ident": "MN-214.5",
+    "index_": "Interval",
+    "wypnt_id": "214.5",
+    "mile": 214.5
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -94.633213,
+     47.041546
+    ]
+   },
+   "properties": {
+    "ident": "MN-215",
+    "index_": "Index",
+    "wypnt_id": "215",
+    "mile": 215.0
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -94.628556,
+     47.038401
+    ]
+   },
+   "properties": {
+    "ident": "MN-215.5",
+    "index_": "Interval",
+    "wypnt_id": "215.5",
+    "mile": 215.5
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -94.62251,
+     47.03741
+    ]
+   },
+   "properties": {
+    "ident": "MN-216",
+    "index_": "Index",
+    "wypnt_id": "216",
+    "mile": 216.0
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -94.615244,
+     47.033528
+    ]
+   },
+   "properties": {
+    "ident": "MN-216.5",
+    "index_": "Interval",
+    "wypnt_id": "216.5",
+    "mile": 216.5
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -94.606008,
+     47.03265
+    ]
+   },
+   "properties": {
+    "ident": "MN-217",
+    "index_": "Index",
+    "wypnt_id": "217",
+    "mile": 217.0
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -94.596723,
+     47.032866
+    ]
+   },
+   "properties": {
+    "ident": "MN-217.5",
+    "index_": "Interval",
+    "wypnt_id": "217.5",
+    "mile": 217.5
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -94.592776,
+     47.028604
+    ]
+   },
+   "properties": {
+    "ident": "MN-218",
+    "index_": "Index",
+    "wypnt_id": "218",
+    "mile": 218.0
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -94.583994,
+     47.027395
+    ]
+   },
+   "properties": {
+    "ident": "MN-218.5",
+    "index_": "Interval",
+    "wypnt_id": "218.5",
+    "mile": 218.5
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -94.575499,
+     47.027658
+    ]
+   },
+   "properties": {
+    "ident": "MN-219",
+    "index_": "Index",
+    "wypnt_id": "219",
+    "mile": 219.0
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -94.568337,
+     47.030817
+    ]
+   },
+   "properties": {
+    "ident": "MN-219.5",
+    "index_": "Interval",
+    "wypnt_id": "219.5",
+    "mile": 219.5
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -94.560783,
+     47.032077
+    ]
+   },
+   "properties": {
+    "ident": "MN-220",
+    "index_": "Index",
+    "wypnt_id": "220",
+    "mile": 220.0
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -94.552192,
+     47.033611
+    ]
+   },
+   "properties": {
+    "ident": "MN-220.5",
+    "index_": "Interval",
+    "wypnt_id": "220.5",
+    "mile": 220.5
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -94.545841,
+     47.030769
+    ]
+   },
+   "properties": {
+    "ident": "MN-221",
+    "index_": "Index",
+    "wypnt_id": "221",
+    "mile": 221.0
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -94.539836,
+     47.026907
+    ]
+   },
+   "properties": {
+    "ident": "MN-221.5",
+    "index_": "Interval",
+    "wypnt_id": "221.5",
+    "mile": 221.5
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -94.539597,
+     47.020426
+    ]
+   },
+   "properties": {
+    "ident": "MN-222",
+    "index_": "Index",
+    "wypnt_id": "222",
+    "mile": 222.0
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -94.543022,
+     47.014537
+    ]
+   },
+   "properties": {
+    "ident": "MN-222.5",
+    "index_": "Interval",
+    "wypnt_id": "222.5",
+    "mile": 222.5
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -94.53615,
+     47.014509
+    ]
+   },
+   "properties": {
+    "ident": "MN-223",
+    "index_": "Index",
+    "wypnt_id": "223",
+    "mile": 223.0
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -94.531782,
+     47.008902
+    ]
+   },
+   "properties": {
+    "ident": "MN-223.5",
+    "index_": "Interval",
+    "wypnt_id": "223.5",
+    "mile": 223.5
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -94.52705,
+     47.005684
+    ]
+   },
+   "properties": {
+    "ident": "MN-224",
+    "index_": "Index",
+    "wypnt_id": "224",
+    "mile": 224.0
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -94.520618,
+     47.002722
+    ]
+   },
+   "properties": {
+    "ident": "MN-224.5",
+    "index_": "Interval",
+    "wypnt_id": "224.5",
+    "mile": 224.5
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -94.514169,
+     47.001991
+    ]
+   },
+   "properties": {
+    "ident": "MN-225",
+    "index_": "Index",
+    "wypnt_id": "225",
+    "mile": 225.0
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -94.515303,
+     46.996136
+    ]
+   },
+   "properties": {
+    "ident": "MN-225.5",
+    "index_": "Interval",
+    "wypnt_id": "225.5",
+    "mile": 225.5
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -94.50825,
+     46.993461
+    ]
+   },
+   "properties": {
+    "ident": "MN-226",
+    "index_": "Index",
+    "wypnt_id": "226",
+    "mile": 226.0
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -94.498864,
+     46.994595
+    ]
+   },
+   "properties": {
+    "ident": "MN-226.5",
+    "index_": "Interval",
+    "wypnt_id": "226.5",
+    "mile": 226.5
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -94.490901,
+     46.994266
+    ]
+   },
+   "properties": {
+    "ident": "MN-227",
+    "index_": "Index",
+    "wypnt_id": "227",
+    "mile": 227.0
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -94.483912,
+     46.998852
+    ]
+   },
+   "properties": {
+    "ident": "MN-227.5",
+    "index_": "Interval",
+    "wypnt_id": "227.5",
+    "mile": 227.5
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -94.476731,
+     47.002
+    ]
+   },
+   "properties": {
+    "ident": "MN-228",
+    "index_": "Index",
+    "wypnt_id": "228",
+    "mile": 228.0
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -94.468659,
+     47.004705
+    ]
+   },
+   "properties": {
+    "ident": "MN-228.5",
+    "index_": "Interval",
+    "wypnt_id": "228.5",
+    "mile": 228.5
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -94.459293,
+     47.006754
+    ]
+   },
+   "properties": {
+    "ident": "MN-229",
+    "index_": "Index",
+    "wypnt_id": "229",
+    "mile": 229.0
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -94.45166,
+     47.005111
+    ]
+   },
+   "properties": {
+    "ident": "MN-229.5",
+    "index_": "Interval",
+    "wypnt_id": "229.5",
+    "mile": 229.5
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -94.443084,
+     47.008306
+    ]
+   },
+   "properties": {
+    "ident": "MN-230",
+    "index_": "Index",
+    "wypnt_id": "230",
+    "mile": 230.0
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -94.434865,
+     47.007968
+    ]
+   },
+   "properties": {
+    "ident": "MN-230.5",
+    "index_": "Interval",
+    "wypnt_id": "230.5",
+    "mile": 230.5
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -94.428489,
+     47.002997
+    ]
+   },
+   "properties": {
+    "ident": "MN-231",
+    "index_": "Index",
+    "wypnt_id": "231",
+    "mile": 231.0
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -94.419582,
+     47.004798
+    ]
+   },
+   "properties": {
+    "ident": "MN-231.5",
+    "index_": "Interval",
+    "wypnt_id": "231.5",
+    "mile": 231.5
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -94.410196,
+     47.002619
+    ]
+   },
+   "properties": {
+    "ident": "MN-232",
+    "index_": "Index",
+    "wypnt_id": "232",
+    "mile": 232.0
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -94.403133,
+     47.003518
+    ]
+   },
+   "properties": {
+    "ident": "MN-232.5",
+    "index_": "Interval",
+    "wypnt_id": "232.5",
+    "mile": 232.5
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -94.393314,
+     47.00341
+    ]
+   },
+   "properties": {
+    "ident": "MN-233",
+    "index_": "Index",
+    "wypnt_id": "233",
+    "mile": 233.0
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -94.384671,
+     47.002016
+    ]
+   },
+   "properties": {
+    "ident": "MN-233.5",
+    "index_": "Interval",
+    "wypnt_id": "233.5",
+    "mile": 233.5
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -94.375656,
+     47.003097
+    ]
+   },
+   "properties": {
+    "ident": "MN-234",
+    "index_": "Index",
+    "wypnt_id": "234",
+    "mile": 234.0
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -94.36832,
+     47.006584
+    ]
+   },
+   "properties": {
+    "ident": "MN-234.5",
+    "index_": "Interval",
+    "wypnt_id": "234.5",
+    "mile": 234.5
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -94.361439,
+     47.003682
+    ]
+   },
+   "properties": {
+    "ident": "MN-235",
+    "index_": "Index",
+    "wypnt_id": "235",
+    "mile": 235.0
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -94.353027,
+     47.004019
+    ]
+   },
+   "properties": {
+    "ident": "MN-235.5",
+    "index_": "Interval",
+    "wypnt_id": "235.5",
+    "mile": 235.5
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -94.345812,
+     47.000799
+    ]
+   },
+   "properties": {
+    "ident": "MN-236",
+    "index_": "Index",
+    "wypnt_id": "236",
+    "mile": 236.0
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -94.34173,
+     46.994892
+    ]
+   },
+   "properties": {
+    "ident": "MN-236.5",
+    "index_": "Interval",
+    "wypnt_id": "236.5",
+    "mile": 236.5
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -94.33459,
+     46.991289
+    ]
+   },
+   "properties": {
+    "ident": "MN-237",
+    "index_": "Index",
+    "wypnt_id": "237",
+    "mile": 237.0
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -94.326918,
+     46.993204
+    ]
+   },
+   "properties": {
+    "ident": "MN-237.5",
+    "index_": "Interval",
+    "wypnt_id": "237.5",
+    "mile": 237.5
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -94.318596,
+     46.99571
+    ]
+   },
+   "properties": {
+    "ident": "MN-238",
+    "index_": "Index",
+    "wypnt_id": "238",
+    "mile": 238.0
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -94.310828,
+     46.995489
+    ]
+   },
+   "properties": {
+    "ident": "MN-238.5",
+    "index_": "Interval",
+    "wypnt_id": "238.5",
+    "mile": 238.5
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -94.30179,
+     46.995846
+    ]
+   },
+   "properties": {
+    "ident": "MN-239",
+    "index_": "Index",
+    "wypnt_id": "239",
+    "mile": 239.0
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -94.293172,
+     46.997248
+    ]
+   },
+   "properties": {
+    "ident": "MN-239.5",
+    "index_": "Interval",
+    "wypnt_id": "239.5",
+    "mile": 239.5
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -94.283743,
+     46.998197
+    ]
+   },
+   "properties": {
+    "ident": "MN-240",
+    "index_": "Index",
+    "wypnt_id": "240",
+    "mile": 240.0
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -94.275365,
+     47.001136
+    ]
+   },
+   "properties": {
+    "ident": "MN-240.5",
+    "index_": "Interval",
+    "wypnt_id": "240.5",
+    "mile": 240.5
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -94.268902,
+     47.005712
+    ]
+   },
+   "properties": {
+    "ident": "MN-241",
+    "index_": "Index",
+    "wypnt_id": "241",
+    "mile": 241.0
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -94.267424,
+     47.011938
+    ]
+   },
+   "properties": {
+    "ident": "MN-241.5",
+    "index_": "Interval",
+    "wypnt_id": "241.5",
+    "mile": 241.5
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -94.259587,
+     47.01424
+    ]
+   },
+   "properties": {
+    "ident": "MN-242",
+    "index_": "Index",
+    "wypnt_id": "242",
+    "mile": 242.0
+   }
+  }
+ ]
+}

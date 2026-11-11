@@ -48,6 +48,9 @@
 
   <h2>Layers</h2>
   <div id="layer-toggles"><!-- checkboxes injected by app.js --></div>
+  <label class="winter-row"><input type="checkbox" id="winter-toggle">
+    Winter — snowmobile season (keeps snowmobile trails on the
+    printout)</label>
   <p id="load-status" class="status"></p>
 
   <div id="legend-print" aria-hidden="true">
@@ -80,10 +83,18 @@
           parcels; Hubbard County open data (Hubbard is not in the state
           compilation). The parcels layer is currently disabled on this
           map.</li>
-        <li>Non-road access: Minnesota DNR — state forest roads, state park
-          trails &amp; roads, OHV trails, state trails, snowmobile trails,
-          hunter walking trails</li>
-        <li>Roads: Minnesota DNR / MnDOT road centerlines</li>
+        <li>Non-road access: Minnesota DNR — state park trails &amp;
+          roads, OHV trails, state trails, snowmobile trails, hunter
+          walking trails</li>
+        <li>Roads: Minnesota DNR / MnDOT road centerlines, plus
+          Minnesota DNR state forest roads</li>
+        <li>Roads and access lines are shown within a corridor of the
+          trail; faded ends continue beyond it.</li>
+        <li>Mile markers: North Country Trail Association Minnesota
+          half-mile points (the state mileage index)</li>
+        <li>Mile markers show the state (NCTA) reckoning; the chapter
+          tracker's mile figures differ by roughly 46–48 miles and
+          are labelled as tracker miles where shown.</li>
         <li>Sections &amp; gaps: the chapter's adoption tracker and segment
           boundary points, joined onto the official line</li>
         <li>Waypoints (parking, camping, shelters, water, points of

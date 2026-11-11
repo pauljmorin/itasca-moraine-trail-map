@@ -123,6 +123,74 @@ the services carry no per-service copyright text.
 - **Use here:** Stored at `data/access/roads.geojson`, pulled
   2026-11-10 by `scripts/pull_access_layers.py`.
 
+## Corridor clip — site-build view over access + roads (v7)
+
+The working files above are **never cropped**. The site build
+(`scripts/build_site_data.py`, contract:
+`docs/cartography-notes-2026-11-10.md` Part 1) clips the two
+context layers to a corridor around both drawn lines (Itasca
+Moraine + Laurentian Lakes): non-road access ±800 m, roads
+±1.6 km, cut at vertices with interpolated boundary crossings;
+kept runs under 25 m dropped; roads extended ≤250 m to finish
+the block; access junction stubs ≤150 m where they reach another
+retained line; features crossing the trail kept whole if ≤3 km
+(`connector: true`), clipped features flagged `cut: true`. State
+forest roads (above) are clipped in the access pass — connector
+test included — and then emitted into the **roads** site output
+as class **F**.
+
+Road classes are derived at build time: the centreline source's
+`cartoclass` is null on all 5,902 features and the service
+publishes no coded-value domain for `route_sys`, so the codes
+were verified empirically against the road names in the pulled
+data (2026-11-10): `03` = "ST HWY …" (184/184), `04` = "CO HWY …"
+(county state-aid), `07` = "CO RD …", `08` = township numbered
+names, `10` = named municipal streets, `32` = "UNNAMED" (37/37);
+null-code features include trunk highways named "STATE 371" etc.
+Derivation (`derive_road_class` in the build): codes 01–04 → A;
+05/07/10 named → B; 08/13/19/32/other codes and anything unnamed
+→ C; null code → name fallback (STATE/ST/MN/US highway → A, other
+named → B). The source carries no private-road identifier, so
+private lanes are not separately flagged.
+
+## Mile markers — NCTA Minnesota half-mile points (v7)
+
+- **What:** A point every half mile along the Minnesota NCT — the
+  **state (NCTA) mileage reckoning**. `index_` flags whole miles
+  ("Index") vs half miles ("Interval"); `ident` / `wypnt_id`
+  carry the number ("MN-187", "187.5").
+- **URL:** https://services2.arcgis.com/UfGVyqUm4GHa2zrj/arcgis/rest/services/mn_halfmile_points/FeatureServer
+  (layer 0, "halfmile_mn" — "Mileage Index for the North Country
+  Trail in Minnesota"). Same NCTA ArcGIS organisation as the
+  official trail line.
+- **Owner / publisher:** North Country Trail Association.
+- **Use here:** Pulled 2026-11-10 by
+  `scripts/pull_mile_markers.py` into
+  `data/points/mile-markers.geojson` (244 points in the working
+  extent, state miles 120.5–242). The site build keeps only
+  points snapping within 250 m of the drawn lines (239 retained,
+  5 excluded) as `site/data/milemarkers.geojson`, layer "Mile
+  markers (state)", default off.
+- **⚠ Corrupt attribute columns:** the service's `lat` / `long`
+  ATTRIBUTE columns are wrong (the longitude attribute duplicates
+  the latitude value). They are never read: the pull requests
+  geometry only, with `outSR=4326`, and limits `outFields` to
+  `ident,index_,wypnt_id`.
+- **Two reckonings:** the state numbers differ from the chapter
+  tracker's "NCT Mile Virtual Markers" by roughly 46–48 miles
+  over the same ground. Neither is converted into the other
+  anywhere; tracker figures are labelled "chapter tracker miles"
+  wherever shown.
+
+## Chainage points (v7)
+
+Not an external source: `site/data/chainage.geojson` is computed
+by the site build from the chapter's own stretch chainages — a
+point every 5 miles from the depicted chain's west end,
+interpolated along the stretch geometries (10-mile points
+flagged). A relative measure ("miles from the west end"), in
+neither mileage reckoning above.
+
 ## Reference dataset — Minnesota county boundaries
 
 - **What:** County boundary polygons, used only to determine which

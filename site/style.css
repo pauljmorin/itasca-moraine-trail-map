@@ -245,6 +245,17 @@ html, body {
   font-size: 11.5px;
   padding: 0 4px 4px 26px;
 }
+/* S5 Winter toggle (snowmobile season) under the layer list. */
+.winter-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 6px;
+  font-size: 0.85rem;
+  color: var(--ink-soft);
+  padding: 6px 4px 0;
+  cursor: pointer;
+}
+.winter-row input { accent-color: var(--trail); margin: 2px 0 0; }
 
 .status { font-size: 0.8rem; color: var(--ink-soft); min-height: 1em; }
 
@@ -584,6 +595,17 @@ html, body {
   box-shadow: 0 0 2px #333;
   margin: 0 9px;
 }
+/* Numeral swatches (mileage rows): the legend shows the label
+   typography itself — a bare slate number. */
+#legend .swatch.num, #legend-print-body .swatch.num {
+  width: 30px;
+  height: auto;
+  border-top: none;
+  text-align: center;
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--tick, #37474f);
+}
 
 .credits { font-size: 0.8rem; padding-left: 18px; margin: 4px 0; }
 .credits li { margin-bottom: 4px; }
@@ -693,6 +715,71 @@ html, body {
     0 0 3px rgba(247, 245, 238, 0.92),
     0 0 4px rgba(247, 245, 238, 0.92);
 }
+/* S2: at Z2+ the gap label becomes a Carsonite sign chip — the
+   small post-mounted marker of the trail itself: paper fill, a
+   1 px deep-red border, a 4 px radius. The sign hangs BELOW the
+   line (a Carsonite is a post, not a banner): the west terminus
+   label lives above the line at the gap's own west end, and at
+   Z2 zooms the two would otherwise collide — termini never hide,
+   so the sign takes the other side. */
+body.gap-chip .gap-label span {
+  transform: translate(-50%, 55%);
+  background: var(--paper);
+  border: 1px solid #b2182b;
+  border-radius: 4px;
+  padding: 2px 7px;
+  text-shadow: none;
+  box-shadow: 0 1px 3px rgba(28, 42, 30, 0.3);
+}
+
+/* S1 chainage numerals: slate figures sitting ON the line,
+   centred on their point. The 5-mile points are print-only —
+   hidden on screen, shown by the print block below. */
+.chainage-label span {
+  transform: translate(-50%, -50%);
+  font-size: 9.5px;
+  font-weight: 700;
+  color: var(--tick);
+  text-shadow: 0 0 3px rgba(247, 245, 238, 0.95),
+    0 0 3px rgba(247, 245, 238, 0.95),
+    0 0 4px rgba(247, 245, 238, 0.95);
+}
+.chainage-label span.five { display: none; }
+
+/* M2 state-mile labels: bare numbers above their discs, in the
+   soft ink, haloed with the map's paper. */
+.leaflet-tooltip.mile-label {
+  background: transparent;
+  border: none;
+  box-shadow: none;
+  pointer-events: none;
+  font-size: 9.5px;
+  font-weight: 600;
+  color: var(--ink-soft);
+  text-shadow: 0 0 3px rgba(247, 245, 238, 0.95),
+    0 0 3px rgba(247, 245, 238, 0.95),
+    0 0 4px rgba(247, 245, 238, 0.95);
+  padding: 0;
+}
+.leaflet-tooltip.mile-label::before { display: none; }
+
+/* S4 Places discs: 15 px paper discs with a slate ring and a
+   single letter (P/C/W/S). */
+.place-disc-wrap { background: none; border: none; }
+.place-disc {
+  display: block;
+  width: 15px;
+  height: 15px;
+  border-radius: 50%;
+  background: var(--paper);
+  border: 1.5px solid var(--tick);
+  color: var(--tick);
+  font-size: 9px;
+  font-weight: 700;
+  line-height: 15px;
+  text-align: center;
+  box-shadow: 0 1px 2px rgba(28, 42, 30, 0.35);
+}
 
 /* Hover-lite chip (UX-REVIEW Part 1): small, static, non-interactive.
    Replaces the v3 cursor-following full-record hover card. */
@@ -730,6 +817,17 @@ body.base-imagery .gap-label span {
   color: #fdfdf8;
   text-shadow: 0 0 3px rgba(20, 30, 20, 0.9),
     0 0 3px rgba(20, 30, 20, 0.9), 0 0 5px rgba(20, 30, 20, 0.9);
+}
+body.base-imagery .chainage-label span,
+body.base-imagery .leaflet-tooltip.mile-label {
+  color: #fdfdf8;
+  text-shadow: 0 0 3px rgba(20, 30, 20, 0.9),
+    0 0 3px rgba(20, 30, 20, 0.9), 0 0 5px rgba(20, 30, 20, 0.9);
+}
+/* The sign chip keeps its paper face on imagery bases too. */
+body.base-imagery.gap-chip .gap-label span {
+  color: #b2182b;
+  text-shadow: none;
 }
 
 #map {
@@ -812,6 +910,13 @@ body.base-imagery .gap-label span {
   }
   .print-line { font-size: 9pt; color: var(--ink-soft); margin: 2mm 0 0; }
   .adopt-bar, .mileage { print-color-adjust: exact; }
+  /* S5: the gap's map face prints in its true colours, and the
+     chainage cadence tightens to every 5 miles on paper. (The
+     roads/access print collapse is applied in app.js — canvas
+     paths cannot be restyled from CSS.) */
+  .gap-label span { print-color-adjust: exact; }
+  .chainage-label span.five { display: block; }
+  .winter-row { display: none; }
   .gap-story { cursor: default; }
   .gap-story:hover { background: none; }
   #legend-print { display: block; margin-top: 10px; }

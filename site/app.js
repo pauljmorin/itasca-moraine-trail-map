@@ -1,8 +1,19 @@
-/* Itasca Moraine Chapter — Trail Map, v4.
+/* Itasca Moraine Chapter — Trail Map, v7.
  *
  * Single-page Leaflet map. Plain script, no build step, no API keys.
  * Data: simplified site copies under data/ (built by
  * scripts/build_site_data.py from the working data in ../data/).
+ *
+ * v7 (Nov 10, 2026 — the full cartography build from
+ * docs/cartography-notes-2026-11-10.md): corridor-clipped context
+ * layers (roads in four classes incl. the moved state forest
+ * roads; non-road access with the OHV/hunter colour fixes),
+ * zoom-band-stepped weights and kind gates, the unified annotation
+ * pass (terminus > gap > section > mile/chainage, with the v6
+ * never-touch placement preserved), state mile markers (M2), the
+ * chainage measured spine (S1), the marching gap + Carsonite sign
+ * chip (S2), base-map casing registers (S3), the Places layer
+ * (S4), and Winter/print behaviour (S5).
  *
  * v4 (Nov 10, 2026 — Paul approved the full redesign from
  * docs/design-review/UX-REVIEW.md + DESIGN-REVIEW.md): the section
@@ -196,7 +207,101 @@ if (layersToggleEl) layersToggleEl.title = "Base maps";
 /* Imagery bases flip map-face labels to near-white (UX P5). */
 map.on("baselayerchange", function (e) {
   document.body.classList.toggle("base-imagery", /^Aerial/.test(e.name));
+  /* S3 (cartography notes): casing registers — the casing colour
+     and register follow the base-map family. LLC never gets a
+     casing in any register. Bases not listed default to paper. */
+  casingRegister = CASING_BY_BASE[e.name] || "paper";
+  applyCasings();
 });
+
+/* ------------------------------------------------ v7 cartography
+   Zoom bands (cartography notes §2): Z1 ≤ 10 (chapter), Z2 11–12
+   (district), Z3 13–14 (section), Z4 ≥ 15 (ground). Weights, kind
+   visibility and label classes step at these bands. */
+var currentBand = 1;
+function zoomBand() {
+  var z = map.getZoom();
+  return z <= 10 ? 1 : z <= 12 ? 2 : z <= 14 ? 3 : 4;
+}
+
+/* S3 casing registers, exactly the spec table. `bump` is the
+   relief register's +0.5 weight lift on cased layers. */
+var CASING_REGISTERS = {
+  paper:  { color: "#f7f5ee", trail: 0.45, amber: 0.4,  gap: 0.4,  bump: 0 },
+  photo:  { color: "#ffffff", trail: 0.85, amber: 0.75, gap: 0.55, bump: 0 },
+  relief: { color: "#f7f5ee", trail: 0.6,  amber: 0.5,  gap: 0.5,  bump: 0.5 },
+};
+var CASING_BY_BASE = {
+  "Topo (OpenTopoMap)": "paper",
+  "Streets (OSM)": "paper",
+  "Streets (CARTO Voyager)": "paper",
+  "Minimal (CARTO Positron)": "paper",
+  "Trails (CyclOSM)": "paper",
+  "High contrast (OSM Humanitarian)": "paper",
+  "Aerial (USGS NAIP)": "photo",
+  "Aerial (Esri)": "photo",
+  "Aerial + Topo (USGS ImageryTopo)": "photo",
+  "Hillshade (MN LiDAR)": "relief",
+  "USGS Topo 1:24k": "relief",
+  "Hillshade (Esri World)": "relief",
+  "National Geographic (Esri)": "relief",
+};
+var casingRegister = "paper";
+
+/* Layer internals the zoom/print/casing machinery restyles. */
+var trailCasingLayer = null, trailCoreLayer = null;
+var stretchCasingLayer = null, stretchLinesLayer = null;
+var gapCasingLayer = null, gapCoreLayer = null, gapsGroupRef = null;
+var accessLayerRef = null, roadsGroupRef = null, parcelsLayerRef = null;
+var printMode = false;
+var winterMode = false;
+
+function applyCasings() {
+  if (trailCasingLayer) trailCasingLayer.setStyle(trailCasingStyle);
+  if (stretchCasingLayer) {
+    stretchCasingLayer.setStyle(stretchCasingStyle);
+  }
+  if (gapCasingLayer) gapCasingLayer.setStyle(gapCasingStyle);
+}
+
+/* Zoom-stepped restyles (§2.1–2.3 weights, §2.5 tick fade, §2.8
+   parcel gate via parcelStyle, §2.9/§2.10 band gates via the style
+   functions) plus the Places Z3 gate and the annotation pass. */
+function applyZoomStyles() {
+  currentBand = zoomBand();
+  var z = map.getZoom();
+  if (trailCoreLayer) trailCoreLayer.setStyle(trailStyle);
+  if (trailCasingLayer) trailCasingLayer.setStyle(trailCasingStyle);
+  if (stretchLinesLayer) stretchLinesLayer.setStyle(stretchStyle);
+  if (accessLayerRef) accessLayerRef.setStyle(accessStyle);
+  if (roadsGroupRef) {
+    roadsGroupRef.eachLayer(function (l) { l.setStyle(roadStyle); });
+  }
+  if (parcelsLayerRef) parcelsLayerRef.setStyle(parcelStyle);
+  /* §2.5: section ticks fade to 0.55 in band Z1 and are not
+     rendered at z ≤ 8; termini ticks are unchanged. */
+  var tickOp = z <= 8 ? 0 : (currentBand === 1 ? 0.55 : 1);
+  boundaryTickItems.forEach(function (it) {
+    it.core.setStyle({ opacity: tickOp });
+    it.casing.setStyle({ opacity: tickOp === 0 ? 0 : 0.85 });
+  });
+  applyPlacesGate();
+}
+map.on("zoomend", applyZoomStyles);
+
+/* S4: Places draw at Z3+ only — the gate swaps the marker group
+   in and out of its layer as the zoom crosses 13. */
+var placesInnerRef = null, placesOuterRef = null;
+function applyPlacesGate() {
+  if (!placesInnerRef || !placesOuterRef) return;
+  var show = map.getZoom() >= 13;
+  if (show && !placesOuterRef.hasLayer(placesInnerRef)) {
+    placesOuterRef.addLayer(placesInnerRef);
+  }
+  if (!show && placesOuterRef.hasLayer(placesInnerRef)) {
+    placesOuterRef.removeLayer(placesInnerRef);
+  }
+}
 
 /* Heavy vector layers draw on CANVAS, not SVG: parcels (1,038
    features), roads (5,902) and access lines (3,670) as thousands of
@@ -223,76 +328,182 @@ function isOnRoad(p) {
   return p.trail_stat === "NCT (on-road)" || p.trail_type === "Public Road";
 }
 
+/* §2.1/§2.2 (v7): zoom-stepped weights. ITM: 3.5 in Z1, 4 in
+   Z2–Z3, 5 in Z4, opacity 0.9; an on-road stretch of either chain
+   goes dotted ("2 7", round caps, weight 3 for ITM). LLC stays
+   demoted: #7e6a9e, weight 2.5, opacity 0.7, and NO casing in any
+   register (its casing is simply never drawn — see the trail
+   layer build, which casings only ITM... both chains share the
+   casing layer; the LLC casing is suppressed per-feature here). */
 function trailStyle(f) {
   var p = f.properties;
   var onRoad = isOnRoad(p);
-  var llc = p.chapter === "LLC";
+  if (p.chapter === "LLC") {
+    return {
+      color: COLORS.neighbour, weight: 2.5, opacity: 0.7,
+      dashArray: onRoad ? "2 7" : null, lineCap: "round",
+    };
+  }
   return {
-    color: CHAPTER_COLORS[p.chapter] || "#444444",
-    weight: llc ? (onRoad ? 2.5 : 3) : (onRoad ? 2.5 : 4),
-    opacity: llc ? 0.8 : 0.9,
-    dashArray: onRoad ? "6 6" : null,
+    color: COLORS.trail,
+    weight: onRoad ? 3
+      : (currentBand === 1 ? 3.5 : currentBand === 4 ? 5 : 4),
+    opacity: 0.9,
+    dashArray: onRoad ? "2 7" : null, lineCap: "round",
   };
 }
 
-/* White casing under the official line (DESIGN D1): without it the
-   green is camouflage on the aerial bases. */
+/* Casing under the official line (DESIGN D1), restyled by the S3
+   register of the active base. LLC features get a fully
+   transparent casing — the neighbour chain never carries one. */
 function trailCasingStyle(f) {
+  if (f.properties.chapter === "LLC") {
+    return { color: "#ffffff", weight: 0, opacity: 0, dashArray: null };
+  }
+  var reg = CASING_REGISTERS[casingRegister];
   return {
-    color: COLORS.casing,
-    weight: isOnRoad(f.properties) ? 5.5 : 7,
-    opacity: 0.55,
+    color: reg.color,
+    weight: (isOnRoad(f.properties) ? 5.5 : 7) + reg.bump,
+    opacity: reg.trail,
     dashArray: null,
   };
 }
 
-/* Access lines drawn THIN (Paul, Nov 10, 2026): they're context for
-   reaching the trail, not the subject — hairlines that sit quietly
-   under the trail line. */
+/* Non-road access (§2.9, v7): kind table with the two colour fixes
+   (OHV burnt orange #a63603 — the old #d7301f WAS the gap red;
+   hunter-walking sage #6e8b67 — the old green sat on the trail
+   green) and per-kind zoom-band gates. Weights are the Z3 values;
+   Z2 reads 0.25 lighter. Layer opacity 0.75 except park (0.65).
+   State forest roads are no longer here — they draw as Roads
+   class F (§2.9 move). */
 var ACCESS_STYLES = {
-  state_forest_road:     { color: "#8c510a", weight: 1,   label: "State forest road" },
-  state_park_trail_or_road: { color: "#35978f", weight: 1, label: "State park trail / road" },
-  ohv_trail:             { color: "#d7301f", weight: 1,   label: "OHV / ATV-UTV trail" },
-  state_trail:           { color: "#2c7fb8", weight: 1.25, label: "State trail" },
-  snowmobile_trail:      { color: "#8856a7", weight: 0.75, dashArray: "2 5", label: "Snowmobile trail" },
-  hunter_walking_trail:  { color: "#31a354", weight: 0.75, dashArray: "8 4", label: "Hunter walking trail" },
+  state_park_trail_or_road: { color: "#35978f", weight: 0.9, opacity: 0.65, minBand: 3, label: "State park trail / road" },
+  ohv_trail:             { color: "#a63603", weight: 1, dashArray: "6 3 1.5 3", minBand: 2, label: "OHV / ATV-UTV trail" },
+  state_trail:           { color: "#2c7fb8", weight: 1.25, minBand: 1, label: "State trail" },
+  snowmobile_trail:      { color: "#8856a7", weight: 0.75, dashArray: "2 5", minBand: 2, label: "Snowmobile trail" },
+  hunter_walking_trail:  { color: "#6e8b67", weight: 0.75, dashArray: "8 4", minBand: 3, label: "Hunter walking trail" },
 };
+var ACCESS_DEFAULT = { color: "#666666", weight: 1, minBand: 1,
+                       label: "Access line" };
 
 function accessStyle(f) {
-  var s = ACCESS_STYLES[f.properties.source_type] ||
-    { color: "#666666", weight: 1 };
-  return { color: s.color, weight: s.weight, opacity: 0.75,
-           dashArray: s.dashArray || null };
+  var s = ACCESS_STYLES[f.properties.source_type] || ACCESS_DEFAULT;
+  if (printMode) return printAccessStyle(f, s);
+  if (currentBand < (s.minBand || 1)) {
+    return { color: s.color, weight: 0, opacity: 0, dashArray: null };
+  }
+  var w = s.weight;
+  if (currentBand === 2) w = Math.max(0.5, w - 0.25);
+  var dash = s.dashArray || null;
+  /* S5 Winter: snowmobile promoted on screen when the season
+     toggle is on (weight + filled-season dash). */
+  if (winterMode && f.properties.source_type === "snowmobile_trail") {
+    w = 1.25; dash = "4 2";
+  }
+  return { color: s.color, weight: w,
+           opacity: s.opacity != null ? s.opacity : 0.75,
+           dashArray: dash };
 }
 
+/* S5 print collapse for access: state trail only, as a solid
+   hairline; snowmobile survives only in Winter mode. */
+function printAccessStyle(f, s) {
+  var t = f.properties.source_type;
+  if (t === "state_trail") {
+    return { color: s.color, weight: 1, opacity: 0.9, dashArray: null };
+  }
+  if (winterMode && t === "snowmobile_trail") {
+    return { color: s.color, weight: 1.25, opacity: 0.9,
+             dashArray: "4 2" };
+  }
+  return { color: s.color, weight: 0, opacity: 0, dashArray: null };
+}
+
+/* §2.8 (v7): parcels restyled for the layer's eventual return —
+   the layer itself stays UI-DISABLED; styles apply only at Z3+. */
 function parcelStyle(f) {
+  if (currentBand < 3) {
+    return { color: "#a89a5b", weight: 0, opacity: 0, fillOpacity: 0 };
+  }
   var crossed = f.properties.corridor === "crossed";
   return {
     color: crossed ? "#b35806" : "#a89a5b",
-    weight: crossed ? 1.2 : 0.6,
+    weight: crossed ? 1 : 0.5,
+    dashArray: crossed ? null : "3 3",
     fillColor: crossed ? "#fdbb84" : "#e7e1c3",
-    fillOpacity: crossed ? 0.45 : 0.25,
+    fillOpacity: crossed ? 0.32 : 0.12,
   };
 }
 
-/* Adopted stretches ride on top of the official line in amber, wide
-   enough to read as a highlight of the green beneath; white casing
-   under them (DESIGN D1) and full opacity (was 0.8 — the blend read
-   muddy over the hillshade). */
-var STRETCH_STYLE = { color: COLORS.adopted, weight: 6, opacity: 1 };
-var STRETCH_CASING_STYLE = {
-  color: COLORS.casing, weight: 8.5, opacity: 0.5,
-};
+/* Adopted stretches (§2.3, v7): amber #e08214 at opacity 1,
+   weight 6 in Z1–Z3 and 5 in Z4 (the line is fully in view at
+   ground zoom, so the highlight can afford to be calmer). The
+   casing under them is register-driven (S3). */
+var STRETCH_STYLE = { color: COLORS.adopted, opacity: 1 };
+function stretchStyle() {
+  return { color: COLORS.adopted,
+           weight: currentBand === 4 ? 5 : 6, opacity: 1 };
+}
+function stretchCasingStyle() {
+  var reg = CASING_REGISTERS[casingRegister];
+  return { color: reg.color, weight: 8.5 + reg.bump, opacity: reg.amber };
+}
 var STRETCH_HOVER_STYLE = { color: COLORS.adoptedHover, weight: 8, opacity: 1 };
 
-var ROADS_STYLE = { color: COLORS.roads, weight: 1.75, opacity: 0.85 };
+/* Roads (§2.10, v7): four classes derived in the site build from
+   the centreline route_sys codes + name patterns (cartoclass is
+   null in the source; class F is the moved state forest roads).
+   No road name labels on the face, ever. The cut feather: a
+   corridor-clipped feature (cut:true) draws at 0.6× its class
+   opacity — the visible cue for "this line continues". */
+var ROAD_CLASS_STYLES = {
+  A: { color: "#616161", weight: 1.75, opacity: 0.85, minBand: 1,
+       label: "Arterial — trunk highway / county state-aid",
+       short: "Roads — trunk / county state-aid" },
+  B: { color: "#83837a", weight: 1.1, opacity: 0.7, minBand: 2,
+       label: "Local road", short: "Roads — local" },
+  C: { color: "#a9a396", weight: 0.75, opacity: 0.55, minBand: 3,
+       label: "Minor road — township / unnamed",
+       short: "Roads — minor / township" },
+  F: { color: "#8c510a", weight: 1, opacity: 0.8, minBand: 2,
+       label: "State forest road", short: "State forest road" },
+};
+var ROADS_STYLE = ROAD_CLASS_STYLES.A;
+
+function roadStyle(f) {
+  var p = f.properties;
+  var s = ROAD_CLASS_STYLES[p.road_class] || ROAD_CLASS_STYLES.C;
+  if (printMode) {
+    /* S5 print collapse: classes A + F only, in one grey. */
+    if (p.road_class === "A") {
+      return { color: "#616161", weight: 1.2, opacity: 0.9,
+               dashArray: null };
+    }
+    if (p.road_class === "F") {
+      return { color: "#616161", weight: 1, opacity: 0.9,
+               dashArray: null };
+    }
+    return { color: "#616161", weight: 0, opacity: 0, dashArray: null };
+  }
+  if (currentBand < (s.minBand || 1)) {
+    return { color: s.color, weight: 0, opacity: 0, dashArray: null };
+  }
+  return { color: s.color, weight: s.weight,
+           opacity: s.opacity * (p.cut ? 0.6 : 1), dashArray: null };
+}
 
 /* The unadopted gap is the recruiting layer — it must be the most
-   visible line on the map: a pale red casing under a bold dashed
-   red core (the closest plain Leaflet gets to a hatched line). */
-var GAP_CASING_STYLE = { color: COLORS.gapDeep, weight: 11, opacity: 0.4 };
+   visible line on the map: a deep-red casing under a bold dashed
+   red core (the closest plain Leaflet gets to a hatched line).
+   The core's dashes MARCH westward while the layer is on (S2). */
+function gapCasingStyle() {
+  var reg = CASING_REGISTERS[casingRegister];
+  return { color: COLORS.gapDeep, weight: 11 + reg.bump,
+           opacity: reg.gap };
+}
 var GAP_CORE_STYLE = {
   color: COLORS.gap, weight: 5, opacity: 1, dashArray: "14 8",
+  dashOffset: "0",
 };
 
 /* ------------------------------------------------------------ popups */
@@ -362,12 +573,24 @@ function accessPopup(f) {
       ["Class", p.road_class],
       ["Length", p.miles ? p.miles + " mi" : null],
       ["Source", p.dataset],
+      ["Shown", p.cut ? "Within the trail corridor — this line " +
+        "continues beyond it" : null],
+      ["Shown", p.connector ? "Kept whole — a connector that " +
+        "crosses the trail" : null],
     ]);
 }
 
 function roadPopup(f) {
-  var n = esc(f.properties.name);
-  return n ? "<h3>" + n + "</h3>" : null;
+  var p = f.properties;
+  var s = ROAD_CLASS_STYLES[p.road_class];
+  return "<h3>" + (esc(p.name) || (s ? s.label : "Road")) + "</h3>" +
+    kvTable([
+      ["Class", s ? s.label : p.road_class],
+      ["Shown", p.cut ? "Within the trail corridor — this road " +
+        "continues beyond it" : null],
+      ["Shown", p.connector ? "Kept whole — a connector that " +
+        "crosses the trail" : null],
+    ]);
 }
 
 function assetPopup(f) {
@@ -376,6 +599,29 @@ function assetPopup(f) {
     ["Condition", p.condition],
     ["Photographed", p.datetime],
     ["Photographer", p.photographer],
+  ]);
+}
+
+/* §2.11: an asset pin whose photo was condition-graded wears a
+   ring in the grade colour (good green / fair amber / poor red)
+   over the white casing ring. Ungraded pins keep the plain v4
+   pin. (Aggregation of dense pins waits on the inventory data —
+   the spec defers it to the first real batches.) */
+var CONDITION_RINGS = { good: "#1a9850", fair: "#e08214",
+                        poor: "#b2182b" };
+function assetMarker(f, latlng) {
+  var dot = L.circleMarker(latlng, {
+    radius: 5, color: "#ffffff", weight: 1.5,
+    fillColor: COLORS.assetPin, fillOpacity: 0.95,
+  });
+  var ring = CONDITION_RINGS[(f.properties || {}).condition];
+  if (!ring) return dot;
+  return L.layerGroup([
+    L.circleMarker(latlng, { radius: 8, color: "#ffffff", weight: 1,
+      fillOpacity: 0, interactive: false }),
+    L.circleMarker(latlng, { radius: 7, color: ring, weight: 2.5,
+      fillOpacity: 0, interactive: false }),
+    dot,
   ]);
 }
 
@@ -586,10 +832,62 @@ map.on("zoomend", layoutTicks);
    slop, no name ever hides at z ≥ 12, and at z ≤ 9 only sections
    ≥ 2 mi keep names. */
 var sectionLabelItems = [];
-function layoutSectionLabels() {
+var mileLabelItems = [];   /* mile-marker tooltips (M2) */
+var chainageItems = [];    /* S1 numerals: {marker, latlng, miles, every10} */
+var chainageGroupRef = null;
+
+function _boxesCollide(a, b) {
+  return a.x0 < b.x1 && b.x0 < a.x1 && a.y0 < b.y1 && b.y0 < a.y1;
+}
+
+/* §2.7 unified annotation pass (v7): ONE collision pool for every
+   text class on the map face, reserved in the fixed priority
+   order — terminus (never hides) > gap > section > mile/chainage.
+   The v6 guarantee is preserved exactly: every section label
+   first receives a placement that provably clears its OWN line
+   (pass 1, sectionLabelPlacement), and in pass 2 a label either
+   shows at that placement or hides — nothing of any class is ever
+   shoved onto a line to resolve a collision. Lower classes test
+   an estimated box (the house +6 px slop method) against the pool
+   and yield. */
+function layoutAnnotations() {
   var z = map.getZoom();
   var font = z >= 12 ? 11 : z === 11 ? 10 : z === 10 ? 9 : 8;
   var placed = [];
+  /* Priority 0 — termini reserve their real boxes, never hide. */
+  document.querySelectorAll(".terminus-label span").forEach(
+    function (el) { placed.push(labelRectOf(el)); });
+  /* §2.5: the tick bars keep priority over labels — a name that
+     would touch a tick hides before a tick moves. The test uses
+     the ticks' PLACED boxes at the current zoom (their current
+     endpoints, fattened by the bar's weight), never a fixed
+     radius — the v4 fixed-radius version of this rule hid every
+     name at z10 and was removed; this is the precise form the
+     cartography spec asks for. Section ticks reserve only when
+     they render (z > 8); terminus ticks always render. */
+  function reserveTick(it, halfWeight) {
+    var ll = it.casing.getLatLngs();
+    if (!ll || ll.length < 2) return;
+    var a = map.latLngToContainerPoint(ll[0]);
+    var b = map.latLngToContainerPoint(ll[1]);
+    placed.push({
+      x0: Math.min(a.x, b.x) - halfWeight,
+      y0: Math.min(a.y, b.y) - halfWeight,
+      x1: Math.max(a.x, b.x) + halfWeight,
+      y1: Math.max(a.y, b.y) + halfWeight,
+    });
+  }
+  terminusTickItems.forEach(function (it) { reserveTick(it, 5); });
+  if (z > 8) {
+    boundaryTickItems.forEach(function (it) { reserveTick(it, 3); });
+  }
+  /* Priority 1 — the gap label, when it is on the map. */
+  gapLabelMarkers.forEach(function (m) {
+    if (!gapLabelGroupRef || !gapLabelGroupRef.hasLayer(m)) return;
+    var el = m.getElement && m.getElement();
+    var span = el && el.querySelector("span");
+    if (span) placed.push(labelRectOf(span));
+  });
   var sorted = sectionLabelItems.slice().sort(function (a, b) {
     return (b.len || 0) - (a.len || 0);
   });
@@ -611,7 +909,8 @@ function layoutSectionLabels() {
      length order, measured on the REAL rendered boxes (Leaflet
      has now positioned them per pass 1): a label that would
      overlap an already-placed one is hidden at this zoom, never
-     shoved onto a line. */
+     shoved onto a line. Shown labels reserve their box in the
+     shared pool at every zoom, so the lower classes can yield. */
   sorted.forEach(function (it) {
     var tt = it.layer.getTooltip();
     var el = tt && tt.getElement();
@@ -619,22 +918,67 @@ function layoutSectionLabels() {
     el.style.fontSize = font + "px";
     var show = true;
     if (z <= 9 && (it.len || 0) < 2) show = false;
+    var r = labelRectOf(el);
     if (show && z < 13) {
-      var r = labelRectOf(el);
-      var collides = placed.some(function (p) {
-        return r.x0 < p.x1 && p.x0 < r.x1 &&
-               r.y0 < p.y1 && p.y0 < r.y1;
-      });
-      if (collides) show = false;
-      else placed.push(r);
+      if (placed.some(function (p) { return _boxesCollide(r, p); })) {
+        show = false;
+      }
     }
+    if (show) placed.push(r);
     el.style.display = show ? "" : "none";
+  });
+  /* Priority 3a — S1 chainage numerals (10-mile points; the
+     5-mile points ride the layer for print only, CSS-hidden on
+     screen): slate numerals ON the line at Z2+, yielding to
+     everything above. */
+  if (chainageGroupRef) {
+    chainageItems.forEach(function (it) {
+      if (!it.every10) return;
+      var want = z >= 11;
+      if (want) {
+        var pt = map.latLngToContainerPoint(it.latlng);
+        var w = String(it.miles).length * 9.5 * 0.62 + 8, h = 16;
+        var box = { x0: pt.x - w / 2, y0: pt.y - h / 2,
+                    x1: pt.x + w / 2, y1: pt.y + h / 2 };
+        if (placed.some(function (p) { return _boxesCollide(box, p); })) {
+          want = false;
+        } else {
+          placed.push(box);
+        }
+      }
+      if (want && !chainageGroupRef.hasLayer(it.marker)) {
+        chainageGroupRef.addLayer(it.marker);
+      }
+      if (!want && chainageGroupRef.hasLayer(it.marker)) {
+        chainageGroupRef.removeLayer(it.marker);
+      }
+    });
+  }
+  /* Priority 3b — M2 mile labels: whole-mile numbers at Z3+,
+     half-mile numbers at Z4 only, both at the pool's mercy. */
+  mileLabelItems.forEach(function (it) {
+    var tt = it.layer.getTooltip();
+    var el = tt && tt.getElement();
+    if (!el) return;
+    var want = it.isHalf ? z >= 15 : z >= 13;
+    if (want) {
+      var pt = map.latLngToContainerPoint(it.latlng);
+      var w = String(it.num).length * 9.5 * 0.62 + 6, h = 15;
+      var box = { x0: pt.x - w / 2, y0: pt.y - 6 - h,
+                  x1: pt.x + w / 2, y1: pt.y - 6 };
+      if (placed.some(function (p) { return _boxesCollide(box, p); })) {
+        want = false;
+      } else {
+        placed.push(box);
+      }
+    }
+    el.style.display = want ? "" : "none";
   });
   var tFont = z >= 11 ? 12 : z === 10 ? 11 : 10;
   document.querySelectorAll(".terminus-label span").forEach(
     function (el) { el.style.fontSize = tFont + "px"; });
 }
-map.on("zoomend moveend", layoutSectionLabels);
+map.on("zoomend moveend", layoutAnnotations);
 
 /* The gap's on-map name (DESIGN D4) shows at z ≥ 9 only. Markers
    live in the gaps layer's own label group (gapLabelGroupRef, set
@@ -642,7 +986,12 @@ map.on("zoomend moveend", layoutSectionLabels);
 var gapLabelMarkers = [];
 function layoutGapLabels() {
   if (!gapLabelGroupRef) return;
-  var show = map.getZoom() >= 9;
+  var z = map.getZoom();
+  var show = z >= 9;
+  /* S2: at Z2+ the gap's name becomes a Carsonite-style sign chip
+     (the brown post-mounted marker idiom of the trail itself);
+     below Z2 it stays the bare haloed label it has been. */
+  document.body.classList.toggle("gap-chip", z >= 11);
   gapLabelMarkers.forEach(function (m) {
     if (show && !gapLabelGroupRef.hasLayer(m)) {
       gapLabelGroupRef.addLayer(m);
@@ -653,6 +1002,57 @@ function layoutGapLabels() {
   });
 }
 map.on("zoomend", layoutGapLabels);
+
+/* S2 breathing gap: while the gaps layer is on, the tab is
+   visible, motion is allowed and we are not printing, the core's
+   dash pattern marches westward — one full dash period (14+8 px)
+   per ~6 s. The gap geometry runs west→east on the file, so a
+   growing dashOffset moves the pattern toward its start: west.
+   Static (offset 0) in print via the beforeprint hook below. */
+var REDUCED_MOTION = !!(window.matchMedia &&
+  window.matchMedia("(prefers-reduced-motion: reduce)").matches);
+var gapMarchRaf = null;
+function gapMarchShouldRun() {
+  return !printMode && !REDUCED_MOTION && !document.hidden &&
+    !!gapCoreLayer && !!gapsGroupRef && map.hasLayer(gapsGroupRef);
+}
+function gapMarchTick(ts) {
+  if (!gapMarchShouldRun()) { gapMarchRaf = null; return; }
+  var off = ((ts % 6000) / 6000) * 22;
+  gapCoreLayer.setStyle({ dashOffset: String(off) });
+  gapMarchRaf = window.requestAnimationFrame(gapMarchTick);
+}
+function updateGapMarch() {
+  if (gapMarchShouldRun() && gapMarchRaf === null) {
+    gapMarchRaf = window.requestAnimationFrame(gapMarchTick);
+  }
+}
+document.addEventListener("visibilitychange", updateGapMarch);
+map.on("layeradd layerremove", function (e) {
+  if (e.layer === gapsGroupRef) updateGapMarch();
+});
+
+/* S5 print hooks: Leaflet canvas paths can't be restyled from
+   print CSS, so the print collapse (roads to classes A+F in one
+   grey; access to solid hairlines, winter snowmobile kept) is
+   applied by restyling the layers for the print render and
+   restored afterwards. The gap march freezes at offset 0. */
+function restyleContextLayers() {
+  if (accessLayerRef) accessLayerRef.setStyle(accessStyle);
+  if (roadsGroupRef) {
+    roadsGroupRef.eachLayer(function (l) { l.setStyle(roadStyle); });
+  }
+}
+window.addEventListener("beforeprint", function () {
+  printMode = true;
+  if (gapCoreLayer) gapCoreLayer.setStyle({ dashOffset: "0" });
+  restyleContextLayers();
+});
+window.addEventListener("afterprint", function () {
+  printMode = false;
+  restyleContextLayers();
+  updateGapMarch();
+});
 
 /* ------------------------------------------------- selection model
    One selection state for sections + the gap (UX-REVIEW Part 1).
@@ -737,16 +1137,21 @@ function drawSelectionHalo(item) {
   var layers = [];
   parts.forEach(function (ll) {
     layers.push(L.polyline(ll, { renderer: canvasFor(),
-      interactive: false, color: COLORS.casing, weight: 9, opacity: 0.9 }));
+      interactive: false, color: "#ffffff", weight: 10, opacity: 0.9 }));
   });
+  /* §2.13: the halo core is the selected element's OWN style at
+     weight + 2 — the same colour and dash it already wears, never
+     a foreign highlight. */
   parts.forEach(function (ll) {
     if (item.type === "gap") {
       layers.push(L.polyline(ll, { renderer: canvasFor(),
-        interactive: false, color: COLORS.gap, weight: 6, opacity: 1,
+        interactive: false, color: COLORS.gap,
+        weight: GAP_CORE_STYLE.weight + 2, opacity: 1,
         dashArray: GAP_CORE_STYLE.dashArray }));
     } else {
       layers.push(L.polyline(ll, { renderer: canvasFor(),
-        interactive: false, color: COLORS.adopted, weight: 6, opacity: 1 }));
+        interactive: false, color: COLORS.adopted,
+        weight: stretchStyle().weight + 2, opacity: 1 }));
     }
   });
   selectionHalo = L.layerGroup(layers).addTo(map);
@@ -840,6 +1245,19 @@ function inspRow(k, v) {
   });
 })();
 
+/* S5 Winter mode: a panel toggle for snowmobile season — the
+   snowmobile lines gain weight on screen, and (via printMode in
+   accessStyle) survive the print collapse. */
+(function wireWinter() {
+  var box = document.getElementById("winter-toggle");
+  if (!box) return;
+  box.addEventListener("change", function () {
+    winterMode = box.checked;
+    document.body.classList.toggle("winter", winterMode);
+    if (accessLayerRef) accessLayerRef.setStyle(accessStyle);
+  });
+})();
+
 function renderInspector() {
   var el = document.getElementById("inspector");
   if (!el) return;
@@ -891,7 +1309,11 @@ function sectionInspectorHtml(item) {
   html += "<div class='insp-body'>";
   if (r.nct_mile != null || r.from_west_mi != null) {
     var cap = [];
-    if (r.nct_mile != null) cap.push("NCT " + r.nct_mile);
+    /* M3: a tracker mile figure always carries its source label
+       when it appears — the two reckonings differ by ~46–48 mi. */
+    if (r.nct_mile != null) {
+      cap.push("NCT " + r.nct_mile + " (chapter tracker miles)");
+    }
     if (r.from_west_mi != null) {
       cap.push(r.from_west_mi + " mi from the west end");
     }
@@ -915,7 +1337,7 @@ function sectionInspectorHtml(item) {
       nct += " <span class='muted'>· map " +
         esc(r.map_refs.join(", ")) + "</span>";
     }
-    ks += "<div><div class='ks-label'>NCT miles</div>" +
+    ks += "<div><div class='ks-label'>NCT miles (tracker)</div>" +
       "<div class='ks-value'>" + nct + "</div></div>";
   }
   if (r.adopter_display && r.adopter_display.length) {
@@ -1119,7 +1541,7 @@ function disarmChip() {
   if (chipTimer) { window.clearTimeout(chipTimer); chipTimer = null; }
   if (chipLayer && chipLayer.setStyle && chipLayer._walkItem &&
       chipLayer._walkItem.type === "section") {
-    chipLayer.setStyle(STRETCH_STYLE);
+    chipLayer.setStyle(stretchStyle());
   }
   chipLayer = null;
 }
@@ -1129,6 +1551,54 @@ function closeChip() {
   if (chipTip) { map.closeTooltip(chipTip); chipTip = null; }
 }
 map.on("movestart zoomstart", closeChip);
+
+/* §2.13: the context lines (roads, non-road access) get the same
+   300 ms dwell chip as the sections — name + class, plus the
+   corridor note for clipped features — because at hairline
+   weights the popups are hard to discover. Same machinery, same
+   rules: static chip, never follows the cursor, no chips on
+   coarse pointers. */
+function armContextChip(layer, feature, latlng, kind) {
+  if (COARSE_POINTER) return;
+  disarmChip();
+  chipLayer = layer;
+  chipTimer = window.setTimeout(function () {
+    chipTimer = null;
+    var p = feature.properties || {};
+    var title, klass;
+    if (kind === "road") {
+      var rs = ROAD_CLASS_STYLES[p.road_class];
+      title = p.name || (rs ? rs.label : "Road");
+      klass = rs ? rs.label : null;
+    } else {
+      var as = ACCESS_STYLES[p.source_type];
+      title = p.name || (as ? as.label : "Access line");
+      klass = as ? as.label : null;
+    }
+    var bits = [];
+    if (klass && klass !== title) bits.push(klass);
+    if (p.cut) bits.push("continues beyond the corridor");
+    if (p.connector) bits.push("connector — kept whole");
+    var html = "<span class='hc-name'>" + (esc(title) || "") + "</span>";
+    if (bits.length) {
+      html += "<span class='hc-facts'>" + esc(bits.join(" · ")) +
+        "</span>";
+    }
+    html += "<span class='hc-hint'>Click for details</span>";
+    chipTip = L.tooltip({
+      direction: "top", offset: [0, -8],
+      className: "hover-chip", opacity: 1,
+    }).setLatLng(latlng).setContent(html);
+    map.openTooltip(chipTip);
+  }, 300);
+}
+
+function wireContextHover(l, f, kind) {
+  l.on("mouseover", function (e) {
+    armContextChip(l, f, e.latlng, kind);
+  });
+  l.on("mouseout", closeChip);
+}
 
 /* ------------------------------------------------------------ layers */
 /* Each layer: file under data/, builder, default-on flag, panel
@@ -1171,6 +1641,8 @@ var LAYERS = [
         style: trailStyle,
         onEachFeature: function (f, l) { bindPop(l, trailPopup(f)); },
       });
+      trailCasingLayer = casing;
+      trailCoreLayer = core;
       var group = L.featureGroup([casing, core]);
       group.bringToFront = function () {
         casing.bringToFront(); core.bringToFront();
@@ -1185,8 +1657,9 @@ var LAYERS = [
     build: function (gj) {
       var casing = L.geoJSON(gj, {
         renderer: canvasFor(), interactive: false,
-        style: STRETCH_CASING_STYLE,
+        style: stretchCasingStyle,
       });
+      stretchCasingLayer = casing;
       /* Touch targets: canvas lines are thin, so on coarse
          pointers a fat near-invisible underlay takes the taps
          (UX Part 1). */
@@ -1211,7 +1684,7 @@ var LAYERS = [
       }
       var lines = L.geoJSON(gj, {
         renderer: canvasFor(),
-        style: STRETCH_STYLE,
+        style: stretchStyle,
         onEachFeature: function (f, l) {
           var p = f.properties;
           var item = {
@@ -1222,7 +1695,7 @@ var LAYERS = [
           if (p.name) {
             registerWalkItem(item);
             /* Section name as a permanent tooltip near mid-section;
-               layoutSectionLabels() re-places it at every zoom so
+               layoutAnnotations() re-places it at every zoom so
                it never touches the line (Paul, 2026-11-10), and the
                label itself is CLICKABLE — same selection as the
                line (Paul: "you should be able to click on the name
@@ -1257,13 +1730,14 @@ var LAYERS = [
           });
           l.on("mouseover", function (e) {
             /* v6: placement is computed per-zoom by
-               layoutSectionLabels(); the hover chip just needs a
+               layoutAnnotations(); the hover chip just needs a
                direction — above the line is the house default. */
             armChip(l, f, e.latlng, { direction: "top", offset: [0, -10] });
           });
           l.on("mouseout", closeChip);
         },
       });
+      stretchLinesLayer = lines;
       var children = [casing];
       if (underlay) children.push(underlay);
       children.push(lines);
@@ -1274,7 +1748,7 @@ var LAYERS = [
         lines.bringToFront();
       };
       group.on("add", function () {
-        window.setTimeout(layoutSectionLabels, 60);
+        window.setTimeout(layoutAnnotations, 60);
       });
       return group;
     },
@@ -1318,7 +1792,48 @@ var LAYERS = [
       });
       boundaryTickItems = items;
       layoutTicks();
+      window.setTimeout(layoutAnnotations, 60);
       return boundaryTickGroup;
+    },
+  },
+  {
+    /* S1 measured spine: a slate numeral on the line every 10
+       chapter miles from the west end, placed by the annotation
+       pass at section-name priority. The 5-mile points ride the
+       same layer, CSS-hidden on screen, so print can show the
+       5-mile cadence (S5). No toggle of its own — it is
+       annotation, like the section names. These are RELATIVE
+       miles from the west end, never NCT/state miles. */
+    id: "chainage", label: "Chainage (miles from west end)",
+    file: "data/chainage.geojson", onByDefault: true,
+    hiddenToggle: true,
+    build: function (gj) {
+      var group = L.layerGroup();
+      chainageGroupRef = group;
+      chainageItems = [];
+      gj.features.forEach(function (f) {
+        var c = f.geometry.coordinates;
+        var ll = L.latLng(c[1], c[0]);
+        var ten = !!f.properties.every10;
+        var m = L.marker(ll, {
+          interactive: false, keyboard: false,
+          icon: L.divIcon({
+            className: "map-label chainage-label", iconSize: [0, 0],
+            html: "<span class='ch-num" + (ten ? "" : " five") +
+              "'>" + f.properties.miles_from_west + "</span>",
+          }),
+        });
+        chainageItems.push({ marker: m, latlng: ll,
+          miles: f.properties.miles_from_west, every10: ten });
+        /* 5-mile markers are added unconditionally (print shows
+           them; screen CSS hides them). The annotation pass adds
+           and removes the 10-mile markers by collision. */
+        if (!ten) group.addLayer(m);
+      });
+      group.on("add", function () {
+        window.setTimeout(layoutAnnotations, 60);
+      });
+      return group;
     },
   },
   {
@@ -1334,6 +1849,7 @@ var LAYERS = [
       });
       var group = L.layerGroup();
       layoutTicks();
+      window.setTimeout(layoutAnnotations, 60);
       ends.forEach(function (f, i) {
         var c = f.geometry.coordinates;
         var which = i === 0 ? "west end"
@@ -1381,7 +1897,8 @@ var LAYERS = [
     swatch: { kind: "line", color: GAP_CORE_STYLE.color, dashed: true },
     build: function (gj) {
       var casing = L.geoJSON(gj, { renderer: canvasFor(),
-                                   style: GAP_CASING_STYLE });
+                                   style: gapCasingStyle });
+      gapCasingLayer = casing;
       var core = L.geoJSON(gj, {
         renderer: canvasFor(),
         style: GAP_CORE_STYLE,
@@ -1430,15 +1947,61 @@ var LAYERS = [
         });
         gapLabelMarkers.push(m);
       });
+      gapCoreLayer = core;
       var group = L.featureGroup([casing, core, labelGroup]);
+      gapsGroupRef = group;
       group.bringToFront = function () {
         casing.bringToFront();
         core.bringToFront();
       };
       group.on("add", function () {
         window.setTimeout(layoutGapLabels, 30);
+        window.setTimeout(updateGapMarch, 30);
       });
       return group;
+    },
+  },
+  {
+    /* M2: the state (NCTA) half-mile points, snapped to the drawn
+       lines in the site build. Whole miles wear the slate disc
+       with a white ring; halves a smaller plain dot. Labels are
+       the bare state-mile number, whole miles only at Z3+ (halves
+       at Z4), placed by the unified annotation pass at the lowest
+       priority. Default OFF — this is a second mileage reckoning
+       on the face (see M3 in the spec) and stays opt-in. */
+    id: "milemarkers", label: "Mile markers (state)",
+    title: "State (NCTA) mileage — a different reckoning from the " +
+      "chapter tracker's miles",
+    file: "data/milemarkers.geojson", onByDefault: false,
+    group: "Chapter",
+    swatch: { kind: "pin", color: COLORS.tick },
+    build: function (gj) {
+      mileLabelItems = [];
+      var layer = L.geoJSON(gj, {
+        pointToLayer: function (f, latlng) {
+          var whole = f.properties.index_ === "Index";
+          var m = L.circleMarker(latlng, whole ? {
+            radius: 3.5, color: "#ffffff", weight: 1.5,
+            fillColor: COLORS.tick, fillOpacity: 1,
+          } : {
+            radius: 2, color: COLORS.tick, weight: 0,
+            fillColor: COLORS.tick, fillOpacity: 0.75,
+          });
+          if (f.properties.label != null) {
+            m.bindTooltip(String(f.properties.label), {
+              permanent: true, direction: "top", offset: [0, -6],
+              className: "mile-label", interactive: false,
+            });
+            mileLabelItems.push({ layer: m, isHalf: !whole,
+              latlng: latlng, num: f.properties.label });
+          }
+          return m;
+        },
+      });
+      layer.on("add", function () {
+        window.setTimeout(layoutAnnotations, 60);
+      });
+      return layer;
     },
   },
   {
@@ -1447,11 +2010,13 @@ var LAYERS = [
     id: "parcels", label: "Parcels (owner names — public record)",
     file: "data/parcels.geojson", onByDefault: false,
     build: function (gj) {
-      return L.geoJSON(gj, {
+      var layer = L.geoJSON(gj, {
         renderer: canvasFor(),
         style: parcelStyle,
         onEachFeature: function (f, l) { bindPop(l, parcelPopup(f)); },
       });
+      parcelsLayerRef = layer;
+      return layer;
     },
   },
   {
@@ -1460,11 +2025,16 @@ var LAYERS = [
     file: "data/access.geojson", onByDefault: false, group: "Context",
     swatch: { kind: "line", color: ACCESS_STYLES.state_trail.color },
     build: function (gj) {
-      return L.geoJSON(gj, {
+      var layer = L.geoJSON(gj, {
         renderer: canvasFor(),
         style: accessStyle,
-        onEachFeature: function (f, l) { bindPop(l, accessPopup(f)); },
+        onEachFeature: function (f, l) {
+          bindPop(l, accessPopup(f));
+          wireContextHover(l, f, "access");
+        },
       });
+      accessLayerRef = layer;
+      return layer;
     },
   },
   {
@@ -1472,18 +2042,78 @@ var LAYERS = [
     onByDefault: false, group: "Context",
     swatch: { kind: "line", color: ROADS_STYLE.color },
     build: function (gj) {
-      /* Darker + heavier than the v1–v2 styling (1 px at #999999):
-         the data was always there (5,902 MnDOT segments) but
-         effectively invisible against the base map (Paul, Nov 10,
-         2026: "doesn't seem to have any data"). */
-      return L.geoJSON(gj, {
-        renderer: canvasFor(),
-        style: ROADS_STYLE,
-        onEachFeature: function (f, l) {
-          var html = roadPopup(f);
-          if (html) bindPop(l, html);
-        },
+      /* §2.10/§2.12: four class sublayers drawn C, B, F, A (minor
+         roads settle first, arterials land on top). */
+      var subs = ["C", "B", "F", "A"].map(function (cls) {
+        return L.geoJSON({
+          type: "FeatureCollection",
+          features: gj.features.filter(function (f) {
+            return (f.properties.road_class || "C") === cls;
+          }),
+        }, {
+          renderer: canvasFor(),
+          style: roadStyle,
+          onEachFeature: function (f, l) {
+            bindPop(l, roadPopup(f));
+            wireContextHover(l, f, "road");
+          },
+        });
       });
+      var group = L.featureGroup(subs);
+      roadsGroupRef = group;
+      group.bringToFront = function () {
+        subs.forEach(function (s) { s.bringToFront(); });
+      };
+      return group;
+    },
+  },
+  {
+    /* S4 Places: the gazetteer's 114 NCTA waypoints (parking,
+       camping, water, shelters, POIs) as a map layer, Z3+ only.
+       Letter discs in the terminus idiom; POIs are plain slate
+       dots. Popups reuse the gazetteer record (gazPopupHtml), so
+       the layer and Find can never disagree. */
+    id: "places", label: "Places",
+    title: "NCTA waypoints: parking, camping, water, shelters, " +
+      "points of interest",
+    file: "data/gazetteer.geojson", onByDefault: false,
+    group: "Context",
+    swatch: { kind: "pin", color: COLORS.tick },
+    build: function (gj) {
+      var inner = L.layerGroup();
+      var outer = L.layerGroup();
+      placesInnerRef = inner;
+      placesOuterRef = outer;
+      var glyphs = { Parking: "P", Camping: "C", Water: "W",
+                     Shelter: "S" };
+      gj.features.forEach(function (f) {
+        var p = f.properties;
+        var glyph = glyphs[p.kind];
+        if (p.kind !== "POI" && !glyph) return;
+        var c = f.geometry.coordinates;
+        var ll = L.latLng(c[1], c[0]);
+        var mk;
+        if (p.kind === "POI") {
+          mk = L.circleMarker(ll, {
+            radius: 3, color: COLORS.tick, weight: 1,
+            fillColor: COLORS.tick, fillOpacity: 0.8,
+          });
+        } else {
+          mk = L.marker(ll, {
+            keyboard: false,
+            icon: L.divIcon({
+              className: "place-disc-wrap", iconSize: [15, 15],
+              iconAnchor: [8, 8],
+              html: "<span class='place-disc'>" + glyph + "</span>",
+            }),
+          });
+        }
+        bindPop(mk, gazPopupHtml(f), 320);
+        inner.addLayer(mk);
+      });
+      outer.addLayer(inner);
+      applyPlacesGate();
+      return outer;
     },
   },
   {
@@ -1494,10 +2124,7 @@ var LAYERS = [
     build: function (gj) {
       return L.geoJSON(gj, {
         pointToLayer: function (f, latlng) {
-          return L.circleMarker(latlng, {
-            radius: 6, color: "#ffffff", weight: 2,
-            fillColor: COLORS.assetPin, fillOpacity: 0.95,
-          });
+          return assetMarker(f, latlng);
         },
         onEachFeature: function (f, l) { bindPop(l, assetPopup(f)); },
       });
@@ -1692,13 +2319,15 @@ function assertDrawOrder() {
   drawOrderQueued = true;
   requestAnimationFrame(function () {
     drawOrderQueued = false;
-    /* Stacking, back → front: access context, roads, the official
-       trail line, the ADOPTED SECTIONS on top of the trail line
-       (Paul, Nov 10, 2026 — the amber highlight must read as lying
-       over the green), the gap, then the boundary ticks and chapter
-       ends uppermost so the bars stay visible across everything. */
-    ["access", "roads", "trail", "stretches", "gaps",
-     "boundaries", "termini"].forEach(function (id) {
+    /* Stacking, back → front (§2.12): parcels, access context,
+       roads, the official trail line, the ADOPTED SECTIONS on top
+       of the trail line (Paul, Nov 10, 2026 — the amber highlight
+       must read as lying over the green), the gap, boundary ticks
+       and chapter ends, mile markers with the ticks, then Places
+       and asset pins uppermost. */
+    ["parcels", "access", "roads", "trail", "stretches", "gaps",
+     "boundaries", "termini", "milemarkers", "chainage", "places",
+     "assets"].forEach(function (id) {
       var d = layerById(id);
       if (!d || !d.layer || !map.hasLayer(d.layer)) return;
       if (d.layer.bringToFront) { d.layer.bringToFront(); return; }
@@ -1763,12 +2392,23 @@ function legendHtml() {
   /* The Access points rows are gone with their layer (v3); the
      crossings live in Find now. Parcels swatches stay omitted while
      that layer is UI-disabled. */
+  add("", "<strong>Mileage</strong>");
+  add(pin(COLORS.tick),
+    "Mile marker — whole mile (state reckoning)");
+  add("<span class='swatch num'>187</span>",
+    "State mile number (NCTA reckoning)");
+  add("<span class='swatch num'>30</span>",
+    "— miles from the west end (chapter chainage)");
   add("", "<strong>Non-road access</strong>");
   Object.keys(ACCESS_STYLES).forEach(function (k) {
     var s = ACCESS_STYLES[k];
     add(line(s.color, !!s.dashArray), s.label);
   });
-  add(line(ROADS_STYLE.color), "Roads");
+  add("", "<strong>Roads</strong>");
+  ["A", "B", "C", "F"].forEach(function (cls) {
+    var s = ROAD_CLASS_STYLES[cls];
+    add(line(s.color), s.short);
+  });
   add(pin(COLORS.assetPin), "Asset pin (photo inventory)");
   return rows.join("");
 }
@@ -1917,7 +2557,8 @@ function gazPopupHtml(f) {
   var p = f.properties;
   var rows = [
     ["Kind", p.kind],
-    ["NCT mile", p.nct_mile != null ? p.nct_mile : null],
+    ["NCT mile (chapter tracker)",
+      p.nct_mile != null ? p.nct_mile : null],
     ["Section", p.section],
     ["From the west end",
       p.from_west_mi != null ? p.from_west_mi + " mi along the trail" : null],
@@ -1985,13 +2626,14 @@ function gazResultSub(p) {
   var bits = [p.kind];
   if (p.kind === "Section") {
     if (p.nct_mile_start != null && p.nct_mile_end != null) {
-      bits.push("NCT " + p.nct_mile_start + "–" + p.nct_mile_end);
+      bits.push("NCT (tracker) " + p.nct_mile_start + "–" +
+        p.nct_mile_end);
     } else if (p.nct_mile != null) {
-      bits.push("NCT " + p.nct_mile);
+      bits.push("NCT (tracker) " + p.nct_mile);
     }
     if (p.length_mi != null) bits.push(p.length_mi + " mi");
   } else {
-    if (p.nct_mile != null) bits.push("NCT " + p.nct_mile);
+    if (p.nct_mile != null) bits.push("NCT (tracker) " + p.nct_mile);
     else if (p.off_chain) bits.push("off-chain");
     if (p.section) bits.push("in " + p.section);
   }
