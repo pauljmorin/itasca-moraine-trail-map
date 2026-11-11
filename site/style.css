@@ -239,6 +239,11 @@ html, body {
   display: inline-block; width: 10px; height: 10px; border-radius: 50%;
   border: 2px solid #fff; box-shadow: 0 0 2px #333; margin: 0 3px;
 }
+.tog-swatch-fill {
+  flex: 0 0 auto;
+  display: inline-block; width: 14px; height: 10px;
+  border: 1px solid #7a744f; margin: 0 1px;
+}
 .tog-suffix { color: var(--ink-soft); font-size: 0.8rem; }
 .tog-error {
   color: #b2182b;
@@ -689,8 +694,8 @@ html, body {
   box-shadow: none;
   pointer-events: auto;
   cursor: pointer;
-  font-size: 11px;
-  font-weight: 600;
+  font-size: 14px;
+  font-weight: 700;
   letter-spacing: 0.02em;
   color: var(--adopted-deep);
   text-shadow: 0 0 3px rgba(247, 245, 238, 0.92),

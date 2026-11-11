@@ -419,8 +419,9 @@ function printAccessStyle(f, s) {
   return { color: s.color, weight: 0, opacity: 0, dashArray: null };
 }
 
-/* §2.8 (v7): parcels restyled for the layer's eventual return —
-   the layer itself stays UI-DISABLED; styles apply only at Z3+. */
+/* §2.8 (v7): parcels restyled for the layer's return — re-enabled
+   Nov 10, 2026 (evening) as an off-by-default, lazy-loaded layer;
+   styles apply only at Z3+. */
 function parcelStyle(f) {
   if (currentBand < 3) {
     return { color: "#a89a5b", weight: 0, opacity: 0, fillOpacity: 0 };
@@ -654,13 +655,17 @@ function gapEndAccess(p, which) {
    vertex-centroid — and pick the first box, in house preference
    order, whose rectangle clears every vertex of the section's
    own polyline by LABEL_CLEARANCE px. Candidates walk outward
-   (14, 22, 30 px standoff) before any fallback; the fallback
+   (17, 26, 34 px standoff) before any fallback; the fallback
    (anchor at an extreme bend) takes the least-bad box, pushed to
-   38 px. Deterministic: same data, same placement, every load. */
+   44 px. Deterministic: same data, same placement, every load.
+   The standoffs walked up a step with the labels themselves in
+   v8 (Paul, Nov 10, 2026 evening — names at 14 px / 700): the
+   boxes the pass measures are bigger, so the first candidate
+   starts further out to preserve the same clearance. */
 var LABEL_CLEARANCE = 4;
 function sectionLabelPlacement(f, name, mapRef) {
   var coords = (f.geometry && f.geometry.coordinates) || [];
-  var fallback = { direction: "top", offset: [0, -14] };
+  var fallback = { direction: "top", offset: [0, -17] };
   if (coords.length < 2 || !mapRef) return fallback;
   /* Anchor: nearest point on the polyline to the vertex centroid
      (keeps the anchor ON the line and near the visual middle,
@@ -687,7 +692,7 @@ function sectionLabelPlacement(f, name, mapRef) {
   var linePts = coords.map(function (c) {
     return mapRef.latLngToContainerPoint(L.latLng(c[1], c[0]));
   });
-  var font = 11;
+  var font = 14;
   var w = (name || "").length * font * 0.62 + 8, h = font + 7;
   function boxFor(dir, dist) {
     var x = apt.x, y = apt.y;
@@ -713,7 +718,7 @@ function sectionLabelPlacement(f, name, mapRef) {
   }
   var dirs = ["top", "right", "bottom", "left",
     "topright", "topleft", "bottomright", "bottomleft"];
-  var dists = [14, 22, 30];
+  var dists = [17, 26, 34];
   var best = null;
   for (var di = 0; di < dists.length; di++) {
     for (var dj = 0; dj < dirs.length; dj++) {
@@ -731,7 +736,7 @@ function sectionLabelPlacement(f, name, mapRef) {
     }
   }
   /* Extreme bend: least-bad box, pushed further out. */
-  var fb = boxFor(best.dir, 38);
+  var fb = boxFor(best.dir, 44);
   return {
     direction: best.dir, offset: [0, 0], anchor: anchor,
     box: fb, apt: { x: apt.x, y: apt.y }, w: w, h: h,
@@ -852,7 +857,7 @@ function _boxesCollide(a, b) {
    and yield. */
 function layoutAnnotations() {
   var z = map.getZoom();
-  var font = z >= 12 ? 11 : z === 11 ? 10 : z === 10 ? 9 : 8;
+  var font = z >= 12 ? 14 : z === 11 ? 13 : z === 10 ? 12 : 11;
   var placed = [];
   /* Priority 0 — termini reserve their real boxes, never hide. */
   document.querySelectorAll(".terminus-label span").forEach(
@@ -1620,6 +1625,11 @@ function swatchFor(def) {
     return "<span class='tog-swatch-pin' style='background:" +
       s.color + "'></span>";
   }
+  if (s.kind === "fill") {
+    return "<span class='tog-swatch-fill' style='background:" +
+      s.color + ";border-color:" + (s.border || s.color) +
+      "'></span>";
+  }
   return "<span class='tog-swatch-line" + (s.dashed ? " dashed" : "") +
     "' style='border-top-color:" + s.color + "'></span>";
 }
@@ -1701,7 +1711,7 @@ var LAYERS = [
                line (Paul: "you should be able to click on the name
                of the segment or the segment line"). */
             l.bindTooltip(p.name, {
-              permanent: true, direction: "top", offset: [0, -14],
+              permanent: true, direction: "top", offset: [0, -17],
               className: "section-name-label", interactive: true,
             });
             var ttEl = l.getTooltip() && l.getTooltip().getElement();
@@ -2005,10 +2015,14 @@ var LAYERS = [
     },
   },
   {
-    /* parcels disabled Nov 10, 2026 — re-enable by flipping this flag */
-    enabled: false,
+    /* Parcels re-enabled Nov 10, 2026 (evening, Paul): the layer
+       is back in the panel, OFF by default, and LAZY — nothing
+       fetches data/parcels.geojson until the box is first checked
+       (ensureLayer is only called from the toggle handler or a
+       #layers=parcels hash, never at startup). */
     id: "parcels", label: "Parcels (owner names — public record)",
-    file: "data/parcels.geojson", onByDefault: false,
+    file: "data/parcels.geojson", onByDefault: false, group: "Context",
+    swatch: { kind: "fill", color: "#fdbb84", border: "#b35806" },
     build: function (gj) {
       var layer = L.geoJSON(gj, {
         renderer: canvasFor(),
@@ -2390,8 +2404,7 @@ function legendHtml() {
   add(bar(CHAPTER_COLORS.ITM, true),
     "Chapter end — longer bar across the line (Itasca Moraine terminus)");
   /* The Access points rows are gone with their layer (v3); the
-     crossings live in Find now. Parcels swatches stay omitted while
-     that layer is UI-disabled. */
+     crossings live in Find now. */
   add("", "<strong>Mileage</strong>");
   add(pin(COLORS.tick),
     "Mile marker — whole mile (state reckoning)");
@@ -2409,6 +2422,11 @@ function legendHtml() {
     var s = ROAD_CLASS_STYLES[cls];
     add(line(s.color), s.short);
   });
+  add("", "<strong>Parcels</strong>");
+  add("<span class='swatch fill' style='background:#fdbb84'></span>",
+    "Parcel the trail crosses");
+  add("<span class='swatch fill' style='background:#e7e1c3'></span>",
+    "Adjoining parcel (corridor ring)");
   add(pin(COLORS.assetPin), "Asset pin (photo inventory)");
   return rows.join("");
 }
