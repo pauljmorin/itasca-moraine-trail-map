@@ -101,8 +101,8 @@ in this order — **Topographic:** Topo (OpenTopoMap, **the default
 since v4** — a new visitor meets terrain first), USGS Topo 1:24k
 (The National Map, built from the 1:24,000 quadrangle series —
 added in v3), National Geographic (Esri); **Relief:** MN LiDAR
-Hillshade; **Aerial:** Aerial (USGS NAIP), Aerial (Esri), Aerial +
-Topo (USGS ImageryTopo), Aerial (2014) — on any aerial base the
+Hillshade; **Aerial:** Aerial (NAIP 2023/25), Aerial (Esri), Aerial +
+Topo (NAIP 2023/25), Aerial (2014) — on any aerial base the
 section labels flip to a light-on-dark treatment so they stay
 readable over photography; **Streets & trails:** Streets (OSM),
 Trails (CyclOSM), Winter (snow trails). The chooser is the Leaflet radio control grouped under

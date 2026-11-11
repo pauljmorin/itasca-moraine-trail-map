@@ -176,9 +176,9 @@ var baseControl = L.control.layers(
     "USGS Topo 1:24k": usgsTopo,
     "National Geographic (Esri)": esriNatGeo,
     "MN LiDAR Hillshade": mnHillshade,
-    "Aerial (USGS NAIP)": usgsImagery,
+    "Aerial (NAIP 2023/25)": usgsImagery,
     "Aerial (Esri)": esriImagery,
-    "Aerial + Topo (USGS ImageryTopo)": usgsImageryTopo,
+    "Aerial + Topo (NAIP 2023/25)": usgsImageryTopo,
     "Aerial (2014)": esriWayback2014,
     "Streets (OSM)": osm,
     "Trails (CyclOSM)": cyclosm,
@@ -201,7 +201,7 @@ if (layersToggleEl) layersToggleEl.title = "Base maps";
 var BASE_GROUPS = [
   { before: "Topo (OpenTopoMap)", heading: "Topographic" },
   { before: "MN LiDAR Hillshade", heading: "Relief" },
-  { before: "Aerial (USGS NAIP)", heading: "Aerial" },
+  { before: "Aerial (NAIP 2023/25)", heading: "Aerial" },
   { before: "Streets (OSM)", heading: "Streets & trails" },
 ];
 function baseRowLabel(row) {
@@ -264,9 +264,9 @@ var CASING_BY_BASE = {
   "Topo (OpenTopoMap)": "paper",
   "Streets (OSM)": "paper",
   "Trails (CyclOSM)": "paper",
-  "Aerial (USGS NAIP)": "photo",
+  "Aerial (NAIP 2023/25)": "photo",
   "Aerial (Esri)": "photo",
-  "Aerial + Topo (USGS ImageryTopo)": "photo",
+  "Aerial + Topo (NAIP 2023/25)": "photo",
   "Aerial (2014)": "photo",
   "Winter (snow trails)": "relief",
   "MN LiDAR Hillshade": "relief",

@@ -214,8 +214,8 @@ GetMap responses over the chapter's extent.
 **Nov 11, 2026 prune (Paul's calls):** the switcher carried nine
 bases in four task groups — Topographic (Topo (OpenTopoMap),
 USGS Topo 1:24k, National Geographic (Esri)), Relief (MN LiDAR
-Hillshade), Aerial (Aerial (USGS NAIP), Aerial (Esri), Aerial +
-Topo (USGS ImageryTopo)), Streets & trails (Streets (OSM),
+Hillshade), Aerial (Aerial (NAIP 2023/25), Aerial (Esri), Aerial +
+Topo (NAIP 2023/25)), Streets & trails (Streets (OSM),
 Trails (CyclOSM)). Seven entries from the Nov 10 review round
 were removed outright (see "Removed bases" below), including the
 two key-gated ones and their placeholder keys. **Two bases were
@@ -245,10 +245,13 @@ added later the same day** (Paul approved the pair): Aerial
   series. Added Nov 10, 2026 (v3); sample tile over the chapter
   verified live the same day. Attribution: "Topo: USGS, The
   National Map".
-- **Aerial (USGS NAIP)** — The National Map (USGS),
+- **Aerial (NAIP 2023/25)** — The National Map (USGS),
   `https://basemap.nationalmap.gov/arcgis/rest/services/USGSImageryOnly/MapServer/tile/{z}/{y}/{x}`
   (NAIP-based imagery). Attribution: "Aerial imagery: USGS, The
-  National Map (NAIP)".
+  National Map (NAIP)". The label's years reflect Minnesota's
+  NAIP flight years 2023/2025: The National Map service does not
+  publish which vintage it serves per tile, so the chooser names
+  the flight years rather than a single date.
 - **Aerial (Esri)** — Esri World Imagery —
   `https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}`.
   Attribution: "Aerial imagery: Esri, Maxar, Earthstar
@@ -256,7 +259,7 @@ added later the same day** (Paul approved the pair): Aerial
 
 **Also in the switcher:**
 
-- **Aerial + Topo (USGS ImageryTopo)** — The National Map,
+- **Aerial + Topo (NAIP 2023/25)** — The National Map,
   `.../USGSImageryTopo/MapServer/tile/{z}/{y}/{x}` (NAIP imagery
   with topo labels/contours).
 - **National Geographic (Esri)** — Esri,
