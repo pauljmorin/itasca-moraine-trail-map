@@ -209,10 +209,16 @@ project sandbox on 2026-11-10 by fetching sample tiles / WMS
 GetMap responses over the chapter's extent.
 
 **v4 (Nov 10, 2026):** the default base is now **Topo
-(OpenTopoMap)** — a new visitor meets terrain first — and the
-switcher's six entries carry the plain names used below (Streets
-(OSM), USGS Topo 1:24k, Hillshade (MN LiDAR), Aerial (USGS NAIP),
-Aerial (Esri)).
+(OpenTopoMap)** — a new visitor meets terrain first.
+
+**Nov 11, 2026 prune (Paul's calls):** the switcher carries nine
+bases in four task groups — Topographic (Topo (OpenTopoMap),
+USGS Topo 1:24k, National Geographic (Esri)), Relief (MN LiDAR
+Hillshade), Aerial (Aerial (USGS NAIP), Aerial (Esri), Aerial +
+Topo (USGS ImageryTopo)), Streets & trails (Streets (OSM),
+Trails (CyclOSM)). Seven entries from the Nov 10 review round
+were removed outright (see "Removed bases" below), including the
+two key-gated ones and their placeholder keys.
 
 - **Topo (OpenTopoMap)** — the DEFAULT base since v4.
   `https://tile.opentopomap.org/{z}/{x}/{y}.png`: OpenStreetMap
@@ -222,7 +228,7 @@ Aerial (Esri)).
 - **Streets (OSM)** — the standard OpenStreetMap rendering,
   `https://tile.openstreetmap.org/{z}/{x}/{y}.png`. Attribution:
   "© OpenStreetMap contributors".
-- **Hillshade (MN LiDAR)** — Minnesota Geospatial Image
+- **MN LiDAR Hillshade** — Minnesota Geospatial Image
   Service (MnGeo), WMS 1.1.1, Web Mercator endpoint
   `https://imageserver.gisdata.mn.gov/cgi-bin/wmswm?`, layer
   `hillshd` ("Statewide"): hillshade derived from 1 m LiDAR
@@ -245,42 +251,23 @@ Aerial (Esri)).
   Attribution: "Aerial imagery: Esri, Maxar, Earthstar
   Geographics".
 
-**Candidate bases (Nov 10, 2026):** ten more bases wired into the
-switcher at Paul's request ("put all of them in there and then I
-tell you which to take out") — he prunes by looking, then the
-losers come out. Eight tile-verified over the chapter the same day;
-the two key-gated ones (401 without a key) are wired with
-placeholder keys in app.js and show blank until a free key is
-pasted in.
+**Also in the switcher:**
 
 - **Aerial + Topo (USGS ImageryTopo)** — The National Map,
   `.../USGSImageryTopo/MapServer/tile/{z}/{y}/{x}` (NAIP imagery
-  with topo labels/contours). Verified.
-- **Topo (Esri World Topographic)** — Esri,
-  `.../World_Topo_Map/MapServer/tile/{z}/{y}/{x}`. Verified.
+  with topo labels/contours).
 - **National Geographic (Esri)** — Esri,
-  `.../NatGeo_World_Map/MapServer/tile/{z}/{y}/{x}`. Verified.
-- **Streets (CARTO Voyager)** — CARTO,
-  `https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}.png`.
-  Verified.
-- **Minimal (CARTO Positron)** — CARTO,
-  `https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png`.
-  Verified.
+  `.../NatGeo_World_Map/MapServer/tile/{z}/{y}/{x}`.
 - **Trails (CyclOSM)** —
   `https://{s}.tile-cyclosm.openstreetmap.fr/cyclosm/{z}/{x}/{y}.png`.
-  Verified.
-- **Hillshade (Esri World)** — Esri,
-  `.../Elevation/World_Hillshade/MapServer/tile/{z}/{y}/{x}`,
-  capped at z15 (the service's deepest level). Verified.
-- **High contrast (OSM Humanitarian)** —
-  `https://{s}.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png`.
-  Verified (b/c subdomains; a was slow on first probe).
-- **Terrain (Stamen — needs key)** — Stadia Maps,
-  `https://tiles.stadiamaps.com/tiles/stamen_terrain/{z}/{x}/{y}.png?api_key=…`.
-  Stadia answers 401 without a key; placeholder in app.js.
-- **Outdoors (Thunderforest — needs key)** —
-  `https://tile.thunderforest.com/outdoors/{z}/{x}/{y}.png?apikey=…`.
-  401 without a key; placeholder in app.js.
+
+Removed bases (Nov 11, 2026, Paul's prune of the Nov 10 candidate
+round; definitions and placeholder keys deleted from app.js):
+**Topo (Esri World Topographic)**, **Terrain (Stamen)** (Stadia;
+was key-gated, never keyed), **Streets (CARTO Voyager)**,
+**Minimal (CARTO Positron)**, **Outdoors (Thunderforest)** (was
+key-gated, never keyed), **Hillshade (Esri World)**, **High
+contrast (OSM Humanitarian)**.
 
 Removed bases (v3, Nov 10, 2026, Paul's calls): **Shaded relief
 (USGS)** — The National Map `USGSShadedReliefOnly` service; cut as

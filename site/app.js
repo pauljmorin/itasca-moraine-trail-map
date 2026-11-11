@@ -108,24 +108,20 @@ var esriImagery = L.tileLayer(
     attribution: "Aerial imagery: Esri, Maxar, Earthstar Geographics",
   });
 
-/* Ten candidate bases added at Paul's request (Nov 10, 2026 — "put
-   all of them in there and then I tell you which to take out") so he
-   can prune by looking. Endpoints tile-verified over the chapter the
-   same day, EXCEPT the two key-gated ones (Stamen Terrain via Stadia,
-   Thunderforest Outdoors): both answer 401 without a key, so they
-   are wired with placeholder keys and will show blank tiles until a
-   free key is pasted in below. See SOURCES.md. */
+/* The rest of the nine surviving bases (Nov 11, 2026 prune):
+   Paul reviewed the sixteen candidates wired Nov 10 and cut seven
+   (Esri World Topo, Stamen Terrain, both CARTO bases,
+   Thunderforest Outdoors, Esri World Hillshade, OSM Humanitarian)
+   -- the two key-gated definitions and their placeholder keys went
+   with them; the map needs no API key for any base. The chooser
+   order below is task order, not vendor order: Topographic (the
+   working maps) / Relief / Aerial (ground truth) / Streets &
+   trails (orientation). See SOURCES.md. */
 var usgsImageryTopo = L.tileLayer(
   "https://basemap.nationalmap.gov/arcgis/rest/services/" +
     "USGSImageryTopo/MapServer/tile/{z}/{y}/{x}", {
     maxZoom: 16,
     attribution: "Imagery + topo: USGS, The National Map (NAIP)",
-  });
-var esriTopo = L.tileLayer(
-  "https://server.arcgisonline.com/ArcGIS/rest/services/" +
-    "World_Topo_Map/MapServer/tile/{z}/{y}/{x}", {
-    maxZoom: 19,
-    attribution: "Topo: Esri, HERE, Garmin, FAO, NOAA, USGS",
   });
 var esriNatGeo = L.tileLayer(
   "https://server.arcgisonline.com/ArcGIS/rest/services/" +
@@ -134,68 +130,24 @@ var esriNatGeo = L.tileLayer(
     attribution: "National Geographic, Esri, DeLorme, HERE, " +
       "UNEP-WCMC, USGS",
   });
-var stamenTerrain = L.tileLayer(
-  "https://tiles.stadiamaps.com/tiles/stamen_terrain/" +
-    "{z}/{x}/{y}.png?api_key=YOUR-STADIA-KEY", {
-    maxZoom: 18,
-    attribution: "Terrain: © Stadia Maps, © Stamen Design, " +
-      "© OpenStreetMap contributors",
-  });
-var cartoVoyager = L.tileLayer(
-  "https://{s}.basemaps.cartocdn.com/rastertiles/voyager/" +
-    "{z}/{x}/{y}.png", {
-    subdomains: "abcd", maxZoom: 20,
-    attribution: "© OpenStreetMap contributors © CARTO",
-  });
-var cartoPositron = L.tileLayer(
-  "https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png", {
-    subdomains: "abcd", maxZoom: 20,
-    attribution: "© OpenStreetMap contributors © CARTO",
-  });
-var thunderforest = L.tileLayer(
-  "https://tile.thunderforest.com/outdoors/{z}/{x}/{y}.png" +
-    "?apikey=YOUR-THUNDERFOREST-KEY", {
-    maxZoom: 22,
-    attribution: "Maps © Thunderforest, Data © OpenStreetMap " +
-      "contributors",
-  });
 var cyclosm = L.tileLayer(
   "https://{s}.tile-cyclosm.openstreetmap.fr/cyclosm/" +
     "{z}/{x}/{y}.png", {
     subdomains: "abc", maxZoom: 20,
     attribution: "© OpenStreetMap contributors, CyclOSM",
   });
-var esriHillshade = L.tileLayer(
-  "https://server.arcgisonline.com/ArcGIS/rest/services/" +
-    "Elevation/World_Hillshade/MapServer/tile/{z}/{y}/{x}", {
-    maxZoom: 15,
-    attribution: "Hillshade: Esri, USGS, NGA, NASA",
-  });
-var osmHot = L.tileLayer(
-  "https://{s}.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png", {
-    subdomains: "abc", maxZoom: 19,
-    attribution: "© OpenStreetMap contributors, Humanitarian " +
-      "OpenStreetMap Team",
-  });
 
-L.control.layers(
+var baseControl = L.control.layers(
   {
     "Topo (OpenTopoMap)": topo,
-    "Streets (OSM)": osm,
     "USGS Topo 1:24k": usgsTopo,
-    "Hillshade (MN LiDAR)": mnHillshade,
+    "National Geographic (Esri)": esriNatGeo,
+    "MN LiDAR Hillshade": mnHillshade,
     "Aerial (USGS NAIP)": usgsImagery,
     "Aerial (Esri)": esriImagery,
     "Aerial + Topo (USGS ImageryTopo)": usgsImageryTopo,
-    "Topo (Esri World Topographic)": esriTopo,
-    "National Geographic (Esri)": esriNatGeo,
-    "Terrain (Stamen — needs key)": stamenTerrain,
-    "Streets (CARTO Voyager)": cartoVoyager,
-    "Minimal (CARTO Positron)": cartoPositron,
-    "Outdoors (Thunderforest — needs key)": thunderforest,
+    "Streets (OSM)": osm,
     "Trails (CyclOSM)": cyclosm,
-    "Hillshade (Esri World)": esriHillshade,
-    "High contrast (OSM Humanitarian)": osmHot,
   }, null,
   { position: "topright" }
 ).addTo(map);
@@ -204,8 +156,50 @@ L.control.scale({ imperial: true, metric: true }).addTo(map);
 var layersToggleEl = document.querySelector(".leaflet-control-layers-toggle");
 if (layersToggleEl) layersToggleEl.title = "Base maps";
 
+/* Basemap chooser form (Nov 11, 2026, designer pass): the stock
+   Leaflet radio list, grouped under the site layer panel's own
+   heading style (.tog-group in style.css). Leaflet has no group
+   support, so this is a thin DOM post-pass: one heading before
+   each family's first row, in control order. The current base
+   also gets a visible .base-active row (Leaflet only checks the
+   radio), kept in step by the baselayerchange handler below. */
+var BASE_GROUPS = [
+  { before: "Topo (OpenTopoMap)", heading: "Topographic" },
+  { before: "MN LiDAR Hillshade", heading: "Relief" },
+  { before: "Aerial (USGS NAIP)", heading: "Aerial" },
+  { before: "Streets (OSM)", heading: "Streets & trails" },
+];
+function baseRowLabel(row) {
+  var span = row.querySelector("span");
+  return span ? span.textContent.trim() : "";
+}
+function markActiveBase(name) {
+  var rows = document.querySelectorAll(
+    ".leaflet-control-layers-base label");
+  rows.forEach(function (row) {
+    row.classList.toggle("base-active", baseRowLabel(row) === name);
+  });
+}
+(function groupBaseList() {
+  var list = document.querySelector(".leaflet-control-layers-base");
+  if (!list) return;
+  var rows = list.querySelectorAll("label");
+  var byName = {};
+  rows.forEach(function (row) { byName[baseRowLabel(row)] = row; });
+  BASE_GROUPS.forEach(function (g) {
+    var row = byName[g.before];
+    if (!row) return;
+    var h = document.createElement("div");
+    h.className = "base-group";
+    h.textContent = g.heading;
+    list.insertBefore(h, row);
+  });
+  markActiveBase("Topo (OpenTopoMap)");
+})();
+
 /* Imagery bases flip map-face labels to near-white (UX P5). */
 map.on("baselayerchange", function (e) {
+  markActiveBase(e.name);
   document.body.classList.toggle("base-imagery", /^Aerial/.test(e.name));
   /* S3 (cartography notes): casing registers — the casing colour
      and register follow the base-map family. LLC never gets a
@@ -234,16 +228,12 @@ var CASING_REGISTERS = {
 var CASING_BY_BASE = {
   "Topo (OpenTopoMap)": "paper",
   "Streets (OSM)": "paper",
-  "Streets (CARTO Voyager)": "paper",
-  "Minimal (CARTO Positron)": "paper",
   "Trails (CyclOSM)": "paper",
-  "High contrast (OSM Humanitarian)": "paper",
   "Aerial (USGS NAIP)": "photo",
   "Aerial (Esri)": "photo",
   "Aerial + Topo (USGS ImageryTopo)": "photo",
-  "Hillshade (MN LiDAR)": "relief",
+  "MN LiDAR Hillshade": "relief",
   "USGS Topo 1:24k": "relief",
-  "Hillshade (Esri World)": "relief",
   "National Geographic (Esri)": "relief",
 };
 var casingRegister = "paper";
