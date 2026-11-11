@@ -3017,7 +3017,7 @@ var LAYERS = [
   },
   {
     id: "assets", label: "Asset pins",
-    file: "data/assets.geojson", onByDefault: false, missingOk: true,
+    file: "data/assets.geojson", onByDefault: true, missingOk: true,
     emptyUntilData: true, group: "Context",
     swatch: { kind: "pin", color: COLORS.assetPin },
     build: function (gj) {
