@@ -369,6 +369,151 @@ function applyPlacesGate() {
   }
 }
 
+/* Rotated image overlays — vendored from IvanSanchez /
+   Leaflet.ImageOverlay.Rotated (Beerware license, Ivan Sanchez
+   Ortega <ivan@sanchezortega.es>), pasted verbatim in logic and
+   re-indented to this file's style. Stock L.imageOverlay can only
+   draw an axis-aligned rectangle; this subclass places an image by
+   three corners (top-left, top-right, bottom-left) and lets the
+   browser apply the affine transform, so a sheet image lands on
+   its true leaning UTM frame instead of the frame's axis-aligned
+   box. Added Nov 11, 2026 for the NCTA map sheets (docs/
+   research-sheets-alignment-2026-11-11.md): the old axis-aligned
+   placement sheared printed content 80-150 m, 103-256 m at
+   corners; the affine placement leaves <= ~9 m residual. */
+L.ImageOverlay.Rotated = L.ImageOverlay.extend({
+  initialize: function (image, topleft, topright, bottomleft, options) {
+    if (typeof (image) === "string") {
+      this._url = image;
+    } else {
+      /* Assume that the first parameter is an instance of
+         HTMLImage or HTMLCanvas. */
+      this._rawImage = image;
+    }
+    this._topLeft = L.latLng(topleft);
+    this._topRight = L.latLng(topright);
+    this._bottomLeft = L.latLng(bottomleft);
+    L.setOptions(this, options);
+  },
+
+  onAdd: function (map) {
+    if (!this._image) {
+      this._initImage();
+      if (this.options.opacity < 1) {
+        this._updateOpacity();
+      }
+    }
+    if (this.options.interactive) {
+      L.DomUtil.addClass(this._rawImage, "leaflet-interactive");
+      this.addInteractiveTarget(this._rawImage);
+    }
+    map.on("zoomend resetview", this._reset, this);
+    this.getPane().appendChild(this._image);
+    this._reset();
+  },
+
+  onRemove: function (map) {
+    map.off("zoomend resetview", this._reset, this);
+    L.ImageOverlay.prototype.onRemove.call(this, map);
+  },
+
+  _initImage: function () {
+    var img = this._rawImage;
+    if (this._url) {
+      img = L.DomUtil.create("img");
+      /* Hide while the first transform (zero or one frames) is
+         being done. */
+      img.style.display = "none";
+      if (this.options.crossOrigin) {
+        img.crossOrigin = "";
+      }
+      img.src = this._url;
+      this._rawImage = img;
+    }
+    L.DomUtil.addClass(img, "leaflet-image-layer");
+    /* this._image is reused by some of the methods of the parent
+       class and must keep the name, even if it is
+       counter-intuitive. */
+    var div = this._image = L.DomUtil.create("div",
+      "leaflet-image-layer " +
+      (this._zoomAnimated ? "leaflet-zoom-animated" : ""));
+    this._updateZIndex(); /* apply z-index style setting to the div
+                             (if defined) */
+    div.appendChild(img);
+    div.onselectstart = L.Util.falseFn;
+    div.onmousemove = L.Util.falseFn;
+    img.onload = function () {
+      this._reset();
+      img.style.display = "block";
+      this.fire("load");
+    }.bind(this);
+    img.alt = this.options.alt;
+  },
+
+  _reset: function () {
+    var div = this._image;
+    /* Project control points to container-pixel coordinates. */
+    var pxTopLeft = this._map.latLngToLayerPoint(this._topLeft);
+    var pxTopRight = this._map.latLngToLayerPoint(this._topRight);
+    var pxBottomLeft = this._map.latLngToLayerPoint(this._bottomLeft);
+    /* Infer coordinate of bottom right. */
+    var pxBottomRight = pxTopRight.subtract(pxTopLeft).add(pxBottomLeft);
+    /* pxBounds is mostly for positioning the <div> container. */
+    var pxBounds = L.bounds([pxTopLeft, pxTopRight, pxBottomLeft,
+      pxBottomRight]);
+    var size = pxBounds.getSize();
+    var pxTopLeftInDiv = pxTopLeft.subtract(pxBounds.min);
+    /* Calculate the skew angles, both in X and Y. */
+    var vectorX = pxTopRight.subtract(pxTopLeft);
+    var vectorY = pxBottomLeft.subtract(pxTopLeft);
+    var skewX = Math.atan2(vectorX.y, vectorX.x);
+    var skewY = Math.atan2(vectorY.x, vectorY.y);
+    /* LatLngBounds used for animations. */
+    this._bounds = L.latLngBounds(
+      this._map.layerPointToLatLng(pxBounds.min),
+      this._map.layerPointToLatLng(pxBounds.max));
+    L.DomUtil.setPosition(div, pxBounds.min);
+    div.style.width = size.x + "px";
+    div.style.height = size.y + "px";
+    var imgW = this._rawImage.width;
+    var imgH = this._rawImage.height;
+    if (!imgW || !imgH) {
+      return; /* Probably because the image hasn't loaded yet. */
+    }
+    var scaleX = pxTopLeft.distanceTo(pxTopRight) / imgW *
+      Math.cos(skewX);
+    var scaleY = pxTopLeft.distanceTo(pxBottomLeft) / imgH *
+      Math.cos(skewY);
+    this._rawImage.style.transformOrigin = "0 0";
+    this._rawImage.style.transform =
+      "translate(" + pxTopLeftInDiv.x + "px, " +
+      pxTopLeftInDiv.y + "px)" +
+      "skew(" + skewY + "rad, " + skewX + "rad) " +
+      "scale(" + scaleX + ", " + scaleY + ") ";
+  },
+
+  reposition: function (topleft, topright, bottomleft) {
+    this._topLeft = L.latLng(topleft);
+    this._topRight = L.latLng(topright);
+    this._bottomLeft = L.latLng(bottomleft);
+    this._reset();
+  },
+
+  setUrl: function (url) {
+    this._url = url;
+    if (this._rawImage) {
+      this._rawImage.src = url;
+    }
+    return this;
+  },
+});
+
+L.imageOverlay.rotated = function (imgSrc, topleft, topright,
+  bottomleft, options) {
+  return new L.ImageOverlay.Rotated(imgSrc, topleft, topright,
+    bottomleft, options);
+};
+
 /* NCTA map sheets: the 22 sheet IMAGES draw at zoom 11+ only —
    below that the toggle shows just the sheet outlines and number
    labels (a locator), so the chapter view is never buried under
@@ -2877,14 +3022,20 @@ var LAYERS = [
        edition): each page's georeferencing viewport gives the
        sheet frame's true lat/lon quad; the web derivative is the
        frame crop rendered at 200 dpi, <=1600 px wide, JPEG.
-       Alignment was verified against the sheet's own printed
-       MN-170/MN-171 mile diamonds before shipping: predicted
-       positions land ~50 m from the NCTA mile-point data (the
-       residual is the diamonds' own snap-to-line tolerance).
-       The image overlay consumes the quad's axis-aligned bounds;
-       the UTM grid convergence inside one sheet is ~0.24 deg, so
-       sheet corners can sit up to ~150 m off the true quad —
-       fine for reading the sheet, not a survey product. Sheet
+       Alignment was re-measured Nov 11, 2026 (docs/
+       research-sheets-alignment-2026-11-11.md): the GeoPDF
+       registration is exact to 1-3 m at most printed mile
+       diamonds (19 diamonds, 4 sheets), and the trail line
+       agrees with the mile points to a 1.5 m median — the data
+       is fine. The images are placed by a 3-corner affine
+       overlay (L.imageOverlay.rotated, vendored above) pinned
+       to the quad's true TL/TR/BL corners: the quad deviates
+       from a parallelogram by only 7.6-9.1 m at the fourth
+       corner, so the affine residual is <= ~9 m everywhere
+       (verified analytically in the same note; the old
+       axis-aligned placement sheared content 80-150 m,
+       103-256 m at corners, and doubled the trail up to 374 m
+       in overlap strips). Sheet
        outlines + number labels ride the same toggle and stay
        visible at low zoom where 22 near-white sheets would just
        be a blanket. Overlay opacity 0.92 keeps the base faintly
@@ -2899,12 +3050,20 @@ var LAYERS = [
       var group = L.layerGroup();
       gj.features.forEach(function (f) {
         var p = f.properties;
-        var b = p.bounds;
-        var bounds = L.latLngBounds(
-          L.latLng(b[0][0], b[0][1]), L.latLng(b[1][0], b[1][1]));
-        var img = L.imageOverlay(p.image, bounds, {
-          opacity: 0.92, interactive: false,
-        });
+        /* The frame's true lat/lon quad rides the feature
+           geometry: ring order BL, BR, TR, TL in [lon, lat].
+           Place the image by its real TL/TR/BL corners (3-corner
+           affine) instead of the quad's axis-aligned bounds —
+           the old axis-aligned placement sheared printed content
+           80-150 m, 103-256 m at corners (Nov 11, 2026,
+           docs/research-sheets-alignment-2026-11-11.md). */
+        var quad = f.geometry.coordinates[0];
+        var img = L.imageOverlay.rotated(p.image,
+          L.latLng(quad[3][1], quad[3][0]),
+          L.latLng(quad[2][1], quad[2][0]),
+          L.latLng(quad[0][1], quad[0][0]), {
+            opacity: 0.92, interactive: false,
+          });
         img._sheetGroup = group;
         sheetImages.push(img);
         if (map.getZoom() >= 11) group.addLayer(img);
