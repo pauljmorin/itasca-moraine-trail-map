@@ -985,7 +985,12 @@ function assetPopup(f) {
   var typeName = esc(p.type) || "Asset";
   typeName = typeName.charAt(0).toUpperCase() + typeName.slice(1);
   var title = p.serial ? esc(p.serial) + " — " + typeName : typeName;
-  return "<h3>" + title + "</h3>" + kvTable([
+  var html = "<h3>" + title + "</h3>";
+  if (p.derivative) {
+    html += "<img src=\"assets-photos/" + esc(p.derivative) +
+      "\" alt=\"\" style=\"max-width:100%;display:block;margin:6px 0 2px\">";
+  }
+  return html + kvTable([
     ["Condition", p.condition],
     ["Photographed", p.datetime],
     ["Section", p.section],

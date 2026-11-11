@@ -44,22 +44,49 @@ if Pillow is missing it still writes the GeoJSON and flags the
 missing derivatives rather than failing the run.
 
 Usage:
-  python3 scripts/photo_pipeline.py check PHOTOS_DIR
-  python3 scripts/photo_pipeline.py build PHOTOS_DIR [--out-dir DIR]
-        [--assets-name NAME] [--derivatives DIR] [--flags-name NAME]
+  python3 scripts/photo_pipeline.py check PHOTOS_DIR [--gpx TRACK.gpx]
+  python3 scripts/photo_pipeline.py build PHOTOS_DIR [--gpx TRACK.gpx]
+        [--out-dir DIR] [--assets-name NAME] [--derivatives DIR]
+        [--flags-name NAME]
+
+GPX matching (Paul, Nov 11, 2026): photos from a phone that writes
+NO GPS (the standing case — see docs/photo-protocol.md) are placed
+by matching the photo's EXIF timestamp to the track log's nearest
+points. EXIF datetimes are camera-local time, read as
+America/Chicago unless --tz says otherwise; GPX times are UTC.
+A photo matches only inside the track's time span and only where
+its two bracketing track points are at most MAX_TRACK_GAP_S apart
+(a paused tracker leaves a gap the interpolation must not bridge);
+the position is linearly interpolated by time between those two
+points, and the pin records gps_source="gpx" plus gpx_offset_s
+(seconds to the nearest track point) so a matched position is
+never mistaken for a device fix. Photos with EXIF GPS keep it
+(gps_source="exif"); photos with neither are excluded as before.
 """
 
 import argparse
+import bisect
 import hashlib
 import json
 import os
+import shutil
 import struct
 import sys
-from datetime import datetime
+import xml.etree.ElementTree as ET
+from datetime import datetime, timezone
+
+try:
+    from zoneinfo import ZoneInfo
+except ImportError:                          # pragma: no cover
+    ZoneInfo = None
 
 MAX_OUTPUT_BYTES = 5 * 1024 * 1024          # storage rule: refuse > 5 MB outputs
 DERIVATIVE_MAX_EDGE = 1600                  # web derivative: max px on long edge
 PHOTO_EXTS = {".jpg", ".jpeg"}
+DEFAULT_TZ = "America/Chicago"              # EXIF datetimes are camera-local
+MAX_TRACK_GAP_S = 120                       # bracketing points this far apart
+                                            # mean the tracker was paused:
+                                            # do not interpolate across it
 
 # ---------------------------------------------------------------- EXIF (stdlib)
 
@@ -224,6 +251,97 @@ def read_exif(path):
     return result
 
 
+# ---------------------------------------------------------------- GPX matching
+
+def _localname(tag):
+    return tag.rsplit("}", 1)[-1]
+
+
+def load_gpx(path):
+    """Parse a GPX track file. Returns a sorted list of
+    (epoch_seconds_utc, lat, lon). Stdlib only; namespace-agnostic."""
+    tree = ET.parse(path)
+    pts = []
+    for el in tree.getroot().iter():
+        if _localname(el.tag) != "trkpt":
+            continue
+        lat = el.get("lat")
+        lon = el.get("lon")
+        when = None
+        for child in el:
+            if _localname(child.tag) == "time":
+                when = (child.text or "").strip()
+                break
+        if lat is None or lon is None or not when:
+            continue
+        try:
+            dt = datetime.fromisoformat(when.replace("Z", "+00:00"))
+        except ValueError:
+            continue
+        if dt.tzinfo is None:
+            dt = dt.replace(tzinfo=timezone.utc)
+        pts.append((dt.timestamp(), float(lat), float(lon)))
+    pts.sort()
+    return pts
+
+
+def parse_exif_datetime(s):
+    """'2026:11:11 11:33:53' -> naive datetime, or None."""
+    if not s:
+        return None
+    try:
+        return datetime.strptime(s, "%Y:%m:%d %H:%M:%S")
+    except ValueError:
+        return None
+
+
+def _tzinfo(name):
+    if ZoneInfo is not None:
+        try:
+            return ZoneInfo(name)
+        except Exception:
+            pass
+    # No tz database available: fixed offsets for the zones this
+    # project uses (America/Chicago is UTC-6 in standard time,
+    # Nov–Mar; the trail batches are shot in that window).
+    from datetime import timedelta
+    if name == "America/Chicago":
+        return timezone(timedelta(hours=-6))
+    return timezone.utc
+
+
+def match_gpx(track, dt_local, tz_name=DEFAULT_TZ,
+              max_gap_s=MAX_TRACK_GAP_S):
+    """Match a camera-local datetime to the track. Returns
+    {'lat', 'lon', 'offset_s', 'gap_s'} or None.
+    offset_s = seconds to the nearest bracketing track point;
+    gap_s = seconds between the two bracketing points."""
+    if not track or dt_local is None:
+        return None
+    tz = _tzinfo(tz_name)
+    epoch = dt_local.replace(tzinfo=tz).timestamp()
+    times = [p[0] for p in track]
+    if epoch < times[0] or epoch > times[-1]:
+        return None
+    i = bisect.bisect_left(times, epoch)
+    if i < len(times) and times[i] == epoch:
+        _t, la, lo = track[i]
+        return {"lat": round(la, 7), "lon": round(lo, 7),
+                "offset_s": 0.0, "gap_s": 0.0}
+    if i == 0 or i >= len(times):
+        return None
+    t0, la0, lo0 = track[i - 1]
+    t1, la1, lo1 = track[i]
+    gap = t1 - t0
+    if gap > max_gap_s:
+        return None
+    frac = (epoch - t0) / gap if gap else 0.0
+    return {"lat": round(la0 + frac * (la1 - la0), 7),
+            "lon": round(lo0 + frac * (lo1 - lo0), 7),
+            "offset_s": round(min(epoch - t0, t1 - epoch), 1),
+            "gap_s": round(gap, 1)}
+
+
 # ---------------------------------------------------------------- shared scan
 
 def scan_photos(root):
@@ -259,12 +377,33 @@ def slugify(name):
 
 def cmd_check(args):
     photos = scan_photos(args.photos_dir)
+    track = load_gpx(args.gpx) if getattr(args, "gpx", None) else None
+    if track:
+        from datetime import timezone as _tz
+        span = (datetime.fromtimestamp(track[0][0], _tz.utc).isoformat(),
+                datetime.fromtimestamp(track[-1][0], _tz.utc).isoformat())
+        print(f"GPX track: {len(track)} points, {span[0]} to {span[1]} UTC")
     rows = []
+    matched = 0
     for p in photos:
         ex = read_exif(p["path"])
-        rows.append({**p, **ex})
-        gps_txt = "yes" if ex["gps"] else "no"
-        coords = (f"{ex['lat']:.6f}, {ex['lon']:.6f}" if ex["gps"] else "-")
+        m = None
+        if not ex["gps"] and track:
+            m = match_gpx(track, parse_exif_datetime(ex["datetime"]),
+                          tz_name=getattr(args, "tz", DEFAULT_TZ))
+            if m:
+                matched += 1
+        rows.append({**p, **ex, "match": m})
+        if ex["gps"]:
+            gps_txt = "yes"
+            coords = f"{ex['lat']:.6f}, {ex['lon']:.6f}"
+        elif m:
+            gps_txt = "gpx"
+            coords = (f"{m['lat']:.6f}, {m['lon']:.6f} "
+                      f"(+{m['offset_s']:.0f}s)")
+        else:
+            gps_txt = "no"
+            coords = "-"
         if ex.get("direction") is not None:
             dir_txt = (f"{ex['direction']:.0f}° "
                        f"{compass16(ex['direction'])} "
@@ -289,8 +428,10 @@ def cmd_check(args):
             status = "GREEN (partial)"
         print(f"{label}: {status} — {with_gps}/{len(rs)} photos with GPS")
     total_gps = sum(1 for r in rows if r["gps"])
-    print(f"\nTotal: {len(rows)} photos scanned, {total_gps} with GPS, "
-          f"{len(rows) - total_gps} without.")
+    total_match = sum(1 for r in rows if r.get("match"))
+    print(f"\nTotal: {len(rows)} photos scanned, {total_gps} with EXIF GPS, "
+          f"{total_match} matched to the GPX track, "
+          f"{len(rows) - total_gps - total_match} without a position.")
     return 0
 
 
@@ -311,8 +452,15 @@ def make_derivative(src, dest):
 def cmd_build(args):
     photos = scan_photos(args.photos_dir)
     out_dir = args.out_dir
-    deriv_dir = args.derivatives or os.path.join(out_dir, "..", "site", "assets-photos")
-    deriv_dir = os.path.abspath(deriv_dir)
+    if args.derivatives:
+        deriv_dir = os.path.abspath(args.derivatives)
+    else:
+        # Default: <repo>/site/assets-photos, derived from this
+        # script's location — NOT from out_dir (out_dir is
+        # <repo>/data/assets, so ".." from it lands in data/).
+        repo_root = os.path.dirname(os.path.dirname(
+            os.path.abspath(__file__)))
+        deriv_dir = os.path.join(repo_root, "site", "assets-photos")
     os.makedirs(out_dir, exist_ok=True)
     os.makedirs(deriv_dir, exist_ok=True)
 
@@ -324,12 +472,33 @@ def cmd_build(args):
     seen_keys = {}
     duplicates = []
 
+    track = load_gpx(args.gpx) if getattr(args, "gpx", None) else None
+    gpx_name = os.path.basename(args.gpx) if track else None
+    if track:
+        print(f"GPX track: {len(track)} points from {gpx_name}")
+    matched = 0
+    max_offset = 0.0
+
     used_slugs = set()
     for p in photos:
         ex = read_exif(p["path"])
-        if not ex["gps"]:
+        m = None
+        if not ex["gps"] and track:
+            m = match_gpx(track, parse_exif_datetime(ex["datetime"]),
+                          tz_name=getattr(args, "tz", DEFAULT_TZ))
+        if not ex["gps"] and not m:
             no_gps.append(p)
             continue
+        if m:
+            matched += 1
+            max_offset = max(max_offset, m["offset_s"])
+            lat, lon = m["lat"], m["lon"]
+            gps_source = "gpx"
+            gpx_offset = m["offset_s"]
+        else:
+            lat, lon = ex["lat"], ex["lon"]
+            gps_source = "exif"
+            gpx_offset = None
         if ex.get("direction") is None:
             no_direction.append(p)
         slug = slugify(p["filename"])
@@ -343,7 +512,7 @@ def cmd_build(args):
         deriv_name = slug + ".jpg"
         deriv_path = os.path.join(deriv_dir, deriv_name)
 
-        key = (ex["datetime"], ex["lat"], ex["lon"])
+        key = (ex["datetime"], lat, lon)
         if key in seen_keys:
             duplicates.append((seen_keys[key], p))
         else:
@@ -364,7 +533,7 @@ def cmd_build(args):
 
         features.append({
             "type": "Feature",
-            "geometry": {"type": "Point", "coordinates": [ex["lon"], ex["lat"]]},
+            "geometry": {"type": "Point", "coordinates": [lon, lat]},
             "properties": {
                 "photo": p["filename"],
                 "datetime": ex["datetime"],
@@ -376,6 +545,14 @@ def cmd_build(args):
                 "direction_deg": ex.get("direction"),
                 "direction_ref": ex.get("direction_ref"),
                 "direction_compass": compass16(ex.get("direction")),
+                # Position provenance: "exif" (device fix) or "gpx"
+                # (timestamp-interpolated from the track log).
+                # gpx_offset_s is seconds to the nearest track
+                # point; a matched position is an estimate, never
+                # a device fix.
+                "gps_source": gps_source,
+                "gpx_offset_s": gpx_offset,
+                "gpx_file": gpx_name,
                 # Serials are assigned at classification, never here
                 # (scripts/assign_serials.py). sign_kind is null
                 # unless the pin is classified as a sign (SG).
@@ -425,15 +602,49 @@ def cmd_build(args):
     with open(assets_path, "w") as f:
         json.dump(collection, f, indent=1)
     assets_size = os.path.getsize(assets_path)
+    # The viewer reads the site copy (site/data/assets.geojson);
+    # the pipeline writes it alongside the repo copy so a build
+    # never needs a manual copy step.
+    try:
+        repo_root = os.path.dirname(os.path.dirname(
+            os.path.abspath(__file__)))
+        site_copy = os.path.join(repo_root, "site", "data",
+                                 args.assets_name)
+        os.makedirs(os.path.dirname(site_copy), exist_ok=True)
+        shutil.copyfile(assets_path, site_copy)
+        print(f"wrote site copy {site_copy}")
+    except Exception as exc:
+        print(f"site copy not written ({exc})", file=sys.stderr)
     if assets_size > MAX_OUTPUT_BYTES:
         refusals.append(({"rel": args.assets_name}, f"geojson {assets_size} bytes"))
 
     lines = ["# Photo pipeline — flags report",
              f"\nGenerated {datetime.now().isoformat(timespec='seconds')} "
              f"from `{args.photos_dir}`.",
-             f"\nScanned {len(photos)} photos: {len(features)} with GPS "
-             f"(pins written), {len(no_gps)} without GPS (excluded).",
-             "\n## No GPS — excluded from the map\n"]
+             f"\nScanned {len(photos)} photos: {len(features)} positioned "
+             f"({len(features) - matched} EXIF GPS, {matched} GPX-matched), "
+             f"{len(no_gps)} without a position (excluded).",
+             "\n## GPX matching\n"]
+    if track:
+        from datetime import timezone as _tz
+        span = (datetime.fromtimestamp(track[0][0], _tz.utc).isoformat(),
+                datetime.fromtimestamp(track[-1][0], _tz.utc).isoformat())
+        lines.append(f"Track file: `{gpx_name}` — {len(track)} points, "
+                     f"{span[0]} to {span[1]} UTC; EXIF datetimes read as "
+                     f"{getattr(args, 'tz', DEFAULT_TZ)} local time; "
+                     f"bracketing-point gap limit {MAX_TRACK_GAP_S} s.\n")
+        lines.append(f"{matched} photos matched to the track (largest "
+                     f"offset to the nearest track point: "
+                     f"{max_offset:.0f} s); "
+                     f"{len(no_gps)} photos had no usable match and were "
+                     f"excluded — listed under 'No position' below. "
+                     f"Matched pins carry gps_source=\"gpx\" and "
+                     f"gpx_offset_s; they are time-interpolated "
+                     f"estimates, not device fixes.\n")
+    else:
+        lines.append("No GPX track given — positions came from EXIF GPS "
+                     "only.\n")
+    lines.append("\n## No position — excluded from the map\n")
     if no_gps:
         for p in no_gps:
             who = p["photographer"] or "(top level)"
@@ -483,7 +694,9 @@ def cmd_build(args):
         f.write("\n".join(lines) + "\n")
 
     print(f"scanned={len(photos)} with_gps={len(features)} "
-          f"no_gps={len(no_gps)} duplicates={len(duplicates)} "
+          f"exif={len(features) - matched} gpx_matched={matched} "
+          f"max_offset_s={max_offset:.0f} no_gps={len(no_gps)} "
+          f"duplicates={len(duplicates)} "
           f"refusals={len(refusals)} snapped={snapped} "
           f"off_chain={len(off_chain)}")
     print(f"wrote {assets_path}")
@@ -497,9 +710,21 @@ def main():
     sub = ap.add_subparsers(dest="mode", required=True)
     c = sub.add_parser("check", help="EXIF check (pre-flight protocol)")
     c.add_argument("photos_dir")
+    c.add_argument("--gpx", default=None,
+                   help="GPX track file: match photos without EXIF GPS "
+                        "to the track by timestamp")
+    c.add_argument("--tz", default=DEFAULT_TZ,
+                   help="timezone EXIF datetimes are read as "
+                        f"(default: {DEFAULT_TZ})")
     c.set_defaults(fn=cmd_check)
     b = sub.add_parser("build", help="build assets.geojson + derivatives + flags")
     b.add_argument("photos_dir")
+    b.add_argument("--gpx", default=None,
+                   help="GPX track file: match photos without EXIF GPS "
+                        "to the track by timestamp")
+    b.add_argument("--tz", default=DEFAULT_TZ,
+                   help="timezone EXIF datetimes are read as "
+                        f"(default: {DEFAULT_TZ})")
     here = os.path.dirname(os.path.abspath(__file__))
     default_out = os.path.normpath(os.path.join(here, "..", "data", "assets"))
     b.add_argument("--out-dir", default=default_out)
