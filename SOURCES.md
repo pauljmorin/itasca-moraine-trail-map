@@ -177,6 +177,43 @@ Aerial (Esri)).
   Attribution: "Aerial imagery: Esri, Maxar, Earthstar
   Geographics".
 
+**Candidate bases (Nov 10, 2026):** ten more bases wired into the
+switcher at Paul's request ("put all of them in there and then I
+tell you which to take out") — he prunes by looking, then the
+losers come out. Eight tile-verified over the chapter the same day;
+the two key-gated ones (401 without a key) are wired with
+placeholder keys in app.js and show blank until a free key is
+pasted in.
+
+- **Aerial + Topo (USGS ImageryTopo)** — The National Map,
+  `.../USGSImageryTopo/MapServer/tile/{z}/{y}/{x}` (NAIP imagery
+  with topo labels/contours). Verified.
+- **Topo (Esri World Topographic)** — Esri,
+  `.../World_Topo_Map/MapServer/tile/{z}/{y}/{x}`. Verified.
+- **National Geographic (Esri)** — Esri,
+  `.../NatGeo_World_Map/MapServer/tile/{z}/{y}/{x}`. Verified.
+- **Streets (CARTO Voyager)** — CARTO,
+  `https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}.png`.
+  Verified.
+- **Minimal (CARTO Positron)** — CARTO,
+  `https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png`.
+  Verified.
+- **Trails (CyclOSM)** —
+  `https://{s}.tile-cyclosm.openstreetmap.fr/cyclosm/{z}/{x}/{y}.png`.
+  Verified.
+- **Hillshade (Esri World)** — Esri,
+  `.../Elevation/World_Hillshade/MapServer/tile/{z}/{y}/{x}`,
+  capped at z15 (the service's deepest level). Verified.
+- **High contrast (OSM Humanitarian)** —
+  `https://{s}.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png`.
+  Verified (b/c subdomains; a was slow on first probe).
+- **Terrain (Stamen — needs key)** — Stadia Maps,
+  `https://tiles.stadiamaps.com/tiles/stamen_terrain/{z}/{x}/{y}.png?api_key=…`.
+  Stadia answers 401 without a key; placeholder in app.js.
+- **Outdoors (Thunderforest — needs key)** —
+  `https://tile.thunderforest.com/outdoors/{z}/{x}/{y}.png?apikey=…`.
+  401 without a key; placeholder in app.js.
+
 Removed bases (v3, Nov 10, 2026, Paul's calls): **Shaded relief
 (USGS)** — The National Map `USGSShadedReliefOnly` service; cut as
 poor data next to the 1 m LiDAR hillshade. **Aerial — MN spring

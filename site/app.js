@@ -97,6 +97,76 @@ var esriImagery = L.tileLayer(
     attribution: "Aerial imagery: Esri, Maxar, Earthstar Geographics",
   });
 
+/* Ten candidate bases added at Paul's request (Nov 10, 2026 — "put
+   all of them in there and then I tell you which to take out") so he
+   can prune by looking. Endpoints tile-verified over the chapter the
+   same day, EXCEPT the two key-gated ones (Stamen Terrain via Stadia,
+   Thunderforest Outdoors): both answer 401 without a key, so they
+   are wired with placeholder keys and will show blank tiles until a
+   free key is pasted in below. See SOURCES.md. */
+var usgsImageryTopo = L.tileLayer(
+  "https://basemap.nationalmap.gov/arcgis/rest/services/" +
+    "USGSImageryTopo/MapServer/tile/{z}/{y}/{x}", {
+    maxZoom: 16,
+    attribution: "Imagery + topo: USGS, The National Map (NAIP)",
+  });
+var esriTopo = L.tileLayer(
+  "https://server.arcgisonline.com/ArcGIS/rest/services/" +
+    "World_Topo_Map/MapServer/tile/{z}/{y}/{x}", {
+    maxZoom: 19,
+    attribution: "Topo: Esri, HERE, Garmin, FAO, NOAA, USGS",
+  });
+var esriNatGeo = L.tileLayer(
+  "https://server.arcgisonline.com/ArcGIS/rest/services/" +
+    "NatGeo_World_Map/MapServer/tile/{z}/{y}/{x}", {
+    maxZoom: 16,
+    attribution: "National Geographic, Esri, DeLorme, HERE, " +
+      "UNEP-WCMC, USGS",
+  });
+var stamenTerrain = L.tileLayer(
+  "https://tiles.stadiamaps.com/tiles/stamen_terrain/" +
+    "{z}/{x}/{y}.png?api_key=YOUR-STADIA-KEY", {
+    maxZoom: 18,
+    attribution: "Terrain: © Stadia Maps, © Stamen Design, " +
+      "© OpenStreetMap contributors",
+  });
+var cartoVoyager = L.tileLayer(
+  "https://{s}.basemaps.cartocdn.com/rastertiles/voyager/" +
+    "{z}/{x}/{y}.png", {
+    subdomains: "abcd", maxZoom: 20,
+    attribution: "© OpenStreetMap contributors © CARTO",
+  });
+var cartoPositron = L.tileLayer(
+  "https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png", {
+    subdomains: "abcd", maxZoom: 20,
+    attribution: "© OpenStreetMap contributors © CARTO",
+  });
+var thunderforest = L.tileLayer(
+  "https://tile.thunderforest.com/outdoors/{z}/{x}/{y}.png" +
+    "?apikey=YOUR-THUNDERFOREST-KEY", {
+    maxZoom: 22,
+    attribution: "Maps © Thunderforest, Data © OpenStreetMap " +
+      "contributors",
+  });
+var cyclosm = L.tileLayer(
+  "https://{s}.tile-cyclosm.openstreetmap.fr/cyclosm/" +
+    "{z}/{x}/{y}.png", {
+    subdomains: "abc", maxZoom: 20,
+    attribution: "© OpenStreetMap contributors, CyclOSM",
+  });
+var esriHillshade = L.tileLayer(
+  "https://server.arcgisonline.com/ArcGIS/rest/services/" +
+    "Elevation/World_Hillshade/MapServer/tile/{z}/{y}/{x}", {
+    maxZoom: 15,
+    attribution: "Hillshade: Esri, USGS, NGA, NASA",
+  });
+var osmHot = L.tileLayer(
+  "https://{s}.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png", {
+    subdomains: "abc", maxZoom: 19,
+    attribution: "© OpenStreetMap contributors, Humanitarian " +
+      "OpenStreetMap Team",
+  });
+
 L.control.layers(
   {
     "Topo (OpenTopoMap)": topo,
@@ -105,6 +175,16 @@ L.control.layers(
     "Hillshade (MN LiDAR)": mnHillshade,
     "Aerial (USGS NAIP)": usgsImagery,
     "Aerial (Esri)": esriImagery,
+    "Aerial + Topo (USGS ImageryTopo)": usgsImageryTopo,
+    "Topo (Esri World Topographic)": esriTopo,
+    "National Geographic (Esri)": esriNatGeo,
+    "Terrain (Stamen — needs key)": stamenTerrain,
+    "Streets (CARTO Voyager)": cartoVoyager,
+    "Minimal (CARTO Positron)": cartoPositron,
+    "Outdoors (Thunderforest — needs key)": thunderforest,
+    "Trails (CyclOSM)": cyclosm,
+    "Hillshade (Esri World)": esriHillshade,
+    "High contrast (OSM Humanitarian)": osmHot,
   }, null,
   { position: "topright" }
 ).addTo(map);

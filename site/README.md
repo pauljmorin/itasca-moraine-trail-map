@@ -73,6 +73,12 @@ the 1:24,000 quadrangle series — added in v3), Hillshade (MN
 LiDAR), and two aerial bases (USGS NAIP imagery; Esri World
 Imagery — on either aerial base the section labels flip to a
 light-on-dark treatment so they stay readable over photography).
+**Ten candidate bases were added Nov 10, 2026 for Paul to prune by
+looking:** USGS ImageryTopo, Esri World Topographic, Esri National
+Geographic, CARTO Voyager, CARTO Positron, CyclOSM, Esri World
+Hillshade, OSM Humanitarian, plus Stamen Terrain and Thunderforest
+Outdoors — those last two need a free API key (placeholders in
+app.js) and show blank until one is pasted in.
 Cut in v3 on Paul's calls: the USGS shaded-relief base (poor next
 to the 1 m LiDAR hillshade) and MnGeo's Spring Aerial Imagery
 Program photography (nw14 — nothing useful over the chapter).
