@@ -1030,12 +1030,16 @@ function assetPopup(f) {
 }
 
 /* §2.11: an asset pin whose photo was condition-graded wears a
-   ring in the grade colour (good green / fair amber / poor red)
-   over the white casing ring. Ungraded pins keep the plain v4
-   pin. (Aggregation of dense pins waits on the inventory data —
-   the spec defers it to the first real batches.) */
+   ring in the grade colour (good green / fair amber / poor red;
+   Carsonite posts use Paul's Nov 11 functional scheme instead —
+   new green / worn amber / replace red) over the white casing
+   ring. Ungraded pins keep the plain v4 pin. (Aggregation of
+   dense pins waits on the inventory data — the spec defers it
+   to the first real batches.) */
 var CONDITION_RINGS = { good: "#1a9850", fair: "#e08214",
-                        poor: "#b2182b" };
+                        poor: "#b2182b",
+                        "new": "#1a9850", worn: "#e08214",
+                        replace: "#b2182b" };
 function assetMarker(f, latlng) {
   var dot = L.circleMarker(latlng, {
     radius: 5, color: "#ffffff", weight: 1.5,
