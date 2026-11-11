@@ -5,15 +5,20 @@ Two modes:
 
   check  Pre-flight / batch checker. Reads EXIF only (stdlib only, no
          third-party imports): per photo, reports filename, GPS
-         yes/no, lat/lon, datetime; and per photographer (when the
-         folder is arranged in per-person subfolders) a green/red
-         summary: green = photos carry GPS, red = none do.
+         yes/no, lat/lon, datetime, and camera direction (GPS
+         ImgDirection) when the photo carries a valid one; and per
+         photographer (when the folder is arranged in per-person
+         subfolders) a green/red summary: green = photos carry GPS,
+         red = none do.
 
   build  Emit data/assets/assets.geojson (one Point per photo WITH
-         GPS) plus a web-sized derivative per photo in
+         GPS; pins carry direction_deg / direction_ref /
+         direction_compass, null when the photo has no valid camera
+         direction) plus a web-sized derivative per photo in
          site/assets-photos/, and data/assets/flags-report.md listing
          no-GPS photos, oversize refusals and duplicate
-         datetime+coordinate pairs.
+         datetime+coordinate pairs. Photos with GPS but no valid
+         direction are noted in the flags report (informational).
 
 Storage rule (DESIGN.md, "Standing rule — photo storage split"):
 original photos NEVER enter the repo; only web derivatives do. The
@@ -123,10 +128,28 @@ class _Tiff:
         return raw
 
 
+COMPASS16 = ["N", "NNE", "NE", "ENE", "E", "ESE", "SE", "SSE",
+              "S", "SSW", "SW", "WSW", "W", "WNW", "NW", "NNW"]
+
+
+def compass16(degrees):
+    """16-wind compass name for a bearing in degrees (0 = N, clockwise).
+    Returns None for None input."""
+    if degrees is None:
+        return None
+    return COMPASS16[int((degrees % 360.0) / 22.5 + 0.5) % 16]
+
+
 def read_exif(path):
     """Return {'lat': float|None, 'lon': float|None, 'datetime': str|None,
-    'gps': bool}. Parses JPEG EXIF with the standard library only."""
-    result = {"lat": None, "lon": None, "datetime": None, "gps": False}
+    'gps': bool, 'direction': float|None, 'direction_ref': str|None}.
+    'direction' is the camera's facing (EXIF GPS ImgDirection, degrees
+    0-360) and 'direction_ref' its north reference ('T' true / 'M'
+    magnetic); both are None unless a valid direction is present —
+    see the validity rule where the GPS IFD is parsed.
+    Parses JPEG EXIF with the standard library only."""
+    result = {"lat": None, "lon": None, "datetime": None, "gps": False,
+              "direction": None, "direction_ref": None}
     with open(path, "rb") as f:
         data = f.read(2 * 1024 * 1024)          # EXIF lives in the header area
     base = _find_exif_tiff(data)
@@ -159,6 +182,30 @@ def read_exif(path):
                         result["lat"] = round(la, 7)
                         result["lon"] = round(lo, 7)
                         result["gps"] = True
+                        # Camera direction (GPS ImgDirection 0x0011 +
+                        # ImgDirectionRef 0x0010). Validity: the ref
+                        # must be 'T' (true north) or 'M' (magnetic),
+                        # the value a single rational in [0, 360), and
+                        # the position must not itself be the zero
+                        # template — a direction is only read here,
+                        # under result["gps"], so one riding on a
+                        # zeroed-template GPS block (zero
+                        # lat/lon, empty refs — e.g. a phone that never
+                        # got a fix: its ImgDirection sits at 0.0 with
+                        # an empty ref) is treated as absent.
+                        if 0x0011 in gps:
+                            dir_ref = (tiff.value(gps[0x0010])
+                                       if 0x0010 in gps else None)
+                            dir_val = tiff.value(gps[0x0011])
+                            if (isinstance(dir_val, (list, tuple))
+                                    and len(dir_val) == 1
+                                    and isinstance(dir_ref, str)
+                                    and dir_ref.strip().upper() in ("T", "M")
+                                    and 0.0 <= dir_val[0] < 360.0):
+                                result["direction"] = round(
+                                    float(dir_val[0]), 1)
+                                result["direction_ref"] = \
+                                    dir_ref.strip().upper()
     except (struct.error, IndexError, ZeroDivisionError):
         pass
     return result
@@ -205,7 +252,14 @@ def cmd_check(args):
         rows.append({**p, **ex})
         gps_txt = "yes" if ex["gps"] else "no"
         coords = (f"{ex['lat']:.6f}, {ex['lon']:.6f}" if ex["gps"] else "-")
-        print(f"{p['rel']}\tGPS: {gps_txt}\t{coords}\t{ex['datetime'] or '-'}")
+        if ex.get("direction") is not None:
+            dir_txt = (f"{ex['direction']:.0f}° "
+                       f"{compass16(ex['direction'])} "
+                       f"({ex['direction_ref']})")
+        else:
+            dir_txt = "-"
+        print(f"{p['rel']}\tGPS: {gps_txt}\t{coords}\t"
+              f"{ex['datetime'] or '-'}\tDir: {dir_txt}")
     by_person = {}
     for r in rows:
         by_person.setdefault(r["photographer"], []).append(r)
@@ -251,6 +305,7 @@ def cmd_build(args):
 
     features = []
     no_gps = []
+    no_direction = []
     refusals = []
     deriv_notes = []
     seen_keys = {}
@@ -262,6 +317,8 @@ def cmd_build(args):
         if not ex["gps"]:
             no_gps.append(p)
             continue
+        if ex.get("direction") is None:
+            no_direction.append(p)
         slug = slugify(p["filename"])
         if p["photographer"]:
             slug = slugify(p["photographer"]) + "-" + slug
@@ -303,6 +360,9 @@ def cmd_build(args):
                 "condition": None,
                 "drive_id": None,
                 "derivative": deriv_rel,
+                "direction_deg": ex.get("direction"),
+                "direction_ref": ex.get("direction_ref"),
+                "direction_compass": compass16(ex.get("direction")),
             },
         })
 
@@ -322,6 +382,16 @@ def cmd_build(args):
              "\n## No GPS — excluded from the map\n"]
     if no_gps:
         for p in no_gps:
+            who = p["photographer"] or "(top level)"
+            lines.append(f"- {p['rel']} — photographer: {who}")
+    else:
+        lines.append("- none")
+    lines.append("\n## GPS but no camera direction (informational)\n")
+    lines.append("These photos carry GPS and were pinned, but no valid "
+                 "EXIF camera direction (GPS ImgDirection) — their pins "
+                 "have null direction fields. Not an error.\n")
+    if no_direction:
+        for p in no_direction:
             who = p["photographer"] or "(top level)"
             lines.append(f"- {p['rel']} — photographer: {who}")
     else:

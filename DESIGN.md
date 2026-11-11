@@ -163,6 +163,20 @@ exact synthesized coordinates (47.140139, −95.208333), summary
 "GREEN (partial)"; `build` wrote 1 pin, excluded the no-GPS photo
 to the flags report, and produced the derivative; a separate
 4000 px GPS fixture proved the derivative resize to 1600 px.
+**Camera direction (2026-11-11):** the pipeline also reads EXIF
+GPS ImgDirection (the bearing the camera was facing) when a photo
+carries a valid one: `check` adds a `Dir:` column, and pins gain
+`direction_deg` / `direction_ref` / `direction_compass` properties
+(null when absent); pins with GPS but no direction are noted in
+the flags report (informational). Validity is strict — the north
+reference must be 'T' or 'M', the value in [0, 360), and the
+position must not itself be the zeroed GPS template a phone
+writes when it never got a fix (proved against a real volunteer's
+original: template ImgDirection 0.0 with an empty ref reads as
+absent, while a genuine 0.0 with ref 'T' reads as facing north).
+Fixture: `photos-inbox/_test/Test Person/direction-test.jpg`
+(GPS + ImgDirection 42.5, ref 'T' → pin carries 42.5 / 'T' /
+'NE').
 
 ## Views
 

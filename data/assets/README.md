@@ -4,8 +4,12 @@ No real inventory photos have been processed yet. When the first
 real batch runs, `scripts/photo_pipeline.py build` writes here:
 
 - `assets.geojson` — one Point per GPS-carrying photo
-  (type `unclassified`, condition null until classification)
-- `flags-report.md` — no-GPS photos, oversize refusals, duplicates
+  (type `unclassified`, condition null until classification;
+  `direction_deg` / `direction_ref` / `direction_compass` carry
+  the camera's facing when the photo has a valid EXIF
+  ImgDirection, null otherwise)
+- `flags-report.md` — no-GPS photos, oversize refusals, duplicates,
+  and (informational) GPS-carrying photos with no camera direction
 
 Web-sized derivatives (max 1600 px, one per displayed photo) are
 written to `site/assets-photos/`. Original photos never enter this
