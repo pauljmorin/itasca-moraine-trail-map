@@ -1,9 +1,11 @@
 # Staged app.js patch — asset serial in the popup title
 
-**DO NOT APPLY YET.** `site/app.js` is held by the sheets agent
-(4939f96a) — single-editor rule. Apply this patch once app.js is
-free, then verify with the headless harness (asset pin popup shows
-the serial title) before committing.
+**APPLIED Nov 11, 2026** (commit below) — `site/app.js` was freed when
+the sheets agent (4939f96a) completed, the patch was applied verbatim,
+and the popup was verified by running the real `assetPopup`/`esc`/
+`kvTable` code in Node: "ITM-BN-014 — Bench" with a Section row, and
+"Unclassified" with no Section row when unassigned. This file is kept
+as the record of the change.
 
 Design: `docs/asset-serial-numbers-2026-11-11.md` §5/§7. The popup
 title becomes serial + type ("ITM-BN-014 — Bench"); unassigned pins

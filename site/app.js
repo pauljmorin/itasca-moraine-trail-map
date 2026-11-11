@@ -978,9 +978,13 @@ function roadPopup(f) {
 
 function assetPopup(f) {
   var p = f.properties || {};
-  return "<h3>" + (esc(p.type) || "Asset") + "</h3>" + kvTable([
+  var typeName = esc(p.type) || "Asset";
+  typeName = typeName.charAt(0).toUpperCase() + typeName.slice(1);
+  var title = p.serial ? esc(p.serial) + " — " + typeName : typeName;
+  return "<h3>" + title + "</h3>" + kvTable([
     ["Condition", p.condition],
     ["Photographed", p.datetime],
+    ["Section", p.section],
   ]);
 }
 
