@@ -1944,24 +1944,58 @@ var chipLayer = null;
 
 /* Facts tokens for the section/gap chip: an array of short
    strings, each rendered nowrap — length, chainage span (the
-   map's own ruler, one decimal), access verdict. Any token whose
-   fields are absent is omitted. Stretch properties only. */
+   map's own ruler, one decimal), the official NCTA sheet(s),
+   and the section's last-work note (the sanitized 2026
+   maintenance note build_gazetteer.py stamps onto the stretch
+   feature). Any token whose fields are absent is omitted.
+   Stretch properties only. The access verdict left the chip on
+   Paul's order (Nov 11, 2026); access still lives on the click
+   record, and the access properties stay in the data. */
+function chipSheetToken(p) {
+  var s = p.ncta_sheets;
+  if (!s || !s.length) return null;
+  return (s.length === 1 ? "Sheet " : "Sheets ") + s.join(" + ");
+}
+
+/* The last-work note rides as ONE nowrap token, so a long note
+   is cut at a word boundary past CHIP_NOTE_MAX chars, with an
+   ellipsis; trailing glue (a dangling "Test" from a cut
+   "Test adopter N", "&", small words, punctuation) is trimmed
+   so the cut never strands a fragment. The full note stays on
+   the click record. */
+var CHIP_NOTE_MAX = 40;
+function chipNoteToken(p) {
+  var n = p.maintenance_2026;
+  if (!n) return null;
+  n = String(n).trim();
+  if (!n) return null;
+  if (n.length <= CHIP_NOTE_MAX) return n;
+  var cut = n.slice(0, CHIP_NOTE_MAX);
+  var sp = cut.lastIndexOf(" ");
+  if (sp > 0) cut = cut.slice(0, sp);
+  cut = cut.replace(/(\s+(Test|&|and|the|a))+$/, "");
+  cut = cut.replace(/[\s;:,.-]+$/, "");
+  if (!cut) cut = n.slice(0, CHIP_NOTE_MAX);
+  return cut + "…";
+}
+
 function chipFactTokens(p, isGap) {
   var toks = [];
   if (p.length_mi != null) toks.push(p.length_mi + " mi");
   if (isGap) {
     toks.push("the chapter's recruiting gap");
+    var gSheet = chipSheetToken(p);
+    if (gSheet) toks.push(gSheet);
     return toks;
   }
   if (p.chainage_start_mi != null && p.chainage_end_mi != null) {
     toks.push("mi " + p.chainage_start_mi.toFixed(1) + "–" +
       p.chainage_end_mi.toFixed(1));
   }
-  if (p.access_at_start != null && p.access_at_end != null) {
-    toks.push(p.both_ends_access ? "access both ends"
-      : (p.access_at_start || p.access_at_end)
-        ? "access one end only" : "no end access recorded");
-  }
+  var sheet = chipSheetToken(p);
+  if (sheet) toks.push(sheet);
+  var note = chipNoteToken(p);
+  if (note) toks.push(note);
   return toks;
 }
 

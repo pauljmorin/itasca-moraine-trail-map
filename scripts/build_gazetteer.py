@@ -42,6 +42,16 @@ personal reference is dropped (working data keeps it verbatim) and
 the drop is counted and printed. Phone/email columns never leave
 the working data at all: they are not even read here.
 
+HOVER-CHIP CARRY (Paul, Nov 11, 2026): the section hover chip
+shows the last-work note and reads only the stretch feature, so
+this build also stamps each section's sanitized maintenance_2026
+value onto its feature in site/data/stretches.geojson (see
+stamp_maintenance_onto_stretches). The value stamped is the exact
+public-safe string recorded on the gazetteer section record —
+never the raw tracker note. Re-apply just the stamp after a
+build_site_data.py refresh (which regenerates the stretches
+without it) with: build_gazetteer.py --stamp-maintenance-only
+
 Dedupe: a computed access crossing within 100 m of an NCTA parking
 point is dropped in favour of the named NCTA entry (count printed).
 
@@ -413,6 +423,35 @@ def r2_or_raw(v):
         return v
 
 
+def stamp_maintenance_onto_stretches(section_notes):
+    """Write maintenance_2026 onto the site stretch features.
+
+    section_notes maps section name -> the sanitized note (or
+    None) exactly as recorded on this build's gazetteer section
+    records. The hover chip reads only the stretch feature, so the
+    note crosses here (Paul, Nov 11, 2026); the raw tracker notes
+    never leave the working data. GAP-W and CHP-13 have gazetteer
+    records but no stretch feature and are skipped by construction.
+    """
+    path = os.path.join(ROOT, "site/data/stretches.geojson")
+    with open(path) as f:
+        data = json.load(f)
+    stamped = noted = 0
+    for feat in data["features"]:
+        p = feat["properties"]
+        if p.get("name") in section_notes:
+            p["maintenance_2026"] = section_notes[p["name"]]
+            stamped += 1
+            if section_notes[p["name"]]:
+                noted += 1
+    with open(path, "w") as f:
+        json.dump(data, f, separators=(",", ":"))
+    print(f"maintenance_2026 stamped onto {stamped} stretch "
+          f"features ({noted} with a 2026 note) "
+          f"-> site/data/stretches.geojson")
+    return stamped
+
+
 def main():
     stats = {"contact_strips": 0, "at_signs_rewritten": 0}
     stretches = load("data/segments/segment-stretches.geojson")["features"]
@@ -678,6 +717,12 @@ def main():
         json.dump({"type": "FeatureCollection", "features": entries},
                   fh, separators=(",", ":"))
 
+    # Hover-chip carry: the same sanitized notes onto the stretch
+    # features (see the module header).
+    stamp_maintenance_onto_stretches({
+        e["properties"]["name"]: e["properties"].get("maintenance_2026")
+        for e in entries if e["properties"].get("kind") == "Section"})
+
     # ---- report ----
     from collections import Counter
     by_kind = Counter(e["properties"]["kind"] for e in entries)
@@ -718,4 +763,13 @@ def main():
 
 
 if __name__ == "__main__":
+    if "--stamp-maintenance-only" in sys.argv:
+        # Re-apply just the hover-chip carry, reading the notes
+        # back from the built gazetteer (no full rebuild).
+        notes = {
+            e["properties"]["name"]:
+                e["properties"].get("maintenance_2026")
+            for e in load("site/data/gazetteer.geojson")["features"]
+            if e["properties"].get("kind") == "Section"}
+        sys.exit(0 if stamp_maintenance_onto_stretches(notes) else 1)
     sys.exit(main())

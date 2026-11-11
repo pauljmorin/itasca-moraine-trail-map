@@ -393,3 +393,63 @@ CSS into its commit; the remaining chip work (the `armChip`
 rebuild) and this document were then committed on top, cleanly
 separated by file region. Nothing of the sheets build was altered
 by this spec.
+
+## 7. Addendum — facts change (Paul's order, Nov 11, 2026, later the same day)
+
+Paul, looking at the rebuilt chip live: "get rid of the access
+information from the bubble" — and picked the replacement by tap:
+"NCTA sheet + last work." This addendum records the change; the
+rulings above stand as written (in particular §2.5 and §2.6 are
+untouched, and §2.4's access verdict is superseded by this
+section, not edited away).
+
+**Out:** the access token, in all three forms ("access both
+ends" / "access one end only" / "no end access recorded"). The
+access properties stay in the stretch data — the inspector's
+Getting-In strip still renders them — only the chip stops
+carrying the verdict. Rationale, in Paul's steer: access is a
+planning fact for a chosen work day, not a triage signal at
+hover distance.
+
+**In, in order:** after length and chainage span —
+
+1. **The official sheet:** "Sheet MN-036" / "Sheets MN-034 +
+   MN-035", from the stretch feature's `ncta_sheets` (stamped by
+   the sheets build, Nov 11). The one fact that turns a hover
+   into an action: which paper map to pull for this ground.
+   GAP-W gains it too, after its recruiting-gap token.
+2. **The last-work note:** the section's 2026 maintenance note,
+   verbatim from the public-safe copy. Build path:
+   `build_gazetteer.py` stamps its sanitized `maintenance_2026`
+   value (the exact string on the gazetteer record — names as
+   placeholders, contacts scrubbed) onto each stretch feature in
+   `site/data/stretches.geojson`; the chip reads it from the
+   feature, never joining datasets at hover time and never
+   touching the raw tracker text. Re-apply after a site-data
+   refresh with `build_gazetteer.py --stamp-maintenance-only`.
+
+**Truncation rule (new):** the note rides as one nowrap token,
+so a note longer than 40 characters is cut at a word boundary
+with an ellipsis, trimming trailing glue (a dangling "Test" from
+a cut "Test adopter N", "&", small words, punctuation) so no
+fragment strands. The widest real note is West-16's at 145
+characters, which renders as "Have been out twice, once late
+July…". 7 of the 29 noted sections truncate; the rest ride
+verbatim. The full note always stays on the click record.
+
+**Measured after the change** (headless, production dwell,
+gazetteer loaded): West-13, 322 × 91 px — "2.17 mi · mi
+33.1–35.3 · Sheets MN-036 + MN-037 · Mowed June 14 and again
+late August" (West-13's line crosses two sheets; the gazetteer
+centroid record names only MN-036, the stretch geometry names
+both — the chip follows the geometry); West-3 (help-flagged),
+322 × 91 px — "1.9 mi · mi 6.5–8.4 · Sheet MN-032 · Cleared and
+mowed", Help requested pill unchanged; GAP-W, 322 × 90 px —
+"2.92 mi · the chapter's recruiting gap · Sheets MN-030 +
+MN-031"; West-16 (the widest note), 322 × 91 px, truncated
+token rendering clean at the ceiling. The longer facts rows
+reach the 300 px ceiling and wrap between tokens — never
+inside one — so height grows 74 → ~91 px while the §4 geometry
+discipline (max-content between floor and ceiling) is
+undisturbed; no CSS changed. No chip carries the word "access".
+Proof: `docs/proof-2026-11-11/hover-chip-west13-v2.png`.

@@ -34,6 +34,13 @@ data). The site copies keep, per adopted stretch, ONLY:
     both_ends_access, access_at_start, access_at_end
                                      booleans from the crossing data
     chainage_start_mi, chainage_end_mi   position along the chain
+    maintenance_2026                 the section's 2026 maintenance
+                                     note — NOT emitted by this build:
+                                     build_gazetteer.py stamps its
+                                     sanitized value (names already
+                                     placeholders, contacts scrubbed)
+                                     onto the site stretches for the
+                                     hover chip (Paul, Nov 11, 2026)
 
 ADOPTER PLACEHOLDERS (chapter instruction, 2026-11-10): the public
 build shows that a section is adopted, and by a placeholder — never
@@ -48,7 +55,10 @@ Deliberately EXCLUDED (working-view data, never public):
     adopter / adopter_verbatim  — the real adopter names; only the
                                   placeholders above are emitted
     sawyer                      — a person; excluded for the same reason
-    maintenance_2026_notes      — working detail (2026 mowing record)
+    maintenance_2026_notes      — the RAW notes stay working-only;
+                                  only the gazetteer build's sanitized
+                                  maintenance_2026 value is public
+                                  (stamped, see above)
     help_requested_2026_raw     — working detail, uninterpreted
     tracker_comments            — free text; may name people
     tracker_description         — free text; not needed publicly
@@ -419,8 +429,9 @@ def map_road(p):
 # the exclusion list. Real adopter names are never copied: each
 # distinct person becomes a "Test adopter N" placeholder (numbered
 # in order of first appearance as features are processed — the
-# source file is in chain order); sawyer, maintenance notes,
-# comments and descriptions are dropped outright.
+# source file is in chain order); sawyer, raw maintenance notes,
+# comments and descriptions are dropped outright (the sanitized
+# maintenance_2026 note is stamped on later by build_gazetteer.py).
 
 _PLACEHOLDERS = {}
 
