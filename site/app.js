@@ -2110,13 +2110,18 @@ var LAYERS = [
     },
   },
   {
-    /* Boundary markers ride with the Adopted sections toggle (no
-       checkbox of their own): they delineate the adopted sections,
-       so they appear when the sections do. Chapter termini are the
-       separate "termini" layer below and stay on independently. */
-    id: "boundaries", label: "Section boundaries",
-    file: "data/boundaries.geojson", onByDefault: false,
-    hiddenToggle: true,
+    /* Boundary markers delineate the adopted sections and have
+       their own toggle (Paul, Nov 11, 2026: "Adoption segment
+       ends"). The INITIAL state is derived once from the Adopted
+       sections toggle (defaultFrom, applied in the panel builder
+       and in applyHash); after load the two toggles are fully
+       independent — sections no longer drag the ends with them.
+       Chapter termini are the separate "termini" layer below and
+       stay on independently. */
+    id: "boundaries", label: "Adoption segment ends",
+    file: "data/boundaries.geojson", onByDefault: true,
+    group: "Chapter", defaultFrom: "stretches",
+    swatch: { kind: "bar", color: COLORS.tick },
     build: function (gj) {
       /* Each boundary is a bar struck ACROSS the line, perpendicular
          to the trail's bearing at that point (tick endpoints computed
@@ -2601,6 +2606,14 @@ LAYERS.forEach(function (def) {
   var box = document.createElement("input");
   box.type = "checkbox";
   box.checked = def.onByDefault;
+  if (def.defaultFrom) {
+    /* One-time initial-state derivation (Adoption segment ends
+       start from the Adopted sections state). This runs only here,
+       at panel build — never on later toggle changes. The source
+       def precedes this one in LAYERS, so its box already exists. */
+    var srcDef = layerById(def.defaultFrom);
+    if (srcDef && srcDef.box) box.checked = srcDef.box.checked;
+  }
   label.appendChild(box);
   var sw = document.createElement("span");
   sw.innerHTML = swatchFor(def);
@@ -2626,7 +2639,8 @@ LAYERS.forEach(function (def) {
   box.addEventListener("change", function () {
     if (box.checked) { ensureLayer(def, true); }
     else if (def.layer) { map.removeLayer(def.layer); }
-    if (def.id === "stretches") syncBoundaries();
+    /* No cross-toggle mirroring: Adoption segment ends are
+       controlled only by their own checkbox (Nov 11, 2026). */
   });
   if (def.emptyUntilData) {
     /* Probe once: if the inventory file exists after all, wake the
@@ -2639,13 +2653,16 @@ LAYERS.forEach(function (def) {
       if (suffix) suffix.textContent = "";
     }).catch(function () {});
   }
-  if (def.onByDefault) ensureLayer(def, false);
+  /* Start whatever the box starts as — for most defs that is just
+     onByDefault; for a defaultFrom def it is the derived state. */
+  if (box.checked) ensureLayer(def, false);
 });
 
 /* Optional URL hash: #layers=access,roads opens with those extra
-   layers switched on (handy for sharing a configured view).
-   #view=lat,lon,zoom additionally opens at that view instead of
-   fitting the whole trail. */
+   layers switched on (handy for sharing a configured view); a
+   token prefixed with "-" (e.g. #layers=-boundaries) explicitly
+   switches that layer OFF. #view=lat,lon,zoom additionally opens
+   at that view instead of fitting the whole trail. */
 var requestedView = null;
 (function applyHash() {
   var hash = location.hash || "";
@@ -2654,23 +2671,36 @@ var requestedView = null;
     requestedView = [parseFloat(vm[1]), parseFloat(vm[2])];
     requestedView.push(parseFloat(vm[3]));
   }
-  var m = /layers=([a-z,]+)/.exec(hash);
+  var m = /layers=([a-z,\-]+)/.exec(hash);
   if (!m) return;
-  var wanted = m[1].split(",");
+  var wanted = [], unwanted = [];
+  m[1].split(",").forEach(function (tok) {
+    if (tok.charAt(0) === "-") unwanted.push(tok.slice(1));
+    else if (tok) wanted.push(tok);
+  });
   LAYERS.forEach(function (def) {
     if (def.enabled === false || !def.box) return;
-    if (wanted.indexOf(def.id) >= 0 && !def.box.checked) {
+    if (unwanted.indexOf(def.id) >= 0) {
+      def.box.checked = false;
+      if (def.layer) map.removeLayer(def.layer);
+    } else if (wanted.indexOf(def.id) >= 0 && !def.box.checked) {
       def.box.checked = true;
       ensureLayer(def, false);
     }
   });
-  syncBoundaries();
+  /* Adoption segment ends: an explicit hash token for them (on or
+     off) wins. Otherwise their initial state is derived from the
+     Adopted sections state as the hash leaves it — the same
+     one-time derivation the panel builder applied at build. */
+  var b = layerById("boundaries"), s = layerById("stretches");
+  if (b && b.box && s && s.box &&
+      wanted.indexOf("boundaries") < 0 &&
+      unwanted.indexOf("boundaries") < 0) {
+    b.box.checked = !!s.box.checked;
+    if (b.box.checked) { ensureLayer(b, false); }
+    else if (b.layer) { map.removeLayer(b.layer); }
+  }
 })();
-
-/* Adopted sections default ON in v4, so the boundary markers that
-   ride their toggle must be synced once at startup too (a toggle
-   change or a #layers= hash also calls this). */
-syncBoundaries();
 
 function ensureLayer(def, announce) {
   if (def.enabled === false) return;
@@ -2737,19 +2767,11 @@ function layerById(id) {
   return null;
 }
 
-/* Section-boundary markers delineate the ADOPTED sections, so they
-   follow that layer's toggle (boundaries has no checkbox of its
-   own). The chapter termini are independent and stay on. */
-function syncBoundaries() {
-  var s = layerById("stretches"), b = layerById("boundaries");
-  if (!s || !b) return;
-  /* Mirror the sections state onto the boundaries def's (hidden)
-     checkbox so ensureLayer's add-if-checked logic adds/removes it
-     exactly like a user-visible layer. */
-  b.box.checked = !!(s.box && s.box.checked);
-  if (b.box.checked) { ensureLayer(b, false); }
-  else if (b.layer) { map.removeLayer(b.layer); }
-}
+/* (The pre-Nov 11 syncBoundaries() mirror — segment ends slaved
+   to the Adopted sections toggle — is gone. The ends have their
+   own "Adoption segment ends" checkbox now; their initial state
+   is derived once from the sections state in the panel builder /
+   applyHash, and nothing re-syncs them after load.) */
 /* A GeoJSON group add fires "layeradd" once PER FEATURE — 5,902
    times for the roads layer — so re-asserting draw order on every
    event was O(features x reorder) DOM churn on every toggle, the
@@ -2828,7 +2850,7 @@ function legendHtml() {
   add(line(STRETCH_STYLE.color), "Adopted section");
   add(line(GAP_CORE_STYLE.color, true), "Not adopted");
   add(bar(COLORS.tick),
-    "Section boundary — bar across the line (shows with Adopted sections)");
+    "Section boundary — bar across the line (Adoption segment ends)");
   add(bar(CHAPTER_COLORS.ITM, true),
     "Chapter boundary — longer bar across the line (Itasca Moraine terminus)");
   /* The Access points rows are gone with their layer (v3); the
@@ -3073,7 +3095,8 @@ function gazSelectSection(f) {
   if (def && def.box && !def.box.checked) {
     def.box.checked = true;
     ensureLayer(def, false);
-    if (defId === "stretches") syncBoundaries();
+    /* Adoption segment ends are NOT dragged along — they answer
+       only to their own toggle (Nov 11, 2026). */
   }
   selectSection(item, "find");
   zoomToSelection();
