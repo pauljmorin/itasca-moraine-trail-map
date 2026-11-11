@@ -1891,23 +1891,63 @@ function wireInspector() {
 })();
 
 /* ----------------------------------------------------- hover chip
-   Hover-lite (UX Part 1): a 300 ms dwell raises a small static
-   chip — name, one facts line, "Click for the full record" — built
-   ONLY from the stretch feature's own properties, so its content
-   can never swap mid-hover. It never follows the cursor. Touch
-   (coarse pointer) never sees it. */
+   Hover chip (Nov 11 redesign — docs/design-notes-2026-11-11-
+   hover-chip.md): a 300 ms dwell raises a small static chip that
+   IDENTIFIES and TRIAGES — head row (display name + status pill),
+   identity line, one facts row of nowrap tokens. Facts and status
+   come from the stretch feature's own properties, fixed at hover
+   time; the tracker description and the help FLAG (never its
+   value) ride the gazetteer merge the inspector uses, read once
+   at arm time. It never follows the cursor, carries no action,
+   and stays pointer-events:none. Touch (coarse pointer) never
+   sees it. */
 var chipTimer = null;
 var chipTip = null;
 var chipLayer = null;
 
-function chipFacts(p, isGap) {
-  var bits = [];
-  if (p.length_mi != null) bits.push(p.length_mi + " mi");
-  if (isGap) bits.push("Not adopted");
-  else if (p.chainage_start_mi != null) {
-    bits.push("starts " + p.chainage_start_mi + " mi from the west end");
+/* Facts tokens for the section/gap chip: an array of short
+   strings, each rendered nowrap — length, chainage span (the
+   map's own ruler, one decimal), access verdict. Any token whose
+   fields are absent is omitted. Stretch properties only. */
+function chipFactTokens(p, isGap) {
+  var toks = [];
+  if (p.length_mi != null) toks.push(p.length_mi + " mi");
+  if (isGap) {
+    toks.push("the chapter's recruiting gap");
+    return toks;
   }
-  return bits.join(" · ");
+  if (p.chainage_start_mi != null && p.chainage_end_mi != null) {
+    toks.push("mi " + p.chainage_start_mi.toFixed(1) + "–" +
+      p.chainage_end_mi.toFixed(1));
+  }
+  if (p.access_at_start != null && p.access_at_end != null) {
+    toks.push(p.both_ends_access ? "access both ends"
+      : (p.access_at_start || p.access_at_end)
+        ? "access one end only" : "no end access recorded");
+  }
+  return toks;
+}
+
+function chipFactsHtml(toks) {
+  if (!toks.length) return "";
+  return "<span class='hc-facts'>" + toks.map(function (t) {
+    return "<span class='hc-fact'>" + esc(t) + "</span>";
+  }).join(" · ") + "</span>";
+}
+
+/* Status pill for the chip's head row — same vocabulary and
+   colours as the inspector's .insp-pill (shared .status-pill
+   base in style.css). Help outranks adopted: a section that is
+   held AND asking shows the ask. */
+function chipPillHtml(help, adopted, isGap) {
+  if (isGap) {
+    return "<span class='status-pill unadopted'>Not adopted</span>";
+  }
+  if (help) return "<span class='status-pill help'>Help requested</span>";
+  if (adopted) {
+    return "<span class='status-pill adopted soft'>Adopted</span>";
+  }
+  return "<span class='status-pill unadopted'>Not adopted</span>";
 }
 
 function armChip(layer, feature, latlng, place) {
@@ -1923,14 +1963,24 @@ function armChip(layer, feature, latlng, place) {
     var p = feature.properties || {};
     var isGap = !p.tracker_section && !!p.gap_id;
     var title = isGap ? (p.gap_id || "Gap") : (p.name || "Section");
-    var html = "<span class='hc-name'>" + (esc(title) || "") + "</span>";
-    if (p.tracker_section) {
-      html += " <span class='hc-code'>· " +
-        esc(p.tracker_section) + "</span>";
+    var sub = null, pill;
+    if (isGap) {
+      sub = p.land_context || null;
+      pill = chipPillHtml(false, false, true);
+    } else {
+      /* Description + help flag via the inspector's merge, read
+         once, now. Before the gazetteer loads both are absent and
+         the chip simply shows less — never anything false. */
+      var rec = layer._walkItem ? sectionRecord(layer._walkItem) : {};
+      sub = rec.description || null;
+      var help = rec.help_requested != null &&
+        rec.help_requested !== "";
+      pill = chipPillHtml(help, !!p.has_adopter, false);
     }
-    var facts = chipFacts(p, isGap);
-    if (facts) html += "<span class='hc-facts'>" + esc(facts) + "</span>";
-    html += "<span class='hc-hint'>Click to open the record</span>";
+    var html = "<span class='hc-head'><span class='hc-name'>" +
+      (esc(title) || "") + "</span>" + pill + "</span>";
+    if (sub) html += "<span class='hc-sub'>" + esc(sub) + "</span>";
+    html += chipFactsHtml(chipFactTokens(p, isGap));
     chipTip = L.tooltip({
       direction: place.direction, offset: place.offset,
       className: "hover-chip", opacity: 1,

@@ -1060,6 +1060,14 @@ body.gap-chip .gap-label span {
   border-radius: 8px;
   box-shadow: 0 4px 14px rgba(28, 42, 30, 0.22);
   padding: 7px 10px 8px;
+  /* width:max-content is load-bearing: Leaflet positions a
+     tooltip by setting left/top (no width), and an absolutely
+     positioned block whose containing block (the transformed
+     tooltip pane) shrink-wraps would otherwise size the chip to
+     its min-width floor regardless of content. max-content sizes
+     the chip to its widest unwrapped line, bounded by the floor
+     and ceiling either side of it. */
+  width: max-content;
   min-width: 190px;
   max-width: 300px;
   white-space: normal;
