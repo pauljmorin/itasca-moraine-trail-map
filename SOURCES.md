@@ -298,6 +298,83 @@ added later the same day** (Paul approved the pair): Aerial
   OpenSnowMap, © OpenStreetMap contributors" (shown alongside
   the hillshade's own credit).
 
+- **MN LiDAR Canopy** and **Canopy height (LiDAR)** — the
+  second-generation LiDAR trio, completed Nov 11, 2026 (the
+  trio's first member, the bare-earth shade, is the MN LiDAR
+  Hillshade WMS above). These two are NOT live services: they
+  are this repo's own tiles (`site/tiles/canopy-shade/`,
+  `site/tiles/canopy-height/`, z9–15 — z16 was rendered and
+  measured, then dropped: 1,466 more tiles for 152.5 MB, which
+  would have taken the pair past the tens-of-MB class), built by
+  `scripts/build_lidar_trio.py` from:
+  - **Ground (DTM):** the MnGeo seamless second-generation
+    0.5 m DEM (VRT:
+    `https://g46prsaddst01.blob.core.windows.net/mntopo/dem_100k/2nd_Generation_Seamless_Lidar_DEM.vrt`),
+    read windowed at 1 m. Same source family as the Becker
+    County work-unit DEM (spring 2022 leaf-off survey,
+    2022-05-15 → 2022-09-18, USGS Lidar Base Specification
+    2021 rev. A).
+  - **Surface (DSM):** first returns of the USGS 3DEP point
+    clouds for the two corridor blocks — Becker County
+    (project MN_BeckerCounty_2021_D21, flown spring 2022)
+    and Upper Mississippi (project MN_UpperMissRiver_B22,
+    flown 2022) — max height per 1 m cell, LAS noise classes
+    7 and 18 excluded. **The DSM fork, for the record:** no
+    published statewide second-generation DSM derivative
+    exists (the MnGeo image service's 122 layers carry no
+    canopy/first-return layer; the MnGeo blob store's
+    derivatives are all ground-model products), and the
+    block first-return DSM tiles and per-tile LAZ files are
+    staged only on rockyweb.usgs.gov, which sits behind a
+    bot wall (browser-UA gate, ~50 KB/s single stream, 429
+    on any concurrency — measured 2026-11-11; ~250 corridor
+    tiles were not viable through it). The same point clouds
+    are mirrored as Entwine EPT datasets on the public S3
+    bucket `usgs-lidar-public` (USGS Registry of Open Data),
+    which serves freely; the build reads the EPT octrees
+    directly (datasets MN_BeckerCo_1_2021 and
+    MN_UpperMissRiver_{2,4,5,6}_B22 — work units 1 and 3 do
+    not intersect the corridor; unit 4 carries nearly all of
+    the Upper Mississippi corridor). To bound the build, the
+    DSM uses octree nodes to depth 10 — a uniform ~24% subset
+    of the corridor's points (~1.16 billion of 4.93 billion),
+    ~4 first returns/m² in the band; a max-per-cell statistic
+    is robust at that density in canopy. Canopy height =
+    DSM − DTM, clipped at 0.
+  - **Corridor:** both surfaces exist only within ~100 m
+    either side of the depicted trail lines (tiles rendered
+    over a 150 m half-width; edges are ragged by design —
+    Paul's ruling: tiles fine, no clean cut). Outside the
+    corridor there are no tiles.
+  - **Leaf-off caveat:** the 2022 collection was flown in
+    spring, leaf-off. Conifer heights read true; hardwood
+    canopy heights read slightly LOW (branches, not leaf
+    surface), and low brush is under-read. Clearcut/field
+    detection — height near zero where the 2014/current
+    aerials show open ground — is unaffected.
+  - Attributions: "Canopy shade (LiDAR first returns, 2022):
+    MnGeo / Minnesota DNR"; "Canopy height (LiDAR, 2022):
+    MnGeo / Minnesota DNR". LiDAR data: Minnesota DNR /
+    MnGeo second-generation elevation collection
+    (2021–2024; corridor blocks flown 2022), via USGS 3DEP.
+  - Build cost, measured on the 2026-11-11 run (Paul asked
+    for the measurement): see
+    `docs/lidar-trio-build-2026-11-11.md` — clean-run stages
+    total ~81 min (index 455.5 s, DSM 1,231.8 s, DTM 1,650.1 s,
+    tiles 1,343.8 s, check 168.1 s); shipped tiles z9–15,
+    1,060 tiles / 82.7 MB. Stage timings also live in
+    `working/lidar-trio/stage-timings.json` on the build
+    machine (scratch, not in git).
+  - Coverage (audited, 2,030 points every 100 m along both
+    depicted lines): 90.0% of trail points have a finite canopy
+    height. Two holes: (1) the northern loop, 13.8 km at lat
+    47.154–47.174 — no 2022 coverage exists there (Becker's
+    block ends at y-grid 5224; TNM shows zero Upper Mississippi
+    B22 tiles over it; the only cover is the older RedRiver D23
+    block, deliberately not mixed in); (2) one water crossing
+    in Chip-10/Chip-11 where the seamless DEM is nodata over
+    open water. See the build report for the full audit.
+
 Removed bases (Nov 11, 2026, Paul's prune of the Nov 10 candidate
 round; definitions and placeholder keys deleted from app.js):
 **Topo (Esri World Topographic)**, **Terrain (Stamen)** (Stadia;

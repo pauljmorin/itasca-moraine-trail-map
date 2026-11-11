@@ -96,12 +96,12 @@ The URL hash also accepts `#view=lat,lon,zoom` to open at a
 particular view instead of fitting the whole trail (combinable with
 `#layers=`, e.g. `#layers=access,roads&view=47.152,-95.195,13`).
 
-Base maps (switcher, top right): eleven bases in four task groups,
+Base maps (switcher, top right): thirteen bases in four task groups,
 in this order — **Topographic:** Topo (OpenTopoMap, **the default
 since v4** — a new visitor meets terrain first), USGS Topo 1:24k
 (The National Map, built from the 1:24,000 quadrangle series —
 added in v3), National Geographic (Esri); **Relief:** MN LiDAR
-Hillshade; **Aerial:** Aerial (NAIP 2023/25), Aerial (Esri), Aerial +
+Hillshade, MN LiDAR Canopy, Canopy height (LiDAR); **Aerial:** Aerial (NAIP 2023/25), Aerial (Esri), Aerial +
 Topo (NAIP 2023/25), Aerial (2014) — on any aerial base the
 section labels flip to a light-on-dark treatment so they stay
 readable over photography; **Streets & trails:** Streets (OSM),
@@ -124,6 +124,20 @@ base snow map is deliberately not used — its author discourages
 outside use). OSM's mapped pistes in the chapter extent are the
 nordic ski trails around Itasca State Park and the Leech Lake
 shore; where none are mapped the base reads as plain hillshade.
+**Added Nov 11, 2026** (Paul's LiDAR trio — the bare-earth
+hillshade was the first of three): **MN LiDAR Canopy** and
+**Canopy height (LiDAR)** — the 2022 second-generation LiDAR
+surfaces, built in-repo by `../scripts/build_lidar_trio.py`
+from the state's 2022 point clouds (first returns) and the
+seamless 0.5 m DEM, as this repo's own tiles (`tiles/`, z9–15;
+z16 was rendered, measured at +152.5 MB, and dropped).
+Canopy is a grey hillshade of the first-return surface;
+Canopy height is canopy-minus-ground as a colour ramp (pale =
+ground level, deep green = mature canopy), so clearcuts and
+fields read bare. Both exist only along a ~100 m corridor
+either side of the trail — the tiles end at the corridor edge,
+by design. Provenance and the build's cost measurement:
+`../SOURCES.md`.
 Cut in v3 on Paul's calls: the USGS shaded-relief base (poor next
 to the 1 m LiDAR hillshade) and MnGeo's Spring Aerial Imagery
 Program photography (nw14 — nothing useful over the chapter).

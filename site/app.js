@@ -170,12 +170,44 @@ var snowPistes = L.tileLayer(
   });
 var winterBase = L.layerGroup([mnHillshade, snowPistes]);
 
+/* Added Nov 11, 2026 (Paul's LiDAR trio): the 2022
+   second-generation LiDAR surfaces, built by
+   scripts/build_lidar_trio.py from the state's 2022
+   point clouds (first returns) and the seamless 0.5 m DEM,
+   clipped to a ~100 m corridor either side of the trail --
+   so these two bases exist ONLY along the corridor; beyond
+   it the tiles simply end (ragged edges are by design).
+   Canopy is a grey hillshade of the first-return surface --
+   the bare-earth hillshade's sibling, same register.
+   Canopy height is canopy-minus-ground as a colour ramp:
+   pale at ground level (clearcuts, fields, the tread) to
+   deep green at mature-canopy height. Both credit the
+   second-generation collection (2021-2024 statewide; the
+   corridor blocks were flown spring 2022, leaf-off -- see
+   SOURCES.md). Tiles are this repo's own files (site/tiles/),
+   z9-15; past z15 the z15 tiles upscale. (z16 was rendered
+   and measured -- 152.5 MB for 1,466 tiles -- then dropped:
+   the shipped range stays in the tens-of-MB class.) */
+var mnCanopyShade = L.tileLayer("tiles/canopy-shade/{z}/{x}/{y}.png", {
+  maxZoom: 18, maxNativeZoom: 15,
+  attribution: "Canopy shade (LiDAR first returns, 2022): " +
+    "MnGeo / Minnesota DNR",
+});
+var mnCanopyHeight = L.tileLayer(
+  "tiles/canopy-height/{z}/{x}/{y}.png", {
+    maxZoom: 18, maxNativeZoom: 15,
+    attribution: "Canopy height (LiDAR, 2022): MnGeo / " +
+      "Minnesota DNR",
+  });
+
 var baseControl = L.control.layers(
   {
     "Topo (OpenTopoMap)": topo,
     "USGS Topo 1:24k": usgsTopo,
     "National Geographic (Esri)": esriNatGeo,
     "MN LiDAR Hillshade": mnHillshade,
+    "MN LiDAR Canopy": mnCanopyShade,
+    "Canopy height (LiDAR)": mnCanopyHeight,
     "Aerial (NAIP 2023/25)": usgsImagery,
     "Aerial (Esri)": esriImagery,
     "Aerial + Topo (NAIP 2023/25)": usgsImageryTopo,
@@ -270,6 +302,13 @@ var CASING_BY_BASE = {
   "Aerial (2014)": "photo",
   "Winter (snow trails)": "relief",
   "MN LiDAR Hillshade": "relief",
+  "MN LiDAR Canopy": "relief",
+  /* Canopy height is a saturated colour surface like the
+     aerials, so it takes the photo register: its white casing
+     keeps the trail and section lines legible over deep
+     green. It is NOT in the /^Aerial/ imagery family -- the
+     label flip stays off for it. */
+  "Canopy height (LiDAR)": "photo",
   "USGS Topo 1:24k": "relief",
   "National Geographic (Esri)": "relief",
 };
