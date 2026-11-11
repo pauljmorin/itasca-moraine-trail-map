@@ -32,15 +32,17 @@ NCT map refs, virtual miles, 2026 maintenance notes, the raw
 Help Requested values, and land context cross verbatim (after a
 contact-pattern scrub — emails/phone numbers are stripped and the
 strip count is printed); adopter and sawyer names cross ONLY as
-the v2 placeholders ("Test adopter N", numbered exactly as
-scripts/build_site_data.py numbers them, recovered here from
-site/data/stretches.geojson so the two builds can never disagree;
-sawyer-only people continue the same numbering); tracker comments
-cross only after every known person's name has been substituted
-by their placeholder — a comment that still contains an unmatched
-personal reference is dropped (working data keeps it verbatim) and
-the drop is counted and printed. Phone/email columns never leave
-the working data at all: they are not even read here.
+INITIALS (Paul, Nov 11, 2026; scripts/person_initials.py — derived
+exactly as scripts/build_site_data.py derives them, recovered here
+from site/data/stretches.geojson so the two builds can never
+disagree; sawyer-only people get initials the same way, and
+instruction text such as "Contact Janita" is not a person and is
+left out); tracker comments cross only after every known person's
+name has been substituted by their initials — a comment that still
+contains an unmatched personal reference is dropped (working data
+keeps it verbatim) and the drop is counted and printed. Phone/email
+columns never leave the working data at all: they are not even read
+here.
 
 HOVER-CHIP CARRY (Paul, Nov 11, 2026): the section hover chip
 shows the last-work note and reads only the stretch feature, so
@@ -101,6 +103,7 @@ PRECISION = 5
 
 sys.path.insert(0, os.path.join(ROOT, "scripts"))
 from geo_util import to_xy, dist_km  # noqa: E402  (km space)
+import person_initials  # noqa: E402
 
 MI_PER_KM = 0.621371192237334
 GAP_NCT_START = 166.58  # 169.5 (West-1 start) - 2.92 (gap length)
@@ -238,11 +241,12 @@ def line_midpoint(coords):
     return list(pts[len(pts) // 2])
 
 
-# ------------------------------------------------------- placeholders
-def recover_placeholder_map():
-    """person string -> "Test adopter N", identical to the v2 site
-    build: pairs each working stretch's adopter list (file order)
-    with site/data/stretches.geojson's adopter_display by name."""
+# ------------------------------------------------------- initials
+def recover_initials_map():
+    """person string -> initials, identical to the site build:
+    pairs each working stretch's adopter list (file order, with
+    "X and Y Surname" cells split) with
+    site/data/stretches.geojson's adopter_display by name."""
     working = load("data/segments/segment-stretches.geojson")["features"]
     site = {f["properties"]["name"]: f["properties"]
             for f in load("site/data/stretches.geojson")["features"]}
@@ -250,23 +254,27 @@ def recover_placeholder_map():
     for f in working:
         p = f["properties"]
         disp = (site.get(p["name"]) or {}).get("adopter_display") or []
-        for person, ph in zip(p.get("adopter") or [], disp):
-            mapping.setdefault(person, ph)
+        for person, ini in zip(
+                person_initials.expand_people(p.get("adopter") or []),
+                disp):
+            mapping.setdefault(person, ini)
     return mapping
 
 
-def parse_sawyer_people(raw, mapping, next_num):
+def parse_sawyer_people(raw, mapping):
     """Split a tracker sawyer cell into people; extend the mapping
-    (same numbering) for sawyer-only people. Returns (display list,
-    next_num). Chunks are first matched whole against known people,
-    then segmented by known full names inside the chunk (the tracker
-    sometimes jams two people into one cell), else taken whole."""
+    with initials for sawyer-only people. Returns the display list
+    of initials. Chunks are first matched whole against known
+    people, then segmented by known full names inside the chunk
+    (the tracker sometimes jams two people into one cell), else
+    taken whole. Instruction text ("Contact Janita") is not a
+    person and is dropped, never displayed."""
     if not raw:
-        return [], next_num
+        return []
     people = []
     for chunk in re.split(r"[/()]", raw):
         chunk = chunk.strip(" ,")
-        if not chunk:
+        if not chunk or not person_initials.is_person_chunk(chunk):
             continue
         if chunk in mapping:
             people.append(chunk)
@@ -284,10 +292,9 @@ def parse_sawyer_people(raw, mapping, next_num):
     display = []
     for person in people:
         if person not in mapping:
-            mapping[person] = "Test adopter %d" % next_num[0]
-            next_num[0] += 1
+            mapping[person] = person_initials.initials_for_person(person)
         display.append(mapping[person])
-    return display, next_num
+    return display
 
 
 # ---------------------------------------------------------- comments
@@ -309,7 +316,7 @@ PROTECT = [("Paul Bunyan", "\x00PAULBUNYAN\x00")]
 
 def _substitute_names(s, mapping):
     """Replace every substitutable known-person reference in s with
-    its placeholder: full names (incl. possessive), "Firstname L."
+    its initials: full names (incl. possessive), "Firstname L."
     and "Firstname L" where the first name is unambiguous and the
     initial matches, unique surnames (incl. possessive/plural),
     unique first names. Returns the substituted string."""
@@ -376,7 +383,7 @@ def _has_residual_person_ref(s, mapping):
 
 
 def sanitize_comment(text, mapping, stats):
-    """Substitute known people's names with placeholders. Returns
+    """Substitute known people's names with initials. Returns
     the substituted comment, or None when an unmatched personal
     reference remains (the comment is then dropped from the site
     copy; the working data keeps it verbatim)."""
@@ -396,7 +403,7 @@ def sanitize_comment(text, mapping, stats):
 def sanitize_names_only(text, mapping, stats):
     """Substitution WITHOUT the drop rule, for the tracker fields
     the chapter ruled public-safe as text (maintenance notes,
-    descriptions): known people's names still become placeholders
+    descriptions): known people's names still become initials
     (real names never enter the site copy); an occasional
     unresolvable first name is left as recorded and counted in
     stats['name_residues'] for the build report."""
@@ -462,10 +469,21 @@ def main():
     chapter_places = load("data/points/chapter-places.geojson")["features"]
 
     pieces, total_chain = build_chain(stretches, gaps)
-    mapping = recover_placeholder_map()
-    base_numbers = [int(v.rsplit(" ", 1)[1]) for v in mapping.values()]
-    next_num = [max(base_numbers) + 1 if base_numbers else 1]
-    sawyer_only_start = next_num[0]
+    mapping = recover_initials_map()
+    sawyer_only_before = len(mapping)
+    # NCTA sheet IDs per section/gap, recovered from the site files
+    # (build_site_data.py emits them from
+    # data/segments/section-sheets.json); the gazetteer carries them
+    # on its Section records the same way it recovers adopter_display.
+    site_gap_sheets = {
+        gf["properties"].get("gap_id"): gf["properties"].get("ncta_sheets")
+        for gf in load("site/data/gaps.geojson")["features"]}
+    # The same mapping the site build reads: fallback for sections
+    # with no site stretch (only Chip-13 — a zero-length point the
+    # site build drops). Chip-13's entry was verified by hand:
+    # its point (-94.25017, 47.02153) falls inside MN-044's bounds
+    # and its NCT miles 242.75-246.25 lie inside MN-044's MN-239-246.
+    section_sheets = load("data/segments/section-sheets.json")
 
     entries = []
 
@@ -516,12 +534,13 @@ def main():
             coords = coords[0]
         mid = line_midpoint(coords) if len(coords) >= 2 else list(coords[0])
         piece, ch, snap = project(pieces, mid)
-        disp_sawyer, next_num = parse_sawyer_people(
-            p.get("sawyer"), mapping, next_num)
+        disp_sawyer = parse_sawyer_people(p.get("sawyer"), mapping)
         site_stretch = {x["properties"]["name"]: x["properties"] for x in
                         load("site/data/stretches.geojson")["features"]}
         adopter_display = (site_stretch.get(p["name"]) or {}).get(
             "adopter_display")
+        ncta_sheets = (site_stretch.get(p["name"]) or {}).get(
+            "ncta_sheets") or section_sheets.get(p["name"])
         land = p.get("land_context") or []
         if isinstance(land, str):
             land = [land]
@@ -537,6 +556,7 @@ def main():
                 scrub_contacts(clean(p.get("tracker_description")),
                                stats), mapping, stats),
             "map_refs": p.get("nct_map_refs") or None,
+            "ncta_sheets": ncta_sheets,
             "nct_mile_start": r2_or_raw(p.get("nct_mile_start")),
             "nct_mile_end": r2_or_raw(p.get("nct_mile_end")),
             "chainage_start_mi": r2(p.get("chainage_start_mi")),
@@ -569,6 +589,7 @@ def main():
             "tracker_section": "GAP-W",
             "description": clean(gp.get("name")),
             "map_refs": None,
+            "ncta_sheets": site_gap_sheets.get("GAP-W"),
             "nct_mile_start": GAP_NCT_START,
             "nct_mile_end": r2(gap_nct_end(stretches)),
             "chainage_start_mi": 0.0,
@@ -748,9 +769,8 @@ def main():
           f"{stats['contact_strips']}")
     print(f"'@' shorthand rewritten in comments: "
           f"{stats['at_signs_rewritten']}")
-    print(f"sawyer-only placeholders added: "
-          f"{next_num[0] - sawyer_only_start} "
-          f"(numbering now reaches Test adopter {next_num[0] - 1})")
+    print(f"sawyer-only people given initials: "
+          f"{len(mapping) - sawyer_only_before}")
     print("comments review:")
     for e in entries:
         p = e["properties"]

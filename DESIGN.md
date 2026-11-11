@@ -103,9 +103,10 @@ chapter-sourced.
    they are published county public records; see the Parcels
    section). Taxpayer fields are not carried.
 2. Adopter names: never public as names. The public build shows
-   positional placeholders ("Test adopter 1", "Test adopter 2", …)
-   assigned by the site-data build; real adopter names live only
-   in the working data.
+   the adopters' initials ("JR", "BrJ", …) assigned by the site-data
+   build; real adopter names live only in the working data. (Revised
+   2026-11-11 by Paul: initials replace the "Test adopter N"
+   placeholders used before.)
 3. Private access is labeled private/informal wherever drawn.
 4. The map is presented as an **Itasca Moraine Chapter** project of
    the North Country Trail Association. It is never presented as the

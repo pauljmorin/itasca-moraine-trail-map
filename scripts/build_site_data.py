@@ -28,12 +28,15 @@ data). The site copies keep, per adopted stretch, ONLY:
     length_mi, tracker_length_mi     measured vs tracker lengths
     has_adopter                      boolean derived from the tracker
                                      adopter column
-    adopter_display                  PLACEHOLDER adopter names only
-                                     ("Test adopter 1", "Test adopter
-                                     2", ...) — see below
+    adopter_display                  INITIALS of the adopters
+                                     ("JR", "BrJ", ... — see below)
     both_ends_access, access_at_start, access_at_end
                                      booleans from the crossing data
     chainage_start_mi, chainage_end_mi   position along the chain
+    ncta_sheets                      NCTA map-sheet IDs the section
+                                     falls on (data/segments/
+                                     section-sheets.json — see the
+                                     segments section below)
     maintenance_2026                 the section's 2026 maintenance
                                      note — NOT emitted by this build:
                                      build_gazetteer.py stamps its
@@ -42,19 +45,28 @@ data). The site copies keep, per adopted stretch, ONLY:
                                      onto the site stretches for the
                                      hover chip (Paul, Nov 11, 2026)
 
-ADOPTER PLACEHOLDERS (chapter instruction, 2026-11-10): the public
-build shows that a section is adopted, and by a placeholder — never
+ADOPTER INITIALS (chapter instruction, 2026-11-10 as placeholders,
+revised by Paul 2026-11-11 to initials): the public build shows
+that a section is adopted, and by the adopters' INITIALS — never
 by a real name. Each distinct person in the source adopter lists
-is assigned "Test adopter N" in order of first appearance across
-the stretches (file order = chain order); the same person keeps
-the same placeholder on every section, so shared adopters read as
-shared. The real names are read only to tell people apart; they
-are never written to any site file.
+is shown as the initials of first + last name (scripts/
+person_initials.py; first-name-only people get one letter); the
+same person keeps the same initials on every section, so shared
+adopters read as shared. Paul decided the one collision broken
+apart: Brent Johnson "BJ", Bruce Johnson "BrJ" (all other
+collisions stand as derived). Initials are identifiable in a
+52-person volunteer pool — that is a deliberate relaxation of the
+earlier no-names rule, approved by Paul 2026-11-11. The real names
+are read only to tell people apart; they are never written to any
+site file.
 
 Deliberately EXCLUDED (working-view data, never public):
     adopter / adopter_verbatim  — the real adopter names; only the
-                                  placeholders above are emitted
+                                  initials above are emitted
     sawyer                      — a person; excluded for the same reason
+                                  (the gazetteer build shows sawyer
+                                  initials separately; see
+                                  build_gazetteer.py)
     maintenance_2026_notes      — the RAW notes stay working-only;
                                   only the gazetteer build's sanitized
                                   maintenance_2026 value is public
@@ -137,6 +149,7 @@ import sys
 import time
 
 import geo_util
+import person_initials
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 PRECISION = 5  # decimal places on coordinates (~1.1 m in latitude)
@@ -427,19 +440,33 @@ def map_road(p):
 # ------------------------------------------------------------- segments
 # PUBLIC-VIEW whitelist — see the module header for the full rule and
 # the exclusion list. Real adopter names are never copied: each
-# distinct person becomes a "Test adopter N" placeholder (numbered
-# in order of first appearance as features are processed — the
-# source file is in chain order); sawyer, raw maintenance notes,
-# comments and descriptions are dropped outright (the sanitized
-# maintenance_2026 note is stamped on later by build_gazetteer.py).
+# distinct person is shown by initials (scripts/person_initials.py);
+# sawyer, raw maintenance notes, comments and descriptions are
+# dropped outright (the sanitized maintenance_2026 note is stamped
+# on later by build_gazetteer.py).
 
-_PLACEHOLDERS = {}
+_PEOPLE_SEEN = set()
+
+# NCTA map-sheet assignment per section (which sheet IDs each
+# section's line falls on), computed from sheet bounds x section
+# geometry by the NCTA sheets build (Nov 11, 2026; source
+# working/ncta-sheets/section-sheets.json). Copied to
+# data/segments/section-sheets.json so the site build reproduces
+# the shipped files: the f25e2ea sheets build stamped these values
+# onto the site files ad-hoc, outside both builds, so a plain
+# rebuild silently dropped them (found during the Nov 11 initials
+# rebuild). The build now emits them; the gazetteer recovers them
+# from the site files, as it does adopter_display.
+def _load_section_sheets():
+    try:
+        with open(os.path.join(ROOT, "data", "segments",
+                               "section-sheets.json")) as f:
+            return json.load(f)
+    except FileNotFoundError:
+        return {}
 
 
-def _placeholder(name):
-    if name not in _PLACEHOLDERS:
-        _PLACEHOLDERS[name] = "Test adopter %d" % (len(_PLACEHOLDERS) + 1)
-    return _PLACEHOLDERS[name]
+SECTION_SHEETS = _load_section_sheets()
 
 
 def map_stretch(p):
@@ -447,13 +474,17 @@ def map_stretch(p):
         bool(clean_str(p.get("adopter_verbatim")))
     names = [clean_str(x) for x in (p.get("adopter") or [])]
     names = [x for x in names if x]
+    _PEOPLE_SEEN.update(person_initials.expand_people(names))
+    name = clean_str(p.get("name"))
     return {
-        "name": clean_str(p.get("name")),
+        "name": name,
         "tracker_section": clean_str(p.get("tracker_section")),
         "length_mi": num(p.get("length_mi")),
         "tracker_length_mi": num(p.get("tracker_length_mi")),
         "has_adopter": has_adopter,
-        "adopter_display": [_placeholder(x) for x in names] or None,
+        "adopter_display": person_initials.initials_for_people(names)
+        or None,
+        "ncta_sheets": SECTION_SHEETS.get(name),
         "both_ends_access": bool(p.get("both_ends_access")),
         "access_at_start": bool(p.get("access_at_start")),
         "access_at_end": bool(p.get("access_at_end")),
@@ -491,6 +522,8 @@ def map_gap(p):
         "nearest_road_end_mi": num(end.get("nearest_road_mi")),
         "crossings": crossings,
         "note": clean_str(p.get("note")),
+        "ncta_sheets": SECTION_SHEETS.get(
+            clean_str(p.get("gap_id"))),
     }
 
 
@@ -1283,7 +1316,7 @@ def main():
     print(f"{b['dst']}: {b['features_out']} boundary points "
           f"({b['mismatches']} shared-endpoint coordinate mismatches), "
           f"{b['bytes_out']/1e6:.3f} MB")
-    print(f"adopter placeholders assigned: {len(_PLACEHOLDERS)}")
+    print(f"adopter initials assigned: {len(_PEOPLE_SEEN)} people")
     for r in results:
         print(f"{r['dst']}: {r['features_in']} -> {r['features_out']} features"
               f" ({r['dropped']} dropped in simplification), "

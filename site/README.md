@@ -150,7 +150,7 @@ hugs the line on the map, and the section's full public-safe
 tracker record renders as a "record sheet" in the left panel,
 below Find — name + tracker code + Adopted/Unadopted pill, a key
 strip (length with the tracker length in parentheses, NCT miles +
-map refs, **placeholder** adopter and sawyer), a red "Help
+map refs, adopter and sawyer **initials**), a red "Help
 requested" callout when the tracker asks for help, the
 description, a "Section details" disclosure (land, 2026
 maintenance, tracker comments, distances from each chapter end,
@@ -227,15 +227,15 @@ that still contains an unmatched personal reference is dropped
 from the site copy (2 of 18 on this build; the working data keeps
 it verbatim).
 
-**Crosses only as placeholders:** adopter names (as in v2 —
-numbered by first appearance along the chain) and **sawyer
-names**, mapped through the *same* numbering, so the same person
-is the same "Test adopter N" everywhere (two people appear only
-as sawyers; the numbering now reaches Test adopter 50).
-Maintenance notes and descriptions get the same substitution for
-any person named in them. Any email/phone pattern found in
-tracker text is stripped before it crosses (0 found on this
-build) and the strip count is printed by the build.
+**Crosses only as initials:** adopter names (initials of first +
+last name, e.g. "JR"; first-name-only people get one letter) and
+**sawyer names**, mapped through the *same* initials, so the same
+person is the same initials everywhere (one person appears only
+as a sawyer, Chris Godwin → "CG"). Maintenance notes and
+descriptions get the same substitution for any person named in
+them. Any email/phone pattern found in tracker text is stripped
+before it crosses (0 found on this build) and the strip count is
+printed by the build.
 
 **Never crosses, under any circumstances:** the tracker's
 **Phone Number** and **Email** columns. They are not read by any
@@ -314,20 +314,21 @@ Taxpayer name/address fields are still **not** carried. Personal
 contact fields (maintainer names/phones/emails) present in some
 DNR access source attributes are likewise stripped, not shown.
 
-**Adopter names: placeholders only.** The working segment files in
+**Adopter names: initials only.** The working segment files in
 `../data/segments/` carry the adoption tracker's personal data
 (real adopter names, sawyer, maintenance notes). The site copies
 never contain a real adopter name: `scripts/build_site_data.py`
-assigns each distinct adopter a placeholder — "Test adopter 1",
-"Test adopter 2", … in order of first appearance along the chain
-(48 placeholders on the v2 build) — and emits only the placeholders
-(`adopter_display`), shown in the section popup's "Adopted by"
-row. Because the numbering is positional, the same person reads as
-the same placeholder on every section without any name leaving the
+derives each distinct adopter's initials — first letters of first
++ last name (scripts/person_initials.py; Paul decided the one
+collision broken apart: Brent Johnson "BJ", Bruce Johnson "BrJ")
+— and emits only the initials (`adopter_display`), shown in the
+section popup's "Adopted by" row. Because the initials are
+derived from the name, the same person reads as the same
+initials on every section without any name leaving the
 working data. Sawyer, maintenance notes and tracker comments are
 dropped outright; the full whitelist and exclusion list are
 documented in the build script's header. Verified on the
-2026-11-10 v2 build: zero hits for every full adopter name in the
+2026-11-11 initials build: zero hits for every full adopter name in the
 working data anywhere under `site/`, zero email patterns, zero
 phone-number patterns, and zero `@` characters in `site/data/`.
 
