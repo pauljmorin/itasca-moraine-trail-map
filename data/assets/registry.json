@@ -1,96 +1,397 @@
 {
-  "adopted": "2026-11-11",
-  "counters": {
-    "CP": {
-      "issued": {},
-      "next": 1,
-      "retired": []
+ "adopted": "2026-11-11",
+ "counters": {
+  "CP": {
+   "issued": {
+    "ITM-CP-001": {
+     "photo": "PXL_20261111_190105129.MP.jpg",
+     "type": "CP",
+     "chainage_mi": 56.5,
+     "section": "Chip-5",
+     "assigned": "2026-11-11"
     },
-    "CS": {
-      "issued": {},
-      "next": 1,
-      "retired": []
+    "ITM-CP-002": {
+     "photo": "PXL_20261111_173622790.MP.jpg",
+     "type": "CP",
+     "chainage_mi": 58.26,
+     "section": "Chip-5",
+     "assigned": "2026-11-11"
     },
-    "KI": {
-      "issued": {},
-      "next": 1,
-      "retired": []
+    "ITM-CP-003": {
+     "photo": "PXL_20261111_173629309.MP.jpg",
+     "type": "CP",
+     "chainage_mi": 58.26,
+     "section": "Chip-5",
+     "assigned": "2026-11-11"
     },
-    "PK": {
-      "issued": {},
-      "next": 1,
-      "retired": []
+    "ITM-CP-004": {
+     "photo": "PXL_20261111_173753460.MP.jpg",
+     "type": "CP",
+     "chainage_mi": 58.31,
+     "section": "Chip-5",
+     "assigned": "2026-11-11"
     },
-    "PO": {
-      "issued": {},
-      "next": 1,
-      "retired": []
+    "ITM-CP-005": {
+     "photo": "PXL_20261111_174010010.MP.jpg",
+     "type": "CP",
+     "chainage_mi": 58.39,
+     "section": "Chip-5",
+     "assigned": "2026-11-11"
     },
-    "SG": {
-      "issued": {},
-      "next": 1,
-      "retired": []
+    "ITM-CP-006": {
+     "photo": "PXL_20261111_174226284.MP.jpg",
+     "type": "CP",
+     "chainage_mi": 58.49,
+     "section": "Chip-5",
+     "assigned": "2026-11-11"
+    },
+    "ITM-CP-007": {
+     "photo": "PXL_20261111_174241507.MP.jpg",
+     "type": "CP",
+     "chainage_mi": 58.49,
+     "section": "Chip-5",
+     "assigned": "2026-11-11"
+    },
+    "ITM-CP-008": {
+     "photo": "PXL_20261111_174346399.jpg",
+     "type": "CP",
+     "chainage_mi": 58.54,
+     "section": "Chip-5",
+     "assigned": "2026-11-11"
+    },
+    "ITM-CP-009": {
+     "photo": "PXL_20261111_174353567.MP.jpg",
+     "type": "CP",
+     "chainage_mi": 58.55,
+     "section": "Chip-5",
+     "assigned": "2026-11-11"
+    },
+    "ITM-CP-010": {
+     "photo": "PXL_20261111_174436059.MP.jpg",
+     "type": "CP",
+     "chainage_mi": 58.58,
+     "section": "Chip-6",
+     "assigned": "2026-11-11"
+    },
+    "ITM-CP-011": {
+     "photo": "PXL_20261111_174441427.MP.jpg",
+     "type": "CP",
+     "chainage_mi": 58.58,
+     "section": "Chip-6",
+     "assigned": "2026-11-11"
+    },
+    "ITM-CP-012": {
+     "photo": "PXL_20261111_174500064.jpg",
+     "type": "CP",
+     "chainage_mi": 58.58,
+     "section": "Chip-6",
+     "assigned": "2026-11-11"
+    },
+    "ITM-CP-013": {
+     "photo": "PXL_20261111_175214905.MP.jpg",
+     "type": "CP",
+     "chainage_mi": 58.93,
+     "section": "Chip-6",
+     "assigned": "2026-11-11"
+    },
+    "ITM-CP-014": {
+     "photo": "PXL_20261111_175257178.jpg",
+     "type": "CP",
+     "chainage_mi": 58.95,
+     "section": "Chip-6",
+     "assigned": "2026-11-11"
+    },
+    "ITM-CP-015": {
+     "photo": "PXL_20261111_175510853.MP.jpg",
+     "type": "CP",
+     "chainage_mi": 59.07,
+     "section": "Chip-6",
+     "assigned": "2026-11-11"
+    },
+    "ITM-CP-016": {
+     "photo": "PXL_20261111_180047306.MP.jpg",
+     "type": "CP",
+     "chainage_mi": 59.11,
+     "section": "Chip-6",
+     "assigned": "2026-11-11"
+    },
+    "ITM-CP-017": {
+     "photo": "PXL_20261111_180231342.MP.jpg",
+     "type": "CP",
+     "chainage_mi": 59.15,
+     "section": "Chip-6",
+     "assigned": "2026-11-11"
+    },
+    "ITM-CP-018": {
+     "photo": "PXL_20261111_180318058.jpg",
+     "type": "CP",
+     "chainage_mi": 59.19,
+     "section": "Chip-6",
+     "assigned": "2026-11-11"
     }
+   },
+   "next": 19,
+   "retired": []
   },
-  "format": "ITM-<type>-<nnn>",
-  "notes": "Single source of truth for asset serial numbers (docs/asset-serial-numbers-2026-11-11.md). A serial is assigned at classification, never at photo intake \u2014 scripts/photo_pipeline.py build always writes serial null. Assignment is editorial: scripts/assign_serials.py stamps the next numbers in chainage order (west to east) per type, and only Muse proposes / Paul approves per batch. Never reuse, never renumber: a retired serial stays in retired with its reason. UN is a type value, never a serial prefix \u2014 no serial is ever issued for unclassified pins.",
-  "prefix": "ITM",
-  "types": {
-    "BN": {
-      "name": "bench",
-      "note": "Paul's example; not yet observed in any classified photo.",
-      "status": "proposed"
-    },
-    "BR": {
-      "name": "bridge",
-      "status": "proposed"
-    },
-    "BW": {
-      "name": "boardwalk",
-      "status": "proposed"
-    },
-    "CP": {
-      "name": "carsonite post",
-      "note": "The trail's standard marker post. A physical mile post is a CP, not a sign \u2014 the NCTA mile-marker layer is separate data.",
-      "status": "seeded"
-    },
-    "CS": {
-      "name": "campsite",
-      "note": "Campsite / bivouac site.",
-      "status": "seeded"
-    },
-    "KI": {
-      "name": "kiosk",
-      "status": "seeded"
-    },
-    "PK": {
-      "name": "parking area",
-      "note": "One serial per area, even if it has several signs; the signs themselves are SG items.",
-      "status": "seeded"
-    },
-    "PO": {
-      "name": "post",
-      "note": "Post, other (non-Carsonite).",
-      "status": "seeded"
-    },
-    "SG": {
-      "name": "sign",
-      "note": "One code for signs of any kind; subtype (regulatory, wayfinding, interpretive) goes in the pin's sign_kind field.",
-      "status": "seeded"
-    },
-    "SH": {
-      "name": "shelter",
-      "status": "proposed"
-    },
-    "UN": {
-      "name": "unclassified",
-      "note": "A type value, never a serial prefix. Unclassified pins carry no serial.",
-      "status": "bucket"
-    },
-    "WT": {
-      "name": "water source",
-      "note": "Water source (pump / spring / faucet).",
-      "status": "proposed"
+  "CS": {
+   "issued": {
+    "ITM-CS-001": {
+     "photo": "PXL_20261111_175627395.jpg",
+     "type": "CS",
+     "chainage_mi": 59.09,
+     "section": "Chip-6",
+     "assigned": "2026-11-11"
     }
+   },
+   "next": 2,
+   "retired": []
+  },
+  "KI": {
+   "issued": {},
+   "next": 1,
+   "retired": []
+  },
+  "PK": {
+   "issued": {},
+   "next": 1,
+   "retired": []
+  },
+  "PO": {
+   "issued": {
+    "ITM-PO-001": {
+     "photo": "PXL_20261111_173913740.jpg",
+     "type": "PO",
+     "chainage_mi": 58.36,
+     "section": "Chip-5",
+     "assigned": "2026-11-11"
+    }
+   },
+   "next": 2,
+   "retired": []
+  },
+  "SG": {
+   "issued": {
+    "ITM-SG-007": {
+     "photo": "PXL_20261111_174549876.MP.jpg",
+     "type": "SG",
+     "chainage_mi": 58.59,
+     "section": "Chip-6",
+     "assigned": "2026-11-11",
+     "reserved": "Paper notice, wording unreadable \u2014 serial reserved, not minted, until a close re-photo reads it."
+    },
+    "ITM-SG-001": {
+     "photo": "PXL_20261111_190009118.jpg",
+     "type": "SG",
+     "chainage_mi": 56.5,
+     "section": "Chip-5",
+     "assigned": "2026-11-11"
+    },
+    "ITM-SG-002": {
+     "photo": "PXL_20261111_190120128.jpg",
+     "type": "SG",
+     "chainage_mi": 56.5,
+     "section": "Chip-5",
+     "assigned": "2026-11-11"
+    },
+    "ITM-SG-003": {
+     "photo": "PXL_20261111_190129466.jpg",
+     "type": "SG",
+     "chainage_mi": 56.5,
+     "section": "Chip-5",
+     "assigned": "2026-11-11"
+    },
+    "ITM-SG-004": {
+     "photo": "PXL_20261111_173702041.jpg",
+     "type": "SG",
+     "chainage_mi": 58.28,
+     "section": "Chip-5",
+     "assigned": "2026-11-11"
+    },
+    "ITM-SG-005": {
+     "photo": "PXL_20261111_181658786.MP.jpg",
+     "type": "SG",
+     "chainage_mi": 58.58,
+     "section": "Chip-6",
+     "assigned": "2026-11-11"
+    },
+    "ITM-SG-006": {
+     "photo": "PXL_20261111_174534700.MP.jpg",
+     "type": "SG",
+     "chainage_mi": 58.59,
+     "section": "Chip-6",
+     "assigned": "2026-11-11"
+    },
+    "ITM-SG-008": {
+     "photo": "PXL_20261111_175538767.jpg",
+     "type": "SG",
+     "chainage_mi": 59.08,
+     "section": "Chip-6",
+     "assigned": "2026-11-11"
+    },
+    "ITM-SG-009": {
+     "photo": "PXL_20261111_175603407.MP.jpg",
+     "type": "SG",
+     "chainage_mi": 59.09,
+     "section": "Chip-6",
+     "assigned": "2026-11-11"
+    },
+    "ITM-SG-010": {
+     "photo": "PXL_20261111_175802209.jpg",
+     "type": "SG",
+     "chainage_mi": 59.09,
+     "section": "Chip-6",
+     "assigned": "2026-11-11"
+    },
+    "ITM-SG-011": {
+     "photo": "PXL_20261111_180334058.MP.jpg",
+     "type": "SG",
+     "chainage_mi": 59.19,
+     "section": "Chip-6",
+     "assigned": "2026-11-11"
+    }
+   },
+   "next": 12,
+   "retired": []
+  },
+  "BW": {
+   "next": 7,
+   "issued": {
+    "ITM-BW-001": {
+     "photo": "PXL_20261111_173353595.MP.jpg",
+     "type": "BW",
+     "chainage_mi": 58.21,
+     "section": "Chip-5",
+     "assigned": "2026-11-11"
+    },
+    "ITM-BW-002": {
+     "photo": "PXL_20261111_173733332.jpg",
+     "type": "BW",
+     "chainage_mi": 58.3,
+     "section": "Chip-5",
+     "assigned": "2026-11-11"
+    },
+    "ITM-BW-003": {
+     "photo": "PXL_20261111_175522531.MP.jpg",
+     "type": "BW",
+     "chainage_mi": 59.07,
+     "section": "Chip-6",
+     "assigned": "2026-11-11"
+    },
+    "ITM-BW-004": {
+     "photo": "PXL_20261111_175543842.MP.jpg",
+     "type": "BW",
+     "chainage_mi": 59.08,
+     "section": "Chip-6",
+     "assigned": "2026-11-11"
+    },
+    "ITM-BW-005": {
+     "photo": "PXL_20261111_180112137.jpg",
+     "type": "BW",
+     "chainage_mi": 59.12,
+     "section": "Chip-6",
+     "assigned": "2026-11-11"
+    },
+    "ITM-BW-006": {
+     "photo": "PXL_20261111_180143931.MP.jpg",
+     "type": "BW",
+     "chainage_mi": 59.13,
+     "section": "Chip-6",
+     "assigned": "2026-11-11"
+    }
+   },
+   "retired": []
+  },
+  "LT": {
+   "next": 2,
+   "issued": {
+    "ITM-LT-001": {
+     "photo": "PXL_20261111_175818113.jpg",
+     "type": "LT",
+     "chainage_mi": 59.08,
+     "section": "Chip-6",
+     "assigned": "2026-11-11"
+    }
+   },
+   "retired": []
+  },
+  "BN": {
+   "next": 2,
+   "issued": {
+    "ITM-BN-001": {
+     "photo": "PXL_20261111_175623584.jpg",
+     "type": "BN",
+     "chainage_mi": 59.09,
+     "section": "Chip-6",
+     "assigned": "2026-11-11"
+    }
+   },
+   "retired": []
   }
+ },
+ "format": "ITM-<type>-<nnn>",
+ "notes": "Single source of truth for asset serial numbers (docs/asset-serial-numbers-2026-11-11.md). A serial is assigned at classification, never at photo intake \u2014 scripts/photo_pipeline.py build always writes serial null. Assignment is editorial: scripts/assign_serials.py stamps the next numbers in chainage order (west to east) per type, and only Muse proposes / Paul approves per batch. Never reuse, never renumber: a retired serial stays in retired with its reason. UN is a type value, never a serial prefix \u2014 no serial is ever issued for unclassified pins.",
+ "prefix": "ITM",
+ "types": {
+  "BN": {
+   "name": "bench",
+   "note": "Paul's example; not yet observed in any classified photo.",
+   "status": "proposed"
+  },
+  "BR": {
+   "name": "bridge",
+   "status": "proposed"
+  },
+  "BW": {
+   "name": "boardwalk",
+   "status": "proposed"
+  },
+  "CP": {
+   "name": "carsonite post",
+   "note": "The trail's standard marker post. A physical mile post is a CP, not a sign \u2014 the NCTA mile-marker layer is separate data.",
+   "status": "seeded"
+  },
+  "CS": {
+   "name": "campsite",
+   "note": "Campsite / bivouac site.",
+   "status": "seeded"
+  },
+  "KI": {
+   "name": "kiosk",
+   "status": "seeded"
+  },
+  "PK": {
+   "name": "parking area",
+   "note": "One serial per area, even if it has several signs; the signs themselves are SG items.",
+   "status": "seeded"
+  },
+  "PO": {
+   "name": "post",
+   "note": "Post, other (non-Carsonite).",
+   "status": "seeded"
+  },
+  "SG": {
+   "name": "sign",
+   "note": "One code for signs of any kind; subtype (regulatory, wayfinding, interpretive) goes in the pin's sign_kind field.",
+   "status": "seeded"
+  },
+  "SH": {
+   "name": "shelter",
+   "status": "proposed"
+  },
+  "UN": {
+   "name": "unclassified",
+   "note": "A type value, never a serial prefix. Unclassified pins carry no serial.",
+   "status": "bucket"
+  },
+  "WT": {
+   "name": "water source",
+   "note": "Water source (pump / spring / faucet).",
+   "status": "proposed"
+  },
+  "LT": {
+   "name": "latrine",
+   "note": "Latrine (fibreglass latrine box at a campsite). Code approved by Paul Nov 11, 2026 with the first batch; ITM-LT-001 is the Lake Erin campsite latrine.",
+   "status": "seeded"
+  }
+ }
 }

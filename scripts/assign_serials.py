@@ -15,9 +15,12 @@ sequence per type (grows to four digits past 999). See
 docs/asset-serial-numbers-2026-11-11.md for the rules this
 implements:
 
-* Only classified pins are numbered: type must name a registry type
-  (matched case-insensitively against the registry's `types` table);
-  `unclassified` pins and the UN bucket never get a serial.
+* Only classified pins are numbered: type must be a registry code
+  or name (matched case-insensitively against the registry's `types`
+  table — codes are what pins carry, names are accepted for
+  hand-built pins); `unclassified` pins and the UN bucket never get
+  a serial. A serial held as RESERVED in the issued map is skipped,
+  not minted (docs/asset-serial-numbers-2026-11-11.md §3 rule 7).
 * A type with no counter yet (a "proposed" code being used for the
   first time) opens its counter at 001 — the code itself must
   already be in the registry's types table; an unknown type name
@@ -97,9 +100,15 @@ def main():
     registry = load_json(args.registry)
     types = registry.get("types", {})
     counters = registry.setdefault("counters", {})
-    # name (lowercased) -> code, for the canonical pin type values
-    by_name = {v["name"].lower(): code for code, v in types.items()
+    # code or name (lowercased) -> code, for the pin type values.
+    # Pins carry the two-letter CODE ("BW", "CP", "SG"); names are
+    # accepted too ("boardwalk", "sign") for hand-built pins. The
+    # UN bucket is excluded either way — it never gets a serial.
+    by_name = {code.lower(): code for code, v in types.items()
                if v.get("status") != "bucket"}
+    by_name.update({v["name"].lower(): code for code, v in types.items()
+                    if v.get("status") != "bucket"
+                    and v.get("name")})
 
     collection = load_json(args.assets)
     features = collection.get("features", [])
@@ -112,7 +121,7 @@ def main():
         if props.get("serial"):
             continue  # already numbered — never touched
         t = (props.get("type") or "").strip()
-        if not t or t.lower() == "unclassified":
+        if not t or t.lower() in ("unclassified", "un"):
             continue  # unclassified pins carry no serial
         code = by_name.get(t.lower())
         if code is None:
@@ -161,8 +170,19 @@ def main():
         counter = counters.setdefault(
             code, {"next": 1, "issued": {}, "retired": []})
         n = counter["next"]
-        serial = serial_for(code, n)
-        if serial in counter.get("issued", {}):
+        # A serial already in the issued map with a "reserved" marker
+        # (held for an item not yet classified, e.g. the unreadable
+        # paper notice) is skipped, not minted and not an error. Any
+        # other collision means the counter is behind its issued map
+        # — a real inconsistency, still fatal.
+        while True:
+            serial = serial_for(code, n)
+            existing = counter.get("issued", {}).get(serial)
+            if existing is None:
+                break
+            if existing.get("reserved"):
+                n += 1
+                continue
             print("ERROR: %s already issued — registry counter for %s "
                   "is behind its issued map; fix registry.json by hand"
                   % (serial, code), file=sys.stderr)

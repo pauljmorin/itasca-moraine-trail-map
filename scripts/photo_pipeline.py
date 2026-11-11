@@ -20,6 +20,14 @@ Two modes:
          datetime+coordinate pairs. Photos with GPS but no valid
          direction are noted in the flags report (informational).
 
+         Build MERGES with the existing assets.geojson: pins already
+         in the file are carried over untouched (type, condition,
+         serial and attached photos survive), and only photos not
+         yet known get fresh pins. A photo is known if it is a pin's
+         primary photo or listed in a pin's `photos` array, so
+         re-running a batch whose duplicates were collapsed cannot
+         resurrect them as separate pins.
+
          Every pin carries `serial: null` and `sign_kind: null` —
          build NEVER assigns a serial. Serials are assigned at
          classification by the separate editorial step
@@ -464,6 +472,37 @@ def cmd_build(args):
     os.makedirs(out_dir, exist_ok=True)
     os.makedirs(deriv_dir, exist_ok=True)
 
+    # MERGE (Nov 11, 2026 — protects classified/serialized pins):
+    # build no longer rewrites the inventory from scratch. Pins
+    # already in <out_dir>/assets.geojson are carried over untouched
+    # (type, condition, serial, attached photos), and only photos
+    # not yet known get fresh pins. A photo is known if it is a
+    # pin's primary photo or listed in a pin's `photos` array, so
+    # re-running a batch whose duplicates were collapsed cannot
+    # resurrect them. A corrupt existing file fails loudly instead
+    # of being clobbered.
+    _assets_path = os.path.join(out_dir, args.assets_name)
+    existing_features = []
+    known_photos = set()
+    if os.path.exists(_assets_path):
+        with open(_assets_path) as _f:
+            _existing = json.load(_f)
+        existing_features = _existing.get("features", [])
+        for _feat in existing_features:
+            _props = _feat.get("properties", {})
+            if _props.get("photo"):
+                known_photos.add(_props["photo"])
+            for _ph in _props.get("photos", []):
+                if _ph.get("photo"):
+                    known_photos.add(_ph["photo"])
+        print(f"merge: {len(existing_features)} existing pins carried "
+              f"over ({len(known_photos)} known photos)")
+    scanned_total = len(photos)
+    carried = [p for p in photos if p["filename"] in known_photos]
+    photos = [p for p in photos if p["filename"] not in known_photos]
+    if carried:
+        print(f"merge: {len(carried)} photos already known — skipped")
+
     features = []
     no_gps = []
     no_direction = []
@@ -597,10 +636,12 @@ def cmd_build(args):
               f"left null; assign_serials.py will derive them",
               file=sys.stderr)
 
-    collection = {"type": "FeatureCollection", "features": features}
+    collection = {"type": "FeatureCollection",
+                  "features": existing_features + features}
     assets_path = os.path.join(out_dir, args.assets_name)
     with open(assets_path, "w") as f:
         json.dump(collection, f, indent=1)
+        f.write("\n")
     assets_size = os.path.getsize(assets_path)
     # The viewer reads the site copy (site/data/assets.geojson);
     # the pipeline writes it alongside the repo copy so a build
@@ -621,9 +662,12 @@ def cmd_build(args):
     lines = ["# Photo pipeline — flags report",
              f"\nGenerated {datetime.now().isoformat(timespec='seconds')} "
              f"from `{args.photos_dir}`.",
-             f"\nScanned {len(photos)} photos: {len(features)} positioned "
-             f"({len(features) - matched} EXIF GPS, {matched} GPX-matched), "
-             f"{len(no_gps)} without a position (excluded).",
+             f"\nScanned {scanned_total} photos: {len(features)} new "
+             f"positioned ({len(features) - matched} EXIF GPS, "
+             f"{matched} GPX-matched), {len(no_gps)} without a position "
+             f"(excluded); {len(carried)} already known, carried over "
+             f"untouched. {len(existing_features) + len(features)} pins "
+             f"total in the file.",
              "\n## GPX matching\n"]
     if track:
         from datetime import timezone as _tz
@@ -693,12 +737,13 @@ def cmd_build(args):
     with open(flags_path, "w") as f:
         f.write("\n".join(lines) + "\n")
 
-    print(f"scanned={len(photos)} with_gps={len(features)} "
+    print(f"scanned={scanned_total} with_gps={len(features)} "
           f"exif={len(features) - matched} gpx_matched={matched} "
           f"max_offset_s={max_offset:.0f} no_gps={len(no_gps)} "
           f"duplicates={len(duplicates)} "
           f"refusals={len(refusals)} snapped={snapped} "
-          f"off_chain={len(off_chain)}")
+          f"off_chain={len(off_chain)} carried={len(carried)} "
+          f"total_pins={len(existing_features) + len(features)}")
     print(f"wrote {assets_path}")
     print(f"wrote {flags_path}")
     print(f"derivatives in {deriv_dir}")
