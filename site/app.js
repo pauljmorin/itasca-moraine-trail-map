@@ -398,36 +398,135 @@ function gapEndAccess(p, which) {
    gazetteer as its Road/Trail crossing entries; the access-points
    data file and its builder remain in the repo.) */
 
-/* Where a section's name label sits (Paul, Nov 10, 2026): above the
-   line works on east–west segments, but on a north–south segment
-   "above" parks the name on the tread's end — so vertical segments
-   get the name BESIDE the line instead. Judged from the segment
-   direction at the section's length-centroid (where Leaflet
-   anchors the tooltip): |dy| > |dx| → beside (direction right);
-   otherwise above (direction top). */
-function sectionLabelPlacement(f) {
+/* Where a section's name label sits (v6, Paul, Nov 10, 2026):
+   the label must NEVER touch the line. v3–v5 judged only the
+   segment direction at the length-centroid and offset by a fixed
+   few px, so on curving sections the name still landed on the
+   tread (West-5, 8a, 9, 11, 13, 14, 16). The rule now, for every
+   section: consider eight candidate boxes around the anchor —
+   the anchor is the point on the LINE nearest the section's
+   vertex-centroid — and pick the first box, in house preference
+   order, whose rectangle clears every vertex of the section's
+   own polyline by LABEL_CLEARANCE px. Candidates walk outward
+   (14, 22, 30 px standoff) before any fallback; the fallback
+   (anchor at an extreme bend) takes the least-bad box, pushed to
+   38 px. Deterministic: same data, same placement, every load. */
+var LABEL_CLEARANCE = 4;
+function sectionLabelPlacement(f, name, mapRef) {
   var coords = (f.geometry && f.geometry.coordinates) || [];
-  if (coords.length < 2) return { direction: "top", offset: [0, -6] };
-  var pts = coords.map(function (c) {
-    var k = Math.cos(c[1] * Math.PI / 180);
-    return [c[0] * k, c[1]];
+  var fallback = { direction: "top", offset: [0, -14] };
+  if (coords.length < 2 || !mapRef) return fallback;
+  /* Anchor: nearest point on the polyline to the vertex centroid
+     (keeps the anchor ON the line and near the visual middle,
+     unlike the bbox centre, which can sit off-line in a bend). */
+  var cx = 0, cy = 0;
+  coords.forEach(function (c) { cx += c[0]; cy += c[1]; });
+  cx /= coords.length; cy /= coords.length;
+  var anchor = null, bestD = Infinity;
+  for (var i = 1; i < coords.length; i++) {
+    var ax = coords[i - 1][0], ay = coords[i - 1][1];
+    var bx = coords[i][0], by = coords[i][1];
+    var dx = bx - ax, dy = by - ay;
+    var len2 = dx * dx + dy * dy;
+    var t = len2 ? ((cx - ax) * dx + (cy - ay) * dy) / len2 : 0;
+    t = Math.max(0, Math.min(1, t));
+    var px = ax + t * dx, py = ay + t * dy;
+    var d = (cx - px) * (cx - px) + (cy - py) * (cy - py);
+    if (d < bestD) { bestD = d; anchor = [px, py]; }
+  }
+  if (!anchor) return fallback;
+  var apt = mapRef.latLngToContainerPoint(
+    L.latLng(anchor[1], anchor[0]));
+  /* The section's own line, in container px at the current zoom. */
+  var linePts = coords.map(function (c) {
+    return mapRef.latLngToContainerPoint(L.latLng(c[1], c[0]));
   });
-  var total = 0, segs = [];
-  for (var i = 1; i < pts.length; i++) {
-    var dx = pts[i][0] - pts[i - 1][0], dy = pts[i][1] - pts[i - 1][1];
-    var len = Math.sqrt(dx * dx + dy * dy);
-    segs.push({ dx: dx, dy: dy, len: len });
-    total += len;
+  var font = 11;
+  var w = (name || "").length * font * 0.62 + 8, h = font + 7;
+  function boxFor(dir, dist) {
+    var x = apt.x, y = apt.y;
+    if (dir === "top") y -= dist + h;
+    else if (dir === "bottom") y += dist;
+    else if (dir === "left") { x -= dist + w; y -= h / 2; }
+    else if (dir === "right") { x += dist; y -= h / 2; }
+    else if (dir === "topright") { x += dist * 0.7; y -= dist * 0.7 + h; }
+    else if (dir === "topleft") { x -= dist * 0.7 + w; y -= dist * 0.7 + h; }
+    else if (dir === "bottomright") { x += dist * 0.7; y += dist * 0.7; }
+    else if (dir === "bottomleft") { x -= dist * 0.7 + w; y += dist * 0.7; }
+    return { x0: x, y0: y, x1: x + w, y1: y + h };
   }
-  var half = total / 2, acc = 0, chosen = segs[segs.length - 1];
-  for (var j = 0; j < segs.length; j++) {
-    acc += segs[j].len;
-    if (acc >= half) { chosen = segs[j]; break; }
+  function clearance(box) {
+    var worst = Infinity;
+    linePts.forEach(function (p) {
+      var dx = Math.max(box.x0 - p.x, 0, p.x - box.x1);
+      var dy = Math.max(box.y0 - p.y, 0, p.y - box.y1);
+      var d = Math.sqrt(dx * dx + dy * dy);
+      if (d < worst) worst = d;
+    });
+    return worst;
   }
-  if (Math.abs(chosen.dy) > Math.abs(chosen.dx)) {
-    return { direction: "right", offset: [10, 0] };
+  var dirs = ["top", "right", "bottom", "left",
+    "topright", "topleft", "bottomright", "bottomleft"];
+  var dists = [14, 22, 30];
+  var best = null;
+  for (var di = 0; di < dists.length; di++) {
+    for (var dj = 0; dj < dirs.length; dj++) {
+      var box = boxFor(dirs[dj], dists[di]);
+      var cl = clearance(box);
+      if (!best || cl > best.cl) {
+        best = { dir: dirs[dj], dist: dists[di], cl: cl, box: box };
+      }
+      if (cl >= LABEL_CLEARANCE) {
+        return {
+          direction: dirs[dj], offset: [0, 0], anchor: anchor,
+          box: box, apt: { x: apt.x, y: apt.y }, w: w, h: h,
+        };
+      }
+    }
   }
-  return { direction: "top", offset: [0, -6] };
+  /* Extreme bend: least-bad box, pushed further out. */
+  var fb = boxFor(best.dir, 38);
+  return {
+    direction: best.dir, offset: [0, 0], anchor: anchor,
+    box: fb, apt: { x: apt.x, y: apt.y }, w: w, h: h,
+  };
+}
+
+/* Leaflet tooltip direction + pixel offset that centres the
+   label box chosen by sectionLabelPlacement. Tooltip offsets
+   position the tooltip's TIP, so convert the wanted box
+   position back into a direction/offset pair. */
+function tooltipForBox(place) {
+  var dx = place.box.x0 + place.w / 2 - place.apt.x;
+  var dyTop = place.box.y1 - place.apt.y;   /* box bottom edge */
+  var dyBot = place.box.y0 - place.apt.y;   /* box top edge */
+  if (place.dir === "top") {
+    return { direction: "top", offset: [dx, dyTop] };
+  }
+  if (place.dir === "bottom") {
+    return { direction: "bottom", offset: [dx, dyBot] };
+  }
+  if (place.dir === "left" || place.dir === "right") {
+    var dy = place.box.y0 + place.h / 2 - place.apt.y;
+    var edge = place.dir === "left" ? place.box.x1 : place.box.x0;
+    return { direction: place.dir, offset: [edge - place.apt.x, dy] };
+  }
+  /* Diagonals ride the nearest cardinal direction. */
+  if ((place.dir || "").indexOf("top") === 0) {
+    return { direction: "top", offset: [dx, dyTop] };
+  }
+  return { direction: "bottom", offset: [dx, dyBot] };
+}
+
+/* Screen-space rect of a rendered label element (for the
+   label-vs-label collision pass). */
+function labelRectOf(el, layer) {
+  var r = el.getBoundingClientRect();
+  var mr = map.getContainer().getBoundingClientRect();
+  return {
+    x0: r.left - mr.left, y0: r.top - mr.top,
+    x1: r.right - mr.left, y1: r.bottom - mr.top,
+  };
 }
 
 /* Boundary tick bars scale with zoom (see the boundaries layer):
@@ -494,34 +593,48 @@ function layoutSectionLabels() {
   var sorted = sectionLabelItems.slice().sort(function (a, b) {
     return (b.len || 0) - (a.len || 0);
   });
+  /* Pass 1: every label gets a placement that provably clears its
+     OWN line at this zoom (the never-touch rule), whether or not
+     it ends up shown. */
+  sorted.forEach(function (it) {
+    var tt = it.layer.getTooltip();
+    if (!tt) return;
+    var place = sectionLabelPlacement(it.feature, it.name, map);
+    if (!place.anchor) return;
+    it.place = place;
+    var tip = tooltipForBox(place);
+    tt.options.direction = tip.direction;
+    tt.options.offset = L.point(tip.offset);
+    tt.setLatLng(L.latLng(place.anchor[1], place.anchor[0]));
+  });
+  /* Pass 2: greedy label-vs-label deconfliction in the section's
+     length order, measured on the REAL rendered boxes (Leaflet
+     has now positioned them per pass 1): a label that would
+     overlap an already-placed one is hidden at this zoom, never
+     shoved onto a line. */
   sorted.forEach(function (it) {
     var tt = it.layer.getTooltip();
     var el = tt && tt.getElement();
     if (!el) return;
+    el.style.fontSize = font + "px";
     var show = true;
-    if (z < 12) {
-      if (z <= 9 && (it.len || 0) < 2) show = false;
-      var pt = map.latLngToContainerPoint(it.layer.getCenter());
-      var w = it.name.length * font * 0.62 + 8 + 6, h = font + 7;
-      var cx = pt.x, cy = pt.y - 6 - h / 2;
-      if (it.dir === "right") { cx = pt.x + 10 + w / 2; cy = pt.y; }
-      if (show) {
-        var collides = placed.some(function (p) {
-          return Math.abs(p.x - cx) < (p.w + w) / 2 &&
-                 Math.abs(p.y - cy) < (p.h + h) / 2;
-        });
-        if (collides) show = false;
-        else placed.push({ x: cx, y: cy, w: w, h: h });
-      }
+    if (z <= 9 && (it.len || 0) < 2) show = false;
+    if (show && z < 13) {
+      var r = labelRectOf(el);
+      var collides = placed.some(function (p) {
+        return r.x0 < p.x1 && p.x0 < r.x1 &&
+               r.y0 < p.y1 && p.y0 < r.y1;
+      });
+      if (collides) show = false;
+      else placed.push(r);
     }
     el.style.display = show ? "" : "none";
-    el.style.fontSize = font + "px";
   });
   var tFont = z >= 11 ? 12 : z === 10 ? 11 : 10;
   document.querySelectorAll(".terminus-label span").forEach(
     function (el) { el.style.fontSize = tFont + "px"; });
 }
-map.on("zoomend", layoutSectionLabels);
+map.on("zoomend moveend", layoutSectionLabels);
 
 /* The gap's on-map name (DESIGN D4) shows at z ≥ 9 only. Markers
    live in the gaps layer's own label group (gapLabelGroupRef, set
@@ -1101,7 +1214,6 @@ var LAYERS = [
         style: STRETCH_STYLE,
         onEachFeature: function (f, l) {
           var p = f.properties;
-          var place = sectionLabelPlacement(f);
           var item = {
             type: "section", name: p.name, feature: f, layer: l,
             chainage: p.chainage_start_mi || 0,
@@ -1109,16 +1221,30 @@ var LAYERS = [
           l._walkItem = item;
           if (p.name) {
             registerWalkItem(item);
-            /* Section name as a permanent tooltip at mid-section:
-               above the line on east–west segments, beside it on
-               north–south ones (Paul, 2026-11-10). */
+            /* Section name as a permanent tooltip near mid-section;
+               layoutSectionLabels() re-places it at every zoom so
+               it never touches the line (Paul, 2026-11-10), and the
+               label itself is CLICKABLE — same selection as the
+               line (Paul: "you should be able to click on the name
+               of the segment or the segment line"). */
             l.bindTooltip(p.name, {
-              permanent: true, direction: place.direction,
-              offset: place.offset,
-              className: "section-name-label", interactive: false,
+              permanent: true, direction: "top", offset: [0, -14],
+              className: "section-name-label", interactive: true,
             });
+            var ttEl = l.getTooltip() && l.getTooltip().getElement();
+            if (ttEl) {
+              ttEl.style.pointerEvents = "auto";
+              ttEl.style.cursor = "pointer";
+              ttEl.addEventListener("click", function () {
+                suppressMapClear = true;
+                window.setTimeout(function () {
+                  suppressMapClear = false;
+                }, 0);
+                selectSection(item, "map");
+              });
+            }
             sectionLabelItems.push({
-              layer: l, name: p.name, dir: place.direction,
+              layer: l, name: p.name, feature: f,
               len: p.length_mi || 0,
             });
           }
@@ -1130,7 +1256,10 @@ var LAYERS = [
             selectSection(item, "map");
           });
           l.on("mouseover", function (e) {
-            armChip(l, f, e.latlng, place);
+            /* v6: placement is computed per-zoom by
+               layoutSectionLabels(); the hover chip just needs a
+               direction — above the line is the house default. */
+            armChip(l, f, e.latlng, { direction: "top", offset: [0, -10] });
           });
           l.on("mouseout", closeChip);
         },
@@ -1326,7 +1455,7 @@ var LAYERS = [
     },
   },
   {
-    id: "access", label: "Access lines",
+    id: "access", label: "Non-road access",
     title: "Forest roads, OHV, other trails",
     file: "data/access.geojson", onByDefault: false, group: "Context",
     swatch: { kind: "line", color: ACCESS_STYLES.state_trail.color },
@@ -1634,7 +1763,7 @@ function legendHtml() {
   /* The Access points rows are gone with their layer (v3); the
      crossings live in Find now. Parcels swatches stay omitted while
      that layer is UI-disabled. */
-  add("", "<strong>Access</strong>");
+  add("", "<strong>Non-road access</strong>");
   Object.keys(ACCESS_STYLES).forEach(function (k) {
     var s = ACCESS_STYLES[k];
     add(line(s.color, !!s.dashArray), s.label);

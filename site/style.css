@@ -100,11 +100,6 @@ html, body {
   color: var(--ink-soft);
   margin: 3px 0 0;
 }
-.masthead-assoc {
-  font-size: 10px;
-  color: var(--ink-soft);
-  margin: 2px 0 0;
-}
 #panel h2 {
   font-size: 0.95rem;
   margin: 16px 0 6px;
@@ -661,15 +656,17 @@ html, body {
   font-weight: 600;
   text-shadow: 0 0 3px #fff, 0 0 3px #fff, 0 0 4px #fff;
 }
-/* Section names: permanent Leaflet tooltips at mid-section —
-   above the line on east–west segments, beside it on north–south
-   (app.js: sectionLabelPlacement). Bare haloed text, click-through;
+/* Section names: permanent Leaflet tooltips placed by
+   layoutSectionLabels() so they never touch the line (app.js:
+   sectionLabelPlacement). Bare haloed text, and CLICKABLE since
+   v6 — clicking the name selects the section, same as the line;
    the halo is the panel's paper, not clinical white (DESIGN §3). */
 .leaflet-tooltip.section-name-label {
   background: transparent;
   border: none;
   box-shadow: none;
-  pointer-events: none;
+  pointer-events: auto;
+  cursor: pointer;
   font-size: 11px;
   font-weight: 600;
   letter-spacing: 0.02em;
