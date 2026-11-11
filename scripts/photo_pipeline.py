@@ -20,6 +20,19 @@ Two modes:
          datetime+coordinate pairs. Photos with GPS but no valid
          direction are noted in the flags report (informational).
 
+         Every pin carries `serial: null` and `sign_kind: null` —
+         build NEVER assigns a serial. Serials are assigned at
+         classification by the separate editorial step
+         scripts/assign_serials.py (ITM-<type>-<nnn> per
+         data/assets/registry.json; docs/asset-serial-numbers-2026-11-11.md).
+         Build also stamps `chainage_mi` / `section` / `snap_m`
+         from the depicted chain (build_gazetteer's snap machinery;
+         a pin snapping further than 250 m from the chain is
+         off-chain and keeps chainage/section null) — the chainage
+         is what the assign step orders by, west to east. If the
+         chain files cannot be read, build still succeeds and leaves
+         those three fields null (the assign step derives them then).
+
 Storage rule (DESIGN.md, "Standing rule — photo storage split"):
 original photos NEVER enter the repo; only web derivatives do. The
 pipeline refuses to emit any single derivative over 5 MB and logs the
@@ -363,8 +376,49 @@ def cmd_build(args):
                 "direction_deg": ex.get("direction"),
                 "direction_ref": ex.get("direction_ref"),
                 "direction_compass": compass16(ex.get("direction")),
+                # Serials are assigned at classification, never here
+                # (scripts/assign_serials.py). sign_kind is null
+                # unless the pin is classified as a sign (SG).
+                "serial": None,
+                "sign_kind": None,
+                # Chainage along the depicted chain, stamped below.
+                "chainage_mi": None,
+                "section": None,
+                "snap_m": None,
             },
         })
+
+    # Stamp chainage / section / snap distance from the depicted
+    # chain (the same snap machinery build_gazetteer.py uses; a pin
+    # further than 250 m from the chain is off-chain and keeps
+    # chainage/section null). Guarded: if the chain files cannot be
+    # read, build still succeeds and the assign step derives these.
+    chain_ok = False
+    snapped = 0
+    off_chain = []
+    try:
+        sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+        import build_gazetteer as _gaz
+        _stretches = _gaz.load(
+            "data/segments/segment-stretches.geojson")["features"]
+        _gaps = _gaz.load("data/segments/gaps.geojson")["features"]
+        _pieces, _total = _gaz.build_chain(_stretches, _gaps)
+        chain_ok = True
+        for feat in features:
+            lon, lat = feat["geometry"]["coordinates"]
+            piece, ch, snap = _gaz.project(_pieces, [lon, lat])
+            props = feat["properties"]
+            props["snap_m"] = round(float(snap), 2)
+            if snap > _gaz.SNAP_LIMIT_M:
+                off_chain.append((props["photo"], props["snap_m"]))
+            else:
+                props["chainage_mi"] = round(float(ch), 2)
+                props["section"] = piece.name
+                snapped += 1
+    except Exception as exc:                # chain unreadable: no chainage
+        print(f"chainage unavailable ({exc}) — chainage_mi/section "
+              f"left null; assign_serials.py will derive them",
+              file=sys.stderr)
 
     collection = {"type": "FeatureCollection", "features": features}
     assets_path = os.path.join(out_dir, args.assets_name)
@@ -396,6 +450,18 @@ def cmd_build(args):
             lines.append(f"- {p['rel']} — photographer: {who}")
     else:
         lines.append("- none")
+    lines.append("\n## Chainage along the trail\n")
+    if not chain_ok:
+        lines.append("Chain files unreadable at build time — chainage_mi / "
+                     "section left null on all pins; assign_serials.py "
+                     "derives them when it runs.\n")
+    else:
+        lines.append(f"{snapped} pins snapped to the depicted chain "
+                     f"(chainage_mi + section stamped); "
+                     f"{len(off_chain)} off-chain (> 250 m — chainage / "
+                     f"section null).\n")
+        for photo, snap_m in off_chain:
+            lines.append(f"- {photo} — snap {snap_m} m")
     lines.append("\n## Oversize refusals (> 5 MB output)\n")
     if refusals:
         for p, why in refusals:
@@ -418,7 +484,8 @@ def cmd_build(args):
 
     print(f"scanned={len(photos)} with_gps={len(features)} "
           f"no_gps={len(no_gps)} duplicates={len(duplicates)} "
-          f"refusals={len(refusals)}")
+          f"refusals={len(refusals)} snapped={snapped} "
+          f"off_chain={len(off_chain)}")
     print(f"wrote {assets_path}")
     print(f"wrote {flags_path}")
     print(f"derivatives in {deriv_dir}")

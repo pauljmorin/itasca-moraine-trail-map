@@ -62,6 +62,23 @@ from photographs (pipeline below), each carrying:
 - date/time photographed, photo reference, photographer
 - `public_worthy` flag — the best photos double as promotion material
 
+**Serial numbers (Paul, 2026-11-11).** Every inventory item carries
+a serial, `ITM-<type>-<nnn>` — chapter prefix, two-letter type
+code, zero-padded sequence per type (e.g. `ITM-BN-014`, a bench;
+`ITM-SG-007`, a sign). The registry (`data/assets/registry.json`)
+is the single source of truth for next numbers and issued/retired
+serials; the type-code table lives there and in
+`data/assets/README.md`. A serial is assigned at classification,
+never at photo intake — the pipeline always writes `serial: null`,
+and the separate editorial step `scripts/assign_serials.py` stamps
+the next numbers in chainage order, west to east, per type (Muse
+proposes, Paul approves per batch). Unclassified pins carry no
+serial; serials are never reused and never renumbered. Pins also
+carry `chainage_mi` / `section` / `snap_m` from the depicted chain
+(off-chain pins keep chainage/section null) and `sign_kind` for
+signs. The viewer shows the serial in the pin popup title
+("ITM-BN-014 — Bench"); the marker itself is unchanged.
+
 ### Parcels
 
 Minnesota's compiled county parcel data (MnGeo / Minnesota

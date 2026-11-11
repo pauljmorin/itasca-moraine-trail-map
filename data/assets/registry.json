@@ -1,0 +1,96 @@
+{
+  "adopted": "2026-11-11",
+  "counters": {
+    "CP": {
+      "issued": {},
+      "next": 1,
+      "retired": []
+    },
+    "CS": {
+      "issued": {},
+      "next": 1,
+      "retired": []
+    },
+    "KI": {
+      "issued": {},
+      "next": 1,
+      "retired": []
+    },
+    "PK": {
+      "issued": {},
+      "next": 1,
+      "retired": []
+    },
+    "PO": {
+      "issued": {},
+      "next": 1,
+      "retired": []
+    },
+    "SG": {
+      "issued": {},
+      "next": 1,
+      "retired": []
+    }
+  },
+  "format": "ITM-<type>-<nnn>",
+  "notes": "Single source of truth for asset serial numbers (docs/asset-serial-numbers-2026-11-11.md). A serial is assigned at classification, never at photo intake \u2014 scripts/photo_pipeline.py build always writes serial null. Assignment is editorial: scripts/assign_serials.py stamps the next numbers in chainage order (west to east) per type, and only Muse proposes / Paul approves per batch. Never reuse, never renumber: a retired serial stays in retired with its reason. UN is a type value, never a serial prefix \u2014 no serial is ever issued for unclassified pins.",
+  "prefix": "ITM",
+  "types": {
+    "BN": {
+      "name": "bench",
+      "note": "Paul's example; not yet observed in any classified photo.",
+      "status": "proposed"
+    },
+    "BR": {
+      "name": "bridge",
+      "status": "proposed"
+    },
+    "BW": {
+      "name": "boardwalk",
+      "status": "proposed"
+    },
+    "CP": {
+      "name": "carsonite post",
+      "note": "The trail's standard marker post. A physical mile post is a CP, not a sign \u2014 the NCTA mile-marker layer is separate data.",
+      "status": "seeded"
+    },
+    "CS": {
+      "name": "campsite",
+      "note": "Campsite / bivouac site.",
+      "status": "seeded"
+    },
+    "KI": {
+      "name": "kiosk",
+      "status": "seeded"
+    },
+    "PK": {
+      "name": "parking area",
+      "note": "One serial per area, even if it has several signs; the signs themselves are SG items.",
+      "status": "seeded"
+    },
+    "PO": {
+      "name": "post",
+      "note": "Post, other (non-Carsonite).",
+      "status": "seeded"
+    },
+    "SG": {
+      "name": "sign",
+      "note": "One code for signs of any kind; subtype (regulatory, wayfinding, interpretive) goes in the pin's sign_kind field.",
+      "status": "seeded"
+    },
+    "SH": {
+      "name": "shelter",
+      "status": "proposed"
+    },
+    "UN": {
+      "name": "unclassified",
+      "note": "A type value, never a serial prefix. Unclassified pins carry no serial.",
+      "status": "bucket"
+    },
+    "WT": {
+      "name": "water source",
+      "note": "Water source (pump / spring / faucet).",
+      "status": "proposed"
+    }
+  }
+}

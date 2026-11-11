@@ -95,5 +95,9 @@ call the coordinator — it is a two-minute fix together.)*
 4. Out on the trail, just take the photo. One clear photo of each
    thing — sign, post, kiosk, parking area — standing close enough
    to read it.
+5. **Quote the serial when you report a problem with something.**
+   Once a photo is on the map, its pin carries a serial number
+   (like `ITM-BN-014`) in the popup title — that number is the
+   fastest way to say which bench, sign, or post you mean.
 
 Thank you — every photo you take becomes part of the chapter's map.
