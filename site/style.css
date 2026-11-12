@@ -1157,6 +1157,7 @@ body.base-imagery.gap-chip .gap-label span {
   border: 1px solid var(--paper-line);
 }
 .leaflet-popup-content .pop-note { margin: 4px 0 0; font-size: 12.5px; }
+.leaflet-popup-content .pop-source { margin: 4px 0 0; font-size: 12.5px; }
 .leaflet-popup-content .alert-desc { margin: 6px 0 0; }
 .leaflet-popup-content .chapter-desc { margin: 6px 0 0; }
 .leaflet-popup-content .chapter-closed {
@@ -1605,6 +1606,11 @@ body.base-imagery.gap-chip .gap-label span {
 /* --- "The land" extras (R2/§7): the opacity slider and the
    key strip under the Tree height toggle. --- */
 .land-extra { padding: 2px 4px 6px 26px; }
+/* --- Per-type asset toggles (Paul, Nov 12, 2026): the eleven
+   type checkboxes under Asset pins, indented like the land
+   extras. The labels themselves reuse #layer-toggles label. --- */
+.asset-types { padding: 2px 4px 6px 26px; }
+.asset-types label { padding: 2px 4px; font-size: 0.85rem; }
 .land-extra .opacity {
   display: flex;
   align-items: center;

@@ -192,23 +192,13 @@ var winterBase = L.layerGroup([mnHillshade, snowPistes]);
    z9-15; past z15 the z15 tiles upscale. (z16 was rendered
    and measured -- 152.5 MB for 1,466 tiles -- then dropped:
    the shipped range stays in the tens-of-MB class.)
-   Nov 11, 2026 redesign (design review §7): these two tile
-   sets are ONE overlay ("Tree height") over the base layers,
-   not bases — the two canopy radios are retired from the
-   Background list (a corridor-only base blanks the world
-   outside a 100 m strip and reads as a broken map). The
-   tile layer objects below serve the overlay; see
-   TREE_HEIGHT below. */
-var mnCanopyShade = L.tileLayer("tiles/canopy-shade/{z}/{x}/{y}.png", {
-  maxZoom: 18, maxNativeZoom: 15,
-  /* Corridor-only tile set (504 tiles, z9–15): the bounds stop
-     Leaflet requesting tiles that do not exist outside the
-     corridor — without them the overlay 404s on every pan.
-     Bounds from the z15 tile inventory (Nov 12, 2026). */
-  bounds: [[46.927759, -95.614014], [47.189712, -94.284668]],
-  attribution: "Canopy shade (LiDAR first returns, 2022): " +
-    "MnGeo / Minnesota DNR",
-});
+   Nov 11, 2026 redesign (design review §7): the canopy-height
+   colour is ONE overlay ("Tree height") over the base layers,
+   not a base — a corridor-only base blanks the world outside
+   a 100 m strip and reads as a broken map. The tile layer
+   object below serves the overlay; see TREE_HEIGHT below. The
+   NW hillshade companion (treeShade) was removed Nov 12, 2026
+   (Paul) — the colour alone carries the height. */
 var mnCanopyHeight = L.tileLayer(
   "tiles/canopy-height/{z}/{x}/{y}.png", {
     maxZoom: 18, maxNativeZoom: 15,
@@ -889,6 +879,7 @@ function trailPopup(f) {
   return "<h3>" + title + "</h3>" + kvTable([
     ["Chapter", CHAPTER_NAMES[p.chapter] || p.chapter],
     ["Type", kind + (p.trail_type ? " (" + p.trail_type + ")" : "")],
+    ["Source", "North Country Trail Association — official trail line"],
   ]);
 }
 
@@ -899,6 +890,7 @@ function parcelPopup(f) {
     ["Land class", p.land_class],
     ["Acres", p.acres],
     ["Owner", p.owner],
+    ["Source", "County parcel records — public record"],
   ]);
 }
 
@@ -930,15 +922,49 @@ function leechLakePopup(f) {
    of implying a sale is current; a sale's year is the
    freshness signal. FIM stand_age 0 means unrecorded, not
    age 0. */
+/* Source link lines (Paul, Nov 12, 2026): kvTable escapes HTML,
+   so a clickable source cannot live in the table — it is
+   appended as its own line. Each URL is the service's own
+   page, verified live (HTTP 200, Nov 12, 2026). */
+var SRC_CASS_TIMBER = "https://cassweb.casscountymn.gov/arcgis/" +
+  "rest/services/Forestry_ForestPlan_Base/MapServer/62";
+var SRC_CASS_FIM = "https://cassweb.casscountymn.gov/arcgis/" +
+  "rest/services/Forestry_ForestPlan_Base/MapServer/63";
+var SRC_EDW = "https://apps.fs.usda.gov/arcx/rest/services/EDW/" +
+  "EDW_ActivityProjectAreas_01/MapServer/2";
+var SRC_EASEMENTS = "https://apps.bwsr.state.mn.us/arcgis/" +
+  "rest/services/RIM/RIM_Reserve_Easements/MapServer/0";
+function popSourceLine(url, label) {
+  return "<p class='pop-source'>Source: <a href='" + url +
+    "' target='_blank' rel='noopener'>" + esc(label) + "</a></p>";
+}
+/* Timber sale style (Paul, Nov 12, 2026): recent sales
+   (2024–2026 — 113 Cass, 20 Chippewa NF) render amber and
+   highlighted; older sales keep the layer's standard style
+   (std). A sale with no year renders as older. */
+function timberSaleStyle(f, std) {
+  var y = (f.properties || {}).year;
+  if (typeof y === "number" && y >= 2024) {
+    return {
+      color: "#92400e", weight: 2,
+      fillColor: "#f59e0b", fillOpacity: 0.45,
+    };
+  }
+  return {
+    color: std.color, weight: std.weight,
+    fillColor: std.fillColor, fillOpacity: std.fillOpacity,
+  };
+}
 function logCassPopup(f) {
   var p = f.properties;
   return "<h3>" + esc(p.name || "Timber sale") + "</h3>" + kvTable([
     ["Permit", p.permit],
     ["Acres", p.acres],
     ["Year", p.year],
-    ["Source", p.source],
   ]) + "<p class='pop-note'>No expiry in the source — the year " +
-    "is the sale year, not a guarantee the sale is current.</p>";
+    "is the sale year, not a guarantee the sale is current.</p>" +
+    popSourceLine(SRC_CASS_TIMBER,
+      "Cass County Forestry Web Map — Timber Sales (Current), layer 62");
 }
 function logFimPopup(f) {
   var p = f.properties;
@@ -955,8 +981,9 @@ function logFimPopup(f) {
     ["Native plant community", p.npc],
     ["Year", p.year],
     ["Township / Range / Section", trs || null],
-    ["Source", p.source],
-  ]) + "<p class='pop-note'>Forest inventory stand, not a sale.</p>";
+  ]) + "<p class='pop-note'>Forest inventory stand, not a sale.</p>" +
+    popSourceLine(SRC_CASS_FIM,
+      "Cass County Forestry Web Map — FIM Stands (Current), layer 63");
 }
 function logEdwPopup(f) {
   var p = f.properties;
@@ -967,9 +994,11 @@ function logEdwPopup(f) {
     ["Revised", p.rev_date],
     ["Forest", p.forest],
     ["District", p.district],
-    ["Source", p.source],
   ]) + "<p class='pop-note'>Revised is the last revision date, " +
-    "not an expiry — the source carries none.</p>";
+    "not an expiry — the source carries none.</p>" +
+    popSourceLine(SRC_EDW,
+      "USFS EDW Activity Project Areas — Timber Sale, " +
+      "Chippewa National Forest");
 }
 /* Conservation easements (Nov 12, 2026): BWSR RIM Reserve
    easements clipped to the corridor (40 easements, 3,370 ac —
@@ -986,13 +1015,14 @@ function easementsPopup(f) {
     ["Recorded", p.recorded],
     ["Perpetual", p.perpetual ? "Yes" : "No"],
     ["Status", p.status],
-    ["Source", p.source],
   ];
   if (p.status === "expired" && p.expires) {
     rows.splice(6, 0, ["Expired", p.expires]);
   }
   return "<h3>" + esc(p.name || "Conservation easement") + "</h3>" +
-    kvTable(rows);
+    kvTable(rows) +
+    popSourceLine(SRC_EASEMENTS,
+      "BWSR RIM Reserve Easements, MapServer layer 0");
 }
 
 
@@ -1114,6 +1144,7 @@ function accessPopup(f) {
     kvTable([
       ["Kind", s ? s.label : p.source_type],
       ["Length", p.miles ? p.miles + " mi" : null],
+      ["Source", p.dataset],
     ]);
   if (p.cut) html += "<p class='pop-note'>Continues beyond the corridor</p>";
   if (p.connector) {
@@ -1129,6 +1160,7 @@ function roadPopup(f) {
   var html = "<h3>" + (esc(p.name) || (s ? s.label : "Road")) + "</h3>" +
     kvTable([
       ["Class", s ? s.label : p.road_class],
+      ["Source", p.dataset],
     ]);
   if (p.cut) html += "<p class='pop-note'>Continues beyond the corridor</p>";
   if (p.connector) {
@@ -1150,6 +1182,26 @@ function assetTypeName(code) {
   if (!code) return "Asset";
   return ASSET_TYPE_NAMES[String(code).toUpperCase()] ||
     (String(code).charAt(0).toUpperCase() + String(code).slice(1));
+}
+/* Per-type asset toggles (Paul, Nov 12, 2026): the Asset pins
+   toggle grows eleven sub-toggles, one per type, with the pin
+   count each carries. Counts verified against
+   data/assets.geojson (84 pins total); UN covers both "UN"
+   and "unclassified" (17 + 1 = 18). Order is the brief's
+   order — largest first. */
+var ASSET_TYPE_TOGGLES = [
+  ["CP", 30], ["SG", 16], ["BW", 10], ["BN", 3], ["BR", 2],
+  ["CS", 1], ["LT", 1], ["KI", 1], ["PO", 1], ["RG", 1], ["UN", 18],
+];
+var assetTypeOn = {};
+ASSET_TYPE_TOGGLES.forEach(function (t) { assetTypeOn[t[0]] = true; });
+var assetsTypeLayers = {};
+function assetTypeCode(f) {
+  var t = (f.properties || {}).type;
+  if (!t) return "UN";
+  t = String(t).toUpperCase();
+  if (t === "UNCLASSIFIED") return "UN";
+  return t;
 }
 
 /* Condition in plain language (R5): the pin's grade is a word
@@ -1265,6 +1317,7 @@ function assetPopup(f) {
   }
   rows.push(["Photographed", fmtPhotoDate(p.datetime)]);
   rows.push(["Photographer", p.photographer]);
+  rows.push(["Source", "Itasca Moraine Chapter — volunteer photo inventory"]);
   if (photos.length > 1) rows.push(["Photos", photos.length + " photos"]);
   /* Classify link (Paul, Nov 12): the pin opens the
      classification interface at this pin, so the chapter can
@@ -2719,8 +2772,132 @@ function swatchFor(def) {
 
 var gapLabelGroupRef = null;
 
-/* Tree height overlay (§7): one opacity for the colour +
-   shade pair. Default 70% — at 100% the dark green swallows
+/* Canopy height hover readout (Paul, Nov 12, 2026): hovering
+   the Tree height overlay reads the height in metres under the
+   cursor. The canopy-height tiles colour each pixel by the same
+   ramp the tile builder uses (scripts/build_lidar_trio.py
+   RAMP_STOPS: white 0–1 m, greens deepening to 25 m), so the
+   readout samples the tile pixel and inverts the ramp. Tiles
+   are same-origin, so canvas readback is allowed. A
+   transparent pixel means outside the corridor (no data). */
+var CANOPY_RAMP = [  /* (height m, [r, g, b]) — mirrors RAMP_STOPS */
+  [0, [255, 255, 255]], [1, [255, 255, 255]],
+  [2, [215, 238, 200]], [5, [180, 220, 165]],
+  [9, [140, 200, 120]], [14, [100, 175, 90]],
+  [19, [64, 145, 72]], [20, [34, 110, 55]],
+  [25, [12, 64, 30]],
+];
+var canopyLut = null;
+function canopyLutBuild() {
+  if (canopyLut) return canopyLut;
+  canopyLut = [];
+  for (var i = 0; i <= 256; i++) {
+    var h = i * 25 / 256;
+    var c = CANOPY_RAMP[CANOPY_RAMP.length - 1][1];
+    for (var j = 0; j < CANOPY_RAMP.length - 1; j++) {
+      var h0 = CANOPY_RAMP[j][0], h1 = CANOPY_RAMP[j + 1][0];
+      if (h >= h0 && h <= h1) {
+        var t = h1 === h0 ? 0 : (h - h0) / (h1 - h0);
+        var c0 = CANOPY_RAMP[j][1], c1 = CANOPY_RAMP[j + 1][1];
+        c = [Math.round(c0[0] + (c1[0] - c0[0]) * t),
+             Math.round(c0[1] + (c1[1] - c0[1]) * t),
+             Math.round(c0[2] + (c1[2] - c0[2]) * t)];
+        break;
+      }
+    }
+    canopyLut.push(c);
+  }
+  return canopyLut;
+}
+function canopyHeightFromRGB(r, g, b) {
+  var lut = canopyLutBuild();
+  var best = 0, bestD = Infinity;
+  for (var i = 0; i < lut.length; i++) {
+    var dr = lut[i][0] - r, dg = lut[i][1] - g, db = lut[i][2] - b;
+    var d = dr * dr + dg * dg + db * db;
+    if (d < bestD) { bestD = d; best = i; }
+  }
+  return best * 25 / 256;
+}
+/* One cached tile: the tile the cursor is over, drawn to an
+   offscreen canvas so a pixel read is cheap. Reloaded only
+   when the cursor crosses into another tile. */
+var canopyTileCache = { key: null, canvas: null, loaded: false };
+var canopyReadoutEl = null;
+var canopyLastLatLng = null;
+function canopyTileXY(latlng, z) {
+  var n = Math.pow(2, z);
+  var x = Math.floor((latlng.lng + 180) / 360 * n);
+  var latRad = latlng.lat * Math.PI / 180;
+  var y = Math.floor((1 - Math.log(Math.tan(latRad) +
+    1 / Math.cos(latRad)) / Math.PI) / 2 * n);
+  var fx = ((latlng.lng + 180) / 360 * n - x) * 256;
+  var fy = ((1 - Math.log(Math.tan(latRad) +
+    1 / Math.cos(latRad)) / Math.PI) / 2 * n - y) * 256;
+  return { x: x, y: y,
+           px: Math.max(0, Math.min(255, Math.floor(fx))),
+           py: Math.max(0, Math.min(255, Math.floor(fy))) };
+}
+function canopyReadoutShow(latlng) {
+  if (!canopyReadoutEl) return;
+  var def = layerById("treeheight");
+  if (!def || !def.layer || !map.hasLayer(def.layer)) {
+    canopyReadoutEl.textContent =
+      "Hover the canopy to read its height.";
+    return;
+  }
+  var z = Math.min(map.getZoom(), 15);
+  var t = canopyTileXY(latlng, z);
+  var key = z + "/" + t.x + "/" + t.y;
+  function readPixel() {
+    if (!canopyTileCache.canvas) return;
+    var ctx = canopyTileCache.canvas.getContext("2d");
+    var d = ctx.getImageData(t.px, t.py, 1, 1).data;
+    if (d[3] === 0) {
+      canopyReadoutEl.textContent = "No canopy data here.";
+      return;
+    }
+    var h = canopyHeightFromRGB(d[0], d[1], d[2]);
+    canopyReadoutEl.textContent =
+      "Canopy height here: " + h.toFixed(1) + " m";
+  }
+  if (canopyTileCache.key === key && canopyTileCache.loaded) {
+    readPixel();
+    return;
+  }
+  if (canopyTileCache.key === key) return; /* tile still loading */
+  canopyTileCache = { key: key, canvas: null, loaded: false };
+  var img = new Image();
+  img.onload = function () {
+    if (canopyTileCache.key !== key) return;
+    var c = document.createElement("canvas");
+    c.width = 256; c.height = 256;
+    c.getContext("2d").drawImage(img, 0, 0);
+    canopyTileCache.canvas = c;
+    canopyTileCache.loaded = true;
+    /* Re-read for wherever the cursor is now. */
+    if (canopyLastLatLng) canopyReadoutShow(canopyLastLatLng);
+  };
+  img.onerror = function () {
+    canopyTileCache = { key: null, canvas: null, loaded: false };
+  };
+  img.src = "tiles/canopy-height/" + key + ".png";
+}
+function wireCanopyHover() {
+  map.on("mousemove", function (e) {
+    canopyLastLatLng = e.latlng;
+    canopyReadoutShow(e.latlng);
+  });
+  map.on("mouseout", function () {
+    canopyLastLatLng = null;
+    if (canopyReadoutEl) {
+      canopyReadoutEl.textContent =
+        "Hover the canopy to read its height.";
+    }
+  });
+}
+/* Tree height overlay (§7): one opacity for the canopy-height
+   colour. Default 70% — at 100% the dark green swallows
    the amber sections and the orange pins. Present mode drops
    it to 60% (R4) and restores it on exit. */
 var treeHeightOpacity = 0.70;
@@ -2729,7 +2906,6 @@ var treeHeightOpacityEl = null;
 function setTreeHeightOpacity(v) {
   treeHeightOpacity = v;
   mnCanopyHeight.setOpacity(v);
-  mnCanopyShade.setOpacity(v);
   if (treeHeightSlider) {
     treeHeightSlider.value = String(Math.round(v * 100));
   }
@@ -3235,9 +3411,11 @@ var LAYERS = [
     build: function (gj) {
       var layer = L.geoJSON(gj, {
         renderer: canvasFor(),
-        style: {
-          color: "#92400e", weight: 1.5,
-          fillColor: "#d97706", fillOpacity: 0.28,
+        style: function (f) {
+          return timberSaleStyle(f, {
+            color: "#92400e", weight: 1.5,
+            fillColor: "#d97706", fillOpacity: 0.28,
+          });
         },
         onEachFeature: function (f, l) { bindPop(l, logCassPopup(f)); },
       });
@@ -3280,9 +3458,11 @@ var LAYERS = [
     build: function (gj) {
       var layer = L.geoJSON(gj, {
         renderer: canvasFor(),
-        style: {
-          color: "#475569", weight: 1.5,
-          fillColor: "#64748b", fillOpacity: 0.15,
+        style: function (f) {
+          return timberSaleStyle(f, {
+            color: "#475569", weight: 1.5,
+            fillColor: "#64748b", fillOpacity: 0.15,
+          });
         },
         onEachFeature: function (f, l) { bindPop(l, logEdwPopup(f)); },
       });
@@ -3361,58 +3541,6 @@ var LAYERS = [
     },
   },
   {
-    /* S4 Places: the gazetteer's 114 NCTA waypoints (parking,
-       camping, water, shelters, POIs) as a map layer, Z3+ only.
-       Letter discs in the terminus idiom; POIs are plain slate
-       dots. Popups reuse the gazetteer record (gazPopupHtml), so
-       the layer and Find can never disagree. */
-    id: "places", label: "Places",
-    title: "NCTA waypoints: parking, camping, water, shelters, " +
-      "points of interest",
-    file: "data/gazetteer.geojson", onByDefault: false,
-    group: "Around the trail",
-    swatch: { kind: "pin", color: COLORS.tick },
-    build: function (gj) {
-      var inner = L.layerGroup();
-      var outer = L.layerGroup();
-      placesInnerRef = inner;
-      placesOuterRef = outer;
-      var glyphs = { Parking: "P", Camping: "C", Water: "W",
-                     Shelter: "S" };
-      gj.features.forEach(function (f) {
-        var p = f.properties;
-        /* Chapter entries ride the gazetteer for Find, but the
-           Chapter places layer draws them — never both. */
-        if (p.source === "chapter") return;
-        var glyph = glyphs[p.kind];
-        if (p.kind !== "POI" && !glyph) return;
-        var c = f.geometry.coordinates;
-        var ll = L.latLng(c[1], c[0]);
-        var mk;
-        if (p.kind === "POI") {
-          mk = L.circleMarker(ll, {
-            radius: 3, color: COLORS.tick, weight: 1,
-            fillColor: COLORS.tick, fillOpacity: 0.8,
-          });
-        } else {
-          mk = L.marker(ll, {
-            keyboard: false,
-            icon: L.divIcon({
-              className: "place-disc-wrap", iconSize: [15, 15],
-              iconAnchor: [8, 8],
-              html: "<span class='place-disc'>" + glyph + "</span>",
-            }),
-          });
-        }
-        bindPop(mk, gazPopupHtml(f));
-        inner.addLayer(mk);
-      });
-      outer.addLayer(inner);
-      applyPlacesGate();
-      return outer;
-    },
-  },
-  {
     /* Trail alerts (Paul, Nov 10, 2026 — "add a Trail alerts
        layer next round"): NCTA's own alert points (closures,
        storm damage, reroutes, new routes), pulled verbatim by
@@ -3462,7 +3590,7 @@ var LAYERS = [
     id: "chapterplaces", label: "Chapter places",
     title: "Places the chapter itself records — campsites first",
     file: "data/chapter-places.geojson", onByDefault: false,
-    group: "Our stuff",
+    group: "ITM inventory",
     swatch: { kind: "chapter", color: COLORS.trailDeep },
     build: function (gj) {
       var glyphs = { Parking: "P", Camping: "C", Water: "W",
@@ -3492,38 +3620,133 @@ var LAYERS = [
     },
   },
   {
+    /* S4 Places: the gazetteer's 114 NCTA waypoints (parking,
+       camping, water, shelters, POIs) as a map layer, Z3+ only.
+       Letter discs in the terminus idiom; POIs are plain slate
+       dots. Popups reuse the gazetteer record (gazPopupHtml), so
+       the layer and Find can never disagree. */
+    id: "places", label: "Places",
+    title: "NCTA waypoints: parking, camping, water, shelters, " +
+      "points of interest",
+    file: "data/gazetteer.geojson", onByDefault: false,
+    group: "ITM inventory",
+    swatch: { kind: "pin", color: COLORS.tick },
+    build: function (gj) {
+      var inner = L.layerGroup();
+      var outer = L.layerGroup();
+      placesInnerRef = inner;
+      placesOuterRef = outer;
+      var glyphs = { Parking: "P", Camping: "C", Water: "W",
+                     Shelter: "S" };
+      gj.features.forEach(function (f) {
+        var p = f.properties;
+        /* Chapter entries ride the gazetteer for Find, but the
+           Chapter places layer draws them — never both. */
+        if (p.source === "chapter") return;
+        var glyph = glyphs[p.kind];
+        if (p.kind !== "POI" && !glyph) return;
+        var c = f.geometry.coordinates;
+        var ll = L.latLng(c[1], c[0]);
+        var mk;
+        if (p.kind === "POI") {
+          mk = L.circleMarker(ll, {
+            radius: 3, color: COLORS.tick, weight: 1,
+            fillColor: COLORS.tick, fillOpacity: 0.8,
+          });
+        } else {
+          mk = L.marker(ll, {
+            keyboard: false,
+            icon: L.divIcon({
+              className: "place-disc-wrap", iconSize: [15, 15],
+              iconAnchor: [8, 8],
+              html: "<span class='place-disc'>" + glyph + "</span>",
+            }),
+          });
+        }
+        bindPop(mk, gazPopupHtml(f));
+        inner.addLayer(mk);
+      });
+      outer.addLayer(inner);
+      applyPlacesGate();
+      return outer;
+    },
+  },
+  {
     id: "assets", label: "Asset pins",
     file: "data/assets.geojson", onByDefault: true, missingOk: true,
-    emptyUntilData: true, group: "Our stuff",
+    emptyUntilData: true, group: "ITM inventory",
     swatch: { kind: "pin", color: COLORS.assetPin },
     build: function (gj) {
-      return L.geoJSON(gj, {
-        pointToLayer: function (f, latlng) {
-          return assetMarker(f, latlng);
-        },
-        onEachFeature: function (f, l) {
-          /* Function content (Leaflet 1.9 calls it at open time):
-             the popup is built when it opens, not when the layer
-             loads, so it always reflects the pin's current data. */
-          bindPop(l, function () { return assetPopup(f); });
-          wireAssetHover(l, f);
-        },
+      /* One sublayer per type (see ASSET_TYPE_TOGGLES): the
+         panel's per-type checkboxes add and remove these from
+         the group, so a type can be hidden without touching the
+         others. The main Asset pins checkbox still controls the
+         whole group. */
+      var group = L.layerGroup();
+      assetsTypeLayers = {};
+      ASSET_TYPE_TOGGLES.forEach(function (t) {
+        var code = t[0];
+        var feats = gj.features.filter(function (f) {
+          return assetTypeCode(f) === code;
+        });
+        if (!feats.length) return;
+        var sub = L.geoJSON(
+          { type: "FeatureCollection", features: feats }, {
+            pointToLayer: function (f, latlng) {
+              return assetMarker(f, latlng);
+            },
+            onEachFeature: function (f, l) {
+              /* Function content (Leaflet 1.9 calls it at open
+                 time): the popup is built when it opens, not
+                 when the layer loads, so it always reflects the
+                 pin's current data. */
+              bindPop(l, function () { return assetPopup(f); });
+              wireAssetHover(l, f);
+            },
+          });
+        sub._assetType = code;
+        assetsTypeLayers[code] = sub;
+        if (assetTypeOn[code]) group.addLayer(sub);
       });
+      return group;
+    },
+    panelExtra: function (label) {
+      var wrap = document.createElement("div");
+      wrap.className = "asset-types";
+      ASSET_TYPE_TOGGLES.forEach(function (t) {
+        var code = t[0], count = t[1];
+        var lab = document.createElement("label");
+        var box = document.createElement("input");
+        box.type = "checkbox";
+        box.checked = !!assetTypeOn[code];
+        box.setAttribute("aria-label",
+          assetTypeName(code) + " pins");
+        lab.appendChild(box);
+        lab.appendChild(document.createTextNode(
+          assetTypeName(code) + " (" + count + ")"));
+        box.addEventListener("change", function () {
+          assetTypeOn[code] = box.checked;
+          var sub = assetsTypeLayers[code];
+          var def = layerById("assets");
+          if (!sub || !def || !def.layer) return;
+          if (box.checked) def.layer.addLayer(sub);
+          else def.layer.removeLayer(sub);
+        });
+        wrap.appendChild(lab);
+      });
+      label.parentNode.insertBefore(wrap, label.nextSibling);
     },
   },
   {
     /* §7 "The land" (design review, Nov 11, 2026): Tree height —
-       the canopy-height colour + the NW hillshade as ONE overlay
-       over any background, OFF by default, opacity slider
-       default 70%. The two tile sets are transparent outside
-       the corridor, so the overlay never paints a rectangle.
-       Composite: colour in its own pane (z 210), shade above it
-       (z 211) with multiply blending — the shade's flat value
-       is 180 (hillshade at 45° altitude), so the shade pane
-       carries a brightness(1.4167) lift (255/180) that makes
-       flat ground neutral for the multiply and leaves only the
-       shaded slopes darkening the colour. The two canopy radios
-       are retired from Background (see BASES). */
+       the canopy-height colour as ONE overlay over any
+       background, OFF by default, opacity slider default 70%.
+       The tile set is transparent outside the corridor, so the
+       overlay never paints a rectangle. The NW hillshade
+       companion was removed Nov 12, 2026 (Paul) — the colour
+       alone carries the height. Hovering the overlay reads the
+       height in metres (see the canopy hover readout). The two
+       canopy radios are retired from Background (see BASES). */
     id: "treeheight", label: "Tree height",
     title: "How tall the trees are, over any background",
     noFetch: true, onByDefault: false, group: "The land",
@@ -3532,15 +3755,10 @@ var LAYERS = [
       if (!map.getPane("treeColor")) {
         var pc = map.createPane("treeColor");
         pc.style.zIndex = 210;
-        var ps = map.createPane("treeShade");
-        ps.style.zIndex = 211;
-        ps.style.mixBlendMode = "multiply";
-        ps.style.filter = "brightness(1.4167)";
       }
       mnCanopyHeight.options.pane = "treeColor";
-      mnCanopyShade.options.pane = "treeShade";
       setTreeHeightOpacity(treeHeightOpacity);
-      return L.layerGroup([mnCanopyHeight, mnCanopyShade]);
+      return mnCanopyHeight;
     },
     panelExtra: function (label) {
       var wrap = document.createElement("div");
@@ -3578,6 +3796,13 @@ var LAYERS = [
         "<p class='key-note'>*Height is a guide, not proof of " +
         "old growth.</p>";
       wrap.appendChild(key);
+      /* Hover readout (Paul, Nov 12, 2026): the height under
+         the cursor, read live from the canopy tile. */
+      var ro = document.createElement("p");
+      ro.className = "key-note canopy-readout";
+      ro.textContent = "Hover the canopy to read its height.";
+      wrap.appendChild(ro);
+      canopyReadoutEl = ro;
       label.parentNode.insertBefore(wrap, label.nextSibling);
       treeHeightSlider = slider;
       treeHeightOpacityEl = opVal;
@@ -3879,7 +4104,7 @@ function setView(view) {
    task, not by data source. The LAYERS array order is the build
    order; the PANEL order is this list, so a def's group decides
    where its toggle lands, not its position in the array. */
-var PANEL_GROUPS = ["The trail", "Our stuff",
+var PANEL_GROUPS = ["The trail", "ITM inventory",
                     "The land", "Around the trail"];
 LAYERS.forEach(function (def) {
   def.layer = null;
@@ -3966,6 +4191,11 @@ PANEL_GROUPS.forEach(function (group) {
    which the Work preset switches on. An explicit #layers=
    hash below still wins over the preset. */
 setView(currentView);
+
+/* Canopy hover readout (Paul, Nov 12, 2026): the mousemove
+   wiring lives here, after the panel exists, so the readout
+   element the panelExtra created is already in place. */
+wireCanopyHover();
 
 /* Wire the panel's own buttons (R4/R6/R7): the view switch,
    Present, Hide panel, and the footer About link (Sources
@@ -4388,6 +4618,17 @@ function gazContents(sectionName) {
   return byKind;
 }
 
+/* Gazetteer provenance (Paul, Nov 12, 2026): every point names
+   where it came from, so a reader who wants to edit a campsite
+   knows whether it is the chapter's record or someone else's
+   (NCTA, or the chapter's own crossings / boundary / tracker).
+   The chapter-source points route to the chapter card instead. */
+var GAZ_SOURCE_LABELS = {
+  "ncta-points": "North Country Trail Association",
+  "access-points": "Itasca Moraine Chapter — trail crossings",
+  "boundaries": "Itasca Moraine Chapter — boundary",
+  "tracker": "Itasca Moraine Chapter — tracker",
+};
 function gazPopupHtml(f) {
   var p = f.properties;
   /* A chapter place selected through Find or What's here gets
@@ -4399,6 +4640,7 @@ function gazPopupHtml(f) {
       p.nct_mile != null ? p.nct_mile : null],
     ["From the west end",
       p.from_west_mi != null ? p.from_west_mi + " mi along the trail" : null],
+    ["Source", GAZ_SOURCE_LABELS[p.source] || p.source],
   ];
   if (p.off_chain) {
     rows.push(["Position", "Off the depicted chapter chain — nearest " +
