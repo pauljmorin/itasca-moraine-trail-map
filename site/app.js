@@ -850,7 +850,11 @@ document.addEventListener("click", function (e) {
     var d = t.getAttribute("data-derivative");
     if (img && d) img.setAttribute("src", "assets-photos/" + d);
     var label = wrap.querySelector(".pop-face-label");
-    if (label) label.textContent = t.getAttribute("data-label") || "";
+    if (label) {
+      var lab = t.getAttribute("data-label") || "";
+      var dat = t.getAttribute("data-date") || "";
+      label.textContent = lab + (dat ? " · " + dat : "");
+    }
     var btns = wrap.querySelectorAll(".pop-face");
     for (var i = 0; i < btns.length; i++) {
       btns[i].classList.toggle("active", btns[i] === t);
@@ -1138,6 +1142,10 @@ function assetPopup(f) {
   if (photos.length === 1 && photos[0].derivative) {
     html += "<img src=\"assets-photos/" + esc(photos[0].derivative) +
       "\" alt=\"\" style=\"max-width:100%;display:block;margin:6px 0 2px\">";
+    /* Photo date under the photo (Paul, Nov 12): the date the
+       photo was taken, from its EXIF datetime. */
+    var d1 = fmtPhotoDate(photos[0].datetime || p.datetime);
+    if (d1) html += "<div class=\"pop-photo-date\">" + esc(d1) + "</div>";
   } else if (photos.length > 1) {
     /* Face flip (Nov 11, 2026): one face at a time — Front/Back for
        two photos, Face 1/2/3… for more — with a "Show all photos"
@@ -1150,17 +1158,27 @@ function assetPopup(f) {
       return photos.length === 2 ? (i === 0 ? "Front" : "Back")
         : "Face " + (i + 1);
     };
+    /* Face label carries the photo's date too (Paul, Nov 12):
+       "Front · Nov 11, 2026". Each photo's own EXIF datetime. */
+    var faceDate = function (i) {
+      return fmtPhotoDate((photos[i] && photos[i].datetime) || p.datetime);
+    };
+    var faceLabelDate = function (i) {
+      var d = faceDate(i);
+      return faceLabel(i) + (d ? " · " + d : "");
+    };
     html += "<div class=\"pop-flip\">";
     html += "<img class=\"pop-face-img\" src=\"assets-photos/" +
       esc(photos[0].derivative) +
       "\" alt=\"\" style=\"max-width:100%;display:block;margin:6px 0 2px\">";
-    html += "<div class=\"pop-face-label\">" + esc(faceLabel(0)) + "</div>";
+    html += "<div class=\"pop-face-label\">" + esc(faceLabelDate(0)) + "</div>";
     html += "<div class=\"pop-face-btns\">";
     photos.forEach(function (ph, i) {
       if (!ph.derivative) return;
       html += "<button type=\"button\" class=\"pop-face" +
         (i === 0 ? " active" : "") + "\" data-derivative=\"" +
         esc(ph.derivative) + "\" data-label=\"" + esc(faceLabel(i)) +
+        "\" data-date=\"" + esc(faceDate(i) || "") +
         "\">" + esc(faceLabel(i)) + "</button>";
     });
     html += "<button type=\"button\" class=\"pop-faces-all\">" +
