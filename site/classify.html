@@ -53,6 +53,34 @@
   }
   .pinhead .badge.un { background: #8a6d00; }
   .photos figure { margin: 0 0 18px; background: #fff; border: 2px solid #d8d2c4; border-radius: 10px; padding: 10px; }
+  .photos figure.hidden-photo { display: none; }
+  .backside-toggle {
+    background: #fff; border: 2px solid #d8d2c4; border-radius: 10px;
+    padding: 10px 16px; margin-bottom: 16px; font-size: 18px;
+    display: flex; flex-wrap: wrap; gap: 8px 16px; align-items: center;
+  }
+  .backside-toggle[hidden] { display: none; }
+  .backside-toggle label { font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 8px; margin: 0; }
+  .backside-toggle input[type=checkbox] { width: 22px; height: 22px; accent-color: #2e5d3a; }
+  .backside-note { font-size: 16px; color: #555; }
+  .classify-grid { display: flex; gap: 22px; align-items: flex-start; }
+  .type-panel { flex: 0 0 280px; }
+  .type-panel .field-label { font-size: 19px; font-weight: 700; margin-bottom: 6px; display: block; }
+  .classify-fields { flex: 1; min-width: 0; }
+  .type-checks { display: flex; flex-direction: column; gap: 8px; }
+  .type-check {
+    display: flex; align-items: center; gap: 10px; font-size: 19px; font-weight: 600;
+    border: 2px solid #888; border-radius: 8px; padding: 9px 12px; cursor: pointer; background: #fff; margin: 0;
+  }
+  .type-check:has(input:checked) { border-color: #2e5d3a; background: #e8f2e9; }
+  .type-check input { width: 22px; height: 22px; accent-color: #2e5d3a; flex: none; }
+  .type-glyph { font-size: 24px; line-height: 1; flex: none; width: 30px; text-align: center; }
+  .type-name { flex: 1; }
+  .type-code { font-size: 15px; color: #666; font-weight: 700; }
+  @media (max-width: 720px) {
+    .classify-grid { flex-direction: column; }
+    .type-panel { flex: none; width: 100%; }
+  }
   .photos img { display: block; width: 100%; height: auto; border-radius: 6px; cursor: zoom-in; }
   .photos figcaption { font-size: 16px; color: #444; padding: 8px 4px 2px; }
   .earlier {
@@ -159,6 +187,10 @@
       <h2><span class="badge" id="pin-badge">?</span><span id="pin-title">?</span></h2>
       <div class="meta" id="pin-meta"></div>
     </div>
+    <div class="backside-toggle" id="backside-toggle" hidden>
+      <label><input type="checkbox" id="show-backsides"> Show backside photos</label>
+      <span class="backside-note" id="backside-note"></span>
+    </div>
     <div class="photos" id="photos"></div>
     <div class="groupbox" id="groupbox">
       <h3>Fix the grouping</h3>
@@ -178,25 +210,29 @@
     <div class="earlier" id="earlier" hidden></div>
     <form class="classify" id="classify-form">
       <h3>What is this?</h3>
-      <div class="field">
-        <label for="type">Type</label>
-        <select id="type"></select>
-      </div>
-      <div class="field">
-        <label>Condition <span class="hint" id="cond-hint"></span></label>
-        <div class="radios" id="condition-radios"></div>
-      </div>
-      <div class="field">
-        <label for="photographer">Photographer (initials)</label>
-        <input type="text" id="photographer" maxlength="12" autocomplete="off">
-      </div>
-      <div class="field">
-        <label for="notes">Notes <span class="hint">— anything the next person should know (optional)</span></label>
-        <textarea id="notes" placeholder="e.g. back of the sign, second photo is a close-up of the damage"></textarea>
-      </div>
-      <div class="actions">
-        <button type="button" id="confirm-btn">Confirm this pin</button>
-        <span id="saved" aria-live="polite"></span>
+      <div class="classify-grid">
+        <div class="type-panel">
+          <span class="field-label">Type</span>
+          <div class="type-checks" id="type-checks"></div>
+        </div>
+        <div class="classify-fields">
+          <div class="field">
+            <label>Condition <span class="hint" id="cond-hint"></span></label>
+            <div class="radios" id="condition-radios"></div>
+          </div>
+          <div class="field">
+            <label for="photographer">Photographer (initials)</label>
+            <input type="text" id="photographer" maxlength="12" autocomplete="off">
+          </div>
+          <div class="field">
+            <label for="notes">Notes <span class="hint">— anything the next person should know (optional)</span></label>
+            <textarea id="notes" placeholder="e.g. back of the sign, second photo is a close-up of the damage"></textarea>
+          </div>
+          <div class="actions">
+            <button type="button" id="confirm-btn">Confirm this pin</button>
+            <span id="saved" aria-live="polite"></span>
+          </div>
+        </div>
       </div>
     </form>
     <nav class="pin">
@@ -224,6 +260,18 @@
     WT: "Water source", UN: "Unclassified"
   };
   var TYPE_ORDER = ["CP", "BW", "SG", "BN", "CS", "PO", "LT", "BR", "KI", "RG", "PK", "SH", "WT", "UN"];
+  // One glyph per type, shown wherever the type appears. NCTA signs and
+  // partner signs are both SG in the taxonomy, so SG has one sign glyph.
+  var TYPE_GLYPHS = {
+    CP: "📍", BW: "🪵", SG: "🪧", BN: "🪑", CS: "⛺", PO: "📌",
+    LT: "🚻", BR: "🌉", KI: "ℹ️", RG: "📖", PK: "🅿️", SH: "🏠",
+    WT: "💧", UN: "❓"
+  };
+  function typeGlyph(code) { return TYPE_GLYPHS[normType(code)] || "❓"; }
+  function displayTypeName(code) {
+    var n = TYPE_NAMES[code] || code;
+    return n.charAt(0).toUpperCase() + n.slice(1);
+  }
   var COND_GENERAL = ["good", "fair", "poor"];
   var COND_CP = ["new", "worn", "replace"];
   var STORE_KEY = "itm-classify-v1";
@@ -231,6 +279,7 @@
   var pins = [];          // base pins from the registry, sorted by chainage
   var splitPins = [];     // pins created by splits in this browser
   var lastData = null;    // the GeoJSON as loaded (fetch or file pick)
+  var showBacksides = {}; // pinKey -> true while that pin's backsides are shown (view only, not saved)
   // store: { entries, roles, splits, merges }
   // entries: pinKey -> {type, condition, photographer, notes, updatedAt}
   // roles:   photo filename -> "front" | "back" | "detail" (materialized defaults + corrections)
@@ -240,7 +289,6 @@
   var splitSeq = 0;
   var currentFilter = "needs";
   var currentIndex = 0;   // index into visiblePins()
-  var typeSelect = document.getElementById("type");
 
   function pinKey(p) { return p.splitId || p.serial || p.photo; }
   function normType(t) {
@@ -271,6 +319,12 @@
   function entryFor(p) { return store.entries[pinKey(p)]; }
   function isReviewed(p) { return !!entryFor(p); }
   function needsClassification(p) { return normType(p.type) === "UN"; }
+  function effectiveType(p) {
+    // The type as the classifier currently has it: saved entry wins,
+    // otherwise the registry value. Drives glyphs and backside hiding.
+    var s = entryFor(p);
+    return s ? s.type : normType(p.type);
+  }
 
   function allPins() {
     var all = pins.concat(splitPins);
@@ -330,6 +384,7 @@
     store.roles[ph.photo] = role;
     saveStore();
     saveCurrent(false); // a role correction is work on this pin
+    refreshBacksideVisibility(); // a photo that becomes a back hides on CP/UN pins
   }
   function condOptionsFor(type) {
     if (type === "CP") return COND_CP;
@@ -347,7 +402,13 @@
     var s = p.serial ? p.serial : (p.splitId ? ("Split from " + pinDisplayName(p.splitFrom)) : "No serial yet");
     var where = [p.section, p.chainage_mi != null ? ("mile " + p.chainage_mi) : null].filter(Boolean).join(" · ");
     var n = effectivePhotos(p).length;
-    return s + (where ? " — " + where : "") + " (" + n + " photo" + (n === 1 ? "" : "s") + ")";
+    var t = effectiveType(p);
+    return typeGlyph(t) + " " + t + " · " + s + (where ? " — " + where : "") + " (" + n + " photo" + (n === 1 ? "" : "s") + ")";
+  }
+  function setPinTitle(p, type) {
+    document.getElementById("pin-title").textContent =
+      (p.splitId ? ("Split from " + pinDisplayName(p.splitFrom) + " — ")
+        : (p.serial ? p.serial + " — " : "")) + typeGlyph(type) + " " + displayTypeName(type);
   }
   function reviewedCount() { return activePins().filter(isReviewed).length; }
 
@@ -365,14 +426,82 @@
     btn.textContent = n === 0 ? "Export classifications" : "Export classifications (" + n + ")";
   }
 
-  function buildTypeOptions() {
-    typeSelect.innerHTML = "";
+  // Type selector: a left-side panel of checkboxes, one per type, each with
+  // its glyph and plain name. Radio behaviour — only one at a time; the
+  // checked one cannot be unchecked to empty.
+  function buildTypeChecks() {
+    var wrap = document.getElementById("type-checks");
+    wrap.innerHTML = "";
     TYPE_ORDER.forEach(function (code) {
-      var opt = document.createElement("option");
-      opt.value = code;
-      opt.textContent = code + " — " + (TYPE_NAMES[code] || code);
-      typeSelect.appendChild(opt);
+      var lab = document.createElement("label");
+      lab.className = "type-check";
+      var inp = document.createElement("input");
+      inp.type = "checkbox";
+      inp.name = "type";
+      inp.value = code;
+      inp.addEventListener("change", function () {
+        if (!inp.checked) { inp.checked = true; return; } // never leave none selected
+        wrap.querySelectorAll('input[type="checkbox"]').forEach(function (other) {
+          if (other !== inp) other.checked = false;
+        });
+        onTypeChange();
+      });
+      lab.appendChild(inp);
+      var g = document.createElement("span");
+      g.className = "type-glyph";
+      g.textContent = typeGlyph(code);
+      lab.appendChild(g);
+      var nm = document.createElement("span");
+      nm.className = "type-name";
+      nm.textContent = displayTypeName(code);
+      lab.appendChild(nm);
+      var cd = document.createElement("span");
+      cd.className = "type-code";
+      cd.textContent = code;
+      lab.appendChild(cd);
+      wrap.appendChild(lab);
     });
+  }
+  function setTypeCheck(code) {
+    document.querySelectorAll('#type-checks input[type="checkbox"]').forEach(function (inp) {
+      inp.checked = inp.value === code;
+    });
+  }
+  function selectedType() {
+    var checked = document.querySelector('#type-checks input[type="checkbox"]:checked');
+    return checked ? checked.value : "UN";
+  }
+
+  // Backside hiding: a Carsonite's back is blank, so for CP and UN pins the
+  // role=back photos are hidden while classifying. Nothing is deleted —
+  // the photos stay in the pin and in the export. The toggle brings them
+  // back for that pin; split and role controls still work on them.
+  function refreshBacksideVisibility() {
+    var p = currentPin();
+    if (!p) return;
+    var key = pinKey(p);
+    var type = effectiveType(p);
+    var hideBacks = (type === "CP" || type === "UN") && !showBacksides[key];
+    var backCount = 0;
+    document.querySelectorAll("#photos figure").forEach(function (fig) {
+      var ph = fig.getAttribute("data-photo");
+      var isBack = ph && store.roles[ph] === "back";
+      if (isBack) backCount++;
+      if (isBack && hideBacks) fig.classList.add("hidden-photo");
+      else fig.classList.remove("hidden-photo");
+    });
+    var toggle = document.getElementById("backside-toggle");
+    var note = document.getElementById("backside-note");
+    var cb = document.getElementById("show-backsides");
+    if ((type === "CP" || type === "UN") && backCount > 0) {
+      toggle.hidden = false;
+      cb.checked = !!showBacksides[key];
+      note.textContent = showBacksides[key]
+        ? backCount + " backside photo" + (backCount === 1 ? "" : "s") + " shown."
+        : backCount + " backside photo" + (backCount === 1 ? "" : "s") + " hidden — the back of a Carsonite is blank.";
+    } else {
+      toggle.hidden = true;
+    }
   }
 
   function buildConditionRadios(type, current) {
@@ -413,7 +542,7 @@
     var checked = document.querySelector('#condition-radios input[name="condition"]:checked');
     if (checked) cond = checked.value;
     return {
-      type: typeSelect.value,
+      type: selectedType(),
       condition: cond,
       photographer: document.getElementById("photographer").value.trim().toUpperCase() || "PJM",
       notes: document.getElementById("notes").value.trim()
@@ -443,6 +572,9 @@
     if (cond && opts.indexOf(cond) === -1) cond = null;
     buildConditionRadios(v.type, cond);
     saveCurrent(false);
+    refreshBacksideVisibility(); // backsides hide for CP/UN, show for other types
+    var p = currentPin();
+    if (p) setPinTitle(p, effectiveType(p)); // header glyph follows the new type
   }
 
   function render() {
@@ -474,9 +606,7 @@
       badge.textContent = p.serial || "UN";
       badge.classList.toggle("un", !p.serial);
     }
-    document.getElementById("pin-title").textContent =
-      (p.splitId ? ("Split from " + pinDisplayName(p.splitFrom) + " — ")
-        : (p.serial ? p.serial + " — " : "")) + (TYPE_NAMES[type] || type);
+    setPinTitle(p, type);
     document.getElementById("pin-meta").textContent =
       [p.section, p.chainage_mi != null ? ("mile " + p.chainage_mi) : null,
        p.datetime ? ("photographed " + p.datetime.replace(/:/g, ":").replace(/^(\d{4}):(\d{2}):(\d{2})/, "$1-$2-$3")) : null,
@@ -493,6 +623,7 @@
     photoList.forEach(function (item, i) {
       var ph = item.ph;
       var fig = document.createElement("figure");
+      fig.setAttribute("data-photo", ph.photo);
       var img = document.createElement("img");
       img.src = "assets-photos/" + ph.derivative;
       img.alt = "Photo " + (i + 1) + " of " + photoList.length + " for " + (p.serial || p.photo);
@@ -561,7 +692,7 @@
 
     renderGroupbox(p);
 
-    typeSelect.value = type;
+    setTypeCheck(type);
     buildConditionRadios(type, cond);
     document.getElementById("photographer").value = saved ? saved.photographer : (p.photographer || "PJM");
     document.getElementById("notes").value = saved ? saved.notes : "";
@@ -571,6 +702,7 @@
     document.getElementById("next-btn").disabled = currentIndex >= list.length - 1;
     buildJump();
     updateProgress();
+    refreshBacksideVisibility();
   }
 
   function buildJump() {
@@ -878,7 +1010,7 @@
     loadStore();
     applyStoredSplits();
     materializeRoles();
-    buildTypeOptions();
+    buildTypeChecks();
     document.getElementById("loader").hidden = true;
     document.getElementById("pinview").hidden = false;
     render();
@@ -891,14 +1023,14 @@
   }
 
   function boot() {
-    buildTypeOptions();
+    buildTypeChecks();
     // Type names from the registry when reachable; hardcoded names stand in otherwise.
     fetch("../data/assets/registry.json").then(function (r) { return r.json(); }).then(function (reg) {
       if (reg && reg.types) {
         Object.keys(reg.types).forEach(function (code) {
           if (reg.types[code] && reg.types[code].name) TYPE_NAMES[code] = reg.types[code].name;
         });
-        buildTypeOptions();
+        buildTypeChecks();
         if (pins.length) render();
       }
     }).catch(function () { /* keep the hardcoded names */ });
@@ -937,6 +1069,11 @@
       var sel = document.getElementById("merge-target");
       if (sel && sel.value) doMerge(sel.value);
     });
+    document.getElementById("show-backsides").addEventListener("change", function (ev) {
+      var p = currentPin();
+      if (p) showBacksides[pinKey(p)] = ev.target.checked;
+      refreshBacksideVisibility();
+    });
     document.getElementById("export-btn").addEventListener("click", exportClassifications);
     document.getElementById("reset-btn").addEventListener("click", function () {
       if (confirm("Erase everything you have entered in this browser — classifications, photo roles, splits and merges? The registry itself is untouched.")) {
@@ -948,7 +1085,6 @@
         else location.reload();
       }
     });
-    typeSelect.addEventListener("change", onTypeChange);
     document.getElementById("photographer").addEventListener("change", function () { saveCurrent(false); });
     document.getElementById("notes").addEventListener("change", function () { saveCurrent(false); });
     document.addEventListener("keydown", function (ev) {
