@@ -1645,6 +1645,54 @@ body.base-imagery.gap-chip .gap-label span {
   display: block;
 }
 
+/* --- Popup classification form (Paul, Nov 12, 2026): type,
+   condition, photographer and note, saved through the itm-save
+   Worker. Labels stack; the Save button matches the face pills. --- */
+.leaflet-popup-content .pop-cls {
+  border-top: 1px solid #ddd;
+  margin: 8px 0 2px;
+  padding-top: 6px;
+}
+.leaflet-popup-content .pop-cls h4 {
+  margin: 0 0 4px;
+  font-size: 0.9rem;
+}
+.leaflet-popup-content .pop-cls label {
+  display: block;
+  font-size: 0.85rem;
+  margin: 3px 0;
+}
+.leaflet-popup-content .pop-cls select,
+.leaflet-popup-content .pop-cls input[type="text"] {
+  font: inherit;
+  font-size: 0.85rem;
+  padding: 2px 4px;
+  border: 1px solid #999;
+  border-radius: 4px;
+  background: #fff;
+  max-width: 100%;
+  box-sizing: border-box;
+}
+.leaflet-popup-content .pop-cls input[type="text"] { width: 100%; }
+.pop-cls-save {
+  padding: 2px 10px;
+  margin-top: 4px;
+  border: 1px solid #999;
+  border-radius: 10px;
+  background: #fff;
+  cursor: pointer;
+  font: inherit;
+  font-size: 0.85rem;
+}
+.pop-cls-save:disabled { opacity: 0.6; cursor: default; }
+.leaflet-popup-content .pop-cls-msg {
+  font-size: 0.85rem;
+  color: #1a9850;
+  margin-top: 4px;
+  min-height: 1em;
+}
+.leaflet-popup-content .pop-cls-msg.pop-cls-err { color: #b2182b; }
+
 /* --- Legend: the amber "can wait" diamond (R1). The red
    .swatch.alert already exists. --- */
 #legend .swatch.alert.wait,

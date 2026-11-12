@@ -889,6 +889,101 @@ document.addEventListener("click", function (e) {
   }
 });
 
+/* Popup classification save (Paul, Nov 12, 2026): the Save button
+   POSTs the form to the itm-save Worker, which commits the
+   classification to GitHub. Same document-level delegation as the
+   face-flip buttons. On success the pin's properties and icon
+   (glyph + condition ring) update in place and the popup re-renders
+   with "Saved."; on failure the Worker's error is shown in the
+   popup. The pin stays in its old type sublayer until the next page
+   load — the icon updates immediately, the type-toggle grouping
+   refreshes on reload. */
+document.addEventListener("click", function (e) {
+  var t = e.target;
+  if (!t || !t.classList || !t.classList.contains("pop-cls-save")) return;
+  var form = t.closest(".pop-cls");
+  if (!form) return;
+  var serial = t.getAttribute("data-serial");
+  var msg = form.querySelector(".pop-cls-msg");
+  function setMsg(text, isErr) {
+    if (!msg) return;
+    msg.textContent = text || "";
+    msg.className = "pop-cls-msg" + (isErr ? " pop-cls-err" : "");
+  }
+  if (!serial) {
+    setMsg("This pin has no serial — it cannot be saved.", true);
+    return;
+  }
+  if (!ITM_SAVE_URL) {
+    setMsg("Save service not configured yet — the itm-save Worker " +
+      "is not deployed.", true);
+    return;
+  }
+  var typeSel = form.querySelector(".pop-cls-type");
+  var condSel = form.querySelector(".pop-cls-cond");
+  var photog = form.querySelector(".pop-cls-photog");
+  var note = form.querySelector(".pop-cls-note");
+  var body = {
+    serial: serial,
+    type: typeSel ? typeSel.value : undefined,
+    condition: condSel ? condSel.value : undefined,
+    photographer: photog ? photog.value : undefined,
+    note: note ? note.value : undefined,
+  };
+  t.disabled = true;
+  var origLabel = t.textContent;
+  t.textContent = "Saving…";
+  setMsg("", false);
+  fetch(ITM_SAVE_URL + "/classify", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(body),
+  }).then(function (res) {
+    return res.json().then(function (data) {
+      return { status: res.status, data: data };
+    });
+  }).then(function (r) {
+    t.disabled = false;
+    t.textContent = origLabel;
+    if (r.status === 200 && r.data && r.data.ok) {
+      /* Update the pin in place so the change is visible without
+         a reload: properties, then the icon (glyph + ring), then
+         the popup re-rendered from the updated feature. */
+      var entry = null;
+      for (var i = 0; i < assetPins.length; i++) {
+        if ((assetPins[i].feature.properties || {}).serial === serial) {
+          entry = assetPins[i];
+          break;
+        }
+      }
+      if (entry) {
+        var fp = entry.feature.properties;
+        if (body.type !== undefined) fp.type = body.type;
+        if (body.condition !== undefined) {
+          fp.condition = body.condition === "" ? null : body.condition;
+        }
+        if (body.photographer !== undefined) {
+          fp.photographer = body.photographer;
+        }
+        if (body.note !== undefined) fp.note = body.note;
+        entry.layer.setIcon(
+          assetMarker(entry.feature, entry.latlng).options.icon);
+        var pop = map.getPopup();
+        if (pop) pop.setContent(assetPopup(entry.feature, "Saved."));
+      } else {
+        setMsg("Saved.", false);
+      }
+    } else {
+      setMsg((r.data && r.data.error) ||
+        ("Save failed (" + r.status + ")."), true);
+    }
+  }).catch(function (err) {
+    t.disabled = false;
+    t.textContent = origLabel;
+    setMsg("Could not reach the save service: " + err.message, true);
+  });
+});
+
 function gazFeatureByName(name, kind) {
   if (!gazFeatures) return null;
   for (var i = 0; i < gazFeatures.length; i++) {
@@ -1251,7 +1346,15 @@ function fmtPhotoDate(dt) {
   return months[+m[2] - 1] + " " + (+m[3]) + ", " + m[1];
 }
 
-function assetPopup(f) {
+/* The map's save service (Paul, Nov 12, 2026): the itm-save Worker
+   commits popup classifications straight to GitHub. One constant so
+   the URL is easy to change. It is empty until the Worker is first
+   deployed — the Save button then says the service is not configured
+   yet instead of fetching a dead URL. Set it to the deployed
+   workers.dev URL (see worker/README.md). */
+var ITM_SAVE_URL = "";
+
+function assetPopup(f, savedMsg) {
   var p = f.properties || {};
   var typeName = assetTypeName(p.type);
   var unidentified = !p.type || p.type.toUpperCase() === "UN" ||
@@ -1264,6 +1367,15 @@ function assetPopup(f) {
     html = "<h3>Not yet identified</h3>" +
       "<p class='pop-sub'>Needs a walk-through — we don't know " +
       "what this is yet.</p>";
+    /* Serial on unidentified pins too (Paul, Nov 12): the serial
+       is the key for classifying, so it shows here as well as on
+       identified pins. */
+    if (p.serial) {
+      html += "<p class='pop-sub'>" + esc(p.serial) +
+        (p.section ? " · " + esc(p.section) : "") +
+        (p.chainage_mi != null ? " · mi " + p.chainage_mi : "") +
+        "</p>";
+    }
   } else {
     html = "<h3>" + esc(typeName) + "</h3>";
     if (p.serial) {
@@ -1355,6 +1467,40 @@ function assetPopup(f) {
     (p.serial ? "#pin=" + encodeURIComponent(p.serial) : "");
   html += "<p class='pop-classify'><a href='" + classifyHref +
     "' target='_blank' rel='noopener'>Classify this pin</a></p>";
+  /* Classify in the popup (Paul, Nov 12): type, condition,
+     photographer and note, saved straight to GitHub through the
+     itm-save Worker. The separate classify.html page stays as the
+     bulk-work surface. Only pins with a serial can be saved. */
+  if (p.serial) {
+    var curType = p.type ? String(p.type).toUpperCase() : "UN";
+    var typeOpts = "";
+    Object.keys(ASSET_TYPE_NAMES).forEach(function (code) {
+      typeOpts += "<option value=\"" + code + "\"" +
+        (code === curType ? " selected" : "") + ">" +
+        ASSET_TYPE_NAMES[code] + "</option>";
+    });
+    var condOpts = "<option value=\"\"" + (!p.condition ? " selected" : "") +
+      ">Not graded</option>";
+    ["good", "fair", "poor", "new", "worn", "replace"].forEach(function (c) {
+      condOpts += "<option value=\"" + c + "\"" +
+        (p.condition === c ? " selected" : "") + ">" +
+        c.charAt(0).toUpperCase() + c.slice(1) + "</option>";
+    });
+    html += "<div class='pop-cls'>" +
+      "<h4>Classify this pin</h4>" +
+      "<label>Type <select class='pop-cls-type'>" + typeOpts +
+      "</select></label>" +
+      "<label>Condition <select class='pop-cls-cond'>" + condOpts +
+      "</select></label>" +
+      "<label>Photographer <input class='pop-cls-photog' type='text' " +
+      "value='" + (esc(p.photographer || "PJM") || "PJM") + "'></label>" +
+      "<label>Note <input class='pop-cls-note' type='text' " +
+      "value='" + (esc(p.note) || "") + "'></label>" +
+      "<button type='button' class='pop-cls-save' data-serial='" +
+      esc(p.serial) + "'>Save classification</button>" +
+      "<div class='pop-cls-msg'>" + (esc(savedMsg) || "") + "</div>" +
+      "</div>";
+  }
   return html + kvTable(rows);
 }
 
