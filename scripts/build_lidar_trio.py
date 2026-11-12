@@ -49,12 +49,17 @@ working/lidar-trio/stage-timings.json):
              (EPSG:6344) into per-chunk GeoTIFFs
   dtm     -- read the seamless DEM VRT per chunk at 1 m; derive
              CHM + shade-surface chunks
-  tiles   -- render PNG tiles z9..16 into
+  tiles   -- render PNG tiles z9..15 into
              site/tiles/canopy-shade/ and site/tiles/canopy-height/
+             (colour and shade kept as SEPARATE tile sets; the
+             viewer composites them as an overlay)
+  contours -- smoothed 5 m CHM contours (5/10/15/20/25 m) as
+             GeoJSON LineStrings, corridor-clipped, to
+             site/data/chm-contours.geojson
   check   -- sample-check: find a mature stand + a clearing in the
              CHM near the trail, report spot heights, render
              sample sheets to working/lidar-trio/samples/
-  all     -- index, dsm, dtm, tiles, check
+  all     -- index, dsm, dtm, tiles, contours, check
 
 Everything under working/lidar-trio/ is scratch (gitignored);
 only the tiles under site/tiles/ and the site wiring ship.
@@ -460,6 +465,105 @@ def write_tif(path, arr, cb):
         ds.write(arr.astype(np.float32), 1)
 
 
+def _cumsum0(a, axis):
+    """Cumulative sum with a leading zero along `axis`:
+    C[k] = sum(a[0:k]). (Plain np.cumsum is inclusive, which would
+    shift every window sum by one.)"""
+    z = np.zeros_like(np.take(a, [0], axis=axis))
+    return np.concatenate([z, np.cumsum(a, axis=axis)], axis=axis)
+
+
+def _box_sum_1d(a, r, axis):
+    """Window sum of half-width r along one axis (zero-padded
+    edges). The integer core of _box_blur_1d, without the mean."""
+    n = a.shape[axis]
+    p = np.pad(a, [(r, r + 1) if i == axis else (0, 0)
+                   for i in range(a.ndim)],
+               mode="constant", constant_values=0)
+    c = _cumsum0(p, axis)
+    sl1 = [slice(None)] * a.ndim
+    sl2 = [slice(None)] * a.ndim
+    sl1[axis] = slice(2 * r + 1, 2 * r + 1 + n)
+    sl2[axis] = slice(0, n)
+    return c[tuple(sl1)] - c[tuple(sl2)]
+
+
+def _dilate2(m):
+    """Dilate a boolean mask by 2 px (5x5 rectangular element)."""
+    p = np.pad(m, 2, mode="constant", constant_values=False)
+    H, W = m.shape
+    out = np.zeros_like(m)
+    for dy in range(5):
+        for dx in range(5):
+            out |= p[dy:dy + H, dx:dx + W]
+    return out
+
+
+def _chunk_strip(kind, cx, cy, side, width):
+    """A `width`-px strip of one chunk file, from the side abutting
+    the neighbour on `side` ('top'/'bottom'/'left'/'right').
+
+    side 'top' means the neighbour (cx, cy+1) to the north: its
+    bottom `width` rows. Array row 0 is the chunk's north edge.
+    Returns None when the neighbour chunk file is missing (a true
+    coverage edge)."""
+    import rasterio
+    from rasterio.windows import Window
+    if side == "top":
+        ncx, ncy, win = cx, cy + 1, Window(0, CHUNK - width, CHUNK,
+                                           width)
+    elif side == "bottom":
+        ncx, ncy, win = cx, cy - 1, Window(0, 0, CHUNK, width)
+    elif side == "left":
+        ncx, ncy, win = cx - 1, cy, Window(CHUNK - width, 0, width,
+                                           CHUNK)
+    else:  # "right"
+        ncx, ncy, win = cx + 1, cy, Window(0, 0, width, CHUNK)
+    p = os.path.join(WORK, "chunks", "%s-%d-%d.tif" % (kind, ncx, ncy))
+    if not os.path.exists(p):
+        return None
+    with rasterio.open(p) as ds:
+        return ds.read(1, window=win)
+
+
+def _valid_mask_eroded(dsm, dtm, cx, cy):
+    """Valid mask for one chunk: finite DSM and finite DTM, with a
+    2 px erosion ONLY around LARGE nodata regions (the tile /
+    coverage boundaries where DSM-DTM differencing spikes live).
+
+    A plain 2 px erosion of the whole mask eats ~35% of the valid
+    data in patchy chunks (measured on chunk 5,4: 65% kept) -- it
+    widens every small DSM hole to 5x5. Small holes carry no spike
+    (their edge values are real), so only regions whose 5x5
+    neighbourhood is majority-invalid count as boundaries (same
+    chunk: 89% kept). Neighbour-aware (the pad comes from the
+    adjacent chunks' masks where they exist), so internal chunk
+    seams don't open up."""
+    mask = np.isfinite(dsm) & np.isfinite(dtm)
+    pad = np.zeros((CHUNK + 4, CHUNK + 4), dtype=bool)
+    pad[2:-2, 2:-2] = mask
+    for side in ("top", "bottom", "left", "right"):
+        ds_s = _chunk_strip("dsm", cx, cy, side, 2)
+        dt_s = _chunk_strip("dtm", cx, cy, side, 2)
+        if ds_s is None or dt_s is None:
+            continue
+        sm = np.isfinite(ds_s) & np.isfinite(dt_s)
+        if side == "top":
+            pad[0:2, 2:-2] = sm
+        elif side == "bottom":
+            pad[-2:, 2:-2] = sm
+        elif side == "left":
+            pad[2:-2, 0:2] = sm
+        else:
+            pad[2:-2, -2:] = sm
+    inv = ~pad
+    cnt = _box_sum_1d(_box_sum_1d(inv.astype(np.int32), 2, axis=1),
+                      2, axis=0)
+    large_inv = cnt >= 13  # majority of the 5x5 window invalid
+    near_large = _dilate2(large_inv)
+    return (pad & ~near_large)[2:-2, 2:-2]
+
+
 def stage_dtm():
     import rasterio
     from rasterio.windows import from_bounds
@@ -512,12 +616,18 @@ def stage_dtm():
             dsm = ds.read(1)
         with rasterio.open(tp) as ds:
             dtm = ds.read(1)
-        chm = np.where(np.isfinite(dsm), dsm - dtm, 0.0)
-        chm = np.clip(chm, 0, None).astype(np.float32)
-        chm[~np.isfinite(dtm)] = np.nan
+        # CHM + shade surface, 2026-11-11 redesign: valid ONLY
+        # where BOTH DSM and DTM are finite, and the valid mask is
+        # eroded 2 px (neighbour-aware) to kill the DSM-DTM
+        # differencing spikes at tile/nodata boundaries. The shade
+        # surface is the DSM itself where valid -- no DTM fallback:
+        # where there is no canopy return there is no canopy shade.
+        mask = _valid_mask_eroded(dsm, dtm, cx, cy)
+        chm = np.where(mask, np.clip(dsm - dtm, 0, None),
+                       np.nan).astype(np.float32)
         write_tif(os.path.join(WORK, "chunks",
                                "chm-%d-%d.tif" % (cx, cy)), chm, cb)
-        surf = np.where(np.isfinite(dsm), dsm, dtm).astype(np.float32)
+        surf = np.where(mask, dsm, np.nan).astype(np.float32)
         write_tif(os.path.join(WORK, "chunks",
                                "surf-%d-%d.tif" % (cx, cy)), surf, cb)
     log("dtm + chm + surf derived for %d slots" % len(slots))
@@ -527,18 +637,24 @@ def stage_dtm():
 # Stage: tiles
 # ------------------------------------------------------------------
 
-RAMP_STOPS = [  # (height m, (r, g, b)) -- pale ground -> deep green
-    (0.0, (233, 225, 199)), (2.0, (205, 216, 152)),
-    (5.0, (164, 201, 116)), (9.0, (110, 176, 92)),
-    (14.0, (64, 145, 72)), (19.0, (34, 110, 55)),
-    (25.0, (18, 82, 40)), (32.0, (12, 64, 30)),
+# 2026-11-11 redesign (Paul, from the masked CHM histogram):
+# white at 0-1 m (no vegetation); greens deepening upward; saturate
+# above 25 m. 2 m is the six-foot / head-height line; 20 m is the
+# old-growth line. The old 32 m top stop is dropped -- only 0.08%
+# of corridor pixels are above 32 m, and p99 is 25.25 m.
+RAMP_STOPS = [  # (height m, (r, g, b))
+    (0.0, (255, 255, 255)), (1.0, (255, 255, 255)),
+    (2.0, (215, 238, 200)), (5.0, (180, 220, 165)),
+    (9.0, (140, 200, 120)), (14.0, (100, 175, 90)),
+    (19.0, (64, 145, 72)), (20.0, (34, 110, 55)),
+    (25.0, (12, 64, 30)),
 ]
 
 
 def ramp_lut():
     hs = np.array([s[0] for s in RAMP_STOPS])
     cs = np.array([s[1] for s in RAMP_STOPS], dtype=np.float64)
-    xs = np.linspace(0, 32, 257)
+    xs = np.linspace(0, 25, 257)
     lut = np.stack([np.interp(xs, hs, cs[:, i]) for i in range(3)],
                    axis=1).astype(np.uint8)
     return lut
@@ -547,7 +663,14 @@ def ramp_lut():
 def hillshade(surf, cell_ground_m, az_deg=315.0, alt_deg=45.0):
     gy, gx = np.gradient(surf, cell_ground_m)
     slope = np.arctan(np.hypot(gx, gy))
-    aspect = np.arctan2(-gy, gx)
+    # DOWNSLOPE aspect (the direction the surface faces), in the
+    # math convention (counter-clockwise from east) the GDAL formula
+    # expects. np.gradient gives (gy, gx) = (dz/drow, dz/dcol) =
+    # (-dz/dnorth, dz/deast), so the downslope angle is
+    # atan2(gy, -gx). The previous atan2(-gy, gx) was the UPSLOPE
+    # direction, which inverted the shading: rendered light came
+    # from SE 135 instead of NW 315 (fixed 2026-11-11).
+    aspect = np.arctan2(gy, -gx)
     az = math.radians(360.0 - az_deg + 90.0)
     alt = math.radians(alt_deg)
     sh = (np.sin(alt) * np.cos(slope) +
@@ -619,7 +742,8 @@ def stage_tiles():
     out_root = os.path.join(ROOT, "site", "tiles")
     stats = {}
     T = 256
-    for z in range(9, 17):
+    for z in range(9, 16):  # z9-15: the shipped set (z16 was
+        # rendered once and pruned; 530 tiles/layer at z9-15)
         n = 2 ** z
         world = 2 * 20037508.342789244
         tile_m = world / n
@@ -672,7 +796,7 @@ def stage_tiles():
                         if not valid.any():
                             continue
                         idx = np.clip(
-                            (np.where(valid, arr, 0) / 32.0 * 256),
+                            (np.where(valid, arr, 0) / 25.0 * 256),
                             0, 256).astype(np.int32)
                         rgb = lut[idx]
                         rgba = np.dstack(
@@ -691,6 +815,181 @@ def stage_tiles():
              count["canopy-height"], byt["canopy-height"] / 1e6))
     json.dump(stats, open(os.path.join(WORK, "tile-stats.json"), "w"),
               indent=1)
+
+
+# ------------------------------------------------------------------
+# Stage: contours -- smoothed 5 m CHM contours, corridor-clipped
+# ------------------------------------------------------------------
+
+CONTOUR_LEVELS = [5.0, 10.0, 15.0, 20.0, 25.0]
+CONTOUR_CELL = 5.0  # downsampled grid, metres
+CONTOUR_MIN_LEN_M = 50.0  # drop contour fragments shorter than
+# this (crown-scale rings); the lines that remain are stand-scale
+
+
+def _box_blur_1d(a, r, axis):
+    """Box blur of half-width r along one axis, via cumulative
+    sums (zero-padded edges). Fully vectorised."""
+    n = a.shape[axis]
+    p = np.pad(a, [(r, r + 1) if i == axis else (0, 0)
+                   for i in range(a.ndim)],
+               mode="constant", constant_values=0.0)
+    c = _cumsum0(p, axis)
+    sl1 = [slice(None)] * a.ndim
+    sl2 = [slice(None)] * a.ndim
+    sl1[axis] = slice(2 * r + 1, 2 * r + 1 + n)
+    sl2[axis] = slice(0, n)
+    return (c[tuple(sl1)] - c[tuple(sl2)]) / (2 * r + 1)
+
+
+def _gaussian_blur(a, mask, sigma_px=5.0):
+    """Gaussian blur of a NaN-bearing array, by normalised
+    convolution: blur the NaN-filled array and the mask
+    separately, then divide. Approximated by box blurs: a box of
+    half-width r has variance r(r+1)/3 per axis, so rounds of r=3
+    (variance 4 each) are stacked until the total variance
+    reaches sigma_px**2. Pure numpy (scipy/matplotlib don't import
+    under the pylibs numpy 2.x).
+
+    sigma ~5 px (not 2-3): the canopy surface is rough at the
+    crown scale (~5-10 m), and a 2.5 px blur left crown rings
+    that contoured into 63k features / 3,361 km of line (median
+    22 m) -- noise, not contours. sigma 5 m suppresses crowns
+    while keeping stand-scale (>=30 m) variation."""
+    import math
+    r = 3
+    per_round = r * (r + 1) / 3.0
+    rounds = max(1, int(round(sigma_px ** 2 / per_round)))
+    filled = np.where(mask, a, 0.0).astype(np.float64)
+    m = mask.astype(np.float64)
+    for _ in range(rounds):
+        filled = _box_blur_1d(filled, r, axis=1)
+        filled = _box_blur_1d(filled, r, axis=0)
+        m = _box_blur_1d(m, r, axis=1)
+        m = _box_blur_1d(m, r, axis=0)
+    out = np.where(m > 1e-6,
+                   filled / np.where(m > 1e-6, m, 1.0), np.nan)
+    return out.astype(np.float32)
+
+
+def stage_contours():
+    """Smoothed 5 m canopy-height contours as GeoJSON LineStrings.
+
+    Per CHM chunk: neighbour-padded Gaussian blur (sigma ~2.5 px)
+    so the lines read as contours, not canopy noise, then a
+    valid-weighted downsample to a 5 m grid. Contouring itself
+    runs under system python (matplotlib lives there, not in
+    pylibs) via working/lidar-trio/contour_grid.py; the lines come
+    back in EPSG:6344, are simplified (5 m), clipped to the
+    +/-150 m corridor buffer, and written to
+    site/data/chm-contours.geojson (EPSG:4326)."""
+    import subprocess
+    import rasterio
+    from shapely.ops import unary_union
+    from shapely.geometry import LineString
+    from pyproj import Transformer
+    slots = band_chunks()
+    tmpd = os.path.join(WORK, "tmp", "contour-grids")
+    os.makedirs(tmpd, exist_ok=True)
+    PAD = 10
+    index = []
+    for (cx, cy) in slots:
+        p = os.path.join(WORK, "chunks", "chm-%d-%d.tif" % (cx, cy))
+        if not os.path.exists(p):
+            continue
+        with rasterio.open(p) as ds:
+            chm = ds.read(1)
+        mask = np.isfinite(chm)
+        if mask.sum() == 0:
+            continue
+        # Pad with neighbour strips (seam-correct smoothing).
+        pa = np.full((CHUNK + 2 * PAD, CHUNK + 2 * PAD), np.nan,
+                     dtype=np.float32)
+        pm = np.zeros((CHUNK + 2 * PAD, CHUNK + 2 * PAD), dtype=bool)
+        pa[PAD:-PAD, PAD:-PAD] = np.where(mask, chm, np.nan)
+        pm[PAD:-PAD, PAD:-PAD] = mask
+        for side in ("top", "bottom", "left", "right"):
+            s = _chunk_strip("chm", cx, cy, side, PAD)
+            if s is None:
+                continue
+            sm = np.isfinite(s)
+            if side == "top":
+                pa[0:PAD, PAD:-PAD] = np.where(sm, s, np.nan)
+                pm[0:PAD, PAD:-PAD] = sm
+            elif side == "bottom":
+                pa[-PAD:, PAD:-PAD] = np.where(sm, s, np.nan)
+                pm[-PAD:, PAD:-PAD] = sm
+            elif side == "left":
+                pa[PAD:-PAD, 0:PAD] = np.where(sm, s, np.nan)
+                pm[PAD:-PAD, 0:PAD] = sm
+            else:
+                pa[PAD:-PAD, -PAD:] = np.where(sm, s, np.nan)
+                pm[PAD:-PAD, -PAD:] = sm
+        sm = _gaussian_blur(pa, pm, sigma_px=5.0)
+        sm = sm[PAD:-PAD, PAD:-PAD]
+        # Downsample to 5 m (valid-weighted block mean), flip so
+        # row 0 is the south edge (matplotlib wants Y increasing).
+        filled = np.where(mask, np.where(np.isfinite(sm), sm, 0.0),
+                          0.0)
+        w = mask.astype(np.float64)
+        bs = filled.reshape(CHUNK // 5, 5, CHUNK // 5, 5).sum(
+            axis=(1, 3))
+        bc = w.reshape(CHUNK // 5, 5, CHUNK // 5, 5).sum(axis=(1, 3))
+        grid = np.where(bc > 0, bs / np.where(bc > 0, bc, 1.0),
+                        np.nan)
+        grid = np.flipud(grid).astype(np.float32)
+        cb = chunk_bounds(cx, cy)
+        np.save(os.path.join(tmpd, "chm-%d-%d.npy" % (cx, cy)), grid)
+        index.append({"npy": "chm-%d-%d.npy" % (cx, cy),
+                      "origin": [cb[0], cb[1]], "cell": CONTOUR_CELL})
+    json.dump(index, open(os.path.join(tmpd, "index.json"), "w"))
+    log("contour grids: %d chunks" % len(index))
+    helper = os.path.join(WORK, "contour_grid.py")
+    out = os.path.join(tmpd, "contour-lines.json")
+    r = subprocess.run(["/usr/bin/python3", helper,
+                        os.path.join(tmpd, "index.json"), out],
+                       capture_output=True, text=True)
+    if r.returncode != 0:
+        log("contour_grid.py failed:\n%s" % (r.stderr[-2000:],))
+        raise RuntimeError("contour_grid.py failed (exit %d)"
+                           % r.returncode)
+    log("contour_grid.py: %s" % (r.stdout.strip().splitlines()[-1]
+                                 if r.stdout.strip() else "(no output)"))
+    lines = json.load(open(out))
+    buf = unary_union(trail_lines(6344)).buffer(BAND_M)
+    tr = Transformer.from_crs(6344, 4326, always_xy=True)
+    feats = []
+    total_m = 0.0
+    for lv_s, segs in lines.items():
+        lv = float(lv_s)
+        for seg in segs:
+            if len(seg) < 2:
+                continue
+            ln = LineString(seg).simplify(5.0)
+            if ln.is_empty:
+                continue
+            ln = ln.intersection(buf)
+            if ln.is_empty:
+                continue
+            geoms = ([ln] if ln.geom_type == "LineString" else
+                     [g for g in ln.geoms
+                      if g.geom_type == "LineString"])
+            for g in geoms:
+                if len(g.coords) < 2 or g.length < CONTOUR_MIN_LEN_M:
+                    continue
+                xs, ys = tr.transform(*zip(*g.coords))
+                total_m += g.length
+                feats.append({"type": "Feature",
+                              "properties": {"level": lv},
+                              "geometry": {
+                                  "type": "LineString",
+                                  "coordinates": list(zip(xs, ys))}})
+    fc = {"type": "FeatureCollection", "features": feats}
+    dest = os.path.join(ROOT, "site", "data", "chm-contours.geojson")
+    json.dump(fc, open(dest, "w"))
+    log("contours: %d features, %.1f km total, levels %s -> %s "
+        "(%.1f MB)" % (len(feats), total_m / 1000.0, CONTOUR_LEVELS,
+                       dest, os.path.getsize(dest) / 1e6))
 
 
 # ------------------------------------------------------------------
@@ -777,7 +1076,7 @@ def stage_check():
                                         np.nanmean(win)), 1.0)
                 img = Image.fromarray((255 * sh).astype(np.uint8))
             else:
-                idx = np.clip((np.nan_to_num(win) / 32.0 * 256),
+                idx = np.clip((np.nan_to_num(win) / 25.0 * 256),
                               0, 256).astype(np.int32)
                 img = Image.fromarray(lut[idx], "RGB")
             img = img.resize((600, 600), Image.NEAREST)
@@ -798,13 +1097,14 @@ def stage_check():
 
 
 STAGES = {"index": stage_index, "dsm": stage_dsm, "dtm": stage_dtm,
-          "tiles": stage_tiles, "check": stage_check}
+          "tiles": stage_tiles, "contours": stage_contours,
+          "check": stage_check}
 
 if __name__ == "__main__":
     which = sys.argv[1] if len(sys.argv) > 1 else "all"
     os.makedirs(WORK, exist_ok=True)
     if which == "all":
-        for s in ("index", "dsm", "dtm", "tiles", "check"):
+        for s in ("index", "dsm", "dtm", "tiles", "contours", "check"):
             timed(s, STAGES[s])
     else:
         timed(which, STAGES[which])
