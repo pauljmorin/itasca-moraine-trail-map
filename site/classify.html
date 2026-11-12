@@ -94,6 +94,22 @@
   }
   nav.pin button:disabled { opacity: .4; cursor: not-allowed; }
   nav.pin select { font-size: 18px; padding: 10px 12px; border-radius: 8px; border: 2px solid #888; max-width: 420px; }
+  .groupbox { background: #fff; border: 2px solid #8a6d00; border-radius: 10px; padding: 16px 20px; margin-bottom: 16px; }
+  .groupbox h3 { margin: 0 0 8px; font-size: 22px; }
+  .group-note { font-size: 17px; color: #444; margin: 0 0 14px; }
+  .split-row, .merge-row { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; margin: 12px 0; }
+  .split-row span, .merge-row label { font-size: 18px; font-weight: 600; }
+  .groupbox button { font-size: 18px; font-weight: 700; padding: 10px 18px; border-radius: 8px; border: 2px solid #2e5d3a; background: #fff; color: #2e5d3a; cursor: pointer; }
+  .groupbox button:disabled { opacity: .4; cursor: not-allowed; }
+  .groupbox button.undo { font-size: 16px; padding: 6px 12px; }
+  .groupbox select { font-size: 18px; padding: 8px 10px; border-radius: 8px; border: 2px solid #888; max-width: 420px; }
+  .photo-ctl { display: flex; flex-wrap: wrap; gap: 16px; align-items: center; padding: 8px 4px 2px; font-size: 17px; }
+  .photo-ctl label { font-weight: 600; }
+  .photo-ctl select { font-size: 17px; padding: 6px 8px; border-radius: 6px; border: 2px solid #888; }
+  .photo-ctl .split-check { display: flex; align-items: center; gap: 6px; font-weight: 600; cursor: pointer; }
+  .photo-ctl input[type=checkbox] { width: 20px; height: 20px; accent-color: #2e5d3a; }
+  .merged-from { font-size: 16px; color: #555; }
+  .groupbox .info { font-size: 17px; margin: 10px 0; }
   footer { max-width: 980px; margin: 0 auto; padding: 0 24px 40px; font-size: 16px; color: #555; }
 </style>
 </head>
@@ -125,6 +141,7 @@
       <li>Pick the type and condition, add the photographer's initials and any notes, then press <b>Confirm this pin</b>.</li>
       <li>Your work is saved in this browser as you go, so you can stop and come back.</li>
       <li>When you are done, press <b>Export classifications</b> and send the downloaded file to Muse.</li>
+      <li>If the grouping is wrong, use <b>Fix the grouping</b> below the photos — split photos out into a new pin, merge this pin into another, or correct a photo's role (front / back / detail). The pipeline only guesses the grouping; you decide.</li>
     </ol>
   </div>
 
@@ -143,6 +160,21 @@
       <div class="meta" id="pin-meta"></div>
     </div>
     <div class="photos" id="photos"></div>
+    <div class="groupbox" id="groupbox">
+      <h3>Fix the grouping</h3>
+      <p class="group-note">These photos were grouped by time and place. If two different things got lumped together, split them apart. If one thing got split across two pins, merge them. Photos that arrived here by a merge can be split out again after undoing that merge.</p>
+      <div class="split-row">
+        <span id="split-count">Tick the photos to split out, above.</span>
+        <button type="button" id="split-btn" disabled>Split checked photos into a new pin</button>
+      </div>
+      <div class="merge-row">
+        <label for="merge-target">Merge this pin into:</label>
+        <select id="merge-target"></select>
+        <button type="button" id="merge-btn">Merge this pin</button>
+      </div>
+      <div class="info" id="split-info" hidden></div>
+      <div class="info" id="merged-in" hidden></div>
+    </div>
     <div class="earlier" id="earlier" hidden></div>
     <form class="classify" id="classify-form">
       <h3>What is this?</h3>
@@ -176,7 +208,7 @@
 </main>
 
 <footer>
-  <p>Photos are the chapter's own trail photos. Serial numbers are assigned separately and are not editable here. Classifications are stored only in this browser (local storage) until you export — nothing leaves your computer on its own.</p>
+  <p>Photos are the chapter's own trail photos. Serial numbers are assigned separately and are not editable here. Classifications are stored only in this browser (local storage) until you export — nothing leaves your computer on its own. Splits, merges and photo roles are included in the export so Muse can apply them to the registry.</p>
 </footer>
 
 <script>
@@ -196,55 +228,141 @@
   var COND_CP = ["new", "worn", "replace"];
   var STORE_KEY = "itm-classify-v1";
 
-  var pins = [];          // all pins, sorted by chainage
-  var store = {};         // pinKey -> {type, condition, photographer, notes, updatedAt}
+  var pins = [];          // base pins from the registry, sorted by chainage
+  var splitPins = [];     // pins created by splits in this browser
+  var lastData = null;    // the GeoJSON as loaded (fetch or file pick)
+  // store: { entries, roles, splits, merges }
+  // entries: pinKey -> {type, condition, photographer, notes, updatedAt}
+  // roles:   photo filename -> "front" | "back" | "detail" (materialized defaults + corrections)
+  // splits:  [{id, from, photos: [{photo, derivative, datetime}]}]
+  // merges:  {sourcePinKey: targetPinKey}
+  var store = { entries: {}, roles: {}, splits: [], merges: {} };
+  var splitSeq = 0;
   var currentFilter = "needs";
   var currentIndex = 0;   // index into visiblePins()
   var typeSelect = document.getElementById("type");
 
-  function pinKey(p) { return p.serial || p.photo; }
+  function pinKey(p) { return p.splitId || p.serial || p.photo; }
   function normType(t) {
     if (!t) return "UN";
     t = String(t).toUpperCase();
     return t === "UNCLASSIFIED" ? "UN" : t;
   }
   function loadStore() {
-    try { store = JSON.parse(localStorage.getItem(STORE_KEY) || "{}") || {}; }
-    catch (e) { store = {}; }
+    var raw = null;
+    try { raw = JSON.parse(localStorage.getItem(STORE_KEY) || "null"); } catch (e) { raw = null; }
+    if (raw && raw.entries) {
+      store = raw; // current shape
+    } else if (raw) {
+      // v1 flat shape: pinKey -> {type, condition, photographer, notes, updatedAt}
+      store = { entries: raw, roles: {}, splits: [], merges: {} };
+    } else {
+      store = { entries: {}, roles: {}, splits: [], merges: {} };
+    }
+    if (!store.entries) store.entries = {};
+    if (!store.roles) store.roles = {};
+    if (!store.splits) store.splits = [];
+    if (!store.merges) store.merges = {};
+    splitSeq = 0;
   }
   function saveStore() {
     try { localStorage.setItem(STORE_KEY, JSON.stringify(store)); } catch (e) { /* storage full/blocked: keep going */ }
   }
-  function isReviewed(p) { return !!store[pinKey(p)]; }
+  function entryFor(p) { return store.entries[pinKey(p)]; }
+  function isReviewed(p) { return !!entryFor(p); }
   function needsClassification(p) { return normType(p.type) === "UN"; }
+
+  function allPins() {
+    var all = pins.concat(splitPins);
+    all.sort(function (a, b) {
+      var ca = a.chainage_mi, cb = b.chainage_mi;
+      if (ca == null && cb == null) return (a.seq || 0) - (b.seq || 0);
+      if (ca == null) return 1;
+      if (cb == null) return -1;
+      if (ca !== cb) return ca - cb;
+      return (a.seq || 0) - (b.seq || 0);
+    });
+    return all;
+  }
+  function activePins() {
+    return allPins().filter(function (p) { return !store.merges[pinKey(p)]; });
+  }
+  function findPin(key) {
+    var all = allPins();
+    for (var i = 0; i < all.length; i++) if (pinKey(all[i]) === key) return all[i];
+    return null;
+  }
+  function pinDisplayName(key) {
+    var p = findPin(key);
+    if (!p) return key;
+    return p.serial || ((p.photos && p.photos[0]) ? p.photos[0].photo : key);
+  }
+  function resolveTarget(key) {
+    var seen = {};
+    var k = key;
+    while (store.merges[k] && !seen[k]) { seen[k] = true; k = store.merges[k]; }
+    return k;
+  }
+  function mergedInto(pin) {
+    // pins whose photos now live in this pin (transitively)
+    var key = pinKey(pin);
+    return allPins().filter(function (q) {
+      return pinKey(q) !== key && resolveTarget(pinKey(q)) === key;
+    });
+  }
+  function effectivePhotos(pin) {
+    var list = (pin.photos || []).slice();
+    mergedInto(pin).forEach(function (q) {
+      (q.photos || []).forEach(function (ph) { list.push(ph); });
+    });
+    return list;
+  }
+  var ROLES = ["front", "back", "detail"];
+  function defaultRole(pin, idx) {
+    var n = (pin.photos || []).length;
+    if (n <= 1) return "front";
+    if (idx === 0) return "front";
+    if (idx === 1) return "back";
+    return "detail";
+  }
+  function roleFor(ph) { return store.roles[ph.photo] || "front"; }
+  function setRole(pin, ph, role) {
+    store.roles[ph.photo] = role;
+    saveStore();
+    saveCurrent(false); // a role correction is work on this pin
+  }
   function condOptionsFor(type) {
     if (type === "CP") return COND_CP;
     if (type === "UN") return [];
     return COND_GENERAL;
   }
   function visiblePins() {
-    if (currentFilter === "needs") return pins.filter(needsClassification);
-    if (currentFilter === "reviewed") return pins.filter(isReviewed);
-    if (currentFilter === "unreviewed") return pins.filter(function (p) { return !isReviewed(p); });
-    return pins.slice();
+    var active = activePins();
+    if (currentFilter === "needs") return active.filter(needsClassification);
+    if (currentFilter === "reviewed") return active.filter(isReviewed);
+    if (currentFilter === "unreviewed") return active.filter(function (p) { return !isReviewed(p); });
+    return active;
   }
   function pinLabel(p) {
-    var s = p.serial ? p.serial : "No serial yet";
+    var s = p.serial ? p.serial : (p.splitId ? ("Split from " + pinDisplayName(p.splitFrom)) : "No serial yet");
     var where = [p.section, p.chainage_mi != null ? ("mile " + p.chainage_mi) : null].filter(Boolean).join(" · ");
-    return s + (where ? " — " + where : "") + " (" + (p.photos || []).length + " photo" + ((p.photos || []).length === 1 ? "" : "s") + ")";
+    var n = effectivePhotos(p).length;
+    return s + (where ? " — " + where : "") + " (" + n + " photo" + (n === 1 ? "" : "s") + ")";
   }
-  function reviewedCount() { return pins.filter(isReviewed).length; }
+  function reviewedCount() { return activePins().filter(isReviewed).length; }
 
   function updateProgress() {
+    var active = activePins();
     var done = reviewedCount();
-    var un = pins.filter(needsClassification).length;
+    var un = active.filter(needsClassification).length;
     document.getElementById("progress").textContent =
-      "Reviewed " + done + " of " + pins.length + " pins";
+      "Reviewed " + done + " of " + active.length + " pins";
     document.getElementById("progress-sub").textContent =
       un + " still unclassified in the registry";
     var btn = document.getElementById("export-btn");
-    btn.disabled = done === 0;
-    btn.textContent = done === 0 ? "Export classifications" : "Export classifications (" + done + ")";
+    btn.disabled = done === 0 && store.splits.length === 0 && Object.keys(store.merges).length === 0;
+    var n = done + store.splits.length + Object.keys(store.merges).length;
+    btn.textContent = n === 0 ? "Export classifications" : "Export classifications (" + n + ")";
   }
 
   function buildTypeOptions() {
@@ -307,7 +425,7 @@
     if (!p) return;
     var v = formValues();
     v.updatedAt = new Date().toISOString();
-    store[pinKey(p)] = v;
+    store.entries[pinKey(p)] = v;
     saveStore();
     updateProgress();
     buildJump();
@@ -343,16 +461,22 @@
     document.getElementById("loader").hidden = true;
     view.hidden = false;
     var p = currentPin();
-    var saved = store[pinKey(p)];
+    var saved = entryFor(p);
     var type = saved ? saved.type : normType(p.type);
     var cond = saved ? saved.condition : (p.condition || null);
     if (cond && condOptionsFor(type).indexOf(cond) === -1) cond = null;
 
     var badge = document.getElementById("pin-badge");
-    badge.textContent = p.serial || "UN";
-    badge.classList.toggle("un", !p.serial);
+    if (p.splitId) {
+      badge.textContent = "SPLIT";
+      badge.classList.add("un");
+    } else {
+      badge.textContent = p.serial || "UN";
+      badge.classList.toggle("un", !p.serial);
+    }
     document.getElementById("pin-title").textContent =
-      (p.serial ? p.serial + " — " : "") + (TYPE_NAMES[type] || type);
+      (p.splitId ? ("Split from " + pinDisplayName(p.splitFrom) + " — ")
+        : (p.serial ? p.serial + " — " : "")) + (TYPE_NAMES[type] || type);
     document.getElementById("pin-meta").textContent =
       [p.section, p.chainage_mi != null ? ("mile " + p.chainage_mi) : null,
        p.datetime ? ("photographed " + p.datetime.replace(/:/g, ":").replace(/^(\d{4}):(\d{2}):(\d{2})/, "$1-$2-$3")) : null,
@@ -361,11 +485,17 @@
 
     var photosEl = document.getElementById("photos");
     photosEl.innerHTML = "";
-    (p.photos || []).forEach(function (ph, i) {
+    var photoList = [];
+    (p.photos || []).forEach(function (ph) { photoList.push({ ph: ph, owner: p, own: true }); });
+    mergedInto(p).forEach(function (q) {
+      (q.photos || []).forEach(function (ph) { photoList.push({ ph: ph, owner: q, own: false }); });
+    });
+    photoList.forEach(function (item, i) {
+      var ph = item.ph;
       var fig = document.createElement("figure");
       var img = document.createElement("img");
       img.src = "assets-photos/" + ph.derivative;
-      img.alt = "Photo " + (i + 1) + " of " + (p.photos || []).length + " for " + (p.serial || p.photo);
+      img.alt = "Photo " + (i + 1) + " of " + photoList.length + " for " + (p.serial || p.photo);
       img.loading = "lazy";
       var a = document.createElement("a");
       a.href = img.src; a.target = "_blank"; a.rel = "noopener";
@@ -373,9 +503,44 @@
       a.appendChild(img);
       fig.appendChild(a);
       var cap = document.createElement("figcaption");
-      cap.textContent = "Photo " + (i + 1) + " of " + (p.photos || []).length +
+      cap.textContent = "Photo " + (i + 1) + " of " + photoList.length +
         " — " + ph.photo + (ph.datetime ? " · " + ph.datetime : "");
       fig.appendChild(cap);
+      if (!item.own) {
+        var from = document.createElement("div");
+        from.className = "merged-from";
+        from.textContent = "Merged in from " + pinDisplayName(pinKey(item.owner)) + " — its role is set here.";
+        fig.appendChild(from);
+      }
+      var ctl = document.createElement("div");
+      ctl.className = "photo-ctl";
+      var roleLab = document.createElement("label");
+      roleLab.textContent = "Role: ";
+      var roleSel = document.createElement("select");
+      roleSel.setAttribute("aria-label", "Role of photo " + ph.photo);
+      ROLES.forEach(function (r) {
+        var opt = document.createElement("option");
+        opt.value = r;
+        opt.textContent = r.charAt(0).toUpperCase() + r.slice(1);
+        roleSel.appendChild(opt);
+      });
+      roleSel.value = roleFor(ph);
+      roleSel.addEventListener("change", function () { setRole(p, ph, roleSel.value); });
+      roleLab.appendChild(roleSel);
+      ctl.appendChild(roleLab);
+      if (item.own && (p.photos || []).length > 1) {
+        var splitLab = document.createElement("label");
+        splitLab.className = "split-check";
+        var cb = document.createElement("input");
+        cb.type = "checkbox";
+        cb.className = "split-check";
+        cb.setAttribute("data-photo", ph.photo);
+        cb.addEventListener("change", updateSplitCount);
+        splitLab.appendChild(cb);
+        splitLab.appendChild(document.createTextNode("Split this photo out"));
+        ctl.appendChild(splitLab);
+      }
+      fig.appendChild(ctl);
       photosEl.appendChild(fig);
     });
 
@@ -393,6 +558,8 @@
     } else {
       earlier.hidden = true;
     }
+
+    renderGroupbox(p);
 
     typeSelect.value = type;
     buildConditionRadios(type, cond);
@@ -428,20 +595,207 @@
     window.scrollTo({ top: 0, behavior: "smooth" });
   }
 
+  function updateSplitCount() {
+    var p = currentPin();
+    var btn = document.getElementById("split-btn");
+    var label = document.getElementById("split-count");
+    if (!p) { btn.disabled = true; return; }
+    var own = (p.photos || []).length;
+    var checked = document.querySelectorAll('#photos input.split-check:checked').length;
+    if (checked === 0) {
+      label.textContent = "Tick the photos to split out, above.";
+      btn.disabled = true;
+    } else if (checked >= own) {
+      label.textContent = "At least one photo has to stay in this pin — untick one to split the rest out.";
+      btn.disabled = true;
+    } else {
+      label.textContent = checked + " photo" + (checked === 1 ? "" : "s") + " checked to split out.";
+      btn.disabled = false;
+    }
+  }
+
+  function buildMergeTargets(p) {
+    var sel = document.getElementById("merge-target");
+    sel.innerHTML = "";
+    var mine = pinKey(p);
+    var cands = activePins().filter(function (q) {
+      if (pinKey(q) === mine) return false;
+      // never merge into a pin that (transitively) merges into this one — that would loop
+      if (resolveTarget(pinKey(q)) === mine) return false;
+      return true;
+    });
+    if (!cands.length) {
+      var opt = document.createElement("option");
+      opt.value = "";
+      opt.textContent = "— no other pin to merge into —";
+      sel.appendChild(opt);
+      document.getElementById("merge-btn").disabled = true;
+      return;
+    }
+    cands.forEach(function (q) {
+      var opt = document.createElement("option");
+      opt.value = pinKey(q);
+      opt.textContent = pinLabel(q);
+      sel.appendChild(opt);
+    });
+    document.getElementById("merge-btn").disabled = false;
+  }
+
+  function renderGroupbox(p) {
+    var splitInfo = document.getElementById("split-info");
+    var mergedIn = document.getElementById("merged-in");
+    splitInfo.innerHTML = "";
+    mergedIn.innerHTML = "";
+    if (p.splitId) {
+      splitInfo.hidden = false;
+      splitInfo.textContent = "This pin was split out of " + pinDisplayName(p.splitFrom) + ". ";
+      var undo = document.createElement("button");
+      undo.type = "button";
+      undo.className = "undo";
+      undo.textContent = "Undo this split — return the photos";
+      undo.addEventListener("click", undoSplit);
+      splitInfo.appendChild(undo);
+    } else {
+      splitInfo.hidden = true;
+    }
+    var into = mergedInto(p);
+    if (into.length) {
+      mergedIn.hidden = false;
+      mergedIn.textContent = "Merged into this pin: ";
+      into.forEach(function (q, i) {
+        if (i) mergedIn.appendChild(document.createTextNode(", "));
+        var b = document.createElement("strong");
+        b.textContent = pinDisplayName(pinKey(q));
+        mergedIn.appendChild(b);
+        mergedIn.appendChild(document.createTextNode(" "));
+        var ub = document.createElement("button");
+        ub.type = "button";
+        ub.className = "undo";
+        ub.textContent = "Undo";
+        ub.addEventListener("click", (function (key) {
+          return function () { undoMerge(key); };
+        })(pinKey(q)));
+        mergedIn.appendChild(ub);
+      });
+    } else {
+      mergedIn.hidden = true;
+    }
+    buildMergeTargets(p);
+    updateSplitCount();
+  }
+
+  function doSplit() {
+    var p = currentPin();
+    if (!p) return;
+    var own = p.photos || [];
+    var checked = [];
+    document.querySelectorAll('#photos input.split-check:checked').forEach(function (cb) {
+      checked.push(cb.getAttribute("data-photo"));
+    });
+    if (!checked.length || checked.length >= own.length) return;
+    var move = own.filter(function (ph) { return checked.indexOf(ph.photo) !== -1; });
+    var stay = own.filter(function (ph) { return checked.indexOf(ph.photo) === -1; });
+    splitSeq += 1;
+    var id = "split-" + splitSeq;
+    p.photos = stay;
+    var sp = {
+      splitId: id, seq: splitSeq, splitFrom: pinKey(p), serial: null,
+      photo: move[0].photo, type: "UN", condition: null,
+      photographer: (entryFor(p) && entryFor(p).photographer) || p.photographer || "PJM",
+      datetime: move[0].datetime || p.datetime || "",
+      section: p.section || "", chainage_mi: p.chainage_mi,
+      note: "", photos: move
+    };
+    splitPins.push(sp);
+    store.splits.push({
+      id: id, from: pinKey(p),
+      photos: move.map(function (ph) {
+        return { photo: ph.photo, derivative: ph.derivative, datetime: ph.datetime || "" };
+      })
+    });
+    saveStore();
+    var list = visiblePins();
+    currentIndex = list.indexOf(sp);
+    if (currentIndex < 0) currentIndex = 0;
+    render();
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }
+
+  function undoSplit() {
+    var p = currentPin();
+    if (!p || !p.splitId) return;
+    var src = findPin(p.splitFrom);
+    if (src) {
+      src.photos = (src.photos || []).concat(p.photos || []).sort(function (a, b) {
+        return String(a.datetime || "").localeCompare(String(b.datetime || ""));
+      });
+    }
+    splitPins = splitPins.filter(function (q) { return q.splitId !== p.splitId; });
+    store.splits = store.splits.filter(function (s) { return s.id !== p.splitId; });
+    delete store.entries[p.splitId];
+    saveStore();
+    if (src) {
+      var list = visiblePins();
+      currentIndex = list.indexOf(src);
+      if (currentIndex < 0) currentIndex = 0;
+    }
+    render();
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }
+
+  function doMerge(targetKey) {
+    var p = currentPin();
+    if (!p || !targetKey) return;
+    var target = findPin(targetKey);
+    if (!target || target === p) return;
+    if (!confirm("Merge this pin into " + pinDisplayName(targetKey) + "? Its " +
+        (p.photos || []).length + " photo(s) will move there, and this pin will leave the list. You can undo it from the other pin's page.")) return;
+    store.merges[pinKey(p)] = targetKey;
+    saveStore();
+    var list = visiblePins();
+    currentIndex = list.indexOf(target);
+    if (currentIndex < 0) currentIndex = 0;
+    render();
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }
+
+  function undoMerge(sourceKey) {
+    var target = currentPin();
+    delete store.merges[sourceKey];
+    saveStore();
+    var src = findPin(sourceKey);
+    var list = visiblePins();
+    currentIndex = src ? list.indexOf(src) : 0;
+    if (currentIndex < 0) currentIndex = 0;
+    render();
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }
+
   function exportClassifications() {
     var out = [];
-    pins.forEach(function (p) {
-      var s = store[pinKey(p)];
-      if (!s) return;
-      out.push({
-        pin: p.serial || p.photo,
+    allPins().forEach(function (p) {
+      var key = pinKey(p);
+      var s = store.entries[key];
+      var mergedTo = store.merges[key];
+      var isSplit = !!p.splitId;
+      var hasIncoming = mergedInto(p).length > 0;
+      if (!s && !isSplit && !mergedTo && !hasIncoming) return; // untouched pin: nothing to say
+      var photos = effectivePhotos(p).map(function (ph) {
+        return { photo: ph.photo, derivative: ph.derivative, role: roleFor(ph) };
+      });
+      var rec = {
+        pin: p.serial || ((p.photos && p.photos[0]) ? p.photos[0].photo : key),
         serial: p.serial || null,
         photo: p.photo,
-        type: s.type,
-        condition: s.condition || null,
-        photographer: s.photographer || "PJM",
-        notes: s.notes || ""
-      });
+        type: s ? s.type : "UN",
+        condition: s ? (s.condition || null) : null,
+        photographer: s ? (s.photographer || "PJM") : (p.photographer || "PJM"),
+        notes: s ? (s.notes || "") : "",
+        photos: photos
+      };
+      if (isSplit) rec.split_from = pinDisplayName(p.splitFrom);
+      if (mergedTo) rec.merged_into = pinDisplayName(mergedTo);
+      out.push(rec);
     });
     if (!out.length) return;
     var blob = new Blob([JSON.stringify(out, null, 2)], { type: "application/json" });
@@ -455,7 +809,46 @@
     setTimeout(function () { URL.revokeObjectURL(a.href); a.remove(); }, 1000);
   }
 
+  function applyStoredSplits() {
+    // Rebuild split pins from the store (in creation order, so a split
+    // taken from a split pin finds its parent already rebuilt).
+    splitPins = [];
+    store.splits.forEach(function (rec) {
+      var src = findPin(rec.from);
+      if (!src) return;
+      var move = [];
+      (rec.photos || []).forEach(function (rp) {
+        var idx = -1;
+        (src.photos || []).forEach(function (ph, i) { if (ph.photo === rp.photo) idx = i; });
+        if (idx >= 0) move.push(src.photos.splice(idx, 1)[0]);
+      });
+      if (!move.length) return;
+      var n = parseInt(String(rec.id).replace("split-", ""), 10) || 0;
+      splitPins.push({
+        splitId: rec.id, seq: n, splitFrom: rec.from, serial: null,
+        photo: move[0].photo, type: "UN", condition: null,
+        photographer: src.photographer || "PJM",
+        datetime: move[0].datetime || src.datetime || "",
+        section: src.section || "", chainage_mi: src.chainage_mi,
+        note: "", photos: move
+      });
+    });
+    splitSeq = splitPins.reduce(function (m, sp) { return Math.max(m, sp.seq || 0); }, 0);
+  }
+
+  function materializeRoles() {
+    // Every photo gets a role in the store if it has none: first photo
+    // front, second back, the rest detail. Corrections overwrite these.
+    allPins().forEach(function (p) {
+      (p.photos || []).forEach(function (ph, i) {
+        if (!store.roles[ph.photo]) store.roles[ph.photo] = defaultRole(p, i);
+      });
+    });
+    saveStore();
+  }
+
   function init(data) {
+    lastData = data;
     var feats = (data && data.features) || [];
     pins = feats.map(function (f) {
       var p = f.properties || {};
@@ -469,6 +862,7 @@
         section: p.section || "",
         chainage_mi: (p.chainage_mi == null ? null : p.chainage_mi),
         note: p.note || "",
+        seq: 0,
         photos: (p.photos || []).map(function (ph) {
           return { photo: ph.photo, derivative: ph.derivative, datetime: ph.datetime || "" };
         })
@@ -482,6 +876,8 @@
       return a.chainage_mi - b.chainage_mi;
     });
     loadStore();
+    applyStoredSplits();
+    materializeRoles();
     buildTypeOptions();
     document.getElementById("loader").hidden = true;
     document.getElementById("pinview").hidden = false;
@@ -536,13 +932,20 @@
     document.getElementById("next-btn").addEventListener("click", function () { goTo(currentIndex + 1); });
     document.getElementById("jump").addEventListener("change", function (ev) { goTo(parseInt(ev.target.value, 10)); });
     document.getElementById("confirm-btn").addEventListener("click", function () { saveCurrent(true); });
+    document.getElementById("split-btn").addEventListener("click", doSplit);
+    document.getElementById("merge-btn").addEventListener("click", function () {
+      var sel = document.getElementById("merge-target");
+      if (sel && sel.value) doMerge(sel.value);
+    });
     document.getElementById("export-btn").addEventListener("click", exportClassifications);
     document.getElementById("reset-btn").addEventListener("click", function () {
-      if (confirm("Erase everything you have entered in this browser? The registry itself is untouched.")) {
-        store = {};
+      if (confirm("Erase everything you have entered in this browser — classifications, photo roles, splits and merges? The registry itself is untouched.")) {
+        store = { entries: {}, roles: {}, splits: [], merges: {} };
         saveStore();
+        splitPins = [];
         currentIndex = 0;
-        render();
+        if (lastData) init(lastData);
+        else location.reload();
       }
     });
     typeSelect.addEventListener("change", onTypeChange);

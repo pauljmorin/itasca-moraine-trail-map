@@ -5,9 +5,9 @@ Serials are assigned at classification, not at photo intake:
 scripts/photo_pipeline.py build always writes `serial: null`, and
 this is the only script that stamps a serial onto a pin. Run it
 after a classification batch has set `type` on the pins to number
-(Muse proposes, Paul approves — the standing rule that editing runs
-through Paul holds for serials too, since a serial once published
-can never be taken back).
+(the chapter classifies through its interface and Paul approves —
+the standing rule that editing runs through Paul holds for serials
+too, since a serial once published can never be taken back).
 
 Format (Paul, 2026-11-11): ITM-<type>-<nnn> — chapter prefix, the
 type code from data/assets/registry.json, zero-padded three-digit

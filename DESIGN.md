@@ -57,8 +57,8 @@ from photographs (pipeline below), each carrying:
   `unclassified` bucket. Nobody knows everything the chapter has
   until the inventory is taken, so the taxonomy grows from what is
   found; it is never a closed list forced on the data
-- `condition` — a rough grade read from the photo (see open
-  decisions)
+- `condition` — a rough grade assigned by the chapter through its
+  classification interface (Nov 12, 2026: Muse does not grade)
 - date/time photographed, photo reference, photographer
 - `public_worthy` flag — the best photos double as promotion material
 
@@ -71,8 +71,8 @@ serials; the type-code table lives there and in
 `data/assets/README.md`. A serial is assigned at classification,
 never at photo intake — the pipeline always writes `serial: null`,
 and the separate editorial step `scripts/assign_serials.py` stamps
-the next numbers in chainage order, west to east, per type (Muse
-proposes, Paul approves per batch). Unclassified pins carry no
+the next numbers in chainage order, west to east, per type (the
+chapter classifies through its interface, Paul approves per batch). Unclassified pins carry no
 serial; serials are never reused and never renumbered. Pins also
 carry `chainage_mi` / `section` / `snap_m` from the depicted chain
 (off-chain pins keep chainage/section null) and `sign_kind` for
@@ -150,14 +150,14 @@ Goal: a volunteer's total effort is taking a photograph.
      that turn camera location on) and retest until green
    - nobody goes out until their phone passes
 3. **Extract.** A script reads each photo's EXIF GPS coordinates and
-   date/time; each photo becomes a draft asset pin at those
-   coordinates with the photo attached. Phone GPS accuracy (a few
-   metres) is sufficient for asset-finding purposes.
-4. **Classify.** The coordinator's AI assistant classifies each photo
-   (asset type, rough condition) from the image itself; a human
-   spot-checks rather than typing records. Unclassifiable photos go
-   to the `unclassified` bucket for human naming — this is how the
-   taxonomy grows.
+   date/time; photos of one physical asset become one draft pin at
+   those coordinates (grouped by time + position — front face, back
+   face, detail shots together), with the photos attached.
+4. **Classify.** The chapter classifies each pin through its
+   interface (asset type, rough condition). Unclassifiable photos go
+   to the `UN` bucket for human naming — this is how the
+   taxonomy grows. (Nov 12, 2026, Paul: Muse no longer classifies
+   or grades anything.)
 5. **Ongoing checks.** Every later batch is auto-scanned the same
    day: photos without GPS are flagged back to the photographer
    while they still remember where they stood; pins landing far off
@@ -167,8 +167,9 @@ Goal: a volunteer's total effort is taking a photograph.
 the two modes above — `check` (steps 2 and 5: per-photo EXIF GPS /
 datetime report plus a green/red per-photographer summary; standard
 library only, no third-party packages) and `build` (step 3: writes
-`data/assets/assets.geojson` with one Point per GPS-carrying photo,
-`type: "unclassified"`, `condition: null`, `drive_id: null` until
+`data/assets/assets.geojson` with one Point per GROUP of
+GPS-carrying photos (front/back/detail grouped by time + position),
+`type: "UN"`, `condition: null`, `drive_id: null` until
 Drive ingest; writes web derivatives ≤1600 px to
 `site/assets-photos/`; enforces the 5 MB per-file refusal from the
 storage rule; writes `data/assets/flags-report.md` covering no-GPS
@@ -223,10 +224,9 @@ chapter's records) is deliberately not decided yet.
 
 ## Open decisions
 
-1. **Condition grading** — proposed: capture location + a rough
-   condition grade (e.g. good / fair / needs work), since the
-   classification pass sees the asset anyway. Awaiting chapter
-   confirmation.
+1. **Condition grading** — DECIDED Nov 12, 2026 (Paul): the chapter
+   assigns the rough condition grade (e.g. good / fair / needs work)
+   through its classification interface. Muse does not grade.
 2. **KMZ segment overlay** — pending the chapter's adopter-boundary
    KMZ file. The overlay pass produces the first real report:
    segment fit against the official line, the unadopted gap list

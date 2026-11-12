@@ -18,7 +18,7 @@ item in the inventory carries a **serial number** —
   never renumbered; a removed item's serial retires with it.
 - **Assignment is editorial, never automatic.** `photo_pipeline.py
   build` always writes `serial: null`. After a batch is classified
-  (Muse proposes type + condition, Paul approves), run
+  (the chapter classifies through its interface, Paul approves), run
   `scripts/assign_serials.py` — it stamps the next numbers in
   chainage order, west to east, per type, and writes the registry
   back. Unclassified pins carry no serial.
@@ -50,8 +50,9 @@ item in the inventory carries a **serial number** —
 
 ## Pin fields
 
-`photo`, `datetime`, `photographer`, `type` (`unclassified` until
-classification), `condition` (null until graded), `drive_id`
+`photo`, `datetime`, `photographer`, `type` (`UN` until the chapter
+classifies it), `condition` (null until the chapter grades it — Muse
+does not grade), `drive_id`
 (filled at Drive ingest), `derivative`, `direction_deg` /
 `direction_ref` / `direction_compass` (camera facing, null when the
 photo has no valid EXIF ImgDirection), plus:
@@ -67,14 +68,20 @@ photo has no valid EXIF ImgDirection), plus:
 ## Workflow
 
 1. **Intake** — `scripts/photo_pipeline.py build` writes
-   `assets.geojson` here (one Point per GPS-carrying photo, type
-   `unclassified`, serial null) and `flags-report.md` (no-GPS
-   photos, oversize refusals, duplicates, GPS photos with no
-   camera direction, chainage summary). Web-sized derivatives
-   (max 1600 px) go to `site/assets-photos/`.
-2. **Classification** — Muse proposes type + condition per pin,
-   Paul approves; the approved types are written onto the pins
-   (type = the canonical lowercase name from the table above).
+   `assets.geojson` here (one Point per GROUP of GPS-carrying
+   photos — front face, back face and detail shots of one asset
+   grouped by time + position — type `UN`, serial null) and
+   `flags-report.md` (no-GPS photos, oversize refusals, duplicates,
+   GPS photos with no camera direction, chainage summary, grouping
+   list). Web-sized derivatives (max 1600 px) go to
+   `site/assets-photos/`. Photographer is stamped per photo and per
+   pin from `--photographer` (default PJM); a photo in a per-person
+   subfolder takes that subfolder's code. Photos in a pin carry
+   front/back/detail roles by shoot order only, never by compass.
+   Nothing is classified or graded at intake.
+2. **Classification** — the chapter classifies each pin through its
+   interface (type + condition), Paul approves; the approved type
+   codes are written onto the pins. Muse does not classify or grade.
 3. **Assignment** — `scripts/assign_serials.py` (add `--dry-run`
    to preview) stamps serials in chainage order and updates the
    registry. Re-running it is safe: numbered pins are never

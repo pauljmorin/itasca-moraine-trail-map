@@ -11,8 +11,8 @@ Two modes:
          subfolders) a green/red summary: green = photos carry GPS,
          red = none do.
 
-  build  Emit data/assets/assets.geojson (one Point per photo WITH
-         GPS; pins carry direction_deg / direction_ref /
+  build  Emit data/assets/assets.geojson (one Point per GROUP of
+         photos WITH GPS; pins carry direction_deg / direction_ref /
          direction_compass, null when the photo has no valid camera
          direction) plus a web-sized derivative per photo in
          site/assets-photos/, and data/assets/flags-report.md listing
@@ -20,13 +20,50 @@ Two modes:
          datetime+coordinate pairs. Photos with GPS but no valid
          direction are noted in the flags report (informational).
 
+         Grouping (Nov 12, 2026): photos of the same physical
+         asset — front face + back face of a sign or Carsonite,
+         multiple angles, punch-ins — are grouped into ONE pin by
+         time + position only: a photo joins a pin when it is within
+         GROUP_MAX_SPAN_S of the pin's first photo and within
+         GROUP_MAX_DIST_M of it (both measured from the first photo,
+         so a group cannot chain away down the trail). Photos
+         inside a pin are ordered by shoot time and labelled by
+         shoot order only — first shot front, second back, the rest
+         detail — never by compass, because the photos carry no
+         camera direction. Grouping is a first pass, not a judgment:
+         it cannot tell a front/back pair from two posts
+         photographed seconds apart, and it splits a long boardwalk
+         run photographed along its length. The chapter splits and
+         merges pins through its classification interface; the
+         pipeline never re-judges them.
+
+         NO CLASSIFICATION (Paul, Nov 12, 2026): the pipeline no
+         longer assigns a type or a condition to anything. Every
+         new pin arrives as type "UN" with condition null, and the
+         chapter classifies it through its interface. The old
+         Muse-classification batch scripts in working/ are retired
+         and refuse to run. No maintenance / needs-work items are
+         generated here either — scripts/build_maintenance.py is
+         retired; the existing maintenance.geojson is preserved
+         as-is and new items come from the chapter.
+
+         Photographer: every photo and every pin carries a
+         photographer code (initials). `--photographer` (default
+         PJM) stamps the batch; a photo in a per-person subfolder
+         takes that subfolder's code instead. The code is recorded
+         in the registry's photographers map (a name is never
+         invented — a new code is added with name null until a
+         human fills it in).
+
          Build MERGES with the existing assets.geojson: pins already
          in the file are carried over untouched (type, condition,
          serial and attached photos survive), and only photos not
          yet known get fresh pins. A photo is known if it is a pin's
          primary photo or listed in a pin's `photos` array, so
          re-running a batch whose duplicates were collapsed cannot
-         resurrect them as separate pins.
+         resurrect them as separate pins. Filenames listed in
+         data/assets/excluded-photos.txt are never pinned (privacy
+         removals and the like); the list only stops new pins.
 
          Every pin carries `serial: null` and `sign_kind: null` —
          build NEVER assigns a serial. Serials are assigned at
@@ -53,9 +90,10 @@ missing derivatives rather than failing the run.
 
 Usage:
   python3 scripts/photo_pipeline.py check PHOTOS_DIR [--gpx TRACK.gpx]
+        [--photographer INITIALS]
   python3 scripts/photo_pipeline.py build PHOTOS_DIR [--gpx TRACK.gpx]
         [--out-dir DIR] [--assets-name NAME] [--derivatives DIR]
-        [--flags-name NAME]
+        [--flags-name NAME] [--photographer INITIALS]
 
 GPX matching (Paul, Nov 11, 2026): photos from a phone that writes
 NO GPS (the standing case — see docs/photo-protocol.md) are placed
@@ -76,6 +114,7 @@ import argparse
 import bisect
 import hashlib
 import json
+import math
 import os
 import shutil
 import struct
@@ -95,6 +134,20 @@ DEFAULT_TZ = "America/Chicago"              # EXIF datetimes are camera-local
 MAX_TRACK_GAP_S = 120                       # bracketing points this far apart
                                             # mean the tracker was paused:
                                             # do not interpolate across it
+GROUP_MAX_SPAN_S = 60                       # photos of one asset are
+                                            # shot within about a minute
+GROUP_MAX_DIST_M = 5.0                      # ...and within a few metres
+                                            # of the first shot. Calibrated
+                                            # Nov 12, 2026 against the 84
+                                            # batch-1+2 pins (best F1 of
+                                            # the time+distance rules
+                                            # tried); it still over-merges
+                                            # adjacent posts and
+                                            # under-groups long runs — the
+                                            # chapter splits/merges through
+                                            # its interface.
+EXCLUDED_PHOTOS_NAME = "excluded-photos.txt"  # filenames never pinned
+                                            # (privacy removals etc.)
 
 # ---------------------------------------------------------------- EXIF (stdlib)
 
@@ -350,6 +403,70 @@ def match_gpx(track, dt_local, tz_name=DEFAULT_TZ,
             "gap_s": round(gap, 1)}
 
 
+# ---------------------------------------------------------------- grouping
+
+def haversine_m(lat1, lon1, lat2, lon2):
+    """Great-circle distance in metres between two lat/lon points."""
+    r = 6371000.0
+    p1, p2 = math.radians(lat1), math.radians(lat2)
+    dphi = math.radians(lat2 - lat1)
+    dlmb = math.radians(lon2 - lon1)
+    a = (math.sin(dphi / 2) ** 2
+         + math.cos(p1) * math.cos(p2) * math.sin(dlmb / 2) ** 2)
+    return 2 * r * math.asin(math.sqrt(a))
+
+
+def group_positioned(positioned, span_s=GROUP_MAX_SPAN_S,
+                     dist_m=GROUP_MAX_DIST_M):
+    """Group positioned photos into pins (one pin per physical asset).
+
+    `positioned` is a list of dicts with `filename`, `epoch` (seconds),
+    `lat`, `lon` (extra keys ride along untouched). Photos are sorted
+    by (epoch, filename). A photo joins the current group iff it is
+    within `span_s` of the group's FIRST photo in time AND within
+    `dist_m` of the group's FIRST photo in position. Both bounds are
+    measured from the first photo so a group cannot chain away down
+    the trail.
+
+    A first pass, not a judgment: it cannot tell a front/back pair of
+    one post from two posts photographed seconds apart, and it splits
+    a long boardwalk run photographed along its length. The chapter
+    splits and merges groups through its classification interface;
+    the pipeline never re-judges them. Returns a list of groups,
+    each a list of the input dicts in shoot order."""
+    ordered = sorted(positioned, key=lambda r: (r["epoch"], r["filename"]))
+    groups = []
+    cur = []
+    for rec in ordered:
+        if not cur:
+            cur = [rec]
+            continue
+        first = cur[0]
+        if (rec["epoch"] - first["epoch"] <= span_s
+                and haversine_m(rec["lat"], rec["lon"],
+                                first["lat"], first["lon"]) <= dist_m):
+            cur.append(rec)
+        else:
+            groups.append(cur)
+            cur = [rec]
+    if cur:
+        groups.append(cur)
+    return groups
+
+
+def photo_role(index_in_group):
+    """Role label for a photo inside its pin, by shoot order only:
+    first shot = front face, second = back face, the rest = detail
+    (punch-in / close-up). Shoot order, never compass: the photos
+    carry no camera direction, so no face is ever derived from a
+    bearing. The chapter corrects roles through its interface."""
+    if index_in_group == 0:
+        return "front"
+    if index_in_group == 1:
+        return "back"
+    return "detail"
+
+
 # ---------------------------------------------------------------- shared scan
 
 def scan_photos(root):
@@ -420,6 +537,12 @@ def cmd_check(args):
             dir_txt = "-"
         print(f"{p['rel']}\tGPS: {gps_txt}\t{coords}\t"
               f"{ex['datetime'] or '-'}\tDir: {dir_txt}")
+    for r in rows:
+        # Batch photographer (default PJM): a photo in a per-person
+        # subfolder keeps that subfolder's code; a flat-folder photo
+        # takes the batch photographer.
+        r["photographer"] = r["photographer"] or getattr(
+            args, "photographer", None)
     by_person = {}
     for r in rows:
         by_person.setdefault(r["photographer"], []).append(r)
@@ -472,6 +595,28 @@ def cmd_build(args):
     os.makedirs(out_dir, exist_ok=True)
     os.makedirs(deriv_dir, exist_ok=True)
 
+    # Exclusions (privacy removals and the like): filenames listed
+    # in <out_dir>/excluded-photos.txt are never pinned. The list
+    # only stops NEW pins — a photo already attached to an existing
+    # pin stays there, because existing pins are never touched and
+    # a removal from a pin is a deliberate edit, not a build side
+    # effect. Lines starting with # are comments.
+    excluded = set()
+    excluded_path = os.path.join(out_dir, EXCLUDED_PHOTOS_NAME)
+    if os.path.exists(excluded_path):
+        with open(excluded_path) as f:
+            for line in f:
+                name = line.split("#", 1)[0].strip()
+                if name:
+                    excluded.add(name)
+        print(f"exclusions: {len(excluded)} filenames listed in "
+              f"{EXCLUDED_PHOTOS_NAME}")
+    excluded_skipped = [p for p in photos if p["filename"] in excluded]
+    photos = [p for p in photos if p["filename"] not in excluded]
+    if excluded_skipped:
+        print(f"exclusions: {len(excluded_skipped)} photos skipped "
+              f"(listed in {EXCLUDED_PHOTOS_NAME})")
+
     # MERGE (Nov 11, 2026 — protects classified/serialized pins):
     # build no longer rewrites the inventory from scratch. Pins
     # already in <out_dir>/assets.geojson are carried over untouched
@@ -479,8 +624,8 @@ def cmd_build(args):
     # not yet known get fresh pins. A photo is known if it is a
     # pin's primary photo or listed in a pin's `photos` array, so
     # re-running a batch whose duplicates were collapsed cannot
-    # resurrect them. A corrupt existing file fails loudly instead
-    # of being clobbered.
+    # resurrect them as separate pins. A corrupt existing file fails
+    # loudly instead of being clobbered.
     _assets_path = os.path.join(out_dir, args.assets_name)
     existing_features = []
     known_photos = set()
@@ -503,7 +648,6 @@ def cmd_build(args):
     if carried:
         print(f"merge: {len(carried)} photos already known — skipped")
 
-    features = []
     no_gps = []
     no_direction = []
     refusals = []
@@ -518,15 +662,20 @@ def cmd_build(args):
     matched = 0
     max_offset = 0.0
 
-    used_slugs = set()
+    # Position every new photo first (EXIF GPS, else GPX match).
+    # Photographer: a photo in a per-person subfolder takes that
+    # subfolder's code; a flat-folder photo takes the batch
+    # photographer (--photographer, default PJM).
+    positioned = []
     for p in photos:
+        who = p["photographer"] or args.photographer
         ex = read_exif(p["path"])
         m = None
         if not ex["gps"] and track:
             m = match_gpx(track, parse_exif_datetime(ex["datetime"]),
                           tz_name=getattr(args, "tz", DEFAULT_TZ))
         if not ex["gps"] and not m:
-            no_gps.append(p)
+            no_gps.append({**p, "photographer": who})
             continue
         if m:
             matched += 1
@@ -539,59 +688,104 @@ def cmd_build(args):
             gps_source = "exif"
             gpx_offset = None
         if ex.get("direction") is None:
-            no_direction.append(p)
-        slug = slugify(p["filename"])
-        if p["photographer"]:
-            slug = slugify(p["photographer"]) + "-" + slug
-        base_slug, n = slug, 2
-        while slug in used_slugs:
-            slug = f"{base_slug}-{n}"
-            n += 1
-        used_slugs.add(slug)
-        deriv_name = slug + ".jpg"
-        deriv_path = os.path.join(deriv_dir, deriv_name)
-
+            no_direction.append({**p, "photographer": who})
+        dt = parse_exif_datetime(ex["datetime"])
+        epoch = (dt.replace(tzinfo=_tzinfo(
+            getattr(args, "tz", DEFAULT_TZ))).timestamp()
+            if dt is not None else None)
         key = (ex["datetime"], lat, lon)
         if key in seen_keys:
             duplicates.append((seen_keys[key], p))
         else:
             seen_keys[key] = p
+        positioned.append({
+            "filename": p["filename"], "rel": p["rel"], "path": p["path"],
+            "photographer": who, "datetime": ex["datetime"],
+            "epoch": epoch if epoch is not None else 0.0,
+            "lat": lat, "lon": lon, "gps_source": gps_source,
+            "gpx_offset_s": gpx_offset, "gpx_file": gpx_name,
+            "direction": ex.get("direction"),
+            "direction_ref": ex.get("direction_ref"),
+        })
+    positioned_count = len(positioned)
 
-        deriv_rel = None
-        try:
-            size = make_derivative(p["path"], deriv_path)
-            if size > MAX_OUTPUT_BYTES:
-                os.remove(deriv_path)
-                refusals.append((p, f"derivative {size} bytes > {MAX_OUTPUT_BYTES}"))
-            else:
-                deriv_rel = deriv_name
-        except ImportError:
-            deriv_notes.append((p, "Pillow not installed — derivative not written"))
-        except Exception as exc:                # unreadable image etc.
-            deriv_notes.append((p, f"derivative failed: {exc}"))
+    # Group into pins: one pin per physical asset (front + back +
+    # detail shots of the same thing). Grouping is time + position
+    # only — never a judgment about what the photos show.
+    groups = group_positioned(positioned)
 
+    # One pin per group. The pin's position, datetime, direction and
+    # provenance come from its FIRST photo (shoot order); every
+    # photo rides in the `photos` array with its own role,
+    # photographer and position. New pins arrive as type UN with no
+    # condition — classification happens through the chapter's
+    # interface, never here.
+    features = []
+    used_slugs = set()
+    for grp in groups:
+        first = grp[0]
+        photo_entries = []
+        for idx, rec in enumerate(grp):
+            slug = slugify(rec["filename"])
+            if rec["photographer"]:
+                slug = slugify(rec["photographer"]) + "-" + slug
+            base_slug, n = slug, 2
+            while slug in used_slugs:
+                slug = f"{base_slug}-{n}"
+                n += 1
+            used_slugs.add(slug)
+            deriv_name = slug + ".jpg"
+            deriv_path = os.path.join(deriv_dir, deriv_name)
+            deriv_rel = None
+            try:
+                size = make_derivative(rec["path"], deriv_path)
+                if size > MAX_OUTPUT_BYTES:
+                    os.remove(deriv_path)
+                    refusals.append(({"rel": rec["rel"]},
+                                     f"derivative {size} bytes > "
+                                     f"{MAX_OUTPUT_BYTES}"))
+                else:
+                    deriv_rel = deriv_name
+            except ImportError:
+                deriv_notes.append(({"rel": rec["rel"]},
+                                    "Pillow not installed — derivative "
+                                    "not written"))
+            except Exception as exc:            # unreadable image etc.
+                deriv_notes.append(({"rel": rec["rel"]},
+                                    f"derivative failed: {exc}"))
+            photo_entries.append({
+                "photo": rec["filename"],
+                "derivative": deriv_rel,
+                "datetime": rec["datetime"],
+                "drive_id": None,
+                "role": photo_role(idx),
+                "photographer": rec["photographer"],
+                "lat": rec["lat"],
+                "lon": rec["lon"],
+            })
         features.append({
             "type": "Feature",
-            "geometry": {"type": "Point", "coordinates": [lon, lat]},
+            "geometry": {"type": "Point",
+                         "coordinates": [first["lon"], first["lat"]]},
             "properties": {
-                "photo": p["filename"],
-                "datetime": ex["datetime"],
-                "photographer": p["photographer"],
-                "type": "unclassified",
+                "photo": first["filename"],
+                "datetime": first["datetime"],
+                "photographer": first["photographer"],
+                "type": "UN",
                 "condition": None,
                 "drive_id": None,
-                "derivative": deriv_rel,
-                "direction_deg": ex.get("direction"),
-                "direction_ref": ex.get("direction_ref"),
-                "direction_compass": compass16(ex.get("direction")),
+                "derivative": photo_entries[0]["derivative"],
+                "direction_deg": first["direction"],
+                "direction_ref": first["direction_ref"],
+                "direction_compass": compass16(first["direction"]),
                 # Position provenance: "exif" (device fix) or "gpx"
                 # (timestamp-interpolated from the track log).
                 # gpx_offset_s is seconds to the nearest track
                 # point; a matched position is an estimate, never
                 # a device fix.
-                "gps_source": gps_source,
-                "gpx_offset_s": gpx_offset,
-                "gpx_file": gpx_name,
+                "gps_source": first["gps_source"],
+                "gpx_offset_s": first["gpx_offset_s"],
+                "gpx_file": first["gpx_file"],
                 # Serials are assigned at classification, never here
                 # (scripts/assign_serials.py). sign_kind is null
                 # unless the pin is classified as a sign (SG).
@@ -601,6 +795,7 @@ def cmd_build(args):
                 "chainage_mi": None,
                 "section": None,
                 "snap_m": None,
+                "photos": photo_entries,
             },
         })
 
@@ -659,15 +854,53 @@ def cmd_build(args):
     if assets_size > MAX_OUTPUT_BYTES:
         refusals.append(({"rel": args.assets_name}, f"geojson {assets_size} bytes"))
 
+    # Record the batch photographer in the registry's photographers
+    # map (initials only). A code with no full name on file is added
+    # with name null — a name is never invented; it is filled in by
+    # hand. This is the only registry write build ever makes, and
+    # only when the code is new. Written via temp file + rename so
+    # a crash cannot corrupt the serial registry.
+    reg_path = os.path.join(out_dir, "registry.json")
+    if not os.path.exists(reg_path):
+        repo_root = os.path.dirname(os.path.dirname(
+            os.path.abspath(__file__)))
+        alt = os.path.join(repo_root, "data", "assets", "registry.json")
+        reg_path = alt if os.path.exists(alt) else None
+    if reg_path:
+        with open(reg_path) as f:
+            registry = json.load(f)
+        people = registry.setdefault("photographers", {})
+        if args.photographer not in people:
+            people[args.photographer] = {
+                "name": None,
+                "note": ("Added at intake; full name not on file — "
+                         "fill in by hand. Never publish a name "
+                         "that is not on file."),
+            }
+            tmp_path = reg_path + ".tmp"
+            with open(tmp_path, "w") as f:
+                json.dump(registry, f, indent=1)
+                f.write("\n")
+            os.replace(tmp_path, reg_path)
+            print(f"registry: photographer {args.photographer} added "
+                  f"with no full name — fill it in by hand")
+    else:
+        print("registry: no registry.json found — photographer "
+              f"{args.photographer} not recorded there",
+              file=sys.stderr)
+
     lines = ["# Photo pipeline — flags report",
              f"\nGenerated {datetime.now().isoformat(timespec='seconds')} "
              f"from `{args.photos_dir}`.",
-             f"\nScanned {scanned_total} photos: {len(features)} new "
-             f"positioned ({len(features) - matched} EXIF GPS, "
-             f"{matched} GPX-matched), {len(no_gps)} without a position "
-             f"(excluded); {len(carried)} already known, carried over "
-             f"untouched. {len(existing_features) + len(features)} pins "
-             f"total in the file.",
+             f"\nScanned {scanned_total} photos: {positioned_count} new "
+             f"positioned ({positioned_count - matched} EXIF GPS, "
+             f"{matched} GPX-matched) grouped into {len(features)} new "
+             f"pins; {len(no_gps)} without a position (excluded); "
+             f"{len(excluded_skipped)} excluded by "
+             f"{EXCLUDED_PHOTOS_NAME}; {len(carried)} already known, "
+             f"carried over untouched. "
+             f"{len(existing_features) + len(features)} pins total in "
+             f"the file.",
              "\n## GPX matching\n"]
     if track:
         from datetime import timezone as _tz
@@ -688,6 +921,37 @@ def cmd_build(args):
     else:
         lines.append("No GPX track given — positions came from EXIF GPS "
                      "only.\n")
+    lines.append("\n## Photo grouping\n")
+    multi = [g for g in groups if len(g) > 1]
+    lines.append(f"{len(groups)} new pins: "
+                 f"{len(groups) - len(multi)} single-photo, "
+                 f"{len(multi)} multi-photo. A photo joins a pin when it "
+                 f"is within {GROUP_MAX_SPAN_S} s of the pin's first "
+                 f"photo and within {GROUP_MAX_DIST_M:.0f} m of it "
+                 f"(measured from the first photo, so a group cannot "
+                 f"chain away down the trail). Roles are by shoot order "
+                 f"only — first shot front, second back, the rest "
+                 f"detail — never by compass; the photos carry no "
+                 f"camera direction. Grouping is a first pass: the "
+                 f"chapter splits and merges pins through its "
+                 f"classification interface, and the pipeline never "
+                 f"re-judges them. New pins arrive as type UN with no "
+                 f"condition; nothing is classified here.\n")
+    if multi:
+        lines.append("Multi-photo groups (review these — a group can "
+                     "fuse two nearby posts, and a long run can split "
+                     "across groups):\n")
+        for grp in multi:
+            first = grp[0]
+            span = grp[-1]["epoch"] - first["epoch"]
+            spread = max(haversine_m(r["lat"], r["lon"],
+                                     first["lat"], first["lon"])
+                         for r in grp)
+            lines.append(f"- {first['filename']} + {len(grp) - 1} more "
+                         f"({', '.join(r['filename'] for r in grp)}) — "
+                         f"span {span:.0f} s, spread {spread:.1f} m")
+    else:
+        lines.append("- no multi-photo groups")
     lines.append("\n## No position — excluded from the map\n")
     if no_gps:
         for p in no_gps:
@@ -695,6 +959,11 @@ def cmd_build(args):
             lines.append(f"- {p['rel']} — photographer: {who}")
     else:
         lines.append("- none")
+    if excluded_skipped:
+        lines.append("\n## Excluded — listed in "
+                     f"{EXCLUDED_PHOTOS_NAME}, never pinned\n")
+        for p in excluded_skipped:
+            lines.append(f"- {p['rel']}")
     lines.append("\n## GPS but no camera direction (informational)\n")
     lines.append("These photos carry GPS and were pinned, but no valid "
                  "EXIF camera direction (GPS ImgDirection) — their pins "
@@ -737,9 +1006,11 @@ def cmd_build(args):
     with open(flags_path, "w") as f:
         f.write("\n".join(lines) + "\n")
 
-    print(f"scanned={scanned_total} with_gps={len(features)} "
-          f"exif={len(features) - matched} gpx_matched={matched} "
+    print(f"scanned={scanned_total} positioned={positioned_count} "
+          f"groups={len(features)} "
+          f"exif={positioned_count - matched} gpx_matched={matched} "
           f"max_offset_s={max_offset:.0f} no_gps={len(no_gps)} "
+          f"excluded={len(excluded_skipped)} "
           f"duplicates={len(duplicates)} "
           f"refusals={len(refusals)} snapped={snapped} "
           f"off_chain={len(off_chain)} carried={len(carried)} "
@@ -748,7 +1019,6 @@ def cmd_build(args):
     print(f"wrote {flags_path}")
     print(f"derivatives in {deriv_dir}")
     return 0
-
 
 def main():
     ap = argparse.ArgumentParser(description=__doc__)
@@ -761,6 +1031,10 @@ def main():
     c.add_argument("--tz", default=DEFAULT_TZ,
                    help="timezone EXIF datetimes are read as "
                         f"(default: {DEFAULT_TZ})")
+    c.add_argument("--photographer", default="PJM",
+                   help="photographer initials stamped on flat-folder "
+                        "photos (default: PJM); a per-person subfolder "
+                        "still wins for photos inside it")
     c.set_defaults(fn=cmd_check)
     b = sub.add_parser("build", help="build assets.geojson + derivatives + flags")
     b.add_argument("photos_dir")
@@ -777,6 +1051,10 @@ def main():
     b.add_argument("--flags-name", default="flags-report.md")
     b.add_argument("--derivatives", default=None,
                    help="derivative folder (default: <repo>/site/assets-photos)")
+    b.add_argument("--photographer", default="PJM",
+                   help="photographer initials stamped on flat-folder "
+                        "photos (default: PJM); a per-person subfolder "
+                        "still wins for photos inside it")
     b.set_defaults(fn=cmd_build)
     args = ap.parse_args()
     return args.fn(args)
