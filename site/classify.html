@@ -4,6 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Classify trail photos — Itasca Moraine Trail Map</title>
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
 <style>
   :root { color-scheme: light; }
   * { box-sizing: border-box; }
@@ -1011,6 +1012,28 @@
     applyStoredSplits();
     materializeRoles();
     buildTypeChecks();
+    /* Deep link from the map (Paul, Nov 12): classify.html#pin=ITM-CP-004
+       jumps straight to that pin. Switch to the "all" filter so the
+       pin is reachable even if it is already classified, then set
+       the index to its position in the visible list. */
+    var hashPin = null;
+    var m = /#pin=([^&]+)/.exec(location.hash || "");
+    if (m) {
+      try { hashPin = decodeURIComponent(m[1]); } catch (e) { hashPin = m[1]; }
+    }
+    if (hashPin) {
+      var hit = null;
+      for (var hi = 0; hi < pins.length; hi++) {
+        if (pins[hi].serial === hashPin) { hit = pins[hi]; break; }
+      }
+      if (hit) {
+        currentFilter = "all";
+        var vis = visiblePins();
+        for (var vi = 0; vi < vis.length; vi++) {
+          if (vis[vi] === hit) { currentIndex = vi; break; }
+        }
+      }
+    }
     document.getElementById("loader").hidden = true;
     document.getElementById("pinview").hidden = false;
     render();

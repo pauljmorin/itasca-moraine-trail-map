@@ -989,7 +989,7 @@ function directionsHtml(f) {
   return "<a class='pop-directions' target='_blank' rel='noopener' " +
     "href='https://www.google.com/maps/dir/?api=1&destination=" +
     c[1].toFixed(6) + "," + c[0].toFixed(6) +
-    "'>Directions (Google Maps)</a>";
+    "'>Driving directions</a>";
 }
 
 function chapterPopupHtml(f) {
@@ -1204,6 +1204,15 @@ function assetPopup(f) {
   rows.push(["Photographed", fmtPhotoDate(p.datetime)]);
   rows.push(["Photographer", p.photographer]);
   if (photos.length > 1) rows.push(["Photos", photos.length + " photos"]);
+  /* Classify link (Paul, Nov 12): the pin opens the
+     classification interface at this pin, so the chapter can
+     jump from the map to classifying it. Serial is the key;
+     unclassified pins link to the interface's Needs
+     classification view. */
+  var classifyHref = "classify.html" +
+    (p.serial ? "#pin=" + encodeURIComponent(p.serial) : "");
+  html += "<p class='pop-classify'><a href='" + classifyHref +
+    "' target='_blank' rel='noopener'>Classify this pin</a></p>";
   return html + kvTable(rows);
 }
 
@@ -3906,12 +3915,12 @@ var currentView = "work";
 var VIEW_PRESETS = {
   /* Work: the panel as redesigned (R1–R5) — the work list
      leading, the maintenance layer on, the adoption gap on,
-     the assets and places on, and Tree height on at 70% over
-     Topo (the mockup's home-screen state). Height lines stay
-     off (they are a close-zoom tool). */
+     the assets and places on. Tree height stays OFF by
+     default (Paul, Nov 12) — it is a toggle the reader turns
+     on; Height lines stay off (they are a close-zoom tool). */
   work: { on: ["maintenance", "gaps", "assets", "places",
-               "chapterplaces", "treeheight"],
-          off: ["contours"] },
+               "chapterplaces"],
+          off: ["treeheight", "contours"] },
   /* Explore: the same map with the work list and the
      management toggles hidden and the trail + places +
      chapter places on. The assets (photos) stay on. */
