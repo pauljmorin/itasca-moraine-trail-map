@@ -922,6 +922,56 @@ function leechLakePopup(f) {
     ["Trail inside", trail],
   ]) + "<p class='pop-note'>" + esc(p.note) + "</p>";
 }
+/* Logging and burns (Phase 3, Nov 12, 2026): three layers from
+   the county / DNR / federal pull in working/logging-burns/ —
+   Cass County timber sales, Cass FIM stands, and the USFS EDW
+   timber sale on the Chippewa NF. The sources carry no expiry
+   or status, so the popups show the year prominently instead
+   of implying a sale is current; a sale's year is the
+   freshness signal. FIM stand_age 0 means unrecorded, not
+   age 0. */
+function logCassPopup(f) {
+  var p = f.properties;
+  return "<h3>" + esc(p.name || "Timber sale") + "</h3>" + kvTable([
+    ["Permit", p.permit],
+    ["Acres", p.acres],
+    ["Year", p.year],
+    ["Source", p.source],
+  ]) + "<p class='pop-note'>No expiry in the source — the year " +
+    "is the sale year, not a guarantee the sale is current.</p>";
+}
+function logFimPopup(f) {
+  var p = f.properties;
+  var age = (p.stand_age == null || p.stand_age === 0)
+    ? "not recorded" : p.stand_age;
+  var trs = [p.township, p.range, p.section].filter(function (v) {
+    return v != null;
+  }).join(" / ");
+  return "<h3>" + esc(p.name || "Forest stand") + "</h3>" + kvTable([
+    ["Cover type", p.cover_type],
+    ["Acres", p.acres],
+    ["Stand age", age],
+    ["Timber status", p.timber_status],
+    ["Native plant community", p.npc],
+    ["Year", p.year],
+    ["Township / Range / Section", trs || null],
+    ["Source", p.source],
+  ]) + "<p class='pop-note'>Forest inventory stand, not a sale.</p>";
+}
+function logEdwPopup(f) {
+  var p = f.properties;
+  return "<h3>" + esc(p.name || "Timber sale") + "</h3>" + kvTable([
+    ["Contract", p.permit],
+    ["Acres", p.acres],
+    ["Year", p.year],
+    ["Revised", p.rev_date],
+    ["Forest", p.forest],
+    ["District", p.district],
+    ["Source", p.source],
+  ]) + "<p class='pop-note'>Revised is the last revision date, " +
+    "not an expiry — the source carries none.</p>";
+}
+
 
 /* Trail alerts (NCTA trail_alerts service, pulled by
    scripts/pull_trail_alerts.py): the alert's own title, date and
@@ -1120,17 +1170,6 @@ function assetPopup(f) {
         (p.chainage_mi != null ? " · mi " + p.chainage_mi : "") +
         "</p>";
     }
-  }
-  /* Needs work (R1/R5): the maintenance line sits at the top
-     of the card, in red, so the state is visible before the
-     photo — the asset's inventory role and its maintenance
-     role are one card, not two pins. */
-  var maint = p.serial ? maintByAsset[p.serial] : null;
-  if (maint) {
-    html += "<p class='pop-maint'>" +
-      (maint.properties.severity === "soon" ? "Needs work soon: "
-        : "Can wait: ") +
-      esc(maint.properties.fix || "") + "</p>";
   }
   /* Every photo of the item, not just the primary: the inventory
      collapses duplicate photos onto one pin (Nov 11, 2026), and
@@ -2701,290 +2740,7 @@ function applyContoursGate() {
   }
 }
 
-/* --------------------------------------------------- maintenance
-   R1 (design review, Nov 11, 2026): the maintenance inventory
-   as a layer AND as the panel's work list, both rendered from
-   data/maintenance.geojson — one file, so the list and the
-   layer can never disagree. The file is fetched once at startup
-   (12 items, ~10 KB — text, not photos; photos load on click).
-   maintByAsset maps an asset serial to its maintenance item, so
-   the asset popup can carry the "Needs work" line (R5). */
-var maintData = null;
-var maintByAsset = {};
-var maintMarkers = {};
-var maintFeaturesById = {};
-
-function maintPopupHtml(f) {
-  var p = f.properties || {};
-  var soon = p.severity === "soon";
-  var html = "<h3>" + esc(p.title || "Needs work") + "</h3>";
-  html += "<p class='maint-fix'><strong>" + esc(p.fix || "") +
-    "</strong></p>";
-  var where = [];
-  if (p.chainage_mi != null) where.push("mi " + p.chainage_mi);
-  if (p.section) where.push(p.section);
-  where.push(soon ? "Needs work soon" : "Can wait");
-  html += "<p class='maint-where'>" + esc(where.join(" · ")) + "</p>";
-  if (p.asset) {
-    html += "<p class='maint-asset'>Asset " + esc(p.asset) +
-      " — <button type='button' class='maint-asset-btn' " +
-      "data-serial='" + esc(p.asset) + "'>Open the asset pin</button></p>";
-  }
-  if (p.photos && p.photos.length) {
-    html += "<img src=\"assets-photos/" + esc(p.photos[0]) +
-      "\" alt=\"\" style=\"max-width:100%;display:block;margin:6px 0 2px\">";
-    if (p.photos.length > 1) {
-      html += "<p class='maint-photos'>" + p.photos.length +
-        " photos — the first is shown</p>";
-    }
-  }
-  return html;
-}
-function maintPopup(f) { return maintPopupHtml(f); }
-
-/* Open an asset pin's popup from a maintenance card (the
-   cross-reference runs both ways). */
-function openAssetPin(serial) {
-  var def = layerById("assets");
-  if (!def) return;
-  if (!def.layer) {
-    if (def.box && !def.box.checked) def.box.checked = true;
-    ensureLayer(def, false);
-    window.setTimeout(function () { openAssetPin(serial); }, 600);
-    return;
-  }
-  var found = null;
-  def.layer.eachLayer(function (l) {
-    var layers = l.getLayers ? l.getLayers() : [l];
-    layers.forEach(function (child) {
-      if (child.feature && child.feature.properties &&
-          child.feature.properties.serial === serial) {
-        found = child;
-      }
-    });
-  });
-  if (!found) return;
-  var c = found.getLatLng ? found.getLatLng() : null;
-  if (c) map.flyTo(c, Math.max(map.getZoom(), 15), { duration: 0.8 });
-  window.setTimeout(function () { found.openPopup(); }, 850);
-}
-document.addEventListener("click", function (e) {
-  var t = e.target;
-  if (!t || !t.classList || !t.classList.contains("maint-asset-btn")) return;
-  var serial = t.getAttribute("data-serial");
-  if (serial) openAssetPin(serial);
-});
-
-/* The work list (R1): the panel's front door. "Needs work soon"
-   first, one line per job — the five blowdowns group into one
-   line ("5 blowdowns, mi 57.4") that zooms to the cluster —
-   then the "can wait" jobs behind a "Show all" expander. Each
-   line is a button: it zooms to the item and opens its card. */
-function fmtChainageMi(v) {
-  return v == null ? null : (Math.round(v * 10) / 10).toFixed(1);
-}
-function workListLine(item, group) {
-  var p = group ? {} : (item.properties || {});
-  var c = group ? null : item.geometry.coordinates;
-  var li = document.createElement("li");
-  var btn = document.createElement("button");
-  btn.type = "button";
-  var soon = p.severity === "soon";
-  var dot = document.createElement("span");
-  dot.className = "sev" + (soon ? " soon" : " wait");
-  btn.appendChild(dot);
-  var txt = document.createElement("span");
-  var what = document.createElement("span");
-  what.className = "w-what";
-  what.textContent = group ? group.title
-    : (p.title + (p.chainage_mi != null
-        ? ", mi " + fmtChainageMi(p.chainage_mi) : ""));
-  txt.appendChild(what);
-  var where = document.createElement("span");
-  where.className = "w-where";
-  var bits = [];
-  if (group) {
-    if (group.section) bits.push(group.section);
-    if (group.asset) bits.push(group.asset);
-  } else {
-    if (p.section) bits.push(p.section);
-    if (p.asset) bits.push(p.asset);
-  }
-  where.textContent = bits.filter(Boolean).join(" · ");
-  if (where.textContent) txt.appendChild(document.createTextNode(" "));
-  txt.appendChild(where);
-  var fix = document.createElement("span");
-  fix.className = "w-fix";
-  fix.textContent = group ? group.fix : p.fix;
-  txt.appendChild(fix);
-  btn.appendChild(txt);
-  btn.addEventListener("click", function () {
-    if (group) {
-      var bounds = null;
-      group.items.forEach(function (it) {
-        var cc = it.geometry.coordinates;
-        var b = L.latLngBounds([[cc[1], cc[0]], [cc[1], cc[0]]]);
-        bounds = bounds ? bounds.extend(b) : b;
-      });
-      if (bounds) map.fitBounds(bounds.pad(0.6), { maxZoom: 15 });
-      openMaintCard(group.items[0]);
-    } else {
-      map.flyTo([c[1], c[0]], Math.max(map.getZoom(), 15),
-        { duration: 0.8 });
-      openMaintCard(item);
-    }
-  });
-  li.appendChild(btn);
-  return li;
-}
-function openMaintCard(item) {
-  var c = item.geometry.coordinates;
-  /* Make sure the maintenance layer is on so the markers are
-     visible, then open the card at the item. */
-  var def = layerById("maintenance");
-  if (def && def.box && !def.box.checked) {
-    def.box.checked = true;
-    ensureLayer(def, false);
-  }
-  window.setTimeout(function () {
-    var mk = maintMarkers[item.properties.id];
-    if (mk) { mk.openPopup(); return; }
-    L.popup({ maxWidth: 300 })
-      .setLatLng([c[1], c[0]])
-      .setContent(maintPopupHtml(item))
-      .openOn(map);
-  }, 850);
-}
-function buildWorkList() {
-  var list = document.getElementById("work-list");
-  var more = document.getElementById("work-more");
-  if (!list || !maintData) return;
-  var feats = maintData.features || [];
-  var soon = feats.filter(function (f) {
-    return f.properties.severity === "soon";
-  });
-  var wait = feats.filter(function (f) {
-    return f.properties.severity !== "soon";
-  });
-  /* Group the blowdowns: same title, all "soon", one stretch. */
-  var groups = [];
-  var singles = [];
-  var blow = soon.filter(function (f) {
-    return f.properties.title === "Blowdown";
-  });
-  soon.forEach(function (f) {
-    if (f.properties.title !== "Blowdown") singles.push(f);
-  });
-  if (blow.length) {
-    var chs = blow.map(function (f) { return f.properties.chainage_mi; });
-    var lo = Math.min.apply(null, chs), hi = Math.max.apply(null, chs);
-    groups.push({
-      title: blow.length + " blowdowns, mi " +
-        fmtChainageMi((lo + hi) / 2),
-      fix: "Saw and clear — tread blocked in a " +
-        (Math.round((hi - lo) * 10) / 10).toFixed(1) + "-mi stretch",
-      section: blow[0].properties.section,
-      asset: null, items: blow,
-    });
-  }
-  list.innerHTML = "";
-  groups.forEach(function (g) {
-    list.appendChild(workListLine(null, g));
-  });
-  singles.forEach(function (f) {
-    list.appendChild(workListLine(f, null));
-  });
-  /* "Can wait" lives behind the expander (mockup). */
-  if (wait.length && more) {
-    var names = wait.map(function (f) {
-      return f.properties.title.toLowerCase();
-    });
-    more.hidden = false;
-    more.innerHTML = "";
-    more.appendChild(document.createTextNode(
-      wait.length + " more that can wait — " + names.join(", ") + ". "));
-    var show = document.createElement("a");
-    show.href = "#";
-    show.textContent = "Show all " + feats.length;
-    show.addEventListener("click", function (ev) {
-      ev.preventDefault();
-      var expanded = list.getAttribute("data-expanded") === "true";
-      list.setAttribute("data-expanded", expanded ? "false" : "true");
-      if (expanded) {
-        buildWorkList();
-      } else {
-        wait.forEach(function (f) {
-          list.appendChild(workListLine(f, null));
-        });
-        show.textContent = "Show fewer";
-      }
-    });
-    more.appendChild(show);
-  }
-}
-(function loadMaintenance() {
-  fetch("data/maintenance.geojson")
-    .then(function (r) {
-      if (!r.ok) throw new Error("HTTP " + r.status);
-      return r.json();
-    })
-    .then(function (gj) {
-      maintData = gj;
-      (gj.features || []).forEach(function (f) {
-        var p = f.properties || {};
-        maintFeaturesById[p.id] = f;
-        if (p.asset) maintByAsset[p.asset] = f;
-      });
-      buildWorkList();
-      updatePresentStrip();
-    })
-    .catch(function () {
-      var list = document.getElementById("work-list");
-      if (list) {
-        list.innerHTML = "<li class='work-error'>Could not load " +
-          "the work list.</li>";
-      }
-    });
-})();
-
 var LAYERS = [
-  {
-    /* R1 (design review, Nov 11, 2026): the maintenance inventory
-       as a real layer — one marker per item, coloured by severity
-       (red = needs work soon, amber = can wait), with the photo and
-       one plain sentence stating the fix in the popup. Items that
-       are also assets keep their asset pin and name it
-       ("Asset ITM-SG-016"). The data is data/maintenance.geojson,
-       built by scripts/build_maintenance.py from the asset pins —
-       the panel work list renders from the same file, so the list
-       and the layer can never disagree. ON by default: the work is
-       the map's front door. */
-    id: "maintenance", label: "Needs work",
-    file: "data/maintenance.geojson", onByDefault: true,
-    group: "What needs doing",
-    swatch: { kind: "alert", color: COLORS.gap },
-    build: function (gj) {
-      maintMarkers = {};
-      return L.geoJSON(gj, {
-        pointToLayer: function (f, latlng) {
-          var p = f.properties || {};
-          var soon = p.severity === "soon";
-          var mk = L.marker(latlng, {
-            keyboard: false,
-            icon: L.divIcon({
-              className: "maint-marker-wrap",
-              iconSize: [18, 18], iconAnchor: [9, 9],
-              html: "<span class='maint-marker" +
-                (soon ? " soon" : " wait") + "'></span>",
-            }),
-          });
-          maintMarkers[p.id] = mk;
-          return mk;
-        },
-        onEachFeature: function (f, l) { bindPop(l, maintPopup(f)); },
-      });
-    },
-  },
   {
     id: "trail", label: "NCTA Trail", file: "data/trail.geojson",
     onByDefault: true, group: "The trail",
@@ -3441,6 +3197,76 @@ var LAYERS = [
     },
   },
   {
+    /* Logging and burns (Phase 3, Nov 12, 2026): Cass County
+       timber sales, current, clipped to the trail corridor
+       (1,182 units, 2007–2026). OFF by default and LAZY like
+       parcels — nothing fetches data/logging-cass-timber-
+       sales.geojson until the box is first checked. No expiry
+       or status in the source, so the popup shows the year
+       prominently. */
+    id: "logcass", label: "Cass timber sales",
+    title: "Cass County timber sales, current — year is the sale year",
+    file: "data/logging-cass-timber-sales.geojson",
+    onByDefault: false, group: "The land",
+    swatch: { kind: "fill", color: "#d97706", border: "#92400e" },
+    build: function (gj) {
+      var layer = L.geoJSON(gj, {
+        renderer: canvasFor(),
+        style: {
+          color: "#92400e", weight: 1.5,
+          fillColor: "#d97706", fillOpacity: 0.28,
+        },
+        onEachFeature: function (f, l) { bindPop(l, logCassPopup(f)); },
+      });
+      return layer;
+    },
+  },
+  {
+    /* Cass County FIM (forest inventory) stands, current,
+       clipped to the corridor (6,472 stands). OFF by default
+       and LAZY. An inventory, not a sale — stand_age 0 means
+       unrecorded. Geometry simplified to ~22 m for the viewer;
+       no stands dropped. */
+    id: "logfim", label: "Cass forest stands",
+    title: "Cass County forest inventory stands",
+    file: "data/logging-cass-fim-stands.geojson",
+    onByDefault: false, group: "The land",
+    swatch: { kind: "fill", color: "#6b8e23", border: "#556b2f" },
+    build: function (gj) {
+      var layer = L.geoJSON(gj, {
+        renderer: canvasFor(),
+        style: {
+          color: "#556b2f", weight: 1,
+          fillColor: "#6b8e23", fillOpacity: 0.18,
+        },
+        onEachFeature: function (f, l) { bindPop(l, logFimPopup(f)); },
+      });
+      return layer;
+    },
+  },
+  {
+    /* USFS EDW timber sale project areas, Chippewa National
+       Forest (124 areas). OFF by default and LAZY. These are
+       project areas, not sale units — much larger than the
+       Cass sale units — so they draw underneath them. */
+    id: "logedw", label: "Chippewa NF timber sales",
+    title: "USFS timber sale project areas, Chippewa National Forest",
+    file: "data/logging-edw-timber-sale.geojson",
+    onByDefault: false, group: "The land",
+    swatch: { kind: "fill", color: "#64748b", border: "#475569" },
+    build: function (gj) {
+      var layer = L.geoJSON(gj, {
+        renderer: canvasFor(),
+        style: {
+          color: "#475569", weight: 1.5,
+          fillColor: "#64748b", fillOpacity: 0.15,
+        },
+        onEachFeature: function (f, l) { bindPop(l, logEdwPopup(f)); },
+      });
+      return layer;
+    },
+  },
+  {
     id: "access", label: "Non-road access",
     title: "Forest roads, OHV, other trails",
     file: "data/access.geojson", onByDefault: false, group: "Around the trail",
@@ -3632,8 +3458,7 @@ var LAYERS = [
         onEachFeature: function (f, l) {
           /* Function content (Leaflet 1.9 calls it at open time):
              the popup is built when it opens, not when the layer
-             loads — so the "Needs work" line sees the maintenance
-             data even though that file loads after this layer. */
+             loads, so it always reflects the pin's current data. */
           bindPop(l, function () { return assetPopup(f); });
           wireAssetHover(l, f);
         },
@@ -3875,9 +3700,7 @@ function setPresent(on) {
 function updatePresentStrip() {
   var strip = document.getElementById("present-strip");
   if (!strip) return;
-  var jobs = maintData ? (maintData.features || []).length : 0;
-  strip.textContent = jobs + " jobs · 2.9 mi unadopted · " +
-    "Chip-5 and Chip-6";
+  strip.textContent = "2.9 mi unadopted · Chip-5 and Chip-6";
 }
 /* The tree-height key in Present mode: the panel (and its key)
    is hidden in a room, so the key rides in its own fixed
@@ -3913,24 +3736,23 @@ document.addEventListener("keydown", function (e) {
    carries it as #view=work|explore|visit. */
 var currentView = "work";
 var VIEW_PRESETS = {
-  /* Work: the panel as redesigned (R1–R5) — the work list
-     leading, the maintenance layer on, the adoption gap on,
+  /* Work: the panel as redesigned — the adoption gap on,
      the assets and places on. Tree height stays OFF by
      default (Paul, Nov 12) — it is a toggle the reader turns
      on; Height lines stay off (they are a close-zoom tool). */
-  work: { on: ["maintenance", "gaps", "assets", "places",
+  work: { on: ["gaps", "assets", "places",
                "chapterplaces"],
           off: ["treeheight", "contours"] },
-  /* Explore: the same map with the work list and the
-     management toggles hidden and the trail + places +
-     chapter places on. The assets (photos) stay on. */
+  /* Explore: the same map with the management toggles
+     hidden and the trail + places + chapter places on.
+     The assets (photos) stay on. */
   explore: { on: ["assets", "places", "chapterplaces"],
-             off: ["maintenance", "treeheight", "contours"] },
+             off: ["treeheight", "contours"] },
   /* Visit: the public face — the trail, the places, the
-     photos; the work and the land stay off, and the panel
-     shows nothing beyond Find and the welcome line. */
+     photos; the land stays off, and the panel shows nothing
+     beyond Find and the welcome line. */
   visit: { on: ["assets", "places", "chapterplaces"],
-           off: ["maintenance", "treeheight", "contours"] },
+           off: ["treeheight", "contours"] },
 };
 function setView(view) {
   if (!VIEW_PRESETS[view]) view = "explore";
@@ -4010,12 +3832,9 @@ function setView(view) {
 /* Panel groups (design review R2): the panel is organized by
    task, not by data source. The LAYERS array order is the build
    order; the PANEL order is this list, so a def's group decides
-   where its toggle lands, not its position in the array. The
-   "What needs doing" group renders under the work list (its
-   heading is the section's own h2), not inside #layer-toggles. */
-var PANEL_GROUPS = ["What needs doing", "The trail", "Our stuff",
+   where its toggle lands, not its position in the array. */
+var PANEL_GROUPS = ["The trail", "Our stuff",
                     "The land", "Around the trail"];
-var maintTogglesEl = document.getElementById("maintenance-toggle");
 LAYERS.forEach(function (def) {
   def.layer = null;
   def.loading = false;
@@ -4077,14 +3896,13 @@ LAYERS.forEach(function (def) {
 });
 /* Phase 2: lay the toggles out in panel (task) order. */
 PANEL_GROUPS.forEach(function (group) {
-  var container = group === "What needs doing" ? maintTogglesEl
-                                                : togglesEl;
+  var container = togglesEl;
   if (!container) return;
   var headed = false;
   LAYERS.forEach(function (def) {
     if (def.enabled === false || !def._label) return;
     if (def.group !== group || def.hiddenToggle) return;
-    if (group !== "What needs doing" && !headed) {
+    if (!headed) {
       var gh = document.createElement("div");
       gh.className = "tog-group";
       gh.textContent = group;
@@ -4106,15 +3924,6 @@ setView(currentView);
 /* Wire the panel's own buttons (R4/R6/R7): the view switch,
    Present, Hide panel, and the footer About link (Sources
    behind it). */
-/* The work block's heading is the h2 directly before the
-   work list (the HTML has no wrapper) — give it an id so the
-   view CSS can hide the whole block in Explore/Visit. */
-(function tagWorkHeading() {
-  var list = document.getElementById("work-list");
-  var h2 = list && list.previousElementSibling;
-  if (h2 && h2.tagName === "H2") h2.id = "work-heading";
-})();
-
 (function wirePanelButtons() {
   var sw = document.getElementById("view-switch");
   if (sw) {
@@ -4299,11 +4108,12 @@ function assertDrawOrder() {
        the gap, boundary ticks and chapter ends, mile markers
        with the ticks, then Places, trail alerts and asset pins
        uppermost. */
-    ["leechlake", "parcels", "access", "roads", "nctasheets", "trail",
+    ["leechlake", "parcels", "logedw", "logfim", "logcass", "access",
+     "roads", "nctasheets", "trail",
      "stretches", "gaps",
      "boundaries", "termini", "milemarkers", "chainage", "contours",
      "places",
-     "alerts", "chapterplaces", "maintenance", "assets"].forEach(function (id) {
+     "alerts", "chapterplaces", "assets"].forEach(function (id) {
       var d = layerById(id);
       if (!d || !d.layer || !map.hasLayer(d.layer)) return;
       if (d.layer.bringToFront) { d.layer.bringToFront(); return; }
@@ -4365,11 +4175,6 @@ function legendHtml() {
     "Section boundary — bar across the line (Adoption segment ends)");
   add(bar(CHAPTER_COLORS.ITM, true),
     "Chapter boundary — longer bar across the line (Itasca Moraine terminus)");
-  add("", "<strong>What needs doing</strong>");
-  add("<span class='swatch alert'></span>",
-    "Needs work soon — saw and clear, replace, refasten");
-  add("<span class='swatch alert wait'></span>",
-    "Can wait — monitor, watch");
   /* The Access points rows are gone with their layer (v3); the
      crossings live in Find now. */
   add("", "<strong>Mileage</strong>");
@@ -4409,6 +4214,12 @@ function legendHtml() {
     "Tree height — how tall the trees are (overlay, over any " +
     "background; white is open ground)");
   add(line("#8a6d1a"), "Height lines — every 5 m");
+  add("<span class='swatch fill' style='background:#d97706'></span>",
+    "Cass timber sale — year is the sale year (no expiry in the source)");
+  add("<span class='swatch fill' style='background:#6b8e23'></span>",
+    "Cass forest stand — inventory, not a sale");
+  add("<span class='swatch fill' style='background:#64748b'></span>",
+    "Chippewa NF timber sale — project area");
   return rows.join("");
 }
 
