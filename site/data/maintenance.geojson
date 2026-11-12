@@ -1,0 +1,285 @@
+{
+ "type": "FeatureCollection",
+ "features": [
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -94.5311487,
+     47.0056209
+    ]
+   },
+   "properties": {
+    "id": "M-001",
+    "title": "Shot-up sign",
+    "fix": "Replace the sign board \u2014 face unreadable",
+    "severity": "soon",
+    "chainage_mi": 57.26,
+    "section": "Chip-5",
+    "asset": "ITM-SG-016",
+    "photos": [
+     "pxl_20261111_171222895.jpg"
+    ],
+    "photo": "pxl_20261111_171222895.jpg"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -94.5294684,
+     47.0056759
+    ]
+   },
+   "properties": {
+    "id": "M-002",
+    "title": "Blowdown",
+    "fix": "Saw and clear \u2014 tread blocked",
+    "severity": "soon",
+    "chainage_mi": 57.35,
+    "section": "Chip-5",
+    "asset": null,
+    "photos": [
+     "pxl_20261111_171417596-mp.jpg"
+    ],
+    "photo": "pxl_20261111_171417596-mp.jpg"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -94.5271395,
+     47.0057419
+    ]
+   },
+   "properties": {
+    "id": "M-003",
+    "title": "Blowdown",
+    "fix": "Saw and clear \u2014 tread blocked",
+    "severity": "soon",
+    "chainage_mi": 57.46,
+    "section": "Chip-5",
+    "asset": null,
+    "photos": [
+     "pxl_20261111_171622584-mp.jpg"
+    ],
+    "photo": "pxl_20261111_171622584-mp.jpg"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -94.5270822,
+     47.0057377
+    ]
+   },
+   "properties": {
+    "id": "M-004",
+    "title": "Blowdown",
+    "fix": "Saw and clear \u2014 tread blocked",
+    "severity": "soon",
+    "chainage_mi": 57.47,
+    "section": "Chip-5",
+    "asset": null,
+    "photos": [
+     "pxl_20261111_171633870.jpg"
+    ],
+    "photo": "pxl_20261111_171633870.jpg"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -94.5264722,
+     47.0059745
+    ]
+   },
+   "properties": {
+    "id": "M-005",
+    "title": "Blowdown",
+    "fix": "Saw and clear \u2014 tread blocked",
+    "severity": "soon",
+    "chainage_mi": 57.5,
+    "section": "Chip-5",
+    "asset": null,
+    "photos": [
+     "pxl_20261111_171740292-mp.jpg",
+     "pxl_20261111_171741627.jpg"
+    ],
+    "photo": "pxl_20261111_171740292-mp.jpg"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -94.5259722,
+     47.0064665
+    ]
+   },
+   "properties": {
+    "id": "M-006",
+    "title": "Blowdown",
+    "fix": "Saw and clear \u2014 tread blocked",
+    "severity": "soon",
+    "chainage_mi": 57.54,
+    "section": "Chip-5",
+    "asset": null,
+    "photos": [
+     "pxl_20261111_171840137-mp.jpg"
+    ],
+    "photo": "pxl_20261111_171840137-mp.jpg"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -94.5336813,
+     47.0176004
+    ]
+   },
+   "properties": {
+    "id": "M-007",
+    "title": "Limb on the marsh bridge",
+    "fix": "Clear the limb \u2014 bridge itself is sound",
+    "severity": "soon",
+    "chainage_mi": null,
+    "section": "Lake Erin Loop",
+    "asset": "ITM-BR-002",
+    "photos": [
+     "pxl_20261111_164313064.jpg",
+     "pxl_20261111_164324579-mp.jpg",
+     "pxl_20261111_164336858-mp.jpg"
+    ],
+    "photo": "pxl_20261111_164313064.jpg"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -94.5163124,
+     47.0039808
+    ]
+   },
+   "properties": {
+    "id": "M-008",
+    "title": "Raised board end",
+    "fix": "Refasten the board \u2014 trip hazard",
+    "severity": "soon",
+    "chainage_mi": 58.21,
+    "section": "Chip-5",
+    "asset": "ITM-BW-009",
+    "photos": [
+     "pxl_20261111_173347090.jpg"
+    ],
+    "photo": "pxl_20261111_173347090.jpg"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -94.5141641,
+     47.0033405
+    ]
+   },
+   "properties": {
+    "id": "M-009",
+    "title": "Leaning post",
+    "fix": "Replace the post \u2014 leaning, split base",
+    "severity": "soon",
+    "chainage_mi": 58.36,
+    "section": "Chip-5",
+    "asset": "ITM-PO-001",
+    "photos": [
+     "pxl_20261111_173913740.jpg"
+    ],
+    "photo": "pxl_20261111_173913740.jpg"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -94.5340139,
+     47.0143701
+    ]
+   },
+   "properties": {
+    "id": "M-010",
+    "title": "Loose plank",
+    "fix": "Check whether it belongs to the run; refasten or replace",
+    "severity": "wait",
+    "chainage_mi": 56.54,
+    "section": "Chip-5",
+    "asset": "ITM-BW-008",
+    "photos": [
+     "pxl_20261111_165051063-mp.jpg"
+    ],
+    "photo": "pxl_20261111_165051063-mp.jpg"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -94.5338119,
+     47.0177511
+    ]
+   },
+   "properties": {
+    "id": "M-011",
+    "title": "Wet tread dip",
+    "fix": "Monitor; consider a puncheon if it worsens",
+    "severity": "wait",
+    "chainage_mi": null,
+    "section": "Lake Erin Loop",
+    "asset": null,
+    "photos": [
+     "pxl_20261111_164249781.jpg",
+     "pxl_20261111_164253208.jpg"
+    ],
+    "photo": "pxl_20261111_164249781.jpg"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -94.5337914,
+     47.0176799
+    ]
+   },
+   "properties": {
+    "id": "M-012",
+    "title": "Beaver-gnawed tree",
+    "fix": "Watch in case it falls across the trail",
+    "severity": "wait",
+    "chainage_mi": null,
+    "section": "Lake Erin Loop",
+    "asset": null,
+    "photos": [
+     "pxl_20261111_164303475.jpg"
+    ],
+    "photo": "pxl_20261111_164303475.jpg"
+   }
+  }
+ ]
+}

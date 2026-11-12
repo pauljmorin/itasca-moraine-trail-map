@@ -179,7 +179,7 @@ var winterBase = L.layerGroup([mnHillshade, snowPistes]);
    scripts/build_lidar_trio.py from the state's 2022
    point clouds (first returns) and the seamless 0.5 m DEM,
    clipped to a ~100 m corridor either side of the trail --
-   so these two bases exist ONLY along the corridor; beyond
+   so these two tile sets exist ONLY along the corridor; beyond
    it the tiles simply end (ragged edges are by design).
    Canopy is a grey hillshade of the first-return surface --
    the bare-earth hillshade's sibling, same register.
@@ -191,93 +191,145 @@ var winterBase = L.layerGroup([mnHillshade, snowPistes]);
    SOURCES.md). Tiles are this repo's own files (site/tiles/),
    z9-15; past z15 the z15 tiles upscale. (z16 was rendered
    and measured -- 152.5 MB for 1,466 tiles -- then dropped:
-   the shipped range stays in the tens-of-MB class.) */
+   the shipped range stays in the tens-of-MB class.)
+   Nov 11, 2026 redesign (design review §7): these two tile
+   sets are ONE overlay ("Tree height") over the base layers,
+   not bases — the two canopy radios are retired from the
+   Background list (a corridor-only base blanks the world
+   outside a 100 m strip and reads as a broken map). The
+   tile layer objects below serve the overlay; see
+   TREE_HEIGHT below. */
 var mnCanopyShade = L.tileLayer("tiles/canopy-shade/{z}/{x}/{y}.png", {
   maxZoom: 18, maxNativeZoom: 15,
+  /* Corridor-only tile set (504 tiles, z9–15): the bounds stop
+     Leaflet requesting tiles that do not exist outside the
+     corridor — without them the overlay 404s on every pan.
+     Bounds from the z15 tile inventory (Nov 12, 2026). */
+  bounds: [[46.927759, -95.614014], [47.189712, -94.284668]],
   attribution: "Canopy shade (LiDAR first returns, 2022): " +
     "MnGeo / Minnesota DNR",
 });
 var mnCanopyHeight = L.tileLayer(
   "tiles/canopy-height/{z}/{x}/{y}.png", {
     maxZoom: 18, maxNativeZoom: 15,
+    bounds: [[46.927759, -95.614014], [47.189712, -94.284668]],
     attribution: "Canopy height (LiDAR, 2022): MnGeo / " +
       "Minnesota DNR",
   });
 
-var baseControl = L.control.layers(
-  {
-    "Topo (OpenTopoMap)": topo,
-    "USGS Topo 1:24k": usgsTopo,
-    "National Geographic (Esri)": esriNatGeo,
-    "MN LiDAR Hillshade": mnHillshade,
-    "MN LiDAR Canopy": mnCanopyShade,
-    "Canopy height (LiDAR)": mnCanopyHeight,
-    "Aerial (NAIP 2023/25)": usgsImagery,
-    "Aerial (Esri)": esriImagery,
-    "Aerial + Topo (NAIP 2023/25)": usgsImageryTopo,
-    "Aerial (2014)": esriWayback2014,
-    "Streets (OSM)": osm,
-    "Trails (CyclOSM)": cyclosm,
-    "Winter (snow trails)": winterBase,
-  }, null,
-  { position: "topright" }
-).addTo(map);
-L.control.scale({ imperial: true, metric: true }).addTo(map);
-
-var layersToggleEl = document.querySelector(".leaflet-control-layers-toggle");
-if (layersToggleEl) layersToggleEl.title = "Base maps";
-
-/* Basemap chooser form (Nov 11, 2026, designer pass): the stock
-   Leaflet radio list, grouped under the site layer panel's own
-   heading style (.tog-group in style.css). Leaflet has no group
-   support, so this is a thin DOM post-pass: one heading before
-   each family's first row, in control order. The current base
-   also gets a visible .base-active row (Leaflet only checks the
-   radio), kept in step by the baselayerchange handler below. */
-var BASE_GROUPS = [
-  { before: "Topo (OpenTopoMap)", heading: "Topographic" },
-  { before: "MN LiDAR Hillshade", heading: "Relief" },
-  { before: "Aerial (NAIP 2023/25)", heading: "Aerial" },
-  { before: "Streets (OSM)", heading: "Streets & trails" },
+/* ------------------------------------------------------- Background
+   (design review R2): the base-map chooser lives in the panel,
+   not in a floating box over the map. Four plain choices —
+   Topo (the working map), Aerial (the photo), Terrain (the bare
+   ground, no trees), Winter (snow trails) — and the other bases
+   behind a "More backgrounds" disclosure for Paul. The two
+   canopy radios are retired (see the note above): once Tree
+   height exists as an overlay, a corridor-only base is a trap.
+   setBase() is the only way the base changes; it keeps the
+   imagery label flip, the casing register, and the Winter
+   snowmobile emphasis in step (the old Leaflet layers control
+   and its baselayerchange handler are gone). */
+var BASES = [
+  { name: "Topo (OpenTopoMap)", label: "Topo",
+    sub: "the working map", layer: topo, primary: true },
+  { name: "Aerial (NAIP 2023/25)", label: "Aerial",
+    sub: "the photo", layer: usgsImagery, primary: true },
+  { name: "MN LiDAR Hillshade", label: "Terrain",
+    sub: "the bare ground, no trees", layer: mnHillshade,
+    primary: true },
+  { name: "Winter (snow trails)", label: "Winter",
+    sub: "snow trails", layer: winterBase, primary: true,
+    winter: true },
+  { name: "USGS Topo 1:24k", label: "USGS Topo",
+    sub: "1:24k quadrangles", layer: usgsTopo },
+  { name: "National Geographic (Esri)", label: "National Geographic",
+    sub: "Esri", layer: esriNatGeo },
+  { name: "Aerial (Esri)", label: "Aerial (Esri)",
+    sub: "Esri World Imagery", layer: esriImagery },
+  { name: "Aerial + Topo (NAIP 2023/25)", label: "Aerial + Topo",
+    sub: "NAIP with topo labels", layer: usgsImageryTopo },
+  { name: "Aerial (2014)", label: "Aerial (2014)",
+    sub: "the view at the end of 2014", layer: esriWayback2014 },
+  { name: "Streets (OSM)", label: "Streets",
+    sub: "OpenStreetMap", layer: osm },
+  { name: "Trails (CyclOSM)", label: "Trails",
+    sub: "CyclOSM", layer: cyclosm },
+  /* Retired Nov 11, 2026 (design review §7): the two canopy
+     bases are the Tree height overlay's source now, not
+     choices. They stay defined above and are NOT listed here. */
 ];
-function baseRowLabel(row) {
-  var span = row.querySelector("span");
-  return span ? span.textContent.trim() : "";
-}
-function markActiveBase(name) {
-  var rows = document.querySelectorAll(
-    ".leaflet-control-layers-base label");
-  rows.forEach(function (row) {
-    row.classList.toggle("base-active", baseRowLabel(row) === name);
-  });
-}
-(function groupBaseList() {
-  var list = document.querySelector(".leaflet-control-layers-base");
-  if (!list) return;
-  var rows = list.querySelectorAll("label");
-  var byName = {};
-  rows.forEach(function (row) { byName[baseRowLabel(row)] = row; });
-  BASE_GROUPS.forEach(function (g) {
-    var row = byName[g.before];
-    if (!row) return;
-    var h = document.createElement("div");
-    h.className = "base-group";
-    h.textContent = g.heading;
-    list.insertBefore(h, row);
-  });
-  markActiveBase("Topo (OpenTopoMap)");
-})();
+var currentBase = BASES[0];
 
-/* Imagery bases flip map-face labels to near-white (UX P5). */
-map.on("baselayerchange", function (e) {
-  markActiveBase(e.name);
-  document.body.classList.toggle("base-imagery", /^Aerial/.test(e.name));
+function setBase(name) {
+  var def = null;
+  BASES.forEach(function (b) { if (b.name === name) def = b; });
+  if (!def || def === currentBase) return;
+  map.removeLayer(currentBase.layer);
+  map.addLayer(def.layer);
+  currentBase = def;
+  document.body.classList.toggle("base-imagery", /^Aerial/.test(name));
   /* S3 (cartography notes): casing registers — the casing colour
      and register follow the base-map family. LLC never gets a
      casing in any register. Bases not listed default to paper. */
-  casingRegister = CASING_BY_BASE[e.name] || "paper";
+  casingRegister = CASING_BY_BASE[name] || "paper";
   applyCasings();
-});
+  /* Winter is a composed base AND a mode: choosing it turns the
+     snowmobile emphasis on (heavier snowmobile lines, and they
+     survive the print collapse); any other base turns it off.
+     (The old standalone Winter checkbox is gone — R7.) */
+  winterMode = !!def.winter;
+  document.body.classList.toggle("winter", winterMode);
+  if (accessLayerRef) accessLayerRef.setStyle(accessStyle);
+  markActiveBase(name);
+}
+function markActiveBase(name) {
+  document.querySelectorAll("#background-choices .bg-choice, " +
+    "#background-more .bg-choice").forEach(function (row) {
+    var on = row.getAttribute("data-base") === name;
+    row.classList.toggle("on", on);
+    row.setAttribute("aria-pressed", on ? "true" : "false");
+  });
+}
+(function buildBackground() {
+  function rowFor(def) {
+    /* A real button (aria-pressed + the "on" class), not a
+       label + radio — the Background section is a set of
+       actions, and the radio's checked state drifted from
+       the "on" class markActiveBase maintains. */
+    var btn = document.createElement("button");
+    btn.type = "button";
+    btn.className = "bg-choice";
+    btn.setAttribute("data-base", def.name);
+    btn.setAttribute("aria-pressed",
+      def === currentBase ? "true" : "false");
+    if (def === currentBase) btn.classList.add("on");
+    btn.textContent = def.label + " ";
+    var sub = document.createElement("span");
+    sub.className = "bg-sub";
+    sub.textContent = "— " + def.sub;
+    btn.appendChild(sub);
+    btn.addEventListener("click", function () {
+      setBase(def.name);
+    });
+    return btn;
+  }
+  var main = document.getElementById("background-choices");
+  var more = document.getElementById("background-more");
+  var moreBtn = document.getElementById("bg-more-btn");
+  if (!main || !more) return;
+  BASES.forEach(function (def) {
+    (def.primary ? main : more).appendChild(rowFor(def));
+  });
+  if (moreBtn) {
+    moreBtn.addEventListener("click", function () {
+      var open = more.hidden;
+      more.hidden = !open;
+      moreBtn.textContent = open ? "Fewer backgrounds…"
+                                 : "More backgrounds…";
+    });
+  }
+})();
+L.control.scale({ imperial: true, metric: true }).addTo(map);
 
 /* ------------------------------------------------ v7 cartography
    Zoom bands (cartography notes §2): Z1 ≤ 10 (chapter), Z2 11–12
@@ -306,13 +358,9 @@ var CASING_BY_BASE = {
   "Aerial (2014)": "photo",
   "Winter (snow trails)": "relief",
   "MN LiDAR Hillshade": "relief",
-  "MN LiDAR Canopy": "relief",
-  /* Canopy height is a saturated colour surface like the
-     aerials, so it takes the photo register: its white casing
-     keeps the trail and section lines legible over deep
-     green. It is NOT in the /^Aerial/ imagery family -- the
-     label flip stays off for it. */
-  "Canopy height (LiDAR)": "photo",
+  /* The two canopy bases are retired (design review §7): their
+     tile sets are the Tree height overlay's source now, not
+     bases, so they have no casing register entry. */
   "USGS Topo 1:24k": "relief",
   "National Geographic (Esri)": "relief",
 };
@@ -356,6 +404,7 @@ function applyZoomStyles() {
     it.casing.setStyle({ opacity: tickOp === 0 ? 0 : 0.85 });
   });
   applyPlacesGate();
+  applyContoursGate();
 }
 map.on("zoomend", applyZoomStyles);
 
@@ -804,8 +853,7 @@ document.addEventListener("click", function (e) {
     if (label) label.textContent = t.getAttribute("data-label") || "";
     var btns = wrap.querySelectorAll(".pop-face");
     for (var i = 0; i < btns.length; i++) {
-      btns[i].style.background = btns[i] === t ? "#ddd" : "#fff";
-      btns[i].style.fontWeight = btns[i] === t ? "bold" : "normal";
+      btns[i].classList.toggle("active", btns[i] === t);
     }
     return;
   }
@@ -1027,11 +1075,59 @@ function assetTypeName(code) {
     (String(code).charAt(0).toUpperCase() + String(code).slice(1));
 }
 
+/* Condition in plain language (R5): the pin's grade is a word
+   plus what it means for the crew — "worn" alone tells a
+   volunteer nothing. */
+var CONDITION_GLOSS = {
+  "new": "New — sound and readable",
+  worn: "Worn — readable, aging, watch it",
+  replace: "Replace — not doing its job",
+  good: "Good — sound",
+  fair: "Fair — sound, weathered",
+  poor: "Poor — failing",
+};
+function fmtPhotoDate(dt) {
+  /* EXIF "2026:11:11 10:54:23" → "Nov 11, 2026". */
+  var m = /^(\d{4}):(\d{2}):(\d{2})/.exec(dt || "");
+  if (!m) return dt || null;
+  var months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun",
+    "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+  return months[+m[2] - 1] + " " + (+m[3]) + ", " + m[1];
+}
+
 function assetPopup(f) {
   var p = f.properties || {};
   var typeName = assetTypeName(p.type);
-  var title = p.serial ? esc(p.serial) + " — " + typeName : typeName;
-  var html = "<h3>" + title + "</h3>";
+  var unidentified = !p.type || p.type.toUpperCase() === "UN" ||
+    p.type.toLowerCase() === "unclassified";
+  var html;
+  if (unidentified) {
+    /* R5: a pin we cannot name says so — never a guessed
+       type. The note (what the classifier could see) is the
+       description; the walk-through is the next step. */
+    html = "<h3>Not yet identified</h3>" +
+      "<p class='pop-sub'>Needs a walk-through — we don't know " +
+      "what this is yet.</p>";
+  } else {
+    html = "<h3>" + esc(typeName) + "</h3>";
+    if (p.serial) {
+      html += "<p class='pop-sub'>" + esc(p.serial) +
+        (p.section ? " · " + esc(p.section) : "") +
+        (p.chainage_mi != null ? " · mi " + p.chainage_mi : "") +
+        "</p>";
+    }
+  }
+  /* Needs work (R1/R5): the maintenance line sits at the top
+     of the card, in red, so the state is visible before the
+     photo — the asset's inventory role and its maintenance
+     role are one card, not two pins. */
+  var maint = p.serial ? maintByAsset[p.serial] : null;
+  if (maint) {
+    html += "<p class='pop-maint'>" +
+      (maint.properties.severity === "soon" ? "Needs work soon: "
+        : "Can wait: ") +
+      esc(maint.properties.fix || "") + "</p>";
+  }
   /* Every photo of the item, not just the primary: the inventory
      collapses duplicate photos onto one pin (Nov 11, 2026), and
      the extra photos live in p.photos. Pins without a photos
@@ -1058,37 +1154,37 @@ function assetPopup(f) {
     html += "<img class=\"pop-face-img\" src=\"assets-photos/" +
       esc(photos[0].derivative) +
       "\" alt=\"\" style=\"max-width:100%;display:block;margin:6px 0 2px\">";
-    html += "<div class=\"pop-face-label\" style=\"font-size:12px;" +
-      "color:#555;margin:0 0 4px\">" + esc(faceLabel(0)) + "</div>";
-    html += "<div style=\"display:flex;flex-wrap:wrap;gap:4px;margin:0 0 6px\">";
+    html += "<div class=\"pop-face-label\">" + esc(faceLabel(0)) + "</div>";
+    html += "<div class=\"pop-face-btns\">";
     photos.forEach(function (ph, i) {
       if (!ph.derivative) return;
-      html += "<button type=\"button\" class=\"pop-face\" data-derivative=\"" +
+      html += "<button type=\"button\" class=\"pop-face" +
+        (i === 0 ? " active" : "") + "\" data-derivative=\"" +
         esc(ph.derivative) + "\" data-label=\"" + esc(faceLabel(i)) +
-        "\" style=\"padding:2px 8px;border:1px solid #999;border-radius:10px;" +
-        "background:" + (i === 0 ? "#ddd" : "#fff") + ";cursor:pointer\">" +
-        esc(faceLabel(i)) + "</button>";
+        "\">" + esc(faceLabel(i)) + "</button>";
     });
-    html += "<button type=\"button\" class=\"pop-faces-all\" " +
-      "style=\"padding:2px 8px;border:1px solid #999;border-radius:10px;" +
-      "background:#fff;cursor:pointer\">Show all photos</button>";
+    html += "<button type=\"button\" class=\"pop-faces-all\">" +
+      "Show all photos</button>";
     html += "</div>";
-    html += "<div class=\"pop-face-grid\" style=\"display:none;flex-wrap:wrap;" +
-      "gap:4px;margin:6px 0 2px\">";
+    html += "<div class=\"pop-face-grid\">";
     photos.forEach(function (ph) {
       if (ph.derivative) {
         html += "<img src=\"assets-photos/" + esc(ph.derivative) +
-          "\" alt=\"\" style=\"flex:1 1 30%;max-width:32%;display:block\">";
+          "\" alt=\"\">";
       }
     });
     html += "</div></div>";
   }
-  var rows = [
-    ["Condition", p.condition],
-    ["Photographed", p.datetime],
-    ["Photographer", p.photographer],
-    ["Section", p.section],
-  ];
+  var rows = [];
+  if (unidentified) {
+    rows.push(["Section", p.section]);
+    if (p.note) rows.push(["What we can see", p.note]);
+  } else {
+    rows.push(["Condition", p.condition ?
+      (CONDITION_GLOSS[p.condition] || p.condition) : null]);
+  }
+  rows.push(["Photographed", fmtPhotoDate(p.datetime)]);
+  rows.push(["Photographer", p.photographer]);
   if (photos.length > 1) rows.push(["Photos", photos.length + " photos"]);
   return html + kvTable(rows);
 }
@@ -1765,13 +1861,8 @@ function renderInspector() {
   if (!selection) {
     el.innerHTML =
       "<div class='insp-empty'>Select a section: click the amber " +
-      "line, or find it above. ← → walk the trail." +
-      "<button type='button' class='insp-gap-callout' id='insp-gap-btn'>" +
-      "Not adopted: GAP-W, 2.9 mi — Itasca State Park</button></div>";
-    var btn = document.getElementById("insp-gap-btn");
-    if (btn) btn.addEventListener("click", function () {
-      if (gapWalkItem) selectSection(gapWalkItem, "inspector");
-    });
+      "line, or find it above — or pick a job from the list above. " +
+      "← → walk the trail.</div>";
     return;
   }
   el.innerHTML = selection.type === "gap"
@@ -2131,10 +2222,21 @@ function sectionInspectorHtml(item) {
       "details</summary><div class='insp-rows'>" + rows +
       "</div></details>";
   }
-  html += "<p class='insp-print-note'>Maintenance notes and tracker " +
-    "comments are in the chapter adoption tracker.</p>";
+  html += printNoteHtml();
   html += "</div>" + inspProv() + "</div>";
   return html;
+}
+
+/* R7: the Winter print note — the old standalone Winter
+   checkbox is gone (Winter is a Background choice now); when
+   the Winter background is active, the handout says so. */
+function printNoteHtml() {
+  var note = "Maintenance notes and tracker comments are in the " +
+    "chapter adoption tracker.";
+  if (winterMode) {
+    note += " Snowmobile trails are shown — winter background.";
+  }
+  return "<p class='insp-print-note'>" + note + "</p>";
 }
 
 function gapInspectorHtml(item) {
@@ -2178,8 +2280,7 @@ function gapInspectorHtml(item) {
       "details</summary><div class='insp-rows'>" + rows +
       "</div></details>";
   }
-  html += "<p class='insp-print-note'>Maintenance notes and tracker " +
-    "comments are in the chapter adoption tracker.</p>";
+  html += printNoteHtml();
   html += "</div>" + inspProv() + "</div>";
   return html;
 }
@@ -2529,10 +2630,337 @@ function swatchFor(def) {
 
 var gapLabelGroupRef = null;
 
+/* Tree height overlay (§7): one opacity for the colour +
+   shade pair. Default 70% — at 100% the dark green swallows
+   the amber sections and the orange pins. Present mode drops
+   it to 60% (R4) and restores it on exit. */
+var treeHeightOpacity = 0.70;
+var treeHeightSlider = null;
+var treeHeightOpacityEl = null;
+function setTreeHeightOpacity(v) {
+  treeHeightOpacity = v;
+  mnCanopyHeight.setOpacity(v);
+  mnCanopyShade.setOpacity(v);
+  if (treeHeightSlider) {
+    treeHeightSlider.value = String(Math.round(v * 100));
+  }
+  if (treeHeightOpacityEl) {
+    treeHeightOpacityEl.textContent =
+      Math.round(v * 100) + "%";
+  }
+}
+
+/* Height lines (§7): smoothed 5 m contours. Normal mode shows
+   all five levels thin; Present mode shows only 10/20/25 m,
+   thicker — the 5 m interval is unreadable from the back of a
+   room. The layer only draws at z ≥ 12 (applyContoursGate). */
+var contoursLayerRef = null;
+function contourStyle(f) {
+  var level = (f.properties || {}).level;
+  if (document.body.classList.contains("present")) {
+    if (level === 5 || level === 15) return { opacity: 0, weight: 0 };
+    return { color: "#8a6d1a", weight: 2.5, opacity: 0.8 };
+  }
+  return { color: "#8a6d1a", weight: 1, opacity: 0.55 };
+}
+function applyContoursGate() {
+  var def = layerById("contours");
+  if (!def || !def.layer) return;
+  var show = def.box && def.box.checked && map.getZoom() >= 12;
+  if (show) {
+    if (!map.hasLayer(def.layer)) def.layer.addTo(map);
+  } else {
+    if (map.hasLayer(def.layer)) map.removeLayer(def.layer);
+  }
+}
+
+/* --------------------------------------------------- maintenance
+   R1 (design review, Nov 11, 2026): the maintenance inventory
+   as a layer AND as the panel's work list, both rendered from
+   data/maintenance.geojson — one file, so the list and the
+   layer can never disagree. The file is fetched once at startup
+   (12 items, ~10 KB — text, not photos; photos load on click).
+   maintByAsset maps an asset serial to its maintenance item, so
+   the asset popup can carry the "Needs work" line (R5). */
+var maintData = null;
+var maintByAsset = {};
+var maintMarkers = {};
+var maintFeaturesById = {};
+
+function maintPopupHtml(f) {
+  var p = f.properties || {};
+  var soon = p.severity === "soon";
+  var html = "<h3>" + esc(p.title || "Needs work") + "</h3>";
+  html += "<p class='maint-fix'><strong>" + esc(p.fix || "") +
+    "</strong></p>";
+  var where = [];
+  if (p.chainage_mi != null) where.push("mi " + p.chainage_mi);
+  if (p.section) where.push(p.section);
+  where.push(soon ? "Needs work soon" : "Can wait");
+  html += "<p class='maint-where'>" + esc(where.join(" · ")) + "</p>";
+  if (p.asset) {
+    html += "<p class='maint-asset'>Asset " + esc(p.asset) +
+      " — <button type='button' class='maint-asset-btn' " +
+      "data-serial='" + esc(p.asset) + "'>Open the asset pin</button></p>";
+  }
+  if (p.photos && p.photos.length) {
+    html += "<img src=\"assets-photos/" + esc(p.photos[0]) +
+      "\" alt=\"\" style=\"max-width:100%;display:block;margin:6px 0 2px\">";
+    if (p.photos.length > 1) {
+      html += "<p class='maint-photos'>" + p.photos.length +
+        " photos — the first is shown</p>";
+    }
+  }
+  return html;
+}
+function maintPopup(f) { return maintPopupHtml(f); }
+
+/* Open an asset pin's popup from a maintenance card (the
+   cross-reference runs both ways). */
+function openAssetPin(serial) {
+  var def = layerById("assets");
+  if (!def) return;
+  if (!def.layer) {
+    if (def.box && !def.box.checked) def.box.checked = true;
+    ensureLayer(def, false);
+    window.setTimeout(function () { openAssetPin(serial); }, 600);
+    return;
+  }
+  var found = null;
+  def.layer.eachLayer(function (l) {
+    var layers = l.getLayers ? l.getLayers() : [l];
+    layers.forEach(function (child) {
+      if (child.feature && child.feature.properties &&
+          child.feature.properties.serial === serial) {
+        found = child;
+      }
+    });
+  });
+  if (!found) return;
+  var c = found.getLatLng ? found.getLatLng() : null;
+  if (c) map.flyTo(c, Math.max(map.getZoom(), 15), { duration: 0.8 });
+  window.setTimeout(function () { found.openPopup(); }, 850);
+}
+document.addEventListener("click", function (e) {
+  var t = e.target;
+  if (!t || !t.classList || !t.classList.contains("maint-asset-btn")) return;
+  var serial = t.getAttribute("data-serial");
+  if (serial) openAssetPin(serial);
+});
+
+/* The work list (R1): the panel's front door. "Needs work soon"
+   first, one line per job — the five blowdowns group into one
+   line ("5 blowdowns, mi 57.4") that zooms to the cluster —
+   then the "can wait" jobs behind a "Show all" expander. Each
+   line is a button: it zooms to the item and opens its card. */
+function fmtChainageMi(v) {
+  return v == null ? null : (Math.round(v * 10) / 10).toFixed(1);
+}
+function workListLine(item, group) {
+  var p = group ? {} : (item.properties || {});
+  var c = group ? null : item.geometry.coordinates;
+  var li = document.createElement("li");
+  var btn = document.createElement("button");
+  btn.type = "button";
+  var soon = p.severity === "soon";
+  var dot = document.createElement("span");
+  dot.className = "sev" + (soon ? " soon" : " wait");
+  btn.appendChild(dot);
+  var txt = document.createElement("span");
+  var what = document.createElement("span");
+  what.className = "w-what";
+  what.textContent = group ? group.title
+    : (p.title + (p.chainage_mi != null
+        ? ", mi " + fmtChainageMi(p.chainage_mi) : ""));
+  txt.appendChild(what);
+  var where = document.createElement("span");
+  where.className = "w-where";
+  var bits = [];
+  if (group) {
+    if (group.section) bits.push(group.section);
+    if (group.asset) bits.push(group.asset);
+  } else {
+    if (p.section) bits.push(p.section);
+    if (p.asset) bits.push(p.asset);
+  }
+  where.textContent = bits.filter(Boolean).join(" · ");
+  if (where.textContent) txt.appendChild(document.createTextNode(" "));
+  txt.appendChild(where);
+  var fix = document.createElement("span");
+  fix.className = "w-fix";
+  fix.textContent = group ? group.fix : p.fix;
+  txt.appendChild(fix);
+  btn.appendChild(txt);
+  btn.addEventListener("click", function () {
+    if (group) {
+      var bounds = null;
+      group.items.forEach(function (it) {
+        var cc = it.geometry.coordinates;
+        var b = L.latLngBounds([[cc[1], cc[0]], [cc[1], cc[0]]]);
+        bounds = bounds ? bounds.extend(b) : b;
+      });
+      if (bounds) map.fitBounds(bounds.pad(0.6), { maxZoom: 15 });
+      openMaintCard(group.items[0]);
+    } else {
+      map.flyTo([c[1], c[0]], Math.max(map.getZoom(), 15),
+        { duration: 0.8 });
+      openMaintCard(item);
+    }
+  });
+  li.appendChild(btn);
+  return li;
+}
+function openMaintCard(item) {
+  var c = item.geometry.coordinates;
+  /* Make sure the maintenance layer is on so the markers are
+     visible, then open the card at the item. */
+  var def = layerById("maintenance");
+  if (def && def.box && !def.box.checked) {
+    def.box.checked = true;
+    ensureLayer(def, false);
+  }
+  window.setTimeout(function () {
+    var mk = maintMarkers[item.properties.id];
+    if (mk) { mk.openPopup(); return; }
+    L.popup({ maxWidth: 300 })
+      .setLatLng([c[1], c[0]])
+      .setContent(maintPopupHtml(item))
+      .openOn(map);
+  }, 850);
+}
+function buildWorkList() {
+  var list = document.getElementById("work-list");
+  var more = document.getElementById("work-more");
+  if (!list || !maintData) return;
+  var feats = maintData.features || [];
+  var soon = feats.filter(function (f) {
+    return f.properties.severity === "soon";
+  });
+  var wait = feats.filter(function (f) {
+    return f.properties.severity !== "soon";
+  });
+  /* Group the blowdowns: same title, all "soon", one stretch. */
+  var groups = [];
+  var singles = [];
+  var blow = soon.filter(function (f) {
+    return f.properties.title === "Blowdown";
+  });
+  soon.forEach(function (f) {
+    if (f.properties.title !== "Blowdown") singles.push(f);
+  });
+  if (blow.length) {
+    var chs = blow.map(function (f) { return f.properties.chainage_mi; });
+    var lo = Math.min.apply(null, chs), hi = Math.max.apply(null, chs);
+    groups.push({
+      title: blow.length + " blowdowns, mi " +
+        fmtChainageMi((lo + hi) / 2),
+      fix: "Saw and clear — tread blocked in a " +
+        (Math.round((hi - lo) * 10) / 10).toFixed(1) + "-mi stretch",
+      section: blow[0].properties.section,
+      asset: null, items: blow,
+    });
+  }
+  list.innerHTML = "";
+  groups.forEach(function (g) {
+    list.appendChild(workListLine(null, g));
+  });
+  singles.forEach(function (f) {
+    list.appendChild(workListLine(f, null));
+  });
+  /* "Can wait" lives behind the expander (mockup). */
+  if (wait.length && more) {
+    var names = wait.map(function (f) {
+      return f.properties.title.toLowerCase();
+    });
+    more.hidden = false;
+    more.innerHTML = "";
+    more.appendChild(document.createTextNode(
+      wait.length + " more that can wait — " + names.join(", ") + ". "));
+    var show = document.createElement("a");
+    show.href = "#";
+    show.textContent = "Show all " + feats.length;
+    show.addEventListener("click", function (ev) {
+      ev.preventDefault();
+      var expanded = list.getAttribute("data-expanded") === "true";
+      list.setAttribute("data-expanded", expanded ? "false" : "true");
+      if (expanded) {
+        buildWorkList();
+      } else {
+        wait.forEach(function (f) {
+          list.appendChild(workListLine(f, null));
+        });
+        show.textContent = "Show fewer";
+      }
+    });
+    more.appendChild(show);
+  }
+}
+(function loadMaintenance() {
+  fetch("data/maintenance.geojson")
+    .then(function (r) {
+      if (!r.ok) throw new Error("HTTP " + r.status);
+      return r.json();
+    })
+    .then(function (gj) {
+      maintData = gj;
+      (gj.features || []).forEach(function (f) {
+        var p = f.properties || {};
+        maintFeaturesById[p.id] = f;
+        if (p.asset) maintByAsset[p.asset] = f;
+      });
+      buildWorkList();
+      updatePresentStrip();
+    })
+    .catch(function () {
+      var list = document.getElementById("work-list");
+      if (list) {
+        list.innerHTML = "<li class='work-error'>Could not load " +
+          "the work list.</li>";
+      }
+    });
+})();
+
 var LAYERS = [
   {
+    /* R1 (design review, Nov 11, 2026): the maintenance inventory
+       as a real layer — one marker per item, coloured by severity
+       (red = needs work soon, amber = can wait), with the photo and
+       one plain sentence stating the fix in the popup. Items that
+       are also assets keep their asset pin and name it
+       ("Asset ITM-SG-016"). The data is data/maintenance.geojson,
+       built by scripts/build_maintenance.py from the asset pins —
+       the panel work list renders from the same file, so the list
+       and the layer can never disagree. ON by default: the work is
+       the map's front door. */
+    id: "maintenance", label: "Needs work",
+    file: "data/maintenance.geojson", onByDefault: true,
+    group: "What needs doing",
+    swatch: { kind: "alert", color: COLORS.gap },
+    build: function (gj) {
+      maintMarkers = {};
+      return L.geoJSON(gj, {
+        pointToLayer: function (f, latlng) {
+          var p = f.properties || {};
+          var soon = p.severity === "soon";
+          var mk = L.marker(latlng, {
+            keyboard: false,
+            icon: L.divIcon({
+              className: "maint-marker-wrap",
+              iconSize: [18, 18], iconAnchor: [9, 9],
+              html: "<span class='maint-marker" +
+                (soon ? " soon" : " wait") + "'></span>",
+            }),
+          });
+          maintMarkers[p.id] = mk;
+          return mk;
+        },
+        onEachFeature: function (f, l) { bindPop(l, maintPopup(f)); },
+      });
+    },
+  },
+  {
     id: "trail", label: "NCTA Trail", file: "data/trail.geojson",
-    onByDefault: true, group: "Chapter",
+    onByDefault: true, group: "The trail",
     swatch: { kind: "line", color: CHAPTER_COLORS.ITM },
     build: function (gj) {
       var casing = L.geoJSON(gj, {
@@ -2555,7 +2983,7 @@ var LAYERS = [
   },
   {
     id: "stretches", label: "Adopted sections",
-    file: "data/stretches.geojson", onByDefault: true, group: "Chapter",
+    file: "data/stretches.geojson", onByDefault: true, group: "The trail",
     swatch: { kind: "line", color: STRETCH_STYLE.color },
     build: function (gj) {
       var casing = L.geoJSON(gj, {
@@ -2667,7 +3095,7 @@ var LAYERS = [
        stay on independently. */
     id: "boundaries", label: "Adoption segment ends",
     file: "data/boundaries.geojson", onByDefault: true,
-    group: "Chapter", defaultFrom: "stretches",
+    group: "The trail", defaultFrom: "stretches",
     swatch: { kind: "bar", color: COLORS.tick },
     build: function (gj) {
       /* Each boundary is a bar struck ACROSS the line, perpendicular
@@ -2746,7 +3174,7 @@ var LAYERS = [
   },
   {
     id: "termini", label: "Chapter boundaries",
-    file: "data/boundaries.geojson", onByDefault: true, group: "Chapter",
+    file: "data/boundaries.geojson", onByDefault: true, group: "The trail",
     swatch: { kind: "bar", color: CHAPTER_COLORS.ITM },
     build: function (gj) {
       var ends = gj.features.filter(function (f) {
@@ -2800,8 +3228,8 @@ var LAYERS = [
     },
   },
   {
-    id: "gaps", label: "Not adopted",
-    file: "data/gaps.geojson", onByDefault: true, group: "Chapter",
+    id: "gaps", label: "Adoption gap",
+    file: "data/gaps.geojson", onByDefault: true, group: "The trail",
     swatch: { kind: "line", color: GAP_CORE_STYLE.color, dashed: true },
     build: function (gj) {
       var casing = L.geoJSON(gj, { renderer: canvasFor(),
@@ -2881,7 +3309,7 @@ var LAYERS = [
     title: "NCTA mileage — a different reckoning from the " +
       "chapter tracker's miles",
     file: "data/milemarkers.geojson", onByDefault: false,
-    group: "Chapter",
+    group: "The trail",
     swatch: { kind: "pin", color: COLORS.tick },
     build: function (gj) {
       mileLabelItems = [];
@@ -2919,7 +3347,7 @@ var LAYERS = [
        (ensureLayer is only called from the toggle handler or a
        #layers=parcels hash, never at startup). */
     id: "parcels", label: "Public parcels",
-    file: "data/parcels.geojson", onByDefault: false, group: "Context",
+    file: "data/parcels.geojson", onByDefault: false, group: "Around the trail",
     swatch: { kind: "fill", color: "#fdbb84", border: "#b35806" },
     build: function (gj) {
       var layer = L.geoJSON(gj, {
@@ -2953,7 +3381,7 @@ var LAYERS = [
     title: "Leech Lake Reservation boundary (Leech Lake Band " +
       "of Ojibwe) — Bureau of Indian Affairs, AIAN-LAR",
     file: "data/leech-lake-reservation.geojson",
-    onByDefault: false, group: "Context",
+    onByDefault: false, group: "Around the trail",
     swatch: { kind: "fill", color: "#8e86c2", border: "#5e548e" },
     build: function (gj) {
       var group = L.layerGroup();
@@ -2988,7 +3416,7 @@ var LAYERS = [
   {
     id: "access", label: "Non-road access",
     title: "Forest roads, OHV, other trails",
-    file: "data/access.geojson", onByDefault: false, group: "Context",
+    file: "data/access.geojson", onByDefault: false, group: "Around the trail",
     swatch: { kind: "line", color: ACCESS_STYLES.state_trail.color },
     build: function (gj) {
       var layer = L.geoJSON(gj, {
@@ -3005,7 +3433,7 @@ var LAYERS = [
   },
   {
     id: "roads", label: "Roads", file: "data/roads.geojson",
-    onByDefault: false, group: "Context",
+    onByDefault: false, group: "Around the trail",
     swatch: { kind: "line", color: ROADS_STYLE.color },
     build: function (gj) {
       /* §2.10/§2.12: four class sublayers drawn C, B, F, A (minor
@@ -3043,7 +3471,7 @@ var LAYERS = [
     title: "NCTA waypoints: parking, camping, water, shelters, " +
       "points of interest",
     file: "data/gazetteer.geojson", onByDefault: false,
-    group: "Context",
+    group: "Around the trail",
     swatch: { kind: "pin", color: COLORS.tick },
     build: function (gj) {
       var inner = L.layerGroup();
@@ -3099,7 +3527,7 @@ var LAYERS = [
     title: "Trail alerts from the North Country Trail Association" +
       " — closures, storm damage, reroutes",
     file: "data/trail-alerts.geojson", onByDefault: false,
-    group: "Context",
+    group: "Around the trail",
     swatch: { kind: "alert", color: COLORS.gap },
     build: function (gj) {
       return L.geoJSON(gj, {
@@ -3135,7 +3563,7 @@ var LAYERS = [
     id: "chapterplaces", label: "Chapter places",
     title: "Places the chapter itself records — campsites first",
     file: "data/chapter-places.geojson", onByDefault: false,
-    group: "Context",
+    group: "Our stuff",
     swatch: { kind: "chapter", color: COLORS.trailDeep },
     build: function (gj) {
       var glyphs = { Parking: "P", Camping: "C", Water: "W",
@@ -3167,7 +3595,7 @@ var LAYERS = [
   {
     id: "assets", label: "Asset pins",
     file: "data/assets.geojson", onByDefault: true, missingOk: true,
-    emptyUntilData: true, group: "Context",
+    emptyUntilData: true, group: "Our stuff",
     swatch: { kind: "pin", color: COLORS.assetPin },
     build: function (gj) {
       return L.geoJSON(gj, {
@@ -3175,10 +3603,109 @@ var LAYERS = [
           return assetMarker(f, latlng);
         },
         onEachFeature: function (f, l) {
-          bindPop(l, assetPopup(f));
+          /* Function content (Leaflet 1.9 calls it at open time):
+             the popup is built when it opens, not when the layer
+             loads — so the "Needs work" line sees the maintenance
+             data even though that file loads after this layer. */
+          bindPop(l, function () { return assetPopup(f); });
           wireAssetHover(l, f);
         },
       });
+    },
+  },
+  {
+    /* §7 "The land" (design review, Nov 11, 2026): Tree height —
+       the canopy-height colour + the NW hillshade as ONE overlay
+       over any background, OFF by default, opacity slider
+       default 70%. The two tile sets are transparent outside
+       the corridor, so the overlay never paints a rectangle.
+       Composite: colour in its own pane (z 210), shade above it
+       (z 211) with multiply blending — the shade's flat value
+       is 180 (hillshade at 45° altitude), so the shade pane
+       carries a brightness(1.4167) lift (255/180) that makes
+       flat ground neutral for the multiply and leaves only the
+       shaded slopes darkening the colour. The two canopy radios
+       are retired from Background (see BASES). */
+    id: "treeheight", label: "Tree height",
+    title: "How tall the trees are, over any background",
+    noFetch: true, onByDefault: false, group: "The land",
+    swatch: { kind: "fill", color: "#64af5a", border: "#406f48" },
+    build: function () {
+      if (!map.getPane("treeColor")) {
+        var pc = map.createPane("treeColor");
+        pc.style.zIndex = 210;
+        var ps = map.createPane("treeShade");
+        ps.style.zIndex = 211;
+        ps.style.mixBlendMode = "multiply";
+        ps.style.filter = "brightness(1.4167)";
+      }
+      mnCanopyHeight.options.pane = "treeColor";
+      mnCanopyShade.options.pane = "treeShade";
+      setTreeHeightOpacity(treeHeightOpacity);
+      return L.layerGroup([mnCanopyHeight, mnCanopyShade]);
+    },
+    panelExtra: function (label) {
+      var wrap = document.createElement("div");
+      wrap.className = "land-extra";
+      var op = document.createElement("div");
+      op.className = "opacity";
+      var opLabel = document.createElement("span");
+      opLabel.textContent = "Strength";
+      op.appendChild(opLabel);
+      var slider = document.createElement("input");
+      slider.type = "range";
+      slider.min = "0"; slider.max = "100";
+      slider.value = String(Math.round(treeHeightOpacity * 100));
+      slider.setAttribute("aria-label",
+        "Tree height overlay strength");
+      op.appendChild(slider);
+      var opVal = document.createElement("span");
+      opVal.className = "opacity-val";
+      opVal.textContent = slider.value + "%";
+      op.appendChild(opVal);
+      slider.addEventListener("input", function () {
+        setTreeHeightOpacity(slider.value / 100);
+        opVal.textContent = slider.value + "%";
+      });
+      wrap.appendChild(op);
+      var key = document.createElement("div");
+      key.className = "key";
+      key.innerHTML =
+        "<div class='strip'></div>" +
+        "<div class='marks'><span style='left:8%'>2 m · head " +
+        "height</span><span style='left:80%'>20 m · old " +
+        "growth*</span></div>" +
+        "<div class='ends'><span>Open ground</span>" +
+        "<span>Young trees</span><span>Tall trees</span></div>" +
+        "<p class='key-note'>*Height is a guide, not proof of " +
+        "old growth.</p>";
+      wrap.appendChild(key);
+      label.parentNode.insertBefore(wrap, label.nextSibling);
+      treeHeightSlider = slider;
+      treeHeightOpacityEl = opVal;
+    },
+  },
+  {
+    /* §7: Height lines — smoothed 5 m CHM contours
+       (5/10/15/20/25). OFF by default; at low zoom five-metre
+       contours are visual noise, so the layer only draws at
+       z ≥ 12 (applyContoursGate). In Present mode only the
+       10/20/25 m lines show, thicker (a room cannot read the
+       5 m interval). 63k features, canvas-rendered, fetched
+       lazily like every heavy layer. */
+    id: "contours", label: "Height lines — every 5 m",
+    title: "How steep is it?",
+    file: "data/chm-contours.geojson", onByDefault: false,
+    group: "The land",
+    swatch: { kind: "line", color: "#8a6d1a" },
+    gate: applyContoursGate,
+    build: function (gj) {
+      contoursLayerRef = L.geoJSON(gj, {
+        renderer: canvasFor(), interactive: false,
+        style: contourStyle,
+      });
+      applyContoursGate();
+      return contoursLayerRef;
     },
   },
   {
@@ -3214,7 +3741,7 @@ var LAYERS = [
     title: "The North Country Trail Association's printed " +
       "Minnesota map sheets (MN-023 to MN-044), laid over the map",
     file: "data/ncta-sheets.geojson", onByDefault: false,
-    group: "Context",
+    group: "Around the trail",
     swatch: { kind: "fill", color: "#fdf6d8", border: "#8a6d1a" },
     build: function (gj) {
       var group = L.layerGroup();
@@ -3281,18 +3808,191 @@ var togglesEl = document.getElementById("layer-toggles");
 
 function setStatus(msg) { statusEl.textContent = msg; }
 
-var lastToggleGroup = null;
+/* --------------------------------------------------- Present mode
+   R4 (design review, Nov 11, 2026): a meeting-room mode — the
+   panel hides, the type grows, and the strip along the bottom
+   carries the one line a room needs. Triggered by the panel's
+   "Present" button, by the Work view, or by the keyboard
+   shortcut "p" (which also turns it off). The panel can be
+   brought back with the "Show panel" button. */
+var presentMode = false;
+var savedTreeHeightOpacity = null;
+function setPresent(on) {
+  presentMode = !!on;
+  document.body.classList.toggle("present", presentMode);
+  var strip = document.getElementById("present-strip");
+  if (strip) strip.hidden = !presentMode;
+  var showBtn = document.getElementById("show-panel-btn");
+  if (showBtn) showBtn.hidden = !presentMode;
+  /* Present mode is the Work view, not a separate state —
+     switching views tracks it. Exiting Present leaves the
+     view where it was (Work) — the panel comes back, the
+     view does not change. */
+  if (presentMode) setView("work");
+  /* §7: the tree-height overlay runs at 60% in a room (the
+     70% default swallows the amber sections on a projector);
+     the user's own setting is restored on exit. */
+  if (presentMode) {
+    savedTreeHeightOpacity = treeHeightOpacity;
+    setTreeHeightOpacity(0.60);
+  } else if (savedTreeHeightOpacity != null) {
+    setTreeHeightOpacity(savedTreeHeightOpacity);
+    savedTreeHeightOpacity = null;
+  }
+  if (contoursLayerRef) contoursLayerRef.setStyle(contourStyle);
+  applyContoursGate();
+  updatePresentStrip();
+  updatePresentKey();
+  if (presentMode) map.invalidateSize();
+}
+function updatePresentStrip() {
+  var strip = document.getElementById("present-strip");
+  if (!strip) return;
+  var jobs = maintData ? (maintData.features || []).length : 0;
+  strip.textContent = jobs + " jobs · 2.9 mi unadopted · " +
+    "Chip-5 and Chip-6";
+}
+/* The tree-height key in Present mode: the panel (and its key)
+   is hidden in a room, so the key rides in its own fixed
+   element — shown only while the overlay is on. */
+function updatePresentKey() {
+  var pk = document.getElementById("present-key");
+  if (!pk) return;
+  var treeDef = layerById("treeheight");
+  var on = presentMode && treeDef && treeDef.box && treeDef.box.checked;
+  if (!on) { pk.hidden = true; return; }
+  var key = document.querySelector(".land-extra .key");
+  if (!key) { pk.hidden = true; return; }
+  pk.innerHTML = key.outerHTML;
+  pk.hidden = false;
+}
+document.addEventListener("keydown", function (e) {
+  var t = e.target;
+  if (t && (t.tagName === "INPUT" || t.tagName === "TEXTAREA" ||
+      t.tagName === "SELECT" || t.isContentEditable)) return;
+  if (e.key === "p" || e.key === "P") setPresent(!presentMode);
+  if (e.key === "Escape" && presentMode) setPresent(false);
+});
+
+/* --------------------------------------------------- view switch
+   R6 (design review, Nov 11, 2026): three views — Work,
+   Explore, Visit — as PRESETS over the same data, not three
+   maps. The switch is the first thing under the title; the
+   panel groups re-sort under it, and only the layer toggles
+   change. Default is Explore (the current home screen).
+   Work = Present mode (panel hidden, work list first) and is
+   also what the "Present" button and the "p" key reach.
+   The choice is remembered in localStorage; a shared link
+   carries it as #view=work|explore|visit. */
+var currentView = "work";
+var VIEW_PRESETS = {
+  /* Work: the panel as redesigned (R1–R5) — the work list
+     leading, the maintenance layer on, the adoption gap on,
+     the assets and places on, and Tree height on at 70% over
+     Topo (the mockup's home-screen state). Height lines stay
+     off (they are a close-zoom tool). */
+  work: { on: ["maintenance", "gaps", "assets", "places",
+               "chapterplaces", "treeheight"],
+          off: ["contours"] },
+  /* Explore: the same map with the work list and the
+     management toggles hidden and the trail + places +
+     chapter places on. The assets (photos) stay on. */
+  explore: { on: ["assets", "places", "chapterplaces"],
+             off: ["maintenance", "treeheight", "contours"] },
+  /* Visit: the public face — the trail, the places, the
+     photos; the work and the land stay off, and the panel
+     shows nothing beyond Find and the welcome line. */
+  visit: { on: ["assets", "places", "chapterplaces"],
+           off: ["maintenance", "treeheight", "contours"] },
+};
+function setView(view) {
+  if (!VIEW_PRESETS[view]) view = "explore";
+  currentView = view;
+  var preset = VIEW_PRESETS[view];
+  (preset.on || []).forEach(function (id) {
+    var def = layerById(id);
+    if (!def || !def.box) return;
+    if (!def.box.checked) { def.box.checked = true; ensureLayer(def, false); }
+  });
+  (preset.off || []).forEach(function (id) {
+    var def = layerById(id);
+    if (!def || !def.box) return;
+    if (def.box.checked) {
+      def.box.checked = false;
+      if (def.layer) map.removeLayer(def.layer);
+    }
+  });
+  var sw = document.getElementById("view-switch");
+  if (sw) {
+    var btns = sw.querySelectorAll("button");
+    for (var i = 0; i < btns.length; i++) {
+      var on = btns[i].getAttribute("data-view") === view;
+      btns[i].classList.toggle("on", on);
+      btns[i].setAttribute("aria-pressed", on ? "true" : "false");
+    }
+  }
+  /* The work list leads the panel in Work view; the title block
+     leads it everywhere else (R2). Explore hides the work list
+     and the management toggles; Visit hides the panel chrome
+     beyond Find and the welcome line (R6) — the CSS reads
+     these classes. */
+  document.body.classList.toggle("view-work", view === "work");
+  document.body.classList.toggle("view-explore", view === "explore");
+  document.body.classList.toggle("view-visit", view === "visit");
+  updatePresentStrip();
+  try { localStorage.setItem("itm-view", view); } catch (e) {}
+  /* A shared link carries the view as #v=…, alongside any
+     other hash params (#layers=…, #view=lat,lon,zoom) — rebuild
+     the hash as a param list, never a bare concatenation. */
+  if (history.replaceState) {
+    var parts = (location.hash || "").replace(/^#/, "").split("&")
+      .filter(function (p) { return p && p.indexOf("v=") !== 0; });
+    parts.unshift("v=" + view);
+    history.replaceState(null, "", "#" + parts.join("&"));
+  }
+}
+(function initView() {
+  /* Default is Work — the mockup's home-screen state (work
+     list leading, tree height on). A saved choice or a
+     #view=… link wins over the default. */
+  var view = "work";
+  try {
+    var saved = localStorage.getItem("itm-view");
+    if (saved && VIEW_PRESETS[saved]) view = saved;
+  } catch (e) {}
+  var m = /(?:#|&)v=(work|explore|visit)/.exec(location.hash || "");
+  if (m) view = m[1];
+  currentView = view;
+  /* The toggles are applied once the panel exists (the panel
+     builder calls applyViewPreset); the switch buttons and the
+     body class are set here so the first paint is right. */
+  var sw = document.getElementById("view-switch");
+  if (sw) {
+    var btns = sw.querySelectorAll("button");
+    for (var i = 0; i < btns.length; i++) {
+      var on = btns[i].getAttribute("data-view") === view;
+      btns[i].classList.toggle("on", on);
+      btns[i].setAttribute("aria-pressed", on ? "true" : "false");
+    }
+  }
+  document.body.classList.toggle("view-work", view === "work");
+  document.body.classList.toggle("view-explore", view === "explore");
+  document.body.classList.toggle("view-visit", view === "visit");
+})();
+
+/* Panel groups (design review R2): the panel is organized by
+   task, not by data source. The LAYERS array order is the build
+   order; the PANEL order is this list, so a def's group decides
+   where its toggle lands, not its position in the array. The
+   "What needs doing" group renders under the work list (its
+   heading is the section's own h2), not inside #layer-toggles. */
+var PANEL_GROUPS = ["What needs doing", "The trail", "Our stuff",
+                    "The land", "Around the trail"];
+var maintTogglesEl = document.getElementById("maintenance-toggle");
 LAYERS.forEach(function (def) {
   def.layer = null;
   def.loading = false;
   if (def.enabled === false) { def.box = null; return; }
-  if (!def.hiddenToggle && def.group && def.group !== lastToggleGroup) {
-    var gh = document.createElement("div");
-    gh.className = "tog-group";
-    gh.textContent = def.group;
-    togglesEl.appendChild(gh);
-    lastToggleGroup = def.group;
-  }
   var label = document.createElement("label");
   var box = document.createElement("input");
   box.type = "checkbox";
@@ -3320,16 +4020,16 @@ LAYERS.forEach(function (def) {
     box.disabled = true;
     label.classList.add("disabled");
   }
-  if (!def.hiddenToggle) togglesEl.appendChild(label);
   var errEl = document.createElement("div");
   errEl.className = "tog-error";
   errEl.hidden = true;
-  if (!def.hiddenToggle) togglesEl.appendChild(errEl);
   def.box = box;
   def.errEl = errEl;
+  def._label = label;
   box.addEventListener("change", function () {
     if (box.checked) { ensureLayer(def, true); }
     else if (def.layer) { map.removeLayer(def.layer); }
+    if (def.id === "treeheight") updatePresentKey();
     /* No cross-toggle mirroring: Adoption segment ends are
        controlled only by their own checkbox (Nov 11, 2026). */
   });
@@ -3348,6 +4048,80 @@ LAYERS.forEach(function (def) {
      onByDefault; for a defaultFrom def it is the derived state. */
   if (box.checked) ensureLayer(def, false);
 });
+/* Phase 2: lay the toggles out in panel (task) order. */
+PANEL_GROUPS.forEach(function (group) {
+  var container = group === "What needs doing" ? maintTogglesEl
+                                                : togglesEl;
+  if (!container) return;
+  var headed = false;
+  LAYERS.forEach(function (def) {
+    if (def.enabled === false || !def._label) return;
+    if (def.group !== group || def.hiddenToggle) return;
+    if (group !== "What needs doing" && !headed) {
+      var gh = document.createElement("div");
+      gh.className = "tog-group";
+      gh.textContent = group;
+      container.appendChild(gh);
+      headed = true;
+    }
+    container.appendChild(def._label);
+    container.appendChild(def.errEl);
+    if (def.panelExtra) def.panelExtra(def._label);
+  });
+});
+/* Apply the current view's preset now that the toggles exist
+   (R6) — the onByDefault states are the Work view's, so this
+   is a no-op for the default view except for Tree height,
+   which the Work preset switches on. An explicit #layers=
+   hash below still wins over the preset. */
+setView(currentView);
+
+/* Wire the panel's own buttons (R4/R6/R7): the view switch,
+   Present, Hide panel, and the footer About link (Sources
+   behind it). */
+/* The work block's heading is the h2 directly before the
+   work list (the HTML has no wrapper) — give it an id so the
+   view CSS can hide the whole block in Explore/Visit. */
+(function tagWorkHeading() {
+  var list = document.getElementById("work-list");
+  var h2 = list && list.previousElementSibling;
+  if (h2 && h2.tagName === "H2") h2.id = "work-heading";
+})();
+
+(function wirePanelButtons() {
+  var sw = document.getElementById("view-switch");
+  if (sw) {
+    var btns = sw.querySelectorAll("button");
+    for (var i = 0; i < btns.length; i++) {
+      btns[i].addEventListener("click", function () {
+        setView(this.getAttribute("data-view"));
+      });
+    }
+  }
+  var presentBtn = document.getElementById("present-btn");
+  if (presentBtn) presentBtn.addEventListener("click", function () {
+    setPresent(true);
+  });
+  var hideBtn = document.getElementById("hide-panel-link");
+  if (hideBtn) hideBtn.addEventListener("click", function () {
+    setPresent(true);
+  });
+  var showBtn = document.getElementById("show-panel-btn");
+  if (showBtn) showBtn.addEventListener("click", function () {
+    setPresent(false);
+  });
+  /* R7: the footer About link opens the Sources card (the
+     card stays where it is, in the corner — the link just
+     reaches it, so nobody scrolls past 25 lines of provenance
+     to reach the layers). */
+  var about = document.getElementById("about-link");
+  if (about) about.addEventListener("click", function (e) {
+    e.preventDefault();
+    var card = document.getElementById("sources-card");
+    var btn = document.getElementById("btn-sources");
+    if (card && card.hidden && btn) btn.click();
+  });
+})();
 
 /* Optional URL hash: #layers=access,roads opens with those extra
    layers switched on (handy for sharing a configured view); a
@@ -3395,9 +4169,23 @@ var requestedView = null;
 
 function ensureLayer(def, announce) {
   if (def.enabled === false) return;
-  if (def.layer) { def.layer.addTo(map); return; }
+  if (def.layer) {
+    def.layer.addTo(map);
+    if (def.gate) def.gate();
+    return;
+  }
   if (def.loading) return;
   def.loading = true;
+  if (def.noFetch) {
+    /* Built from live objects, not a file (the Tree height
+       overlay is two tile layers, not GeoJSON). */
+    def.layer = def.build(null);
+    if (def.box && def.box.checked) def.layer.addTo(map);
+    def.loading = false;
+    if (def.errEl) def.errEl.hidden = true;
+    setStatus("");
+    return;
+  }
   if (announce) setStatus("Loading " + def.label + "…");
   fetch(def.file)
     .then(function (r) {
@@ -3407,6 +4195,7 @@ function ensureLayer(def, announce) {
     .then(function (gj) {
       def.layer = def.build(gj);
       if (def.box && def.box.checked) def.layer.addTo(map);
+      if (def.gate) def.gate();
       if (def.id === "trail") {
         if (requestedView) {
           map.setView([requestedView[0], requestedView[1]],
@@ -3485,8 +4274,9 @@ function assertDrawOrder() {
        uppermost. */
     ["leechlake", "parcels", "access", "roads", "nctasheets", "trail",
      "stretches", "gaps",
-     "boundaries", "termini", "milemarkers", "chainage", "places",
-     "alerts", "chapterplaces", "assets"].forEach(function (id) {
+     "boundaries", "termini", "milemarkers", "chainage", "contours",
+     "places",
+     "alerts", "chapterplaces", "maintenance", "assets"].forEach(function (id) {
       var d = layerById(id);
       if (!d || !d.layer || !map.hasLayer(d.layer)) return;
       if (d.layer.bringToFront) { d.layer.bringToFront(); return; }
@@ -3543,11 +4333,16 @@ function legendHtml() {
   add(line(CHAPTER_COLORS.LLC, true), "Laurentian Lakes Chapter — on-road");
   add("", "<strong>Chapter sections</strong>");
   add(line(STRETCH_STYLE.color), "Adopted section");
-  add(line(GAP_CORE_STYLE.color, true), "Not adopted");
+  add(line(GAP_CORE_STYLE.color, true), "Adoption gap");
   add(bar(COLORS.tick),
     "Section boundary — bar across the line (Adoption segment ends)");
   add(bar(CHAPTER_COLORS.ITM, true),
     "Chapter boundary — longer bar across the line (Itasca Moraine terminus)");
+  add("", "<strong>What needs doing</strong>");
+  add("<span class='swatch alert'></span>",
+    "Needs work soon — saw and clear, replace, refasten");
+  add("<span class='swatch alert wait'></span>",
+    "Can wait — monitor, watch");
   /* The Access points rows are gone with their layer (v3); the
      crossings live in Find now. */
   add("", "<strong>Mileage</strong>");
@@ -3582,6 +4377,11 @@ function legendHtml() {
     "W water, P parking, S shelter)");
   add("<span class='swatch chapterdisc closed'>C</span>",
     "Chapter place — CLOSED");
+  add("", "<strong>The land</strong>");
+  add("<span class='swatch fill' style='background:#64af5a'></span>",
+    "Tree height — how tall the trees are (overlay, over any " +
+    "background; white is open ground)");
+  add(line("#8a6d1a"), "Height lines — every 5 m");
   return rows.join("");
 }
 
@@ -3591,27 +4391,6 @@ function legendHtml() {
   if (el) el.innerHTML = html;
   var printEl = document.getElementById("legend-print-body");
   if (printEl) printEl.innerHTML = html;
-})();
-
-/* Mini-legend: five always-visible swatches under the story box,
-   so the first 10 seconds never depend on a closed card (UX P1). */
-(function buildMiniLegend() {
-  var el = document.getElementById("mini-legend");
-  if (!el) return;
-  function line(color, dashed) {
-    return "<span class='ml-line" + (dashed ? " dashed" : "") +
-      "' style='border-top-color:" + color + "'></span>";
-  }
-  var items = [
-    line(CHAPTER_COLORS.ITM) + "Trail",
-    line(STRETCH_STYLE.color) + "Adopted",
-    line(GAP_CORE_STYLE.color, true) + "Gap",
-    "<span class='ml-bar'></span>Chapter boundary",
-    line(CHAPTER_COLORS.LLC) + "Neighbor chapter",
-  ];
-  el.innerHTML = items.map(function (h) {
-    return "<span class='ml-item'>" + h + "</span>";
-  }).join("");
 })();
 
 /* Print header date stamp (DESIGN §6). */
@@ -3692,7 +4471,7 @@ function gazLoad(done) {
       if (hint) {
         hint.textContent = gazFeatures.length +
           " places: sections, crossings, parking, camping, water. " +
-          "Press / to search.";
+          "Type a place, section, or crossing.";
       }
     })
     .catch(function () {

@@ -1335,3 +1335,487 @@ body.base-imagery.gap-chip .gap-label span {
     text-decoration: none;
   }
 }
+
+/* ============================================================
+   Design review (Nov 11, 2026) — R1–R7
+   The panel is organized by task, not by source; the work
+   list leads; the map has three views and a meeting-room mode.
+   ============================================================ */
+
+/* --- View switch (R6): Work / Explore / Visit, first thing
+   under the title. A preset, not a second map. --- */
+.view-switch {
+  display: flex;
+  gap: 4px;
+  margin: 12px 0 4px;
+}
+#view-switch button {
+  flex: 1;
+  padding: 7px 4px;
+  font: inherit;
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: var(--ink);
+  background: #fff;
+  border: 1px solid #b9cba5;
+  border-radius: 6px;
+  cursor: pointer;
+}
+#view-switch button:hover { background: var(--paper-hover); }
+#view-switch button.on {
+  background: var(--trail-deep);
+  color: #fff;
+  border-color: var(--trail-deep);
+}
+
+/* --- Work list (R1): the panel's front door. One line per
+   job; the five blowdowns group into one line. The list is
+   text — photos load only on click. --- */
+#work-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+#work-list li { margin: 0; }
+#work-list button {
+  display: flex;
+  gap: 8px;
+  align-items: flex-start;
+  width: 100%;
+  text-align: left;
+  background: none;
+  border: none;
+  font: inherit;
+  padding: 6px 4px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+#work-list button:hover { background: var(--paper-hover); }
+#work-list .sev {
+  flex: 0 0 auto;
+  width: 9px;
+  height: 9px;
+  transform: rotate(45deg);
+  margin-top: 5px;
+  border: 1.5px solid #fff;
+  box-shadow: 0 0 2px #333;
+}
+#work-list .sev.soon { background: var(--gap); }
+#work-list .sev.wait { background: #e08214; }
+#work-list .w-what { font-weight: 650; }
+#work-list .w-where {
+  color: var(--ink-soft);
+  font-size: 0.85rem;
+}
+#work-list .w-fix {
+  display: block;
+  font-size: 0.85rem;
+  color: var(--ink);
+  margin-top: 1px;
+}
+#work-more {
+  font-size: 0.85rem;
+  color: var(--ink-soft);
+  margin: 4px 2px 0;
+}
+#work-more a { color: var(--trail-deep); }
+.work-error { color: #b2182b; font-size: 0.85rem; }
+
+/* --- Adoption line (R3): one compact line — the achievement
+   and the one recruiting line, no second story. --- */
+.adopt-line {
+  font-size: 0.88rem;
+  line-height: 1.45;
+  margin: 10px 0 0;
+}
+.adopt-line strong { color: var(--adopted-deep); }
+.adopt-line .adopt-gap { color: #b2182b; font-weight: 650; }
+.adopt-line button {
+  background: none;
+  border: none;
+  padding: 0;
+  font: inherit;
+  color: var(--trail-deep);
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+/* The adoption bar: the 4% gap at the west end, hatched red
+   on the adopted green (the old mileage box's bar, kept). */
+.adopt-line .bar {
+  display: block;
+  height: 8px;
+  border-radius: 4px;
+  overflow: hidden;
+  background: var(--adopted);
+  margin: 4px 0;
+}
+.adopt-line .bar i {
+  display: block;
+  width: 4%;
+  height: 100%;
+  background: repeating-linear-gradient(45deg,
+    var(--gap) 0 4px, #ffffff 4px 6px, var(--gap) 6px 10px);
+}
+
+/* --- Background section (R2): four plain choices in the
+   panel, the rest behind a disclosure. --- */
+#background-choices, #background-more {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin: 4px 0 6px;
+}
+.bg-choice {
+  flex: 1 1 45%;
+  padding: 6px 8px;
+  font: inherit;
+  font-size: 0.88rem;
+  text-align: left;
+  background: #fff;
+  border: 1px solid #b9cba5;
+  border-radius: 6px;
+  cursor: pointer;
+}
+.bg-choice:hover { background: var(--paper-hover); }
+.bg-choice.on {
+  background: var(--trail-deep);
+  color: #fff;
+  border-color: var(--trail-deep);
+}
+.bg-choice .bg-sub {
+  color: var(--ink-soft);
+  font-size: 0.8rem;
+  font-weight: 400;
+}
+.bg-choice.on .bg-sub { color: #d8e4c8; }
+#bg-more-btn {
+  background: none;
+  border: none;
+  padding: 2px 0;
+  font: inherit;
+  font-size: 0.85rem;
+  color: var(--trail-deep);
+  cursor: pointer;
+  text-decoration: underline;
+}
+#background-more { margin-top: 6px; }
+
+/* --- Maintenance markers (R1): red/amber diamonds, the same
+   vocabulary as the work list. --- */
+.maint-marker-wrap { background: none; border: none; }
+.maint-marker {
+  display: block;
+  width: 12px;
+  height: 12px;
+  transform: rotate(45deg);
+  border: 2px solid #fff;
+  box-shadow: 0 0 2px #333;
+  margin: 3px;
+}
+.maint-marker.soon { background: var(--gap); }
+.maint-marker.wait { background: #e08214; }
+
+/* --- Maintenance popup (R1): the fix first, in plain
+   language; the asset pin is one click away. --- */
+.maint-fix { font-size: 0.95rem; margin: 4px 0; }
+.maint-where {
+  font-size: 0.85rem;
+  color: var(--ink-soft);
+  margin: 2px 0;
+}
+.maint-asset { font-size: 0.85rem; margin: 6px 0 0; }
+.maint-asset-btn {
+  background: none;
+  border: none;
+  padding: 0;
+  font: inherit;
+  color: var(--trail-deep);
+  text-decoration: underline;
+  cursor: pointer;
+}
+.maint-photos {
+  font-size: 0.8rem;
+  color: var(--ink-soft);
+  margin: 2px 0 0;
+}
+
+/* --- Asset popup, plain language (R5): the type is the
+   headline, the serial is the small code beneath it; the
+   condition carries its gloss; the maintenance line sits at
+   the top in red. --- */
+.leaflet-popup-content .pop-sub {
+  font-size: 0.85rem;
+  color: var(--ink-soft);
+  margin: 2px 0 4px;
+}
+.leaflet-popup-content .pop-maint {
+  font-size: 0.9rem;
+  font-weight: 650;
+  color: #b2182b;
+  background: #fdf0ec;
+  border: 1px solid #e8b4ac;
+  border-radius: 4px;
+  padding: 5px 8px;
+  margin: 6px 0;
+}
+.pop-face-label {
+  font-size: 12px;
+  color: #555;
+  margin: 0 0 4px;
+}
+.pop-face-btns {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin: 0 0 6px;
+}
+.pop-face, .pop-faces-all {
+  padding: 2px 8px;
+  border: 1px solid #999;
+  border-radius: 10px;
+  background: #fff;
+  cursor: pointer;
+  font: inherit;
+  font-size: 0.85rem;
+}
+.pop-face.active { background: #ddd; font-weight: 700; }
+.pop-face-grid {
+  display: none;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin: 6px 0 2px;
+}
+.pop-face-grid img {
+  flex: 1 1 30%;
+  max-width: 32%;
+  display: block;
+}
+
+/* --- Legend: the amber "can wait" diamond (R1). The red
+   .swatch.alert already exists. --- */
+#legend .swatch.alert.wait,
+#legend-print-body .swatch.alert.wait { background: #e08214; }
+
+/* --- "The land" extras (R2/§7): the opacity slider and the
+   key strip under the Tree height toggle. --- */
+.land-extra { padding: 2px 4px 6px 26px; }
+.land-extra .opacity {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.85rem;
+}
+.land-extra .opacity input[type="range"] {
+  flex: 1;
+  accent-color: var(--trail);
+}
+.land-extra .opacity-val {
+  min-width: 2.2em;
+  text-align: right;
+  color: var(--ink-soft);
+}
+.land-extra .key { margin-top: 6px; }
+.land-extra .key .strip {
+  height: 10px;
+  border-radius: 5px;
+  border: 1px solid #b9cba5;
+  background: linear-gradient(90deg,
+    #ffffff 0%, #ffffff 4%,
+    #d7eec8 8%, #b4dca5 20%, #8cc878 36%, #64af5a 56%,
+    #409148 76%, #226e37 80%, #0c401e 100%);
+}
+.land-extra .key .marks {
+  position: relative;
+  height: 1.2em;
+  font-size: 0.75rem;
+  color: var(--ink-soft);
+}
+.land-extra .key .marks span {
+  position: absolute;
+  transform: translateX(-50%);
+  white-space: nowrap;
+}
+.land-extra .key .ends {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.75rem;
+  color: var(--ink-soft);
+}
+.land-extra .key-note {
+  font-size: 0.75rem;
+  font-style: italic;
+  color: var(--ink-soft);
+  margin: 2px 0 0;
+}
+
+/* --- Panel footer (R7): Present, Hide panel, About. --- */
+.panel-foot {
+  margin-top: 16px;
+  padding-top: 8px;
+  border-top: 1px solid var(--paper-line);
+  font-size: 0.8rem;
+  color: var(--ink-soft);
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+.panel-foot a { color: var(--trail-deep); }
+.panel-foot .panel-btn {
+  background: none;
+  border: none;
+  padding: 0;
+  font: inherit;
+  color: var(--trail-deep);
+  cursor: pointer;
+  text-decoration: underline;
+}
+
+/* --- Visit welcome (R6): the one-line welcome, only in
+   Visit view. --- */
+#visit-welcome {
+  display: none;
+  font-size: 0.95rem;
+  line-height: 1.5;
+  margin: 10px 0;
+}
+body.view-visit #visit-welcome { display: block; }
+
+/* --- View-based panel visibility (R6): Explore hides the
+   work list and the management toggles; Visit hides the
+   panel chrome beyond Find and the welcome. --- */
+body.view-explore #work-heading,
+body.view-explore #work-list,
+body.view-explore #work-more,
+body.view-explore #maintenance-toggle { display: none; }
+body.view-visit #work-heading,
+body.view-visit #work-list,
+body.view-visit #work-more,
+body.view-visit #maintenance-toggle,
+body.view-visit #layer-toggles,
+body.view-visit .adopt-line,
+body.view-visit #inspector,
+body.view-visit h2:has(+ #background-choices),
+body.view-visit #background-choices,
+body.view-visit #bg-more-btn,
+body.view-visit #background-more,
+body.view-visit .panel-foot { display: none; }
+
+/* --- Present mode (R4): the panel chrome hides and the
+   record card floats over the map, bottom-left, above the
+   strip; the map takes the full width and the type grows.
+   The empty inspector stays hidden — a room with nothing
+   selected needs the map, not an instruction. --- */
+body.present #map { margin-left: 0; }
+body.present #panel {
+  position: fixed;
+  left: 12px;
+  bottom: 52px;
+  top: auto;
+  width: min(360px, calc(100vw - 24px));
+  height: auto;
+  max-height: 55vh;
+  padding: 0;
+  border: 1px solid var(--paper-line);
+  border-radius: 8px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.3);
+  overflow-y: auto;
+}
+body.present #panel > :not(#inspector) { display: none; }
+body.present #inspector:not(.has-selection) { display: none; }
+body.present #corner-ui { display: none; }
+body.present .leaflet-popup-content { font-size: 1.05rem; }
+body.present .leaflet-popup-content h3 { font-size: 1.15rem; }
+body.present .leaflet-tooltip.section-name-label { font-size: 17px; }
+body.present .chainage-label span { font-size: 14px; }
+/* R7: 40 px action targets in Present mode, on desktop too. */
+body.present .insp-actions button {
+  min-height: 40px;
+  min-width: 40px;
+  padding: 8px 12px;
+  font-size: 1rem;
+}
+body.present .pop-face,
+body.present .pop-faces-all {
+  min-height: 40px;
+  padding: 8px 14px;
+  font-size: 0.95rem;
+}
+#present-strip {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 1200;
+  background: var(--paper);
+  border-top: 1px solid var(--paper-line);
+  padding: 10px 16px;
+  font-size: 1.05rem;
+  font-weight: 650;
+  color: var(--trail-deep);
+  text-align: center;
+}
+#show-panel-btn {
+  position: fixed;
+  top: 12px;
+  left: 12px;
+  z-index: 1200;
+  padding: 8px 14px;
+  font: inherit;
+  font-size: 0.95rem;
+  background: #fff;
+  border: 1px solid #b9cba5;
+  border-radius: 6px;
+  cursor: pointer;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
+}
+
+/* Present-mode tree-height key (R4/§7): the key rides in its
+   own fixed card, top-right, while the overlay is on — the
+   panel (and its key) is hidden in a room. */
+#present-key {
+  position: fixed;
+  top: 12px;
+  right: 12px;
+  z-index: 1200;
+  width: 240px;
+  background: var(--paper);
+  border: 1px solid var(--paper-line);
+  border-radius: 8px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.3);
+  padding: 10px 12px;
+  font-size: 0.85rem;
+}
+#present-key .strip {
+  height: 10px;
+  border-radius: 5px;
+  border: 1px solid #b9cba5;
+  background: linear-gradient(90deg,
+    #ffffff 0%, #ffffff 4%,
+    #d7eec8 8%, #b4dca5 20%, #8cc878 36%, #64af5a 56%,
+    #409148 76%, #226e37 80%, #0c401e 100%);
+}
+#present-key .marks {
+  position: relative;
+  height: 1.2em;
+  font-size: 0.75rem;
+  color: var(--ink-soft);
+}
+#present-key .marks span {
+  position: absolute;
+  transform: translateX(-50%);
+  white-space: nowrap;
+}
+#present-key .ends {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.75rem;
+  color: var(--ink-soft);
+}
+#present-key .key-note {
+  font-size: 0.75rem;
+  font-style: italic;
+  color: var(--ink-soft);
+  margin: 2px 0 0;
+}

@@ -17,41 +17,62 @@
       <p class="masthead-desc">Trail Map</p>
     </div>
   </div>
-  <div class="mileage">
-    <p class="adopt-headline"><span class="adopt-big">73.2</span>
-      mi adopted <span class="adopt-of">of 76.2 mi</span></p>
-    <div class="adopt-bar" aria-hidden="true">
-      <div class="adopt-gap-seg"></div><div class="adopt-fill-seg"></div>
-    </div>
-    <button type="button" id="gap-story" class="gap-story"
-      aria-label="Show the not-adopted stretch — 2.9 miles at the west end, in Itasca State Park">
-      <span class="gap-annot"><span class="gap-caret"
-        aria-hidden="true"></span>2.9 mi — no adopter</span>
-      <span class="gap-ask">The one gap is at the west end, in Itasca
-        State Park. <strong>It needs an adopter.</strong></span>
-    </button>
-    <div id="mini-legend"><!-- mini legend injected by app.js --></div>
+  <div id="view-switch" role="group" aria-label="Map view">
+    <button type="button" data-view="work" class="on"
+      aria-pressed="true">Work</button>
+    <button type="button" data-view="explore"
+      aria-pressed="false">Explore</button>
+    <button type="button" data-view="visit"
+      aria-pressed="false">Visit</button>
   </div>
+  <p id="visit-welcome" hidden>Welcome — the Itasca Moraine is 76
+    miles of North Country Trail through lakes and forest. Type a
+    place above, or tap the trail.</p>
+
+  <button type="button" id="present-btn" class="present-btn">▶
+    Present — big screen</button>
+  <p class="present-note">For the meeting room: hides this panel and
+    enlarges the map text. Press Esc to come back.</p>
+
+  <h2>What needs doing</h2>
+  <ul id="work-list" class="work-list"><!-- work list injected by app.js --></ul>
+  <p id="work-more" class="work-more" hidden></p>
+  <div id="maintenance-toggle"><!-- maintenance layer toggle injected by app.js --></div>
+
+  <h2>Adoption</h2>
+  <p class="adopt-line"><strong>73.2 of 76.2 mi adopted.</strong>
+    <span class="bar" aria-hidden="true"><i></i></span>
+    One gap left:
+    <button type="button" id="gap-story" class="gap-link">2.9 mi at
+      the west end, in Itasca State Park — it needs an
+      adopter.</button></p>
 
   <h2>Find</h2>
   <div id="gazetteer">
     <input id="gaz-search" type="search" autocomplete="off"
       role="combobox" aria-expanded="false" aria-controls="gaz-results"
       aria-autocomplete="list"
-      placeholder="Find a place, section, crossing…">
+      placeholder="Type a place, section, or crossing…">
     <div id="gaz-results" role="listbox" hidden></div>
   </div>
   <p class="gaz-hint" id="gaz-hint">257 places: sections, crossings,
-    parking, camping, water. Press / to search.</p>
+    parking, camping, water. Type a place, section, or crossing.</p>
 
   <div id="inspector" tabindex="-1"><!-- inspector injected by app.js --></div>
 
-  <h2>Layers</h2>
   <div id="layer-toggles"><!-- checkboxes injected by app.js --></div>
-  <label class="winter-row"><input type="checkbox" id="winter-toggle">
-    Winter — snowmobile season (keeps snowmobile trails on the
-    printout)</label>
+
+  <h2>Background</h2>
+  <div id="background-choices"><!-- base choices injected by app.js --></div>
+  <button type="button" id="bg-more-btn" class="bg-more">More
+    backgrounds…</button>
+  <div id="background-more" hidden><!-- extra bases injected by app.js --></div>
+
   <p id="load-status" class="status"></p>
+
+  <p class="panel-foot"><a href="#" id="about-link">About this
+    map</a> — sources, legend, and privacy. ·
+    <a href="#" id="hide-panel-link">Hide panel</a></p>
 
   <div id="legend-print" aria-hidden="true">
     <h2>Legend</h2>
@@ -133,13 +154,17 @@
           Image Service (MnGeo / Minnesota DNR), derived from
           1&nbsp;m LiDAR. The terrain view — the moraine itself;
           recommended for reading the land.</li>
-        <li>Base maps — MN LiDAR Canopy and Canopy height
-          (LiDAR): built from the state's 2022 second-generation
-          LiDAR (MnGeo / Minnesota DNR) — a shaded view of the
-          treetops, and canopy height as colour (pale at ground
-          level, deep green at full height, so clearcuts show).
-          Both run along the trail corridor only and end at
-          its edge.</li>
+        <li>Tree height (overlay) — MN LiDAR canopy height and
+          hillshade (LiDAR): built from the state's 2022
+          second-generation LiDAR (MnGeo / Minnesota DNR) — a
+          shaded view of the treetops, and canopy height as
+          colour (white at ground level, deep green at full
+          height, so clearcuts show). White is open ground;
+          2&nbsp;m is head height; 20&nbsp;m is the old-growth
+          line (height is a guide, not proof of old growth).
+          The overlay runs along the trail corridor only and
+          ends at its edge; the two canopy bases it replaces
+          were retired in November 2026.</li>
         <li>Base maps — Aerial: Aerial (NAIP 2023/25) (USGS The
           National Map); Esri World Imagery; Aerial + Topo
           (NAIP 2023/25) (NAIP imagery with topo labels);
@@ -164,10 +189,13 @@
       <div id="legend"><!-- legend injected by app.js --></div>
     </div>
     <div id="corner-buttons">
-      <button type="button" id="btn-sources" aria-pressed="false">ⓘ Sources</button>
       <button type="button" id="btn-legend" aria-pressed="false">Legend</button>
     </div>
   </div>
+  <button type="button" id="show-panel-btn" hidden>‹ Show panel</button>
+  <div id="present-strip" hidden><!-- Present-mode strip injected by app.js --></div>
+  <div id="present-card" hidden><!-- Present-mode record card injected by app.js --></div>
+  <div id="present-key" hidden><!-- Present-mode tree-height key injected by app.js --></div>
 </div>
 <script src="leaflet.js"></script>
 <script src="app.js"></script>
