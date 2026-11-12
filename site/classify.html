@@ -1,0 +1,563 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Classify trail photos — Itasca Moraine Trail Map</title>
+<style>
+  :root { color-scheme: light; }
+  * { box-sizing: border-box; }
+  body {
+    font-family: -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    font-size: 19px; line-height: 1.5; color: #1c1c1c; background: #f6f4ef;
+    margin: 0; padding: 0;
+  }
+  header {
+    background: #2e5d3a; color: #fff; padding: 18px 24px;
+    position: sticky; top: 0; z-index: 10;
+  }
+  header h1 { margin: 0; font-size: 26px; line-height: 1.25; }
+  header p { margin: 6px 0 0; font-size: 17px; opacity: .92; }
+  .bar {
+    display: flex; flex-wrap: wrap; gap: 12px; align-items: center;
+    padding: 14px 24px; background: #fff; border-bottom: 2px solid #d8d2c4;
+    position: sticky; top: 0; z-index: 9;
+  }
+  .bar .progress { font-size: 20px; font-weight: 700; margin-right: 8px; }
+  .bar .sub { font-size: 16px; color: #555; }
+  .bar label { font-size: 17px; font-weight: 600; }
+  .bar select, .bar button {
+    font-size: 18px; padding: 8px 12px; border-radius: 8px;
+    border: 2px solid #2e5d3a; background: #fff; color: #1c1c1c;
+  }
+  .bar button.primary { background: #2e5d3a; color: #fff; font-weight: 700; }
+  .bar button:disabled { opacity: .45; cursor: not-allowed; }
+  .bar button.danger { border-color: #8a2b2b; color: #8a2b2b; }
+  main { max-width: 980px; margin: 0 auto; padding: 20px 24px 60px; }
+  .howto {
+    background: #fff8e1; border: 2px solid #e0a800; border-radius: 10px;
+    padding: 14px 18px; margin: 0 0 22px; font-size: 18px;
+  }
+  .howto strong { font-size: 19px; }
+  .howto ol { margin: 8px 0 0; padding-left: 24px; }
+  .howto li { margin: 4px 0; }
+  #loader, #loaderror { background: #fff; border: 2px solid #d8d2c4; border-radius: 10px; padding: 24px; font-size: 19px; }
+  #loaderror { border-color: #8a2b2b; }
+  #loaderror code { background: #f0ece2; padding: 2px 6px; border-radius: 4px; font-size: 16px; }
+  .pinhead { background: #fff; border: 2px solid #d8d2c4; border-radius: 10px; padding: 16px 20px; margin-bottom: 16px; }
+  .pinhead h2 { margin: 0 0 6px; font-size: 26px; }
+  .pinhead .meta { font-size: 18px; color: #444; }
+  .pinhead .badge {
+    display: inline-block; background: #2e5d3a; color: #fff; border-radius: 6px;
+    padding: 2px 10px; font-size: 17px; font-weight: 700; margin-right: 8px;
+  }
+  .pinhead .badge.un { background: #8a6d00; }
+  .photos figure { margin: 0 0 18px; background: #fff; border: 2px solid #d8d2c4; border-radius: 10px; padding: 10px; }
+  .photos img { display: block; width: 100%; height: auto; border-radius: 6px; cursor: zoom-in; }
+  .photos figcaption { font-size: 16px; color: #444; padding: 8px 4px 2px; }
+  .earlier {
+    background: #f0ece2; border-left: 5px solid #8a6d00; border-radius: 0 8px 8px 0;
+    padding: 10px 14px; margin: 0 0 16px; font-size: 16px; color: #444;
+  }
+  .earlier strong { color: #1c1c1c; }
+  form.classify { background: #fff; border: 2px solid #2e5d3a; border-radius: 10px; padding: 18px 20px; }
+  form.classify h3 { margin: 0 0 12px; font-size: 22px; }
+  .field { margin: 0 0 16px; }
+  .field label { display: block; font-size: 19px; font-weight: 700; margin-bottom: 6px; }
+  .field .hint { font-size: 16px; color: #555; font-weight: 400; }
+  .field select, .field input[type=text], .field textarea {
+    width: 100%; font-size: 20px; padding: 10px 12px; border-radius: 8px;
+    border: 2px solid #888; background: #fff; color: #1c1c1c;
+  }
+  .field textarea { min-height: 90px; resize: vertical; }
+  .radios { display: flex; flex-wrap: wrap; gap: 10px; }
+  .radios label {
+    display: flex; align-items: center; gap: 8px; font-size: 20px; font-weight: 600;
+    border: 2px solid #888; border-radius: 8px; padding: 10px 16px; cursor: pointer; margin: 0;
+  }
+  .radios label:has(input:checked) { border-color: #2e5d3a; background: #e8f2e9; }
+  .radios input { width: 22px; height: 22px; accent-color: #2e5d3a; }
+  .radios.disabled { opacity: .45; }
+  .actions { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; margin-top: 6px; }
+  .actions button {
+    font-size: 20px; font-weight: 700; padding: 12px 22px; border-radius: 10px;
+    border: 2px solid #2e5d3a; background: #2e5d3a; color: #fff; cursor: pointer;
+  }
+  #saved { font-size: 18px; font-weight: 700; color: #2e5d3a; }
+  nav.pin {
+    display: flex; flex-wrap: wrap; gap: 10px; align-items: center; justify-content: space-between;
+    margin: 22px 0 0;
+  }
+  nav.pin button {
+    font-size: 20px; font-weight: 700; padding: 12px 20px; border-radius: 10px;
+    border: 2px solid #2e5d3a; background: #fff; color: #2e5d3a; cursor: pointer;
+  }
+  nav.pin button:disabled { opacity: .4; cursor: not-allowed; }
+  nav.pin select { font-size: 18px; padding: 10px 12px; border-radius: 8px; border: 2px solid #888; max-width: 420px; }
+  footer { max-width: 980px; margin: 0 auto; padding: 0 24px 40px; font-size: 16px; color: #555; }
+</style>
+</head>
+<body>
+<header>
+  <h1>Classify trail photos</h1>
+  <p>Itasca Moraine chapter — North Country Trail. Look at the photos, say what the thing is, and how it is holding up. Nothing is sent anywhere until you export.</p>
+</header>
+
+<div class="bar">
+  <span class="progress" id="progress">Loading&hellip;</span>
+  <span class="sub" id="progress-sub"></span>
+  <label for="filter">Show:</label>
+  <select id="filter">
+    <option value="needs">Needs classification</option>
+    <option value="all">All pins</option>
+    <option value="unreviewed">Not yet reviewed</option>
+    <option value="reviewed">Reviewed</option>
+  </select>
+  <button class="primary" id="export-btn" disabled>Export classifications</button>
+  <button class="danger" id="reset-btn" title="Erase everything you have entered in this browser">Start over</button>
+</div>
+
+<main>
+  <div class="howto">
+    <strong>How to use</strong>
+    <ol>
+      <li>Work through the pins one at a time — the photos of one thing are shown together.</li>
+      <li>Pick the type and condition, add the photographer's initials and any notes, then press <b>Confirm this pin</b>.</li>
+      <li>Your work is saved in this browser as you go, so you can stop and come back.</li>
+      <li>When you are done, press <b>Export classifications</b> and send the downloaded file to Muse.</li>
+    </ol>
+  </div>
+
+  <div id="loader">Loading the photo list&hellip;</div>
+  <div id="loaderror" hidden>
+    <strong>Could not load the photo list.</strong>
+    <p>This page reads <code>data/assets.geojson</code> from the trail-map site. If you opened this file by double-clicking it, your browser blocks that — open it through the site instead, or run a small local server from the <code>site</code> folder:</p>
+    <p><code>cd site &amp;&amp; python3 -m http.server 8000</code><br>then open <code>http://localhost:8000/classify.html</code></p>
+    <p>Or pick the file yourself:</p>
+    <p><input type="file" id="file-pick" accept=".geojson,.json"></p>
+  </div>
+
+  <div id="pinview" hidden>
+    <div class="pinhead">
+      <h2><span class="badge" id="pin-badge">?</span><span id="pin-title">?</span></h2>
+      <div class="meta" id="pin-meta"></div>
+    </div>
+    <div class="photos" id="photos"></div>
+    <div class="earlier" id="earlier" hidden></div>
+    <form class="classify" id="classify-form">
+      <h3>What is this?</h3>
+      <div class="field">
+        <label for="type">Type</label>
+        <select id="type"></select>
+      </div>
+      <div class="field">
+        <label>Condition <span class="hint" id="cond-hint"></span></label>
+        <div class="radios" id="condition-radios"></div>
+      </div>
+      <div class="field">
+        <label for="photographer">Photographer (initials)</label>
+        <input type="text" id="photographer" maxlength="12" autocomplete="off">
+      </div>
+      <div class="field">
+        <label for="notes">Notes <span class="hint">— anything the next person should know (optional)</span></label>
+        <textarea id="notes" placeholder="e.g. back of the sign, second photo is a close-up of the damage"></textarea>
+      </div>
+      <div class="actions">
+        <button type="button" id="confirm-btn">Confirm this pin</button>
+        <span id="saved" aria-live="polite"></span>
+      </div>
+    </form>
+    <nav class="pin">
+      <button type="button" id="prev-btn">&larr; Previous</button>
+      <select id="jump" aria-label="Jump to a pin"></select>
+      <button type="button" id="next-btn">Next &rarr;</button>
+    </nav>
+  </div>
+</main>
+
+<footer>
+  <p>Photos are the chapter's own trail photos. Serial numbers are assigned separately and are not editable here. Classifications are stored only in this browser (local storage) until you export — nothing leaves your computer on its own.</p>
+</footer>
+
+<script>
+(function () {
+  "use strict";
+
+  // Standing taxonomy (from data/assets/registry.json). Names are a fallback;
+  // the page tries to read the registry itself and uses these if that fails.
+  var TYPE_NAMES = {
+    CP: "Carsonite post", BW: "Boardwalk", SG: "Sign", BN: "Bench",
+    CS: "Campsite", PO: "Post (other)", LT: "Latrine", BR: "Bridge",
+    KI: "Kiosk", RG: "Register", PK: "Parking area", SH: "Shelter",
+    WT: "Water source", UN: "Unclassified"
+  };
+  var TYPE_ORDER = ["CP", "BW", "SG", "BN", "CS", "PO", "LT", "BR", "KI", "RG", "PK", "SH", "WT", "UN"];
+  var COND_GENERAL = ["good", "fair", "poor"];
+  var COND_CP = ["new", "worn", "replace"];
+  var STORE_KEY = "itm-classify-v1";
+
+  var pins = [];          // all pins, sorted by chainage
+  var store = {};         // pinKey -> {type, condition, photographer, notes, updatedAt}
+  var currentFilter = "needs";
+  var currentIndex = 0;   // index into visiblePins()
+  var typeSelect = document.getElementById("type");
+
+  function pinKey(p) { return p.serial || p.photo; }
+  function normType(t) {
+    if (!t) return "UN";
+    t = String(t).toUpperCase();
+    return t === "UNCLASSIFIED" ? "UN" : t;
+  }
+  function loadStore() {
+    try { store = JSON.parse(localStorage.getItem(STORE_KEY) || "{}") || {}; }
+    catch (e) { store = {}; }
+  }
+  function saveStore() {
+    try { localStorage.setItem(STORE_KEY, JSON.stringify(store)); } catch (e) { /* storage full/blocked: keep going */ }
+  }
+  function isReviewed(p) { return !!store[pinKey(p)]; }
+  function needsClassification(p) { return normType(p.type) === "UN"; }
+  function condOptionsFor(type) {
+    if (type === "CP") return COND_CP;
+    if (type === "UN") return [];
+    return COND_GENERAL;
+  }
+  function visiblePins() {
+    if (currentFilter === "needs") return pins.filter(needsClassification);
+    if (currentFilter === "reviewed") return pins.filter(isReviewed);
+    if (currentFilter === "unreviewed") return pins.filter(function (p) { return !isReviewed(p); });
+    return pins.slice();
+  }
+  function pinLabel(p) {
+    var s = p.serial ? p.serial : "No serial yet";
+    var where = [p.section, p.chainage_mi != null ? ("mile " + p.chainage_mi) : null].filter(Boolean).join(" · ");
+    return s + (where ? " — " + where : "") + " (" + (p.photos || []).length + " photo" + ((p.photos || []).length === 1 ? "" : "s") + ")";
+  }
+  function reviewedCount() { return pins.filter(isReviewed).length; }
+
+  function updateProgress() {
+    var done = reviewedCount();
+    var un = pins.filter(needsClassification).length;
+    document.getElementById("progress").textContent =
+      "Reviewed " + done + " of " + pins.length + " pins";
+    document.getElementById("progress-sub").textContent =
+      un + " still unclassified in the registry";
+    var btn = document.getElementById("export-btn");
+    btn.disabled = done === 0;
+    btn.textContent = done === 0 ? "Export classifications" : "Export classifications (" + done + ")";
+  }
+
+  function buildTypeOptions() {
+    typeSelect.innerHTML = "";
+    TYPE_ORDER.forEach(function (code) {
+      var opt = document.createElement("option");
+      opt.value = code;
+      opt.textContent = code + " — " + (TYPE_NAMES[code] || code);
+      typeSelect.appendChild(opt);
+    });
+  }
+
+  function buildConditionRadios(type, current) {
+    var wrap = document.getElementById("condition-radios");
+    var hint = document.getElementById("cond-hint");
+    wrap.innerHTML = "";
+    var opts = condOptionsFor(type);
+    if (type === "UN") {
+      hint.textContent = "— no condition for an unclassified pin";
+      wrap.classList.add("disabled");
+      wrap.innerHTML = "<span style='font-size:18px;color:#555'>Classify the type first; condition follows.</span>";
+      return;
+    }
+    wrap.classList.remove("disabled");
+    hint.textContent = type === "CP" ? "(Carsonite posts use new / worn / replace)" : "";
+    opts.forEach(function (c) {
+      var lab = document.createElement("label");
+      var inp = document.createElement("input");
+      inp.type = "radio"; inp.name = "condition"; inp.value = c;
+      if (current === c) inp.checked = true;
+      inp.addEventListener("change", function () { saveCurrent(false); });
+      lab.appendChild(inp);
+      lab.appendChild(document.createTextNode(c));
+      wrap.appendChild(lab);
+    });
+  }
+
+  function currentPin() {
+    var list = visiblePins();
+    if (!list.length) return null;
+    if (currentIndex < 0) currentIndex = 0;
+    if (currentIndex >= list.length) currentIndex = list.length - 1;
+    return list[currentIndex];
+  }
+
+  function formValues() {
+    var cond = null;
+    var checked = document.querySelector('#condition-radios input[name="condition"]:checked');
+    if (checked) cond = checked.value;
+    return {
+      type: typeSelect.value,
+      condition: cond,
+      photographer: document.getElementById("photographer").value.trim().toUpperCase() || "PJM",
+      notes: document.getElementById("notes").value.trim()
+    };
+  }
+
+  function saveCurrent(showMsg) {
+    var p = currentPin();
+    if (!p) return;
+    var v = formValues();
+    v.updatedAt = new Date().toISOString();
+    store[pinKey(p)] = v;
+    saveStore();
+    updateProgress();
+    buildJump();
+    if (showMsg) {
+      var el = document.getElementById("saved");
+      el.textContent = "Saved ✓ " + new Date().toLocaleTimeString();
+      setTimeout(function () { el.textContent = ""; }, 4000);
+    }
+  }
+  function onTypeChange() {
+    // A new type can invalidate the condition: keep it only if it still applies.
+    var v = formValues();
+    var opts = condOptionsFor(v.type);
+    var cond = v.condition;
+    if (cond && opts.indexOf(cond) === -1) cond = null;
+    buildConditionRadios(v.type, cond);
+    saveCurrent(false);
+  }
+
+  function render() {
+    var list = visiblePins();
+    var view = document.getElementById("pinview");
+    if (!list.length) {
+      view.hidden = true;
+      document.getElementById("loader").hidden = false;
+      document.getElementById("loader").textContent =
+        currentFilter === "needs"
+          ? "Nothing needs classification — every pin has a type. Switch the filter to “All pins” to review the rest."
+          : "No pins match this filter.";
+      updateProgress();
+      return;
+    }
+    document.getElementById("loader").hidden = true;
+    view.hidden = false;
+    var p = currentPin();
+    var saved = store[pinKey(p)];
+    var type = saved ? saved.type : normType(p.type);
+    var cond = saved ? saved.condition : (p.condition || null);
+    if (cond && condOptionsFor(type).indexOf(cond) === -1) cond = null;
+
+    var badge = document.getElementById("pin-badge");
+    badge.textContent = p.serial || "UN";
+    badge.classList.toggle("un", !p.serial);
+    document.getElementById("pin-title").textContent =
+      (p.serial ? p.serial + " — " : "") + (TYPE_NAMES[type] || type);
+    document.getElementById("pin-meta").textContent =
+      [p.section, p.chainage_mi != null ? ("mile " + p.chainage_mi) : null,
+       p.datetime ? ("photographed " + p.datetime.replace(/:/g, ":").replace(/^(\d{4}):(\d{2}):(\d{2})/, "$1-$2-$3")) : null,
+       "Pin " + (currentIndex + 1) + " of " + list.length + " in this view"
+      ].filter(Boolean).join(" · ");
+
+    var photosEl = document.getElementById("photos");
+    photosEl.innerHTML = "";
+    (p.photos || []).forEach(function (ph, i) {
+      var fig = document.createElement("figure");
+      var img = document.createElement("img");
+      img.src = "assets-photos/" + ph.derivative;
+      img.alt = "Photo " + (i + 1) + " of " + (p.photos || []).length + " for " + (p.serial || p.photo);
+      img.loading = "lazy";
+      var a = document.createElement("a");
+      a.href = img.src; a.target = "_blank"; a.rel = "noopener";
+      a.title = "Open full size in a new tab";
+      a.appendChild(img);
+      fig.appendChild(a);
+      var cap = document.createElement("figcaption");
+      cap.textContent = "Photo " + (i + 1) + " of " + (p.photos || []).length +
+        " — " + ph.photo + (ph.datetime ? " · " + ph.datetime : "");
+      fig.appendChild(cap);
+      photosEl.appendChild(fig);
+    });
+
+    var earlier = document.getElementById("earlier");
+    if (p.note) {
+      earlier.hidden = false;
+      earlier.innerHTML = "";
+      var strong = document.createElement("strong");
+      strong.textContent = "Note from the earlier pass: ";
+      earlier.appendChild(strong);
+      earlier.appendChild(document.createTextNode(p.note));
+      var small = document.createElement("div");
+      small.textContent = "Reference only — your classification below is what counts.";
+      earlier.appendChild(small);
+    } else {
+      earlier.hidden = true;
+    }
+
+    typeSelect.value = type;
+    buildConditionRadios(type, cond);
+    document.getElementById("photographer").value = saved ? saved.photographer : (p.photographer || "PJM");
+    document.getElementById("notes").value = saved ? saved.notes : "";
+    document.getElementById("saved").textContent = saved ? "Already saved — change anything to update it." : "";
+
+    document.getElementById("prev-btn").disabled = currentIndex <= 0;
+    document.getElementById("next-btn").disabled = currentIndex >= list.length - 1;
+    buildJump();
+    updateProgress();
+  }
+
+  function buildJump() {
+    var sel = document.getElementById("jump");
+    var list = visiblePins();
+    var cur = currentPin();
+    sel.innerHTML = "";
+    list.forEach(function (p, i) {
+      var opt = document.createElement("option");
+      opt.value = i;
+      opt.textContent = (isReviewed(p) ? "✓ " : "") + pinLabel(p);
+      sel.appendChild(opt);
+    });
+    sel.value = String(currentIndex);
+  }
+
+  function goTo(i) {
+    var list = visiblePins();
+    if (!list.length) return;
+    currentIndex = Math.max(0, Math.min(list.length - 1, i));
+    render();
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }
+
+  function exportClassifications() {
+    var out = [];
+    pins.forEach(function (p) {
+      var s = store[pinKey(p)];
+      if (!s) return;
+      out.push({
+        pin: p.serial || p.photo,
+        serial: p.serial || null,
+        photo: p.photo,
+        type: s.type,
+        condition: s.condition || null,
+        photographer: s.photographer || "PJM",
+        notes: s.notes || ""
+      });
+    });
+    if (!out.length) return;
+    var blob = new Blob([JSON.stringify(out, null, 2)], { type: "application/json" });
+    var a = document.createElement("a");
+    var d = new Date();
+    var stamp = d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0") + "-" + String(d.getDate()).padStart(2, "0");
+    a.href = URL.createObjectURL(blob);
+    a.download = "itm-classifications-" + stamp + ".json";
+    document.body.appendChild(a);
+    a.click();
+    setTimeout(function () { URL.revokeObjectURL(a.href); a.remove(); }, 1000);
+  }
+
+  function init(data) {
+    var feats = (data && data.features) || [];
+    pins = feats.map(function (f) {
+      var p = f.properties || {};
+      return {
+        serial: p.serial || null,
+        photo: p.photo || "",
+        type: normType(p.type),
+        condition: p.condition || null,
+        photographer: p.photographer || "PJM",
+        datetime: p.datetime || "",
+        section: p.section || "",
+        chainage_mi: (p.chainage_mi == null ? null : p.chainage_mi),
+        note: p.note || "",
+        photos: (p.photos || []).map(function (ph) {
+          return { photo: ph.photo, derivative: ph.derivative, datetime: ph.datetime || "" };
+        })
+      };
+    });
+    // Walk-the-trail order: chainage west to east; pins without a chainage go last.
+    pins.sort(function (a, b) {
+      if (a.chainage_mi == null && b.chainage_mi == null) return 0;
+      if (a.chainage_mi == null) return 1;
+      if (b.chainage_mi == null) return -1;
+      return a.chainage_mi - b.chainage_mi;
+    });
+    loadStore();
+    buildTypeOptions();
+    document.getElementById("loader").hidden = true;
+    document.getElementById("pinview").hidden = false;
+    render();
+  }
+
+  function loadFailed() {
+    document.getElementById("loader").hidden = true;
+    document.getElementById("loaderror").hidden = false;
+    document.getElementById("progress").textContent = "Photo list not loaded";
+  }
+
+  function boot() {
+    buildTypeOptions();
+    // Type names from the registry when reachable; hardcoded names stand in otherwise.
+    fetch("../data/assets/registry.json").then(function (r) { return r.json(); }).then(function (reg) {
+      if (reg && reg.types) {
+        Object.keys(reg.types).forEach(function (code) {
+          if (reg.types[code] && reg.types[code].name) TYPE_NAMES[code] = reg.types[code].name;
+        });
+        buildTypeOptions();
+        if (pins.length) render();
+      }
+    }).catch(function () { /* keep the hardcoded names */ });
+
+    fetch("data/assets.geojson").then(function (r) {
+      if (!r.ok) throw new Error("HTTP " + r.status);
+      return r.json();
+    }).then(init).catch(loadFailed);
+
+    document.getElementById("file-pick").addEventListener("change", function (ev) {
+      var file = ev.target.files && ev.target.files[0];
+      if (!file) return;
+      var reader = new FileReader();
+      reader.onload = function () {
+        try {
+          document.getElementById("loaderror").hidden = true;
+          init(JSON.parse(reader.result));
+        } catch (e) {
+          alert("That file could not be read as a GeoJSON pin list.");
+        }
+      };
+      reader.readAsText(file);
+    });
+
+    document.getElementById("filter").addEventListener("change", function (ev) {
+      currentFilter = ev.target.value;
+      currentIndex = 0;
+      render();
+    });
+    document.getElementById("prev-btn").addEventListener("click", function () { goTo(currentIndex - 1); });
+    document.getElementById("next-btn").addEventListener("click", function () { goTo(currentIndex + 1); });
+    document.getElementById("jump").addEventListener("change", function (ev) { goTo(parseInt(ev.target.value, 10)); });
+    document.getElementById("confirm-btn").addEventListener("click", function () { saveCurrent(true); });
+    document.getElementById("export-btn").addEventListener("click", exportClassifications);
+    document.getElementById("reset-btn").addEventListener("click", function () {
+      if (confirm("Erase everything you have entered in this browser? The registry itself is untouched.")) {
+        store = {};
+        saveStore();
+        currentIndex = 0;
+        render();
+      }
+    });
+    typeSelect.addEventListener("change", onTypeChange);
+    document.getElementById("photographer").addEventListener("change", function () { saveCurrent(false); });
+    document.getElementById("notes").addEventListener("change", function () { saveCurrent(false); });
+    document.addEventListener("keydown", function (ev) {
+      var tag = (ev.target && ev.target.tagName) || "";
+      if (tag === "INPUT" || tag === "TEXTAREA" || tag === "SELECT") return;
+      if (ev.key === "ArrowRight") goTo(currentIndex + 1);
+      if (ev.key === "ArrowLeft") goTo(currentIndex - 1);
+    });
+  }
+
+  boot();
+})();
+</script>
+</body>
+</html>
