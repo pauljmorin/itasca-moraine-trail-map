@@ -971,6 +971,29 @@ function logEdwPopup(f) {
   ]) + "<p class='pop-note'>Revised is the last revision date, " +
     "not an expiry — the source carries none.</p>";
 }
+/* Conservation easements (Nov 12, 2026): BWSR RIM Reserve
+   easements clipped to the corridor (40 easements, 3,370 ac —
+   38 perpetual riparian, 1 limited cropland, 1 PWP). One
+   easement is expired and is carried honestly with its expiry
+   shown, not hidden. */
+function easementsPopup(f) {
+  var p = f.properties;
+  var rows = [
+    ["Type", p.type],
+    ["Acres", p.acres],
+    ["Program", p.program],
+    ["County", p.county],
+    ["Recorded", p.recorded],
+    ["Perpetual", p.perpetual ? "Yes" : "No"],
+    ["Status", p.status],
+    ["Source", p.source],
+  ];
+  if (p.status === "expired" && p.expires) {
+    rows.splice(6, 0, ["Expired", p.expires]);
+  }
+  return "<h3>" + esc(p.name || "Conservation easement") + "</h3>" +
+    kvTable(rows);
+}
 
 
 /* Trail alerts (NCTA trail_alerts service, pulled by
@@ -3267,6 +3290,29 @@ var LAYERS = [
     },
   },
   {
+    /* BWSR RIM Reserve conservation easements, clipped to the
+       corridor (40 easements, 3,370 ac — 38 perpetual riparian,
+       1 limited cropland, 1 PWP). OFF by default and LAZY like
+       the logging layers. One easement is expired and is carried
+       honestly with its expiry in the popup. */
+    id: "easements", label: "Conservation easements",
+    title: "BWSR RIM conservation easements in the corridor",
+    file: "data/easements.geojson",
+    onByDefault: false, group: "The land",
+    swatch: { kind: "fill", color: "#0d9488", border: "#0f766e" },
+    build: function (gj) {
+      var layer = L.geoJSON(gj, {
+        renderer: canvasFor(),
+        style: {
+          color: "#0f766e", weight: 1.5,
+          fillColor: "#0d9488", fillOpacity: 0.25,
+        },
+        onEachFeature: function (f, l) { bindPop(l, easementsPopup(f)); },
+      });
+      return layer;
+    },
+  },
+  {
     id: "access", label: "Non-road access",
     title: "Forest roads, OHV, other trails",
     file: "data/access.geojson", onByDefault: false, group: "Around the trail",
@@ -4108,7 +4154,7 @@ function assertDrawOrder() {
        the gap, boundary ticks and chapter ends, mile markers
        with the ticks, then Places, trail alerts and asset pins
        uppermost. */
-    ["leechlake", "parcels", "logedw", "logfim", "logcass", "access",
+    ["leechlake", "parcels", "logedw", "logfim", "logcass", "easements", "access",
      "roads", "nctasheets", "trail",
      "stretches", "gaps",
      "boundaries", "termini", "milemarkers", "chainage", "contours",
