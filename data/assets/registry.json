@@ -128,9 +128,93 @@
      "chainage_mi": 59.19,
      "section": "Chip-6",
      "assigned": "2026-11-11"
+    },
+    "ITM-CP-019": {
+     "photo": "PXL_20261111_163653226.MP.jpg",
+     "type": "CP",
+     "chainage_mi": 56.5,
+     "section": "Chip-5",
+     "assigned": "2026-11-11"
+    },
+    "ITM-CP-020": {
+     "photo": "PXL_20261111_163739604.MP.jpg",
+     "type": "CP",
+     "chainage_mi": 56.5,
+     "section": "Chip-5",
+     "assigned": "2026-11-11"
+    },
+    "ITM-CP-021": {
+     "photo": "PXL_20261111_165313345.MP.jpg",
+     "type": "CP",
+     "chainage_mi": 56.5,
+     "section": "Chip-5",
+     "assigned": "2026-11-11"
+    },
+    "ITM-CP-022": {
+     "photo": "PXL_20261111_165358082.MP.jpg",
+     "type": "CP",
+     "chainage_mi": 56.5,
+     "section": "Chip-5",
+     "assigned": "2026-11-11"
+    },
+    "ITM-CP-023": {
+     "photo": "PXL_20261111_165411693.MP.jpg",
+     "type": "CP",
+     "chainage_mi": 56.51,
+     "section": "Chip-5",
+     "assigned": "2026-11-11"
+    },
+    "ITM-CP-024": {
+     "photo": "PXL_20261111_171210593.jpg",
+     "type": "CP",
+     "chainage_mi": 57.26,
+     "section": "Chip-5",
+     "assigned": "2026-11-11"
+    },
+    "ITM-CP-025": {
+     "photo": "PXL_20261111_171236081.jpg",
+     "type": "CP",
+     "chainage_mi": 57.26,
+     "section": "Chip-5",
+     "assigned": "2026-11-11"
+    },
+    "ITM-CP-026": {
+     "photo": "PXL_20261111_172740854.jpg",
+     "type": "CP",
+     "chainage_mi": 57.97,
+     "section": "Chip-5",
+     "assigned": "2026-11-11"
+    },
+    "ITM-CP-027": {
+     "photo": "PXL_20261111_172839222.jpg",
+     "type": "CP",
+     "chainage_mi": 58.0,
+     "section": "Chip-5",
+     "assigned": "2026-11-11"
+    },
+    "ITM-CP-028": {
+     "photo": "PXL_20261111_172906961.MP.jpg",
+     "type": "CP",
+     "chainage_mi": 58.02,
+     "section": "Chip-5",
+     "assigned": "2026-11-11"
+    },
+    "ITM-CP-029": {
+     "photo": "PXL_20261111_173300772.jpg",
+     "type": "CP",
+     "chainage_mi": 58.2,
+     "section": "Chip-5",
+     "assigned": "2026-11-11"
+    },
+    "ITM-CP-030": {
+     "photo": "PXL_20261111_173306050.MP.jpg",
+     "type": "CP",
+     "chainage_mi": 58.21,
+     "section": "Chip-5",
+     "assigned": "2026-11-11"
     }
    },
-   "next": 19,
+   "next": 31,
    "retired": []
   },
   "CS": {
@@ -147,8 +231,16 @@
    "retired": []
   },
   "KI": {
-   "issued": {},
-   "next": 1,
+   "issued": {
+    "ITM-KI-001": {
+     "photo": "PXL_20261111_163745163.MP.jpg",
+     "type": "KI",
+     "chainage_mi": 56.5,
+     "section": "Chip-5",
+     "assigned": "2026-11-11"
+    }
+   },
+   "next": 2,
    "retired": []
   },
   "PK": {
@@ -248,13 +340,55 @@
      "chainage_mi": 59.19,
      "section": "Chip-6",
      "assigned": "2026-11-11"
+    },
+    "ITM-SG-012": {
+     "photo": "PXL_20261111_163632766.MP.jpg",
+     "type": "SG",
+     "chainage_mi": 56.5,
+     "section": "Chip-5",
+     "assigned": "2026-11-11"
+    },
+    "ITM-SG-013": {
+     "photo": "PXL_20261111_165300884.MP.jpg",
+     "type": "SG",
+     "chainage_mi": 56.5,
+     "section": "Chip-5",
+     "assigned": "2026-11-11"
+    },
+    "ITM-SG-014": {
+     "photo": "PXL_20261111_165349317.MP.jpg",
+     "type": "SG",
+     "chainage_mi": 56.5,
+     "section": "Chip-5",
+     "assigned": "2026-11-11"
+    },
+    "ITM-SG-015": {
+     "photo": "PXL_20261111_165402874.jpg",
+     "type": "SG",
+     "chainage_mi": 56.5,
+     "section": "Chip-5",
+     "assigned": "2026-11-11"
+    },
+    "ITM-SG-016": {
+     "photo": "PXL_20261111_171222895.jpg",
+     "type": "SG",
+     "chainage_mi": 57.26,
+     "section": "Chip-5",
+     "assigned": "2026-11-11"
+    },
+    "ITM-SG-017": {
+     "photo": "PXL_20261111_163956960.jpg",
+     "type": "SG",
+     "chainage_mi": null,
+     "section": null,
+     "assigned": "2026-11-11"
     }
    },
-   "next": 12,
+   "next": 18,
    "retired": []
   },
   "BW": {
-   "next": 7,
+   "next": 11,
    "issued": {
     "ITM-BW-001": {
      "photo": "PXL_20261111_173353595.MP.jpg",
@@ -297,6 +431,34 @@
      "chainage_mi": 59.13,
      "section": "Chip-6",
      "assigned": "2026-11-11"
+    },
+    "ITM-BW-007": {
+     "photo": "PXL_20261111_164807819.MP.jpg",
+     "type": "BW",
+     "chainage_mi": 56.52,
+     "section": "Chip-5",
+     "assigned": "2026-11-11"
+    },
+    "ITM-BW-008": {
+     "photo": "PXL_20261111_165030470.MP.jpg",
+     "type": "BW",
+     "chainage_mi": 56.54,
+     "section": "Chip-5",
+     "assigned": "2026-11-11"
+    },
+    "ITM-BW-009": {
+     "photo": "PXL_20261111_173331162.jpg",
+     "type": "BW",
+     "chainage_mi": 58.21,
+     "section": "Chip-5",
+     "assigned": "2026-11-11"
+    },
+    "ITM-BW-010": {
+     "photo": "PXL_20261111_164114659.MP.jpg",
+     "type": "BW",
+     "chainage_mi": null,
+     "section": null,
+     "assigned": "2026-11-11"
     }
    },
    "retired": []
@@ -315,13 +477,60 @@
    "retired": []
   },
   "BN": {
-   "next": 2,
+   "next": 4,
    "issued": {
     "ITM-BN-001": {
      "photo": "PXL_20261111_175623584.jpg",
      "type": "BN",
      "chainage_mi": 59.09,
      "section": "Chip-6",
+     "assigned": "2026-11-11"
+    },
+    "ITM-BN-002": {
+     "photo": "PXL_20261111_165211781.MP.jpg",
+     "type": "BN",
+     "chainage_mi": 56.51,
+     "section": "Chip-5",
+     "assigned": "2026-11-11"
+    },
+    "ITM-BN-003": {
+     "photo": "PXL_20261111_164418333.jpg",
+     "type": "BN",
+     "chainage_mi": null,
+     "section": null,
+     "assigned": "2026-11-11"
+    }
+   },
+   "retired": []
+  },
+  "RG": {
+   "next": 2,
+   "issued": {
+    "ITM-RG-001": {
+     "photo": "PXL_20261111_165423776.jpg",
+     "type": "RG",
+     "chainage_mi": 56.51,
+     "section": "Chip-5",
+     "assigned": "2026-11-11"
+    }
+   },
+   "retired": []
+  },
+  "BR": {
+   "next": 3,
+   "issued": {
+    "ITM-BR-001": {
+     "photo": "PXL_20261111_164010391.jpg",
+     "type": "BR",
+     "chainage_mi": null,
+     "section": null,
+     "assigned": "2026-11-11"
+    },
+    "ITM-BR-002": {
+     "photo": "PXL_20261111_164313064.jpg",
+     "type": "BR",
+     "chainage_mi": null,
+     "section": null,
      "assigned": "2026-11-11"
     }
    },
@@ -391,6 +600,11 @@
   "LT": {
    "name": "latrine",
    "note": "Latrine (fibreglass latrine box at a campsite). Code approved by Paul Nov 11, 2026 with the first batch; ITM-LT-001 is the Lake Erin campsite latrine.",
+   "status": "seeded"
+  },
+  "RG": {
+   "name": "register",
+   "note": "Trail register box. Code approved by Paul Nov 11, 2026 with the second batch; ITM-RG-001 is the Lake Erin trailhead register box.",
    "status": "seeded"
   }
  }

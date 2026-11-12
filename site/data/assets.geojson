@@ -1763,6 +1763,1713 @@
      }
     ]
    }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -94.535748,
+     47.0162851
+    ]
+   },
+   "properties": {
+    "photo": "PXL_20261111_163632766.MP.jpg",
+    "datetime": "2026:11:11 10:36:32",
+    "photographer": null,
+    "type": "SG",
+    "condition": "good",
+    "drive_id": null,
+    "derivative": "pxl_20261111_163632766-mp.jpg",
+    "direction_deg": null,
+    "direction_ref": null,
+    "direction_compass": null,
+    "gps_source": "gpx",
+    "gpx_offset_s": 5.0,
+    "gpx_file": "Nov_11,_2026,_10_36_12_AM.gpx",
+    "serial": "ITM-SG-012",
+    "sign_kind": null,
+    "chainage_mi": 56.5,
+    "section": "Chip-5",
+    "snap_m": 183.0,
+    "photos": [
+     {
+      "photo": "PXL_20261111_163632766.MP.jpg",
+      "derivative": "pxl_20261111_163632766-mp.jpg",
+      "datetime": "2026:11:11 10:36:32",
+      "drive_id": null
+     }
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -94.5356636,
+     47.0161376
+    ]
+   },
+   "properties": {
+    "photo": "PXL_20261111_163653226.MP.jpg",
+    "datetime": "2026:11:11 10:36:53",
+    "photographer": null,
+    "type": "CP",
+    "condition": "new",
+    "drive_id": null,
+    "derivative": "pxl_20261111_163653226-mp.jpg",
+    "direction_deg": null,
+    "direction_ref": null,
+    "direction_compass": null,
+    "gps_source": "gpx",
+    "gpx_offset_s": 2.0,
+    "gpx_file": "Nov_11,_2026,_10_36_12_AM.gpx",
+    "serial": "ITM-CP-019",
+    "sign_kind": null,
+    "chainage_mi": 56.5,
+    "section": "Chip-5",
+    "snap_m": 166.03,
+    "photos": [
+     {
+      "photo": "PXL_20261111_163653226.MP.jpg",
+      "derivative": "pxl_20261111_163653226-mp.jpg",
+      "datetime": "2026:11:11 10:36:53",
+      "drive_id": null
+     },
+     {
+      "photo": "PXL_20261111_163700851.MP.jpg",
+      "derivative": "pxl_20261111_163700851-mp.jpg",
+      "datetime": "2026:11:11 10:37:00",
+      "drive_id": null
+     }
+    ],
+    "note": "Probably the back of the 163653226 post, photographed 7 s later from the lot side \u2014 the link is a judgment call; confirm on Paul's walk-through."
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -94.5357149,
+     47.015677
+    ]
+   },
+   "properties": {
+    "photo": "PXL_20261111_163739604.MP.jpg",
+    "datetime": "2026:11:11 10:37:39",
+    "photographer": null,
+    "type": "CP",
+    "condition": "new",
+    "drive_id": null,
+    "derivative": "pxl_20261111_163739604-mp.jpg",
+    "direction_deg": null,
+    "direction_ref": null,
+    "direction_compass": null,
+    "gps_source": "gpx",
+    "gpx_offset_s": 5.0,
+    "gpx_file": "Nov_11,_2026,_10_36_12_AM.gpx",
+    "serial": "ITM-CP-020",
+    "sign_kind": null,
+    "chainage_mi": 56.5,
+    "section": "Chip-5",
+    "snap_m": 115.67,
+    "photos": [
+     {
+      "photo": "PXL_20261111_163739604.MP.jpg",
+      "derivative": "pxl_20261111_163739604-mp.jpg",
+      "datetime": "2026:11:11 10:37:39",
+      "drive_id": null
+     }
+    ],
+    "note": "Decal set differs from the 163653226 post \u2014 treated as a second post at the trailhead; may be the same post's opposite face, confirm on Paul's walk-through."
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -94.5357081,
+     47.0156422
+    ]
+   },
+   "properties": {
+    "photo": "PXL_20261111_163745163.MP.jpg",
+    "datetime": "2026:11:11 10:37:45",
+    "photographer": null,
+    "type": "KI",
+    "condition": "good",
+    "drive_id": null,
+    "derivative": "pxl_20261111_163745163-mp.jpg",
+    "direction_deg": null,
+    "direction_ref": null,
+    "direction_compass": null,
+    "gps_source": "gpx",
+    "gpx_offset_s": 1.0,
+    "gpx_file": "Nov_11,_2026,_10_36_12_AM.gpx",
+    "serial": "ITM-KI-001",
+    "sign_kind": null,
+    "chainage_mi": 56.5,
+    "section": "Chip-5",
+    "snap_m": 111.77,
+    "photos": [
+     {
+      "photo": "PXL_20261111_163745163.MP.jpg",
+      "derivative": "pxl_20261111_163745163-mp.jpg",
+      "datetime": "2026:11:11 10:37:45",
+      "drive_id": null
+     },
+     {
+      "photo": "PXL_20261111_163752972.MP.jpg",
+      "derivative": "pxl_20261111_163752972-mp.jpg",
+      "datetime": "2026:11:11 10:37:52",
+      "drive_id": null
+     },
+     {
+      "photo": "PXL_20261111_163756701.MP.jpg",
+      "derivative": "pxl_20261111_163756701-mp.jpg",
+      "datetime": "2026:11:11 10:37:56",
+      "drive_id": null
+     },
+     {
+      "photo": "PXL_20261111_163800843.jpg",
+      "derivative": "pxl_20261111_163800843.jpg",
+      "datetime": "2026:11:11 10:38:00",
+      "drive_id": null
+     },
+     {
+      "photo": "PXL_20261111_163803941.MP.jpg",
+      "derivative": "pxl_20261111_163803941-mp.jpg",
+      "datetime": "2026:11:11 10:38:03",
+      "drive_id": null
+     }
+    ],
+    "note": "Needs Paul's walk-through \u2014 the leaning board is unidentified (a loose post? a kiosk panel?)."
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -94.5353616,
+     47.0170199
+    ]
+   },
+   "properties": {
+    "photo": "PXL_20261111_163956960.jpg",
+    "datetime": "2026:11:11 10:39:56",
+    "photographer": null,
+    "type": "SG",
+    "condition": "fair",
+    "drive_id": null,
+    "derivative": "pxl_20261111_163956960.jpg",
+    "direction_deg": null,
+    "direction_ref": null,
+    "direction_compass": null,
+    "gps_source": "gpx",
+    "gpx_offset_s": 0.0,
+    "gpx_file": "Nov_11,_2026,_10_36_12_AM.gpx",
+    "serial": "ITM-SG-017",
+    "sign_kind": null,
+    "chainage_mi": null,
+    "section": null,
+    "snap_m": 263.59,
+    "photos": [
+     {
+      "photo": "PXL_20261111_163956960.jpg",
+      "derivative": "pxl_20261111_163956960.jpg",
+      "datetime": "2026:11:11 10:39:56",
+      "drive_id": null
+     }
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -94.5353534,
+     47.0171219
+    ]
+   },
+   "properties": {
+    "photo": "PXL_20261111_164010391.jpg",
+    "datetime": "2026:11:11 10:40:10",
+    "photographer": null,
+    "type": "BR",
+    "condition": "fair",
+    "drive_id": null,
+    "derivative": "pxl_20261111_164010391.jpg",
+    "direction_deg": null,
+    "direction_ref": null,
+    "direction_compass": null,
+    "gps_source": "gpx",
+    "gpx_offset_s": 3.0,
+    "gpx_file": "Nov_11,_2026,_10_36_12_AM.gpx",
+    "serial": "ITM-BR-001",
+    "sign_kind": null,
+    "chainage_mi": null,
+    "section": null,
+    "snap_m": 274.95,
+    "photos": [
+     {
+      "photo": "PXL_20261111_164010391.jpg",
+      "derivative": "pxl_20261111_164010391.jpg",
+      "datetime": "2026:11:11 10:40:10",
+      "drive_id": null
+     },
+     {
+      "photo": "PXL_20261111_164047581.jpg",
+      "derivative": "pxl_20261111_164047581.jpg",
+      "datetime": "2026:11:11 10:40:47",
+      "drive_id": null
+     }
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -94.5351271,
+     47.0174165
+    ]
+   },
+   "properties": {
+    "photo": "PXL_20261111_164102566.MP.jpg",
+    "datetime": "2026:11:11 10:41:02",
+    "photographer": null,
+    "type": "UN",
+    "condition": null,
+    "drive_id": null,
+    "derivative": "pxl_20261111_164102566-mp.jpg",
+    "direction_deg": null,
+    "direction_ref": null,
+    "direction_compass": null,
+    "gps_source": "gpx",
+    "gpx_offset_s": 4.0,
+    "gpx_file": "Nov_11,_2026,_10_36_12_AM.gpx",
+    "serial": null,
+    "sign_kind": null,
+    "chainage_mi": null,
+    "section": null,
+    "snap_m": 308.66,
+    "photos": [
+     {
+      "photo": "PXL_20261111_164102566.MP.jpg",
+      "derivative": "pxl_20261111_164102566-mp.jpg",
+      "datetime": "2026:11:11 10:41:02",
+      "drive_id": null
+     }
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -94.5350983,
+     47.0174818
+    ]
+   },
+   "properties": {
+    "photo": "PXL_20261111_164114659.MP.jpg",
+    "datetime": "2026:11:11 10:41:14",
+    "photographer": null,
+    "type": "BW",
+    "condition": "fair",
+    "drive_id": null,
+    "derivative": "pxl_20261111_164114659-mp.jpg",
+    "direction_deg": null,
+    "direction_ref": null,
+    "direction_compass": null,
+    "gps_source": "gpx",
+    "gpx_offset_s": 1.0,
+    "gpx_file": "Nov_11,_2026,_10_36_12_AM.gpx",
+    "serial": "ITM-BW-010",
+    "sign_kind": null,
+    "chainage_mi": null,
+    "section": null,
+    "snap_m": 316.08,
+    "photos": [
+     {
+      "photo": "PXL_20261111_164114659.MP.jpg",
+      "derivative": "pxl_20261111_164114659-mp.jpg",
+      "datetime": "2026:11:11 10:41:14",
+      "drive_id": null
+     }
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -94.5338119,
+     47.0177511
+    ]
+   },
+   "properties": {
+    "photo": "PXL_20261111_164249781.jpg",
+    "datetime": "2026:11:11 10:42:49",
+    "photographer": null,
+    "type": "UN",
+    "condition": null,
+    "drive_id": null,
+    "derivative": "pxl_20261111_164249781.jpg",
+    "direction_deg": null,
+    "direction_ref": null,
+    "direction_compass": null,
+    "gps_source": "gpx",
+    "gpx_offset_s": 4.0,
+    "gpx_file": "Nov_11,_2026,_10_36_12_AM.gpx",
+    "serial": null,
+    "sign_kind": null,
+    "chainage_mi": null,
+    "section": null,
+    "snap_m": 364.7,
+    "photos": [
+     {
+      "photo": "PXL_20261111_164249781.jpg",
+      "derivative": "pxl_20261111_164249781.jpg",
+      "datetime": "2026:11:11 10:42:49",
+      "drive_id": null
+     },
+     {
+      "photo": "PXL_20261111_164253208.jpg",
+      "derivative": "pxl_20261111_164253208.jpg",
+      "datetime": "2026:11:11 10:42:53",
+      "drive_id": null
+     }
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -94.5337914,
+     47.0176799
+    ]
+   },
+   "properties": {
+    "photo": "PXL_20261111_164303475.jpg",
+    "datetime": "2026:11:11 10:43:03",
+    "photographer": null,
+    "type": "UN",
+    "condition": null,
+    "drive_id": null,
+    "derivative": "pxl_20261111_164303475.jpg",
+    "direction_deg": null,
+    "direction_ref": null,
+    "direction_compass": null,
+    "gps_source": "gpx",
+    "gpx_offset_s": 1.0,
+    "gpx_file": "Nov_11,_2026,_10_36_12_AM.gpx",
+    "serial": null,
+    "sign_kind": null,
+    "chainage_mi": null,
+    "section": null,
+    "snap_m": 357.62,
+    "photos": [
+     {
+      "photo": "PXL_20261111_164303475.jpg",
+      "derivative": "pxl_20261111_164303475.jpg",
+      "datetime": "2026:11:11 10:43:03",
+      "drive_id": null
+     }
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -94.5336813,
+     47.0176004
+    ]
+   },
+   "properties": {
+    "photo": "PXL_20261111_164313064.jpg",
+    "datetime": "2026:11:11 10:43:13",
+    "photographer": null,
+    "type": "BR",
+    "condition": "fair",
+    "drive_id": null,
+    "derivative": "pxl_20261111_164313064.jpg",
+    "direction_deg": null,
+    "direction_ref": null,
+    "direction_compass": null,
+    "gps_source": "gpx",
+    "gpx_offset_s": 3.0,
+    "gpx_file": "Nov_11,_2026,_10_36_12_AM.gpx",
+    "serial": "ITM-BR-002",
+    "sign_kind": null,
+    "chainage_mi": null,
+    "section": null,
+    "snap_m": 351.92,
+    "photos": [
+     {
+      "photo": "PXL_20261111_164313064.jpg",
+      "derivative": "pxl_20261111_164313064.jpg",
+      "datetime": "2026:11:11 10:43:13",
+      "drive_id": null
+     },
+     {
+      "photo": "PXL_20261111_164324579.MP.jpg",
+      "derivative": "pxl_20261111_164324579-mp.jpg",
+      "datetime": "2026:11:11 10:43:24",
+      "drive_id": null
+     },
+     {
+      "photo": "PXL_20261111_164336858.MP.jpg",
+      "derivative": "pxl_20261111_164336858-mp.jpg",
+      "datetime": "2026:11:11 10:43:36",
+      "drive_id": null
+     }
+    ],
+    "note": "Fallen limb across the deck \u2014 see maintenance list."
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -94.5330137,
+     47.0172075
+    ]
+   },
+   "properties": {
+    "photo": "PXL_20261111_164418333.jpg",
+    "datetime": "2026:11:11 10:44:18",
+    "photographer": null,
+    "type": "BN",
+    "condition": "fair",
+    "drive_id": null,
+    "derivative": "pxl_20261111_164418333.jpg",
+    "direction_deg": null,
+    "direction_ref": null,
+    "direction_compass": null,
+    "gps_source": "gpx",
+    "gpx_offset_s": 5.0,
+    "gpx_file": "Nov_11,_2026,_10_36_12_AM.gpx",
+    "serial": "ITM-BN-003",
+    "sign_kind": null,
+    "chainage_mi": null,
+    "section": null,
+    "snap_m": 333.58,
+    "photos": [
+     {
+      "photo": "PXL_20261111_164418333.jpg",
+      "derivative": "pxl_20261111_164418333.jpg",
+      "datetime": "2026:11:11 10:44:18",
+      "drive_id": null
+     }
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -94.5323445,
+     47.015142
+    ]
+   },
+   "properties": {
+    "photo": "PXL_20261111_164807819.MP.jpg",
+    "datetime": "2026:11:11 10:48:07",
+    "photographer": null,
+    "type": "BW",
+    "condition": "fair",
+    "drive_id": null,
+    "derivative": "pxl_20261111_164807819-mp.jpg",
+    "direction_deg": null,
+    "direction_ref": null,
+    "direction_compass": null,
+    "gps_source": "gpx",
+    "gpx_offset_s": 8.0,
+    "gpx_file": "Nov_11,_2026,_10_36_12_AM.gpx",
+    "serial": "ITM-BW-007",
+    "sign_kind": null,
+    "chainage_mi": 56.52,
+    "section": "Chip-5",
+    "snap_m": 226.55,
+    "photos": [
+     {
+      "photo": "PXL_20261111_164807819.MP.jpg",
+      "derivative": "pxl_20261111_164807819-mp.jpg",
+      "datetime": "2026:11:11 10:48:07",
+      "drive_id": null
+     },
+     {
+      "photo": "PXL_20261111_164819427.MP.jpg",
+      "derivative": "pxl_20261111_164819427-mp.jpg",
+      "datetime": "2026:11:11 10:48:19",
+      "drive_id": null
+     }
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -94.5332397,
+     47.0149078
+    ]
+   },
+   "properties": {
+    "photo": "PXL_20261111_164921068.jpg",
+    "datetime": "2026:11:11 10:49:21",
+    "photographer": null,
+    "type": "UN",
+    "condition": null,
+    "drive_id": null,
+    "derivative": "pxl_20261111_164921068.jpg",
+    "direction_deg": null,
+    "direction_ref": null,
+    "direction_compass": null,
+    "gps_source": "gpx",
+    "gpx_offset_s": 3.0,
+    "gpx_file": "Nov_11,_2026,_10_36_12_AM.gpx",
+    "serial": null,
+    "sign_kind": null,
+    "chainage_mi": 56.52,
+    "section": "Chip-5",
+    "snap_m": 154.08,
+    "photos": [
+     {
+      "photo": "PXL_20261111_164921068.jpg",
+      "derivative": "pxl_20261111_164921068.jpg",
+      "datetime": "2026:11:11 10:49:21",
+      "drive_id": null
+     }
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -94.5340139,
+     47.0143701
+    ]
+   },
+   "properties": {
+    "photo": "PXL_20261111_165030470.MP.jpg",
+    "datetime": "2026:11:11 10:50:30",
+    "photographer": null,
+    "type": "BW",
+    "condition": "fair",
+    "drive_id": null,
+    "derivative": "pxl_20261111_165030470-mp.jpg",
+    "direction_deg": null,
+    "direction_ref": null,
+    "direction_compass": null,
+    "gps_source": "gpx",
+    "gpx_offset_s": 6.0,
+    "gpx_file": "Nov_11,_2026,_10_36_12_AM.gpx",
+    "serial": "ITM-BW-008",
+    "sign_kind": null,
+    "chainage_mi": 56.54,
+    "section": "Chip-5",
+    "snap_m": 82.96,
+    "photos": [
+     {
+      "photo": "PXL_20261111_165030470.MP.jpg",
+      "derivative": "pxl_20261111_165030470-mp.jpg",
+      "datetime": "2026:11:11 10:50:30",
+      "drive_id": null
+     },
+     {
+      "photo": "PXL_20261111_165039576.MP.jpg",
+      "derivative": "pxl_20261111_165039576-mp.jpg",
+      "datetime": "2026:11:11 10:50:39",
+      "drive_id": null
+     },
+     {
+      "photo": "PXL_20261111_165046991.jpg",
+      "derivative": "pxl_20261111_165046991.jpg",
+      "datetime": "2026:11:11 10:50:46",
+      "drive_id": null
+     },
+     {
+      "photo": "PXL_20261111_165051063.MP.jpg",
+      "derivative": "pxl_20261111_165051063-mp.jpg",
+      "datetime": "2026:11:11 10:50:51",
+      "drive_id": null
+     }
+    ],
+    "note": "Loose plank beside the run \u2014 see maintenance list."
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -94.5350037,
+     47.0148965
+    ]
+   },
+   "properties": {
+    "photo": "PXL_20261111_165211781.MP.jpg",
+    "datetime": "2026:11:11 10:52:11",
+    "photographer": null,
+    "type": "BN",
+    "condition": "fair",
+    "drive_id": null,
+    "derivative": "pxl_20261111_165211781-mp.jpg",
+    "direction_deg": null,
+    "direction_ref": null,
+    "direction_compass": null,
+    "gps_source": "gpx",
+    "gpx_offset_s": 14.0,
+    "gpx_file": "Nov_11,_2026,_10_36_12_AM.gpx",
+    "serial": "ITM-BN-002",
+    "sign_kind": null,
+    "chainage_mi": 56.51,
+    "section": "Chip-5",
+    "snap_m": 35.49,
+    "photos": [
+     {
+      "photo": "PXL_20261111_165211781.MP.jpg",
+      "derivative": "pxl_20261111_165211781-mp.jpg",
+      "datetime": "2026:11:11 10:52:11",
+      "drive_id": null
+     },
+     {
+      "photo": "PXL_20261111_165219463.MP.jpg",
+      "derivative": "pxl_20261111_165219463-mp.jpg",
+      "datetime": "2026:11:11 10:52:19",
+      "drive_id": null
+     }
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -94.5355333,
+     47.0149914
+    ]
+   },
+   "properties": {
+    "photo": "PXL_20261111_165300884.MP.jpg",
+    "datetime": "2026:11:11 10:53:00",
+    "photographer": null,
+    "type": "SG",
+    "condition": "good",
+    "drive_id": null,
+    "derivative": "pxl_20261111_165300884-mp.jpg",
+    "direction_deg": null,
+    "direction_ref": null,
+    "direction_compass": null,
+    "gps_source": "gpx",
+    "gpx_offset_s": 10.0,
+    "gpx_file": "Nov_11,_2026,_10_36_12_AM.gpx",
+    "serial": "ITM-SG-013",
+    "sign_kind": null,
+    "chainage_mi": 56.5,
+    "section": "Chip-5",
+    "snap_m": 38.23,
+    "photos": [
+     {
+      "photo": "PXL_20261111_165300884.MP.jpg",
+      "derivative": "pxl_20261111_165300884-mp.jpg",
+      "datetime": "2026:11:11 10:53:00",
+      "drive_id": null
+     }
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -94.5355626,
+     47.0149527
+    ]
+   },
+   "properties": {
+    "photo": "PXL_20261111_165313345.MP.jpg",
+    "datetime": "2026:11:11 10:53:13",
+    "photographer": null,
+    "type": "CP",
+    "condition": "new",
+    "drive_id": null,
+    "derivative": "pxl_20261111_165313345-mp.jpg",
+    "direction_deg": null,
+    "direction_ref": null,
+    "direction_compass": null,
+    "gps_source": "gpx",
+    "gpx_offset_s": 3.0,
+    "gpx_file": "Nov_11,_2026,_10_36_12_AM.gpx",
+    "serial": "ITM-CP-021",
+    "sign_kind": null,
+    "chainage_mi": 56.5,
+    "section": "Chip-5",
+    "snap_m": 34.36,
+    "photos": [
+     {
+      "photo": "PXL_20261111_165313345.MP.jpg",
+      "derivative": "pxl_20261111_165313345-mp.jpg",
+      "datetime": "2026:11:11 10:53:13",
+      "drive_id": null
+     }
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -94.535524,
+     47.0146099
+    ]
+   },
+   "properties": {
+    "photo": "PXL_20261111_165349317.MP.jpg",
+    "datetime": "2026:11:11 10:53:49",
+    "photographer": null,
+    "type": "SG",
+    "condition": "good",
+    "drive_id": null,
+    "derivative": "pxl_20261111_165349317-mp.jpg",
+    "direction_deg": null,
+    "direction_ref": null,
+    "direction_compass": null,
+    "gps_source": "gpx",
+    "gpx_offset_s": 3.0,
+    "gpx_file": "Nov_11,_2026,_10_36_12_AM.gpx",
+    "serial": "ITM-SG-014",
+    "sign_kind": null,
+    "chainage_mi": 56.5,
+    "section": "Chip-5",
+    "snap_m": 3.36,
+    "photos": [
+     {
+      "photo": "PXL_20261111_165349317.MP.jpg",
+      "derivative": "pxl_20261111_165349317-mp.jpg",
+      "datetime": "2026:11:11 10:53:49",
+      "drive_id": null
+     }
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -94.5355032,
+     47.0146159
+    ]
+   },
+   "properties": {
+    "photo": "PXL_20261111_165354000.MP.jpg",
+    "datetime": "2026:11:11 10:53:54",
+    "photographer": null,
+    "type": "UN",
+    "condition": null,
+    "drive_id": null,
+    "derivative": "pxl_20261111_165354000-mp.jpg",
+    "direction_deg": null,
+    "direction_ref": null,
+    "direction_compass": null,
+    "gps_source": "gpx",
+    "gpx_offset_s": 8.0,
+    "gpx_file": "Nov_11,_2026,_10_36_12_AM.gpx",
+    "serial": null,
+    "sign_kind": null,
+    "chainage_mi": 56.5,
+    "section": "Chip-5",
+    "snap_m": 3.09,
+    "photos": [
+     {
+      "photo": "PXL_20261111_165354000.MP.jpg",
+      "derivative": "pxl_20261111_165354000-mp.jpg",
+      "datetime": "2026:11:11 10:53:54",
+      "drive_id": null
+     }
+    ],
+    "note": "Needs Paul's walk-through \u2014 the two stumps are unidentified (old sign or barrier posts?)."
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -94.5354866,
+     47.0146206
+    ]
+   },
+   "properties": {
+    "photo": "PXL_20261111_165358082.MP.jpg",
+    "datetime": "2026:11:11 10:53:58",
+    "photographer": null,
+    "type": "CP",
+    "condition": "new",
+    "drive_id": null,
+    "derivative": "pxl_20261111_165358082-mp.jpg",
+    "direction_deg": null,
+    "direction_ref": null,
+    "direction_compass": null,
+    "gps_source": "gpx",
+    "gpx_offset_s": 12.0,
+    "gpx_file": "Nov_11,_2026,_10_36_12_AM.gpx",
+    "serial": "ITM-CP-022",
+    "sign_kind": null,
+    "chainage_mi": 56.5,
+    "section": "Chip-5",
+    "snap_m": 2.89,
+    "photos": [
+     {
+      "photo": "PXL_20261111_165358082.MP.jpg",
+      "derivative": "pxl_20261111_165358082-mp.jpg",
+      "datetime": "2026:11:11 10:53:58",
+      "drive_id": null
+     }
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -94.53547,
+     47.0146254
+    ]
+   },
+   "properties": {
+    "photo": "PXL_20261111_165402874.jpg",
+    "datetime": "2026:11:11 10:54:02",
+    "photographer": null,
+    "type": "SG",
+    "condition": "good",
+    "drive_id": null,
+    "derivative": "pxl_20261111_165402874.jpg",
+    "direction_deg": null,
+    "direction_ref": null,
+    "direction_compass": null,
+    "gps_source": "gpx",
+    "gpx_offset_s": 11.0,
+    "gpx_file": "Nov_11,_2026,_10_36_12_AM.gpx",
+    "serial": "ITM-SG-015",
+    "sign_kind": null,
+    "chainage_mi": 56.5,
+    "section": "Chip-5",
+    "snap_m": 2.59,
+    "photos": [
+     {
+      "photo": "PXL_20261111_165402874.jpg",
+      "derivative": "pxl_20261111_165402874.jpg",
+      "datetime": "2026:11:11 10:54:02",
+      "drive_id": null
+     }
+    ],
+    "note": "A MnDOT highway marker, not a trail sign \u2014 keep or drop from the inventory is Paul's call."
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -94.5354326,
+     47.014636
+    ]
+   },
+   "properties": {
+    "photo": "PXL_20261111_165411693.MP.jpg",
+    "datetime": "2026:11:11 10:54:11",
+    "photographer": null,
+    "type": "CP",
+    "condition": "worn",
+    "drive_id": null,
+    "derivative": "pxl_20261111_165411693-mp.jpg",
+    "direction_deg": null,
+    "direction_ref": null,
+    "direction_compass": null,
+    "gps_source": "gpx",
+    "gpx_offset_s": 2.0,
+    "gpx_file": "Nov_11,_2026,_10_36_12_AM.gpx",
+    "serial": "ITM-CP-023",
+    "sign_kind": null,
+    "chainage_mi": 56.51,
+    "section": "Chip-5",
+    "snap_m": 0.32,
+    "photos": [
+     {
+      "photo": "PXL_20261111_165411693.MP.jpg",
+      "derivative": "pxl_20261111_165411693-mp.jpg",
+      "datetime": "2026:11:11 10:54:11",
+      "drive_id": null
+     }
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -94.5352956,
+     47.0146445
+    ]
+   },
+   "properties": {
+    "photo": "PXL_20261111_165423776.jpg",
+    "datetime": "2026:11:11 10:54:23",
+    "photographer": null,
+    "type": "RG",
+    "condition": "good",
+    "drive_id": null,
+    "derivative": "pxl_20261111_165423776.jpg",
+    "direction_deg": null,
+    "direction_ref": null,
+    "direction_compass": null,
+    "gps_source": "gpx",
+    "gpx_offset_s": 3.0,
+    "gpx_file": "Nov_11,_2026,_10_36_12_AM.gpx",
+    "serial": "ITM-RG-001",
+    "sign_kind": null,
+    "chainage_mi": 56.51,
+    "section": "Chip-5",
+    "snap_m": 1.39,
+    "photos": [
+     {
+      "photo": "PXL_20261111_165423776.jpg",
+      "derivative": "pxl_20261111_165423776.jpg",
+      "datetime": "2026:11:11 10:54:23",
+      "drive_id": null
+     },
+     {
+      "photo": "PXL_20261111_165459819.jpg",
+      "derivative": "pxl_20261111_165459819.jpg",
+      "datetime": "2026:11:11 10:54:59",
+      "drive_id": null
+     },
+     {
+      "photo": "PXL_20261111_165505534.jpg",
+      "derivative": "pxl_20261111_165505534.jpg",
+      "datetime": "2026:11:11 10:55:05",
+      "drive_id": null
+     }
+    ],
+    "note": "Trail register box \u2014 type RG (register), code approved by Paul Nov 11, 2026. Notebook close-up (165431497) HELD BACK from the public map \u2014 legible hiker names; publish only on Paul's explicit word. Original kept in Drive + batch-2 working folder."
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -94.5340594,
+     47.0128157
+    ]
+   },
+   "properties": {
+    "photo": "PXL_20261111_165750037.jpg",
+    "datetime": "2026:11:11 10:57:50",
+    "photographer": null,
+    "type": "UN",
+    "condition": null,
+    "drive_id": null,
+    "derivative": "pxl_20261111_165750037.jpg",
+    "direction_deg": null,
+    "direction_ref": null,
+    "direction_compass": null,
+    "gps_source": "gpx",
+    "gpx_offset_s": 3.0,
+    "gpx_file": "Nov_11,_2026,_10_36_12_AM.gpx",
+    "serial": null,
+    "sign_kind": null,
+    "chainage_mi": 56.65,
+    "section": "Chip-5",
+    "snap_m": 0.58,
+    "photos": [
+     {
+      "photo": "PXL_20261111_165750037.jpg",
+      "derivative": "pxl_20261111_165750037.jpg",
+      "datetime": "2026:11:11 10:57:50",
+      "drive_id": null
+     }
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -94.5326412,
+     47.0092685
+    ]
+   },
+   "properties": {
+    "photo": "PXL_20261111_170252322.MP.jpg",
+    "datetime": "2026:11:11 11:02:52",
+    "photographer": null,
+    "type": "UN",
+    "condition": null,
+    "drive_id": null,
+    "derivative": "pxl_20261111_170252322-mp.jpg",
+    "direction_deg": null,
+    "direction_ref": null,
+    "direction_compass": null,
+    "gps_source": "gpx",
+    "gpx_offset_s": 7.0,
+    "gpx_file": "Nov_11,_2026,_10_36_12_AM.gpx",
+    "serial": null,
+    "sign_kind": null,
+    "chainage_mi": 56.92,
+    "section": "Chip-5",
+    "snap_m": 1.59,
+    "photos": [
+     {
+      "photo": "PXL_20261111_170252322.MP.jpg",
+      "derivative": "pxl_20261111_170252322-mp.jpg",
+      "datetime": "2026:11:11 11:02:52",
+      "drive_id": null
+     }
+    ],
+    "note": "Tree-mounted marker, not a freestanding sign \u2014 whether tree markers belong in the inventory is Paul's call."
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -94.5311477,
+     47.0056567
+    ]
+   },
+   "properties": {
+    "photo": "PXL_20261111_171210593.jpg",
+    "datetime": "2026:11:11 11:12:10",
+    "photographer": null,
+    "type": "CP",
+    "condition": "new",
+    "drive_id": null,
+    "derivative": "pxl_20261111_171210593.jpg",
+    "direction_deg": null,
+    "direction_ref": null,
+    "direction_compass": null,
+    "gps_source": "gpx",
+    "gpx_offset_s": 5.0,
+    "gpx_file": "Nov_11,_2026,_10_36_12_AM.gpx",
+    "serial": "ITM-CP-024",
+    "sign_kind": null,
+    "chainage_mi": 57.26,
+    "section": "Chip-5",
+    "snap_m": 3.1,
+    "photos": [
+     {
+      "photo": "PXL_20261111_171210593.jpg",
+      "derivative": "pxl_20261111_171210593.jpg",
+      "datetime": "2026:11:11 11:12:10",
+      "drive_id": null
+     }
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -94.5311487,
+     47.0056209
+    ]
+   },
+   "properties": {
+    "photo": "PXL_20261111_171222895.jpg",
+    "datetime": "2026:11:11 11:12:22",
+    "photographer": null,
+    "type": "SG",
+    "condition": "poor",
+    "drive_id": null,
+    "derivative": "pxl_20261111_171222895.jpg",
+    "direction_deg": null,
+    "direction_ref": null,
+    "direction_compass": null,
+    "gps_source": "gpx",
+    "gpx_offset_s": 12.0,
+    "gpx_file": "Nov_11,_2026,_10_36_12_AM.gpx",
+    "serial": "ITM-SG-016",
+    "sign_kind": null,
+    "chainage_mi": 57.26,
+    "section": "Chip-5",
+    "snap_m": 0.33,
+    "photos": [
+     {
+      "photo": "PXL_20261111_171222895.jpg",
+      "derivative": "pxl_20261111_171222895.jpg",
+      "datetime": "2026:11:11 11:12:22",
+      "drive_id": null
+     }
+    ],
+    "note": "Sign face destroyed by gunfire \u2014 needs replacement; see maintenance list."
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -94.5311272,
+     47.005578
+    ]
+   },
+   "properties": {
+    "photo": "PXL_20261111_171236081.jpg",
+    "datetime": "2026:11:11 11:12:36",
+    "photographer": null,
+    "type": "CP",
+    "condition": "new",
+    "drive_id": null,
+    "derivative": "pxl_20261111_171236081.jpg",
+    "direction_deg": null,
+    "direction_ref": null,
+    "direction_compass": null,
+    "gps_source": "gpx",
+    "gpx_offset_s": 2.0,
+    "gpx_file": "Nov_11,_2026,_10_36_12_AM.gpx",
+    "serial": "ITM-CP-025",
+    "sign_kind": null,
+    "chainage_mi": 57.26,
+    "section": "Chip-5",
+    "snap_m": 1.03,
+    "photos": [
+     {
+      "photo": "PXL_20261111_171236081.jpg",
+      "derivative": "pxl_20261111_171236081.jpg",
+      "datetime": "2026:11:11 11:12:36",
+      "drive_id": null
+     }
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -94.5294684,
+     47.0056759
+    ]
+   },
+   "properties": {
+    "photo": "PXL_20261111_171417596.MP.jpg",
+    "datetime": "2026:11:11 11:14:17",
+    "photographer": null,
+    "type": "UN",
+    "condition": null,
+    "drive_id": null,
+    "derivative": "pxl_20261111_171417596-mp.jpg",
+    "direction_deg": null,
+    "direction_ref": null,
+    "direction_compass": null,
+    "gps_source": "gpx",
+    "gpx_offset_s": 0.0,
+    "gpx_file": "Nov_11,_2026,_10_36_12_AM.gpx",
+    "serial": null,
+    "sign_kind": null,
+    "chainage_mi": 57.35,
+    "section": "Chip-5",
+    "snap_m": 5.56,
+    "photos": [
+     {
+      "photo": "PXL_20261111_171417596.MP.jpg",
+      "derivative": "pxl_20261111_171417596-mp.jpg",
+      "datetime": "2026:11:11 11:14:17",
+      "drive_id": null
+     }
+    ],
+    "note": "Blowdown across the trail \u2014 see maintenance list."
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -94.5271395,
+     47.0057419
+    ]
+   },
+   "properties": {
+    "photo": "PXL_20261111_171622584.MP.jpg",
+    "datetime": "2026:11:11 11:16:22",
+    "photographer": null,
+    "type": "UN",
+    "condition": null,
+    "drive_id": null,
+    "derivative": "pxl_20261111_171622584-mp.jpg",
+    "direction_deg": null,
+    "direction_ref": null,
+    "direction_compass": null,
+    "gps_source": "gpx",
+    "gpx_offset_s": 6.0,
+    "gpx_file": "Nov_11,_2026,_10_36_12_AM.gpx",
+    "serial": null,
+    "sign_kind": null,
+    "chainage_mi": 57.46,
+    "section": "Chip-5",
+    "snap_m": 7.82,
+    "photos": [
+     {
+      "photo": "PXL_20261111_171622584.MP.jpg",
+      "derivative": "pxl_20261111_171622584-mp.jpg",
+      "datetime": "2026:11:11 11:16:22",
+      "drive_id": null
+     }
+    ],
+    "note": "Blowdown across the trail \u2014 see maintenance list."
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -94.5270822,
+     47.0057377
+    ]
+   },
+   "properties": {
+    "photo": "PXL_20261111_171633870.jpg",
+    "datetime": "2026:11:11 11:16:33",
+    "photographer": null,
+    "type": "UN",
+    "condition": null,
+    "drive_id": null,
+    "derivative": "pxl_20261111_171633870.jpg",
+    "direction_deg": null,
+    "direction_ref": null,
+    "direction_compass": null,
+    "gps_source": "gpx",
+    "gpx_offset_s": 8.0,
+    "gpx_file": "Nov_11,_2026,_10_36_12_AM.gpx",
+    "serial": null,
+    "sign_kind": null,
+    "chainage_mi": 57.47,
+    "section": "Chip-5",
+    "snap_m": 6.44,
+    "photos": [
+     {
+      "photo": "PXL_20261111_171633870.jpg",
+      "derivative": "pxl_20261111_171633870.jpg",
+      "datetime": "2026:11:11 11:16:33",
+      "drive_id": null
+     }
+    ],
+    "note": "Blowdown across the trail \u2014 see maintenance list."
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -94.5264722,
+     47.0059745
+    ]
+   },
+   "properties": {
+    "photo": "PXL_20261111_171740292.MP.jpg",
+    "datetime": "2026:11:11 11:17:40",
+    "photographer": null,
+    "type": "UN",
+    "condition": null,
+    "drive_id": null,
+    "derivative": "pxl_20261111_171740292-mp.jpg",
+    "direction_deg": null,
+    "direction_ref": null,
+    "direction_compass": null,
+    "gps_source": "gpx",
+    "gpx_offset_s": 8.0,
+    "gpx_file": "Nov_11,_2026,_10_36_12_AM.gpx",
+    "serial": null,
+    "sign_kind": null,
+    "chainage_mi": 57.5,
+    "section": "Chip-5",
+    "snap_m": 3.33,
+    "photos": [
+     {
+      "photo": "PXL_20261111_171740292.MP.jpg",
+      "derivative": "pxl_20261111_171740292-mp.jpg",
+      "datetime": "2026:11:11 11:17:40",
+      "drive_id": null
+     },
+     {
+      "photo": "PXL_20261111_171741627.jpg",
+      "derivative": "pxl_20261111_171741627.jpg",
+      "datetime": "2026:11:11 11:17:41",
+      "drive_id": null
+     }
+    ],
+    "note": "Blowdown across the trail \u2014 see maintenance list."
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -94.5259722,
+     47.0064665
+    ]
+   },
+   "properties": {
+    "photo": "PXL_20261111_171840137.MP.jpg",
+    "datetime": "2026:11:11 11:18:40",
+    "photographer": null,
+    "type": "UN",
+    "condition": null,
+    "drive_id": null,
+    "derivative": "pxl_20261111_171840137-mp.jpg",
+    "direction_deg": null,
+    "direction_ref": null,
+    "direction_compass": null,
+    "gps_source": "gpx",
+    "gpx_offset_s": 9.0,
+    "gpx_file": "Nov_11,_2026,_10_36_12_AM.gpx",
+    "serial": null,
+    "sign_kind": null,
+    "chainage_mi": 57.54,
+    "section": "Chip-5",
+    "snap_m": 9.74,
+    "photos": [
+     {
+      "photo": "PXL_20261111_171840137.MP.jpg",
+      "derivative": "pxl_20261111_171840137-mp.jpg",
+      "datetime": "2026:11:11 11:18:40",
+      "drive_id": null
+     }
+    ],
+    "note": "Blowdown across the trail \u2014 see maintenance list."
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -94.5205847,
+     47.0026979
+    ]
+   },
+   "properties": {
+    "photo": "PXL_20261111_172740854.jpg",
+    "datetime": "2026:11:11 11:27:40",
+    "photographer": null,
+    "type": "CP",
+    "condition": "new",
+    "drive_id": null,
+    "derivative": "pxl_20261111_172740854.jpg",
+    "direction_deg": null,
+    "direction_ref": null,
+    "direction_compass": null,
+    "gps_source": "gpx",
+    "gpx_offset_s": 5.0,
+    "gpx_file": "Nov_11,_2026,_10_36_12_AM.gpx",
+    "serial": "ITM-CP-026",
+    "sign_kind": null,
+    "chainage_mi": 57.97,
+    "section": "Chip-5",
+    "snap_m": 0.88,
+    "photos": [
+     {
+      "photo": "PXL_20261111_172740854.jpg",
+      "derivative": "pxl_20261111_172740854.jpg",
+      "datetime": "2026:11:11 11:27:40",
+      "drive_id": null
+     },
+     {
+      "photo": "PXL_20261111_172748035.MP.jpg",
+      "derivative": "pxl_20261111_172748035-mp.jpg",
+      "datetime": "2026:11:11 11:27:48",
+      "drive_id": null
+     }
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -94.5198443,
+     47.0025539
+    ]
+   },
+   "properties": {
+    "photo": "PXL_20261111_172839222.jpg",
+    "datetime": "2026:11:11 11:28:39",
+    "photographer": null,
+    "type": "CP",
+    "condition": "new",
+    "drive_id": null,
+    "derivative": "pxl_20261111_172839222.jpg",
+    "direction_deg": null,
+    "direction_ref": null,
+    "direction_compass": null,
+    "gps_source": "gpx",
+    "gpx_offset_s": 10.0,
+    "gpx_file": "Nov_11,_2026,_10_36_12_AM.gpx",
+    "serial": "ITM-CP-027",
+    "sign_kind": null,
+    "chainage_mi": 58.0,
+    "section": "Chip-5",
+    "snap_m": 0.58,
+    "photos": [
+     {
+      "photo": "PXL_20261111_172839222.jpg",
+      "derivative": "pxl_20261111_172839222.jpg",
+      "datetime": "2026:11:11 11:28:39",
+      "drive_id": null
+     },
+     {
+      "photo": "PXL_20261111_172843438.jpg",
+      "derivative": "pxl_20261111_172843438.jpg",
+      "datetime": "2026:11:11 11:28:43",
+      "drive_id": null
+     }
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -94.5194869,
+     47.0026509
+    ]
+   },
+   "properties": {
+    "photo": "PXL_20261111_172906961.MP.jpg",
+    "datetime": "2026:11:11 11:29:06",
+    "photographer": null,
+    "type": "CP",
+    "condition": "new",
+    "drive_id": null,
+    "derivative": "pxl_20261111_172906961-mp.jpg",
+    "direction_deg": null,
+    "direction_ref": null,
+    "direction_compass": null,
+    "gps_source": "gpx",
+    "gpx_offset_s": 5.0,
+    "gpx_file": "Nov_11,_2026,_10_36_12_AM.gpx",
+    "serial": "ITM-CP-028",
+    "sign_kind": null,
+    "chainage_mi": 58.02,
+    "section": "Chip-5",
+    "snap_m": 1.74,
+    "photos": [
+     {
+      "photo": "PXL_20261111_172906961.MP.jpg",
+      "derivative": "pxl_20261111_172906961-mp.jpg",
+      "datetime": "2026:11:11 11:29:06",
+      "drive_id": null
+     },
+     {
+      "photo": "PXL_20261111_172911827.jpg",
+      "derivative": "pxl_20261111_172911827.jpg",
+      "datetime": "2026:11:11 11:29:11",
+      "drive_id": null
+     }
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -94.5165087,
+     47.0039802
+    ]
+   },
+   "properties": {
+    "photo": "PXL_20261111_173247427.MP.jpg",
+    "datetime": "2026:11:11 11:32:47",
+    "photographer": null,
+    "type": "UN",
+    "condition": null,
+    "drive_id": null,
+    "derivative": "pxl_20261111_173247427-mp.jpg",
+    "direction_deg": null,
+    "direction_ref": null,
+    "direction_compass": null,
+    "gps_source": "gpx",
+    "gpx_offset_s": 6.0,
+    "gpx_file": "Nov_11,_2026,_10_36_12_AM.gpx",
+    "serial": null,
+    "sign_kind": null,
+    "chainage_mi": 58.2,
+    "section": "Chip-5",
+    "snap_m": 16.56,
+    "photos": [
+     {
+      "photo": "PXL_20261111_173247427.MP.jpg",
+      "derivative": "pxl_20261111_173247427-mp.jpg",
+      "datetime": "2026:11:11 11:32:47",
+      "drive_id": null
+     }
+    ],
+    "note": "Tree-mounted marker, not a freestanding sign \u2014 whether tree markers belong in the inventory is Paul's call."
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -94.5164457,
+     47.0040234
+    ]
+   },
+   "properties": {
+    "photo": "PXL_20261111_173300772.jpg",
+    "datetime": "2026:11:11 11:33:00",
+    "photographer": null,
+    "type": "CP",
+    "condition": "new",
+    "drive_id": null,
+    "derivative": "pxl_20261111_173300772.jpg",
+    "direction_deg": null,
+    "direction_ref": null,
+    "direction_compass": null,
+    "gps_source": "gpx",
+    "gpx_offset_s": 4.0,
+    "gpx_file": "Nov_11,_2026,_10_36_12_AM.gpx",
+    "serial": "ITM-CP-029",
+    "sign_kind": null,
+    "chainage_mi": 58.2,
+    "section": "Chip-5",
+    "snap_m": 18.93,
+    "photos": [
+     {
+      "photo": "PXL_20261111_173300772.jpg",
+      "derivative": "pxl_20261111_173300772.jpg",
+      "datetime": "2026:11:11 11:33:00",
+      "drive_id": null
+     }
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -94.5164006,
+     47.0040211
+    ]
+   },
+   "properties": {
+    "photo": "PXL_20261111_173306050.MP.jpg",
+    "datetime": "2026:11:11 11:33:06",
+    "photographer": null,
+    "type": "CP",
+    "condition": "new",
+    "drive_id": null,
+    "derivative": "pxl_20261111_173306050-mp.jpg",
+    "direction_deg": null,
+    "direction_ref": null,
+    "direction_compass": null,
+    "gps_source": "gpx",
+    "gpx_offset_s": 7.0,
+    "gpx_file": "Nov_11,_2026,_10_36_12_AM.gpx",
+    "serial": "ITM-CP-030",
+    "sign_kind": null,
+    "chainage_mi": 58.21,
+    "section": "Chip-5",
+    "snap_m": 17.39,
+    "photos": [
+     {
+      "photo": "PXL_20261111_173306050.MP.jpg",
+      "derivative": "pxl_20261111_173306050-mp.jpg",
+      "datetime": "2026:11:11 11:33:06",
+      "drive_id": null
+     }
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -94.5163124,
+     47.0039808
+    ]
+   },
+   "properties": {
+    "photo": "PXL_20261111_173331162.jpg",
+    "datetime": "2026:11:11 11:33:31",
+    "photographer": null,
+    "type": "BW",
+    "condition": "fair",
+    "drive_id": null,
+    "derivative": "pxl_20261111_173331162.jpg",
+    "direction_deg": null,
+    "direction_ref": null,
+    "direction_compass": null,
+    "gps_source": "gpx",
+    "gpx_offset_s": 15.0,
+    "gpx_file": "Nov_11,_2026,_10_36_12_AM.gpx",
+    "serial": "ITM-BW-009",
+    "sign_kind": null,
+    "chainage_mi": 58.21,
+    "section": "Chip-5",
+    "snap_m": 10.72,
+    "photos": [
+     {
+      "photo": "PXL_20261111_173331162.jpg",
+      "derivative": "pxl_20261111_173331162.jpg",
+      "datetime": "2026:11:11 11:33:31",
+      "drive_id": null
+     },
+     {
+      "photo": "PXL_20261111_173336771.MP.jpg",
+      "derivative": "pxl_20261111_173336771-mp.jpg",
+      "datetime": "2026:11:11 11:33:36",
+      "drive_id": null
+     },
+     {
+      "photo": "PXL_20261111_173347090.jpg",
+      "derivative": "pxl_20261111_173347090.jpg",
+      "datetime": "2026:11:11 11:33:47",
+      "drive_id": null
+     }
+    ],
+    "note": "Board end slightly raised at the bend \u2014 see maintenance list."
+   }
   }
  ]
 }
