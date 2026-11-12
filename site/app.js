@@ -64,7 +64,26 @@ var CHAPTER_NAMES = {
 
 /* ------------------------------------------------------------- map */
 
-var map = L.map("map", { center: [47.02, -94.95], zoom: 10 });
+/* Shareable view (Paul, Nov 12, 2026): a #view=lat,lng,zoom link
+   opens on that view. Parsed here, before the map exists, so the
+   first paint is already the shared view — no flash of the
+   default and then a jump. Invalid values fall back to the
+   default centre/zoom below. */
+var initialView = (function () {
+  var m = /view=([-\d.]+),([-\d.]+),(\d+(?:\.\d+)?)/
+    .exec(location.hash || "");
+  if (!m) return null;
+  var lat = parseFloat(m[1]), lng = parseFloat(m[2]),
+      z = parseFloat(m[3]);
+  if (!isFinite(lat) || !isFinite(lng) || !isFinite(z)) return null;
+  if (lat < -90 || lat > 90 || lng < -180 || lng > 180) return null;
+  if (z < 0 || z > 19) return null;
+  return { center: [lat, lng], zoom: z };
+})();
+
+var map = L.map("map", initialView ?
+  { center: initialView.center, zoom: initialView.zoom } :
+  { center: [47.02, -94.95], zoom: 10 });
 
 /* Zoom ceiling (Paul, Nov 11, 2026 — "one more notch"): each base
    goes one level past its server's native max and upscales the
@@ -220,29 +239,29 @@ var mnCanopyHeight = L.tileLayer(
    snowmobile emphasis in step (the old Leaflet layers control
    and its baselayerchange handler are gone). */
 var BASES = [
-  { name: "Topo (OpenTopoMap)", label: "Topo",
+  { name: "Topo (OpenTopoMap)", code: "topo", label: "Topo",
     sub: "the working map", layer: topo, primary: true },
-  { name: "Aerial (NAIP 2023/25)", label: "Aerial",
+  { name: "Aerial (NAIP 2023/25)", code: "aerial", label: "Aerial",
     sub: "the photo", layer: usgsImagery, primary: true },
-  { name: "MN LiDAR Hillshade", label: "Terrain",
+  { name: "MN LiDAR Hillshade", code: "terrain", label: "Terrain",
     sub: "the bare ground, no trees", layer: mnHillshade,
     primary: true },
-  { name: "Winter (snow trails)", label: "Winter",
+  { name: "Winter (snow trails)", code: "winter", label: "Winter",
     sub: "snow trails", layer: winterBase, primary: true,
     winter: true },
-  { name: "USGS Topo 1:24k", label: "USGS Topo",
+  { name: "USGS Topo 1:24k", code: "usgs", label: "USGS Topo",
     sub: "1:24k quadrangles", layer: usgsTopo },
-  { name: "National Geographic (Esri)", label: "National Geographic",
+  { name: "National Geographic (Esri)", code: "natgeo", label: "National Geographic",
     sub: "Esri", layer: esriNatGeo },
-  { name: "Aerial (Esri)", label: "Aerial (Esri)",
+  { name: "Aerial (Esri)", code: "esri-aerial", label: "Aerial (Esri)",
     sub: "Esri World Imagery", layer: esriImagery },
-  { name: "Aerial + Topo (NAIP 2023/25)", label: "Aerial + Topo",
+  { name: "Aerial + Topo (NAIP 2023/25)", code: "aerial-topo", label: "Aerial + Topo",
     sub: "NAIP with topo labels", layer: usgsImageryTopo },
-  { name: "Aerial (2014)", label: "Aerial (2014)",
+  { name: "Aerial (2014)", code: "aerial-2014", label: "Aerial (2014)",
     sub: "the view at the end of 2014", layer: esriWayback2014 },
-  { name: "Streets (OSM)", label: "Streets",
+  { name: "Streets (OSM)", code: "streets", label: "Streets",
     sub: "OpenStreetMap", layer: osm },
-  { name: "Trails (CyclOSM)", label: "Trails",
+  { name: "Trails (CyclOSM)", code: "trails", label: "Trails",
     sub: "CyclOSM", layer: cyclosm },
   /* Retired Nov 11, 2026 (design review §7): the two canopy
      bases are the Tree height overlay's source now, not
@@ -271,6 +290,7 @@ function setBase(name) {
   document.body.classList.toggle("winter", winterMode);
   if (accessLayerRef) accessLayerRef.setStyle(accessStyle);
   markActiveBase(name);
+  writeShareHash(); /* a base change is a new shareable view */
 }
 function markActiveBase(name) {
   document.querySelectorAll("#background-choices .bg-choice, " +
@@ -279,6 +299,13 @@ function markActiveBase(name) {
     row.classList.toggle("on", on);
     row.setAttribute("aria-pressed", on ? "true" : "false");
   });
+}
+/* Shareable view: look a base up by its short hash code. */
+function baseByCode(code) {
+  for (var i = 0; i < BASES.length; i++) {
+    if (BASES[i].code === code) return BASES[i];
+  }
+  return null;
 }
 (function buildBackground() {
   function rowFor(def) {
@@ -1334,28 +1361,178 @@ function assetPopup(f) {
 /* §2.11: an asset pin whose photo was condition-graded wears a
    ring in the grade colour (good green / fair amber / poor red;
    Carsonite posts use Paul's Nov 11 functional scheme instead —
-   new green / worn amber / replace red) over the white casing
-   ring. Ungraded pins keep the plain v4 pin. (Aggregation of
-   dense pins waits on the inventory data — the spec defers it
-   to the first real batches.) */
+   new green / worn amber / replace red) around the pin disc.
+   Ungraded pins keep the plain disc. */
 var CONDITION_RINGS = { good: "#1a9850", fair: "#e08214",
                         poor: "#b2182b",
                         "new": "#1a9850", worn: "#e08214",
                         replace: "#b2182b" };
+
+/* Pictographic asset pins (Paul, Nov 12, 2026): one glyph per
+   type, white on the orange pin disc, so a volunteer reads what
+   a pin IS at a glance. Every type in ASSET_TYPE_NAMES has a
+   glyph, even the ones with no pins today (PK, SH, WT). Glyphs
+   are 16x16 inline SVG, simple and bold for legibility at pin
+   size. The cutouts (tent door, outhouse door, sign/register
+   lines) use the disc colour #e6550d — keep in step with
+   COLORS.assetPin. */
+var ASSET_GLYPHS = {
+  CP: "<svg viewBox=\"0 0 16 16\" aria-hidden=\"true\">" +
+    "<rect x=\"5\" y=\"1.5\" width=\"6\" height=\"4\" rx=\"0.8\" fill=\"#fff\"/>" +
+    "<rect x=\"7\" y=\"5\" width=\"2\" height=\"9\" fill=\"#fff\"/></svg>",
+  SG: "<svg viewBox=\"0 0 16 16\" aria-hidden=\"true\">" +
+    "<rect x=\"2\" y=\"2\" width=\"12\" height=\"6\" rx=\"1\" fill=\"#fff\"/>" +
+    "<rect x=\"4\" y=\"4\" width=\"8\" height=\"1.2\" fill=\"#e6550d\"/>" +
+    "<rect x=\"7\" y=\"8\" width=\"2\" height=\"6\" fill=\"#fff\"/></svg>",
+  BW: "<svg viewBox=\"0 0 16 16\" aria-hidden=\"true\">" +
+    "<rect x=\"2\" y=\"2.5\" width=\"12\" height=\"2.6\" rx=\"0.6\" fill=\"#fff\"/>" +
+    "<rect x=\"2\" y=\"6.7\" width=\"12\" height=\"2.6\" rx=\"0.6\" fill=\"#fff\"/>" +
+    "<rect x=\"2\" y=\"10.9\" width=\"12\" height=\"2.6\" rx=\"0.6\" fill=\"#fff\"/></svg>",
+  BN: "<svg viewBox=\"0 0 16 16\" aria-hidden=\"true\">" +
+    "<rect x=\"2\" y=\"2\" width=\"12\" height=\"2.2\" rx=\"0.6\" fill=\"#fff\"/>" +
+    "<rect x=\"2\" y=\"6.5\" width=\"12\" height=\"2.2\" rx=\"0.6\" fill=\"#fff\"/>" +
+    "<rect x=\"3.5\" y=\"8.7\" width=\"1.8\" height=\"5\" fill=\"#fff\"/>" +
+    "<rect x=\"10.7\" y=\"8.7\" width=\"1.8\" height=\"5\" fill=\"#fff\"/></svg>",
+  BR: "<svg viewBox=\"0 0 16 16\" aria-hidden=\"true\">" +
+    "<path d=\"M2 13 Q8 3 14 13\" fill=\"none\" stroke=\"#fff\" " +
+    "stroke-width=\"2\" stroke-linecap=\"round\"/>" +
+    "<rect x=\"1\" y=\"13\" width=\"14\" height=\"1.6\" fill=\"#fff\"/></svg>",
+  CS: "<svg viewBox=\"0 0 16 16\" aria-hidden=\"true\">" +
+    "<path d=\"M8 2 L14.5 13 L1.5 13 Z\" fill=\"#fff\"/>" +
+    "<path d=\"M8 7.5 L10.5 13 L5.5 13 Z\" fill=\"#e6550d\"/></svg>",
+  KI: "<svg viewBox=\"0 0 16 16\" aria-hidden=\"true\">" +
+    "<path d=\"M1.5 6.5 L8 1.5 L14.5 6.5 Z\" fill=\"#fff\"/>" +
+    "<rect x=\"4\" y=\"7\" width=\"8\" height=\"4.5\" rx=\"0.5\" fill=\"#fff\"/>" +
+    "<rect x=\"4.8\" y=\"11.5\" width=\"1.6\" height=\"2.5\" fill=\"#fff\"/>" +
+    "<rect x=\"9.6\" y=\"11.5\" width=\"1.6\" height=\"2.5\" fill=\"#fff\"/></svg>",
+  LT: "<svg viewBox=\"0 0 16 16\" aria-hidden=\"true\">" +
+    "<path d=\"M2.5 6.5 L8 1.5 L13.5 6.5 Z\" fill=\"#fff\"/>" +
+    "<rect x=\"4\" y=\"6.5\" width=\"8\" height=\"7\" fill=\"#fff\"/>" +
+    "<rect x=\"7\" y=\"9\" width=\"2\" height=\"4.5\" fill=\"#e6550d\"/></svg>",
+  PO: "<svg viewBox=\"0 0 16 16\" aria-hidden=\"true\">" +
+    "<rect x=\"6\" y=\"1.5\" width=\"4\" height=\"1.8\" rx=\"0.6\" fill=\"#fff\"/>" +
+    "<rect x=\"7\" y=\"3\" width=\"2\" height=\"11\" fill=\"#fff\"/></svg>",
+  RG: "<svg viewBox=\"0 0 16 16\" aria-hidden=\"true\">" +
+    "<rect x=\"3.5\" y=\"1.5\" width=\"9\" height=\"6\" rx=\"1\" fill=\"#fff\"/>" +
+    "<rect x=\"5.5\" y=\"3.5\" width=\"5\" height=\"1.2\" fill=\"#e6550d\"/>" +
+    "<rect x=\"7\" y=\"7.5\" width=\"2\" height=\"6.5\" fill=\"#fff\"/></svg>",
+  UN: "<svg viewBox=\"0 0 16 16\" aria-hidden=\"true\">" +
+    "<text x=\"8\" y=\"12.5\" text-anchor=\"middle\" font-size=\"12\" " +
+    "font-weight=\"800\" fill=\"#fff\" font-family=\"sans-serif\">?</text></svg>",
+  PK: "<svg viewBox=\"0 0 16 16\" aria-hidden=\"true\">" +
+    "<text x=\"8\" y=\"12.5\" text-anchor=\"middle\" font-size=\"12\" " +
+    "font-weight=\"800\" fill=\"#fff\" font-family=\"sans-serif\">P</text></svg>",
+  SH: "<svg viewBox=\"0 0 16 16\" aria-hidden=\"true\">" +
+    "<path d=\"M1.5 8 L8 2 L14.5 8 Z\" fill=\"#fff\"/>" +
+    "<rect x=\"3\" y=\"8.5\" width=\"1.8\" height=\"5.5\" fill=\"#fff\"/>" +
+    "<rect x=\"11.2\" y=\"8.5\" width=\"1.8\" height=\"5.5\" fill=\"#fff\"/></svg>",
+  WT: "<svg viewBox=\"0 0 16 16\" aria-hidden=\"true\">" +
+    "<path d=\"M8 1.5 C8 1.5 3.5 7 3.5 9.8 A4.5 4.5 0 0 0 12.5 9.8 " +
+    "C12.5 7 8 1.5 8 1.5 Z\" fill=\"#fff\"/></svg>",
+};
 function assetMarker(f, latlng) {
-  var dot = L.circleMarker(latlng, {
-    radius: 5, color: "#ffffff", weight: 1.5,
-    fillColor: COLORS.assetPin, fillOpacity: 0.95,
-  });
+  var glyph = ASSET_GLYPHS[assetTypeCode(f)] || ASSET_GLYPHS.UN;
   var ring = CONDITION_RINGS[(f.properties || {}).condition];
-  if (!ring) return dot;
-  return L.layerGroup([
-    L.circleMarker(latlng, { radius: 8, color: "#ffffff", weight: 1,
-      fillOpacity: 0, interactive: false }),
-    L.circleMarker(latlng, { radius: 7, color: ring, weight: 2.5,
-      fillOpacity: 0, interactive: false }),
-    dot,
-  ]);
+  var inner = "<span class='asset-pin'>" + glyph + "</span>";
+  var html = ring ?
+    "<span class='asset-pin-ringed' style='background:" + ring +
+    "'>" + inner + "</span>" : inner;
+  return L.marker(latlng, {
+    keyboard: false,
+    icon: L.divIcon({
+      className: "asset-pin-wrap", iconSize: [26, 26],
+      iconAnchor: [13, 13], html: html,
+    }),
+  });
+}
+
+/* Spiderfy (Paul, Nov 12, 2026): asset pins 1–3 m apart stack
+   their glyphs, so the one underneath is unclickable. Clicking
+   a stack fans its pins out on a circle (~36 px) with a thin
+   leg from the anchor to each fanned pin; a second click on a
+   fanned pin opens its popup. Plain Leaflet, no plugin — the
+   pins are L.marker (divIcon), so setLatLng moves the whole
+   icon. State lives here and is fully cleared on unspiderfy.
+   The stack test is screen-pixel based (~20 px at the current
+   zoom), so it works at any zoom; at the zooms where pins are
+   read (Z3/Z4) 20 px is roughly the 1–10 m the stacks span. */
+var SPIDERFY_PX = 20;
+var SPIDERFY_RADIUS = 36;
+var assetPins = [];        /* {layer, feature, latlng} — every asset pin */
+var assetTypeBoxes = {};   /* type code -> its panel checkbox */
+var spiderfyState = null;  /* {pins, legs, anchor} while fanned */
+var spiderfyPinClick = false; /* a pin handled this click; the map
+   click that follows in the same dispatch must not unspiderfy */
+
+function spiderfyStackFor(layer) {
+  var origin = null, i;
+  for (i = 0; i < assetPins.length; i++) {
+    if (assetPins[i].layer === layer) { origin = assetPins[i]; break; }
+  }
+  if (!origin) return [];
+  var def = layerById("assets");
+  var group = def && def.layer;
+  if (!group) return [origin];
+  var centre = map.latLngToContainerPoint(origin.latlng);
+  var stack = [];
+  for (i = 0; i < assetPins.length; i++) {
+    var p = assetPins[i];
+    var sub = assetsTypeLayers[assetTypeCode(p.feature)];
+    if (!sub || !group.hasLayer(sub)) continue; /* type toggled off */
+    var pt = map.latLngToContainerPoint(p.latlng);
+    var dx = pt.x - centre.x, dy = pt.y - centre.y;
+    if (Math.sqrt(dx * dx + dy * dy) <= SPIDERFY_PX) stack.push(p);
+  }
+  return stack;
+}
+
+function spiderfy(stack, clickedLayer) {
+  var anchor = null, i;
+  for (i = 0; i < stack.length; i++) {
+    if (stack[i].layer === clickedLayer) { anchor = stack[i].latlng; break; }
+  }
+  if (!anchor) anchor = stack[0].latlng;
+  var centre = map.latLngToContainerPoint(anchor);
+  var legs = L.layerGroup();
+  var n = stack.length;
+  for (i = 0; i < n; i++) {
+    var angle = -Math.PI / 2 + (i * 2 * Math.PI) / n;
+    var pt = L.point(
+      centre.x + SPIDERFY_RADIUS * Math.cos(angle),
+      centre.y + SPIDERFY_RADIUS * Math.sin(angle));
+    var ll = map.containerPointToLatLng(pt);
+    stack[i].layer.setLatLng(ll);
+    legs.addLayer(L.polyline([anchor, ll], {
+      color: "#555", weight: 1.5, opacity: 0.8, interactive: false,
+    }));
+  }
+  legs.addTo(map);
+  spiderfyState = { pins: stack, legs: legs, anchor: anchor };
+}
+
+function unspiderfy() {
+  if (!spiderfyState) return;
+  spiderfyState.pins.forEach(function (p) {
+    p.layer.setLatLng(p.latlng); /* back to the EXACT original spot */
+  });
+  if (spiderfyState.legs) map.removeLayer(spiderfyState.legs);
+  spiderfyState = null;
+}
+
+function onAssetPinClick(l, f) {
+  spiderfyPinClick = true;
+  window.setTimeout(function () { spiderfyPinClick = false; }, 0);
+  if (spiderfyState) {
+    var inFan = false;
+    spiderfyState.pins.forEach(function (p) {
+      if (p.layer === l) inFan = true;
+    });
+    if (inFan) { l.openPopup(); return; } /* second click: ITS popup */
+    unspiderfy(); /* a different stack: collapse the old fan first */
+  }
+  var stack = spiderfyStackFor(l);
+  if (stack.length <= 1) { l.openPopup(); return; }
+  spiderfy(stack, l); /* first click fans out — no popup yet */
 }
 
 function gapEndAccess(p, which) {
@@ -1955,9 +2132,23 @@ function zoomToSelection() {
 }
 
 map.on("click", function () {
+  if (spiderfyPinClick) return; /* a pin handled this click */
+  unspiderfy(); /* clicking empty map collapses a fan */
   if (suppressMapClear) return;
   if (selection) clearSelection();
 });
+/* Spiderfy teardown: the fan is pixel-derived, so a zoom makes
+   it stale; closing the popup ends the fan's job; removing the
+   assets layer must not strand its legs on the map. */
+map.on("zoomstart", unspiderfy);
+map.on("popupclose", function () { unspiderfy(); });
+map.on("layerremove", function (e) {
+  var def = layerById("assets");
+  if (def && def.layer && e.layer === def.layer) unspiderfy();
+});
+/* Shareable view: every pan or zoom writes the new view into the
+   hash, so the address bar always matches what is on screen. */
+map.on("moveend", writeShareHash);
 document.addEventListener("keydown", function (e) {
   if (e.key !== "Escape") return;
   var input = document.getElementById("gaz-search");
@@ -3684,6 +3875,7 @@ var LAYERS = [
          whole group. */
       var group = L.layerGroup();
       assetsTypeLayers = {};
+      assetPins.length = 0; /* fresh registry if the layer ever rebuilds */
       ASSET_TYPE_TOGGLES.forEach(function (t) {
         var code = t[0];
         var feats = gj.features.filter(function (f) {
@@ -3701,7 +3893,15 @@ var LAYERS = [
                  when the layer loads, so it always reflects the
                  pin's current data. */
               bindPop(l, function () { return assetPopup(f); });
+              /* Spiderfy owns the click: the default auto-open
+                 would fire before the spiderfy handler and open
+                 the popup on the first (fan-out) click. Keypress
+                 opening is untouched. */
+              l.off("click", l._openPopup, l);
+              l.on("click", function () { onAssetPinClick(l, f); });
               wireAssetHover(l, f);
+              assetPins.push({ layer: l, feature: f, latlng: L.latLng(
+                f.geometry.coordinates[1], f.geometry.coordinates[0]) });
             },
           });
         sub._assetType = code;
@@ -3719,18 +3919,21 @@ var LAYERS = [
         var box = document.createElement("input");
         box.type = "checkbox";
         box.checked = !!assetTypeOn[code];
+        assetTypeBoxes[code] = box; /* applyHash + the share writer read it */
         box.setAttribute("aria-label",
           assetTypeName(code) + " pins");
         lab.appendChild(box);
         lab.appendChild(document.createTextNode(
           assetTypeName(code) + " (" + count + ")"));
         box.addEventListener("change", function () {
+          unspiderfy(); /* a hidden type must not leave a fanned pin behind */
           assetTypeOn[code] = box.checked;
           var sub = assetsTypeLayers[code];
           var def = layerById("assets");
-          if (!sub || !def || !def.layer) return;
+          if (!sub || !def || !def.layer) { writeShareHash(); return; }
           if (box.checked) def.layer.addLayer(sub);
           else def.layer.removeLayer(sub);
+          writeShareHash(); /* a type change is a new shareable view */
         });
         wrap.appendChild(lab);
       });
@@ -4061,15 +4264,12 @@ function setView(view) {
   document.body.classList.toggle("view-visit", view === "visit");
   updatePresentStrip();
   try { localStorage.setItem("itm-view", view); } catch (e) {}
-  /* A shared link carries the view as #v=…, alongside any
-     other hash params (#layers=…, #view=lat,lon,zoom) — rebuild
-     the hash as a param list, never a bare concatenation. */
-  if (history.replaceState) {
-    var parts = (location.hash || "").replace(/^#/, "").split("&")
-      .filter(function (p) { return p && p.indexOf("v=") !== 0; });
-    parts.unshift("v=" + view);
-    history.replaceState(null, "", "#" + parts.join("&"));
-  }
+  /* A view change is a new shareable view — the writer records
+     the full state (view, centre, base, layers, types). During
+     load shareHashReady is false, so the preset application here
+     never clobbers an incoming link; applyHash turns the writer
+     on once the link is applied. */
+  writeShareHash();
 }
 (function initView() {
   /* Default is Work — the mockup's home-screen state (work
@@ -4099,6 +4299,44 @@ function setView(view) {
   document.body.classList.toggle("view-explore", view === "explore");
   document.body.classList.toggle("view-visit", view === "visit");
 })();
+
+/* ------------------------------------------------- shareable view
+   (Paul, Nov 12, 2026): the URL hash carries the whole viewer
+   state, so a copied link opens exactly what the sender sees.
+   HASH FORMAT — keep it stable; old shared links must keep
+   opening. Params, in canonical order:
+     v=work|explore|visit    view preset
+     view=lat,lng,zoom        centre (5 decimals) + zoom
+     base=topo|aerial|...     background, by BASES code
+     layers=id,-id,...        EVERY layer toggle (id = on, -id = off)
+     types=CP,SG,-BW,...      EVERY asset-type toggle, same convention
+   The writer always records the FULL state, so a link is exact
+   and self-contained. The reader (applyHash) is delta-tolerant:
+   an old link that lists only some layers still works — listed
+   tokens win, unlisted layers keep their state. */
+var shareHashReady = false; /* false until applyHash has run, so the
+   preset application during load never clobbers an incoming link */
+function writeShareHash() {
+  if (!shareHashReady || !history.replaceState) return;
+  var c = map.getCenter();
+  var parts = ["v=" + currentView,
+    "view=" + c.lat.toFixed(5) + "," + c.lng.toFixed(5) + "," +
+      map.getZoom(),
+    "base=" + (currentBase && currentBase.code ?
+      currentBase.code : "topo")];
+  var layerParts = [];
+  LAYERS.forEach(function (def) {
+    if (def.enabled === false || !def.box) return;
+    layerParts.push(def.box.checked ? def.id : "-" + def.id);
+  });
+  parts.push("layers=" + layerParts.join(","));
+  var typeParts = [];
+  ASSET_TYPE_TOGGLES.forEach(function (t) {
+    typeParts.push(assetTypeOn[t[0]] ? t[0] : "-" + t[0]);
+  });
+  parts.push("types=" + typeParts.join(","));
+  history.replaceState(null, "", "#" + parts.join("&"));
+}
 
 /* Panel groups (design review R2): the panel is organized by
    task, not by data source. The LAYERS array order is the build
@@ -4149,6 +4387,7 @@ LAYERS.forEach(function (def) {
     if (def.id === "treeheight") updatePresentKey();
     /* No cross-toggle mirroring: Adoption segment ends are
        controlled only by their own checkbox (Nov 11, 2026). */
+    writeShareHash(); /* a layer change is a new shareable view */
   });
   if (def.emptyUntilData) {
     /* Probe once: if the inventory file exists after all, wake the
@@ -4233,13 +4472,51 @@ wireCanopyHover();
     var btn = document.getElementById("btn-sources");
     if (card && card.hidden && btn) btn.click();
   });
+  /* Copy link (Paul, Nov 12, 2026): copies the current URL with
+     the up-to-date share hash, so the recipient opens exactly
+     this view. Clipboard API where it exists (https / localhost),
+     textarea + execCommand fallback for plain http. */
+  var copyLinkBtn = document.getElementById("copy-link-btn");
+  if (copyLinkBtn) copyLinkBtn.addEventListener("click", function () {
+    writeShareHash(); /* the hash must carry the state as of now */
+    var url = location.href;
+    function done(ok) {
+      copyLinkBtn.textContent = ok ? "Copied" :
+        "Copy failed — copy the address bar";
+      window.setTimeout(function () {
+        copyLinkBtn.textContent = "Copy link";
+      }, 2000);
+    }
+    function fallbackCopy(text) {
+      var ta = document.createElement("textarea");
+      ta.value = text;
+      ta.style.position = "fixed";
+      ta.style.opacity = "0";
+      document.body.appendChild(ta);
+      ta.select();
+      var ok = false;
+      try { ok = document.execCommand("copy"); } catch (e) {}
+      document.body.removeChild(ta);
+      done(ok);
+    }
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(url).then(function () {
+        done(true);
+      }, function () { fallbackCopy(url); });
+    } else {
+      fallbackCopy(url);
+    }
+  });
 })();
 
-/* Optional URL hash: #layers=access,roads opens with those extra
-   layers switched on (handy for sharing a configured view); a
-   token prefixed with "-" (e.g. #layers=-boundaries) explicitly
-   switches that layer OFF. #view=lat,lon,zoom additionally opens
-   at that view instead of fitting the whole trail. */
+/* Optional URL hash — the shareable view (Paul, Nov 12, 2026;
+   full format documented at writeShareHash):
+   #view=lat,lon,zoom opens at that view instead of fitting the
+   whole trail; #base=code picks the background; #layers=… lists
+   layers to switch on (a token prefixed with "-" switches that
+   layer OFF); #types=… does the same for the asset-type toggles
+   (uppercase codes). A token not listed leaves that toggle as
+   the preset left it, so old partial links still work. */
 var requestedView = null;
 (function applyHash() {
   var hash = location.hash || "";
@@ -4248,23 +4525,52 @@ var requestedView = null;
     requestedView = [parseFloat(vm[1]), parseFloat(vm[2])];
     requestedView.push(parseFloat(vm[3]));
   }
+  var bm = /base=([a-z0-9\-]+)/.exec(hash);
+  if (bm) {
+    var baseDef = baseByCode(bm[1]);
+    if (baseDef) setBase(baseDef.name);
+  }
   var m = /layers=([a-z,\-]+)/.exec(hash);
-  if (!m) return;
   var wanted = [], unwanted = [];
-  m[1].split(",").forEach(function (tok) {
-    if (tok.charAt(0) === "-") unwanted.push(tok.slice(1));
-    else if (tok) wanted.push(tok);
-  });
-  LAYERS.forEach(function (def) {
-    if (def.enabled === false || !def.box) return;
-    if (unwanted.indexOf(def.id) >= 0) {
-      def.box.checked = false;
-      if (def.layer) map.removeLayer(def.layer);
-    } else if (wanted.indexOf(def.id) >= 0 && !def.box.checked) {
-      def.box.checked = true;
-      ensureLayer(def, false);
-    }
-  });
+  if (m) {
+    m[1].split(",").forEach(function (tok) {
+      if (tok.charAt(0) === "-") unwanted.push(tok.slice(1));
+      else if (tok) wanted.push(tok);
+    });
+    LAYERS.forEach(function (def) {
+      if (def.enabled === false || !def.box) return;
+      if (unwanted.indexOf(def.id) >= 0) {
+        def.box.checked = false;
+        if (def.layer) map.removeLayer(def.layer);
+      } else if (wanted.indexOf(def.id) >= 0 && !def.box.checked) {
+        def.box.checked = true;
+        ensureLayer(def, false);
+      }
+    });
+  }
+  var tm = /types=([A-Z,\-]+)/.exec(hash);
+  if (tm) {
+    tm[1].split(",").forEach(function (tok) {
+      var off = tok.charAt(0) === "-";
+      var code = off ? tok.slice(1) : tok;
+      if (!code) return;
+      var known = false;
+      ASSET_TYPE_TOGGLES.forEach(function (t) {
+        if (t[0] === code) known = true;
+      });
+      if (!known) return;
+      assetTypeOn[code] = !off;
+      var tbox = assetTypeBoxes[code];
+      if (tbox) tbox.checked = !off;
+      var sub = assetsTypeLayers[code];
+      var def = layerById("assets");
+      /* If the assets layer has not built yet, the build reads
+         assetTypeOn and picks this up; nothing more to do here. */
+      if (!sub || !def || !def.layer) return;
+      if (!off) def.layer.addLayer(sub);
+      else def.layer.removeLayer(sub);
+    });
+  }
   /* Adoption segment ends: an explicit hash token for them (on or
      off) wins. Otherwise their initial state is derived from the
      Adopted sections state as the hash leaves it — the same
@@ -4277,6 +4583,11 @@ var requestedView = null;
     if (b.box.checked) { ensureLayer(b, false); }
     else if (b.layer) { map.removeLayer(b.layer); }
   }
+  /* The link is applied: the live writer may now record state
+     without clobbering it. Normalize the hash to the full
+     canonical form so Copy link works before any interaction. */
+  shareHashReady = true;
+  writeShareHash();
 })();
 
 function ensureLayer(def, announce) {
