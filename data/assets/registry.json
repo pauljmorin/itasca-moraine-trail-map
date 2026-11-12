@@ -538,7 +538,7 @@
   }
  },
  "format": "ITM-<type>-<nnn>",
- "notes": "Single source of truth for asset serial numbers (docs/asset-serial-numbers-2026-11-11.md). A serial is assigned at classification, never at photo intake \u2014 scripts/photo_pipeline.py build always writes serial null. Assignment is editorial: scripts/assign_serials.py stamps the next numbers in chainage order (west to east) per type, and only Muse proposes / Paul approves per batch. Never reuse, never renumber: a retired serial stays in retired with its reason. UN is a type value, never a serial prefix \u2014 no serial is ever issued for unclassified pins.",
+ "notes": "Single source of truth for asset serial numbers (docs/asset-serial-numbers-2026-11-11.md). A serial is assigned at classification, never at photo intake \u2014 scripts/photo_pipeline.py build always writes serial null. Assignment is editorial: scripts/assign_serials.py stamps the next numbers in chainage order (west to east) per type, and only Muse proposes / Paul approves per batch. Never reuse, never renumber: a retired serial stays in retired with its reason. UN is a type value, never a serial prefix \u2014 no serial is ever issued for unclassified pins. Photographers: the pin carries the photographer code (initials); the full name lives only here, never on a public surface. At intake the pipeline reads the photographer from the inbox folder \u2014 one subfolder per person (e.g. PJM/, named after the code) \u2014 so future batches are attributed by whoever uploaded them; a flat folder records no photographer. About three people photograph actively, up to ~12 total.",
  "prefix": "ITM",
  "types": {
   "BN": {
@@ -606,6 +606,12 @@
    "name": "register",
    "note": "Trail register box. Code approved by Paul Nov 11, 2026 with the second batch; ITM-RG-001 is the Lake Erin trailhead register box.",
    "status": "seeded"
+  }
+ },
+ "photographers": {
+  "PJM": {
+   "name": "Paul Jeffrey Morin",
+   "note": "Chapter volunteer. Public map shows initials only, never the full name."
   }
  }
 }

@@ -787,6 +787,39 @@ document.addEventListener("click", function (e) {
   if (f) gazSelectSection(f);
 });
 
+/* Asset-pin face flip (Nov 11, 2026): the popup shows one face at a
+   time; the buttons swap the large image and the face label, and
+   "Show all photos" opens the full grid. Same document-level
+   delegation as the pop-door above. */
+document.addEventListener("click", function (e) {
+  var t = e.target;
+  if (!t || !t.classList) return;
+  if (t.classList.contains("pop-face")) {
+    var wrap = t.closest(".pop-flip");
+    if (!wrap) return;
+    var img = wrap.querySelector(".pop-face-img");
+    var d = t.getAttribute("data-derivative");
+    if (img && d) img.setAttribute("src", "assets-photos/" + d);
+    var label = wrap.querySelector(".pop-face-label");
+    if (label) label.textContent = t.getAttribute("data-label") || "";
+    var btns = wrap.querySelectorAll(".pop-face");
+    for (var i = 0; i < btns.length; i++) {
+      btns[i].style.background = btns[i] === t ? "#ddd" : "#fff";
+      btns[i].style.fontWeight = btns[i] === t ? "bold" : "normal";
+    }
+    return;
+  }
+  if (t.classList.contains("pop-faces-all")) {
+    var w = t.closest(".pop-flip");
+    if (!w) return;
+    var grid = w.querySelector(".pop-face-grid");
+    if (!grid) return;
+    var open = grid.style.display !== "none";
+    grid.style.display = open ? "none" : "flex";
+    t.textContent = open ? "Show all photos" : "Hide all photos";
+  }
+});
+
 function gazFeatureByName(name, kind) {
   if (!gazFeatures) return null;
   for (var i = 0; i < gazFeatures.length; i++) {
@@ -985,8 +1018,8 @@ function roadPopup(f) {
 var ASSET_TYPE_NAMES = {
   BN: "Bench", BR: "Bridge", BW: "Boardwalk", CP: "Carsonite post",
   CS: "Campsite", KI: "Kiosk", LT: "Latrine", PK: "Parking area",
-  PO: "Post", SG: "Sign", SH: "Shelter", UN: "Unclassified",
-  WT: "Water source",
+  PO: "Post", RG: "Register", SG: "Sign", SH: "Shelter",
+  UN: "Unclassified", WT: "Water source",
 };
 function assetTypeName(code) {
   if (!code) return "Asset";
@@ -1010,19 +1043,50 @@ function assetPopup(f) {
     html += "<img src=\"assets-photos/" + esc(photos[0].derivative) +
       "\" alt=\"\" style=\"max-width:100%;display:block;margin:6px 0 2px\">";
   } else if (photos.length > 1) {
-    html += "<div style=\"display:flex;flex-wrap:wrap;gap:4px;" +
-      "margin:6px 0 2px\">";
+    /* Face flip (Nov 11, 2026): one face at a time — Front/Back for
+       two photos, Face 1/2/3… for more — with a "Show all photos"
+       that opens the full grid, so no photo is hidden. The compass
+       bearing is NOT shown: the phone records no camera direction
+       (direction_deg is null on every Nov 11 photo), so the faces
+       are labelled by the order they were shot; if a future batch
+       carries per-photo direction_deg, append it to the label here. */
+    var faceLabel = function (i) {
+      return photos.length === 2 ? (i === 0 ? "Front" : "Back")
+        : "Face " + (i + 1);
+    };
+    html += "<div class=\"pop-flip\">";
+    html += "<img class=\"pop-face-img\" src=\"assets-photos/" +
+      esc(photos[0].derivative) +
+      "\" alt=\"\" style=\"max-width:100%;display:block;margin:6px 0 2px\">";
+    html += "<div class=\"pop-face-label\" style=\"font-size:12px;" +
+      "color:#555;margin:0 0 4px\">" + esc(faceLabel(0)) + "</div>";
+    html += "<div style=\"display:flex;flex-wrap:wrap;gap:4px;margin:0 0 6px\">";
+    photos.forEach(function (ph, i) {
+      if (!ph.derivative) return;
+      html += "<button type=\"button\" class=\"pop-face\" data-derivative=\"" +
+        esc(ph.derivative) + "\" data-label=\"" + esc(faceLabel(i)) +
+        "\" style=\"padding:2px 8px;border:1px solid #999;border-radius:10px;" +
+        "background:" + (i === 0 ? "#ddd" : "#fff") + ";cursor:pointer\">" +
+        esc(faceLabel(i)) + "</button>";
+    });
+    html += "<button type=\"button\" class=\"pop-faces-all\" " +
+      "style=\"padding:2px 8px;border:1px solid #999;border-radius:10px;" +
+      "background:#fff;cursor:pointer\">Show all photos</button>";
+    html += "</div>";
+    html += "<div class=\"pop-face-grid\" style=\"display:none;flex-wrap:wrap;" +
+      "gap:4px;margin:6px 0 2px\">";
     photos.forEach(function (ph) {
       if (ph.derivative) {
         html += "<img src=\"assets-photos/" + esc(ph.derivative) +
           "\" alt=\"\" style=\"flex:1 1 30%;max-width:32%;display:block\">";
       }
     });
-    html += "</div>";
+    html += "</div></div>";
   }
   var rows = [
     ["Condition", p.condition],
     ["Photographed", p.datetime],
+    ["Photographer", p.photographer],
     ["Section", p.section],
   ];
   if (photos.length > 1) rows.push(["Photos", photos.length + " photos"]);
