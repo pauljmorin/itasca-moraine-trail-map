@@ -4536,7 +4536,7 @@ var LAYERS = [
     id: "logfim", label: "Cass forest stands",
     title: "Cass County forest inventory stands",
     file: "data/logging-cass-fim-stands.geojson",
-    onByDefault: false, group: "The land",
+    onByDefault: false, group: "The land", subgroup: "Management",
     swatch: { kind: "fill", color: "#6b8e23", border: "#556b2f" },
     build: function (gj) {
       var layer = L.geoJSON(gj, {
@@ -4674,7 +4674,7 @@ var LAYERS = [
     id: "foresthealth", label: "Forest health + blowdown (2025)",
     title: "DNR forest health survey 2025 — damage in the corridor",
     file: "data/forest-health-2025.geojson",
-    onByDefault: false, group: "The land",
+    onByDefault: false, group: "The land", subgroup: "Management",
     swatch: { kind: "fill", color: "#dc2626", border: "#991b1b" },
     build: function (gj) {
       var layer = L.geoJSON(gj, {
@@ -4700,7 +4700,7 @@ var LAYERS = [
     id: "invasives", label: "Invasive species sightings",
     title: "DNR invasive terrestrial observations — reported sightings",
     file: "data/invasive-sightings.geojson",
-    onByDefault: false, group: "The land",
+    onByDefault: false, group: "The land", subgroup: "Management",
     swatch: { kind: "fill", color: "#7c3aed", border: "#5b21b6" },
     build: function (gj) {
       var layer = L.geoJSON(gj, {
@@ -4727,7 +4727,7 @@ var LAYERS = [
     id: "chippewa-plan", label: "Chippewa Forest Plan areas (2004)",
     title: "Chippewa National Forest Land Management Plan (2004) areas",
     file: "data/chippewa-plan-areas.geojson",
-    onByDefault: false, group: "The land",
+    onByDefault: false, group: "The land", subgroup: "Management",
     swatch: { kind: "fill", color: "#64748b", border: "#475569" },
     build: function (gj) {
       var layer = L.geoJSON(gj, {
@@ -5173,7 +5173,7 @@ var LAYERS = [
        canopy radios are retired from Background (see BASES). */
     id: "treeheight", label: "Tree height",
     title: "How tall the trees are, over any background",
-    noFetch: true, onByDefault: false, group: "The land",
+    noFetch: true, onByDefault: false, group: "The land", subgroup: "Management",
     swatch: { kind: "fill", color: "#64af5a", border: "#406f48" },
     build: function () {
       if (!map.getPane("treeColor")) {
@@ -5243,7 +5243,7 @@ var LAYERS = [
     id: "contours", label: "Height lines — every 5 m",
     title: "How steep is it?",
     file: "data/chm-contours.geojson", onByDefault: false,
-    group: "The land",
+    group: "The land", subgroup: "Management",
     swatch: { kind: "line", color: "#8a6d1a" },
     gate: applyContoursGate,
     build: function (gj) {
@@ -5645,9 +5645,10 @@ LAYERS.forEach(function (def) {
 var GROUP_PULLDOWNS = ["The trail", "Land ownership"]; /* Paul,
   Nov 13, 2026 — these groups are pull-downs: a disclosure on
   the heading, the layers hidden until opened. The other groups
-  stay always open. A def with a `subgroup` (Timber sales under
-  The land) gets its own sub-heading + pull-down inside its
-  group, created on first use. Both start collapsed, like the
+  stay always open. A def with a `subgroup` (Timber sales and
+  Management under The land) gets its own sub-heading +
+  pull-down inside its group, created on first use. Both start
+  collapsed, like the
   ITM Assets / NCTA Places sub-toggles. */
 PANEL_GROUPS.forEach(function (group) {
   var container = togglesEl;
