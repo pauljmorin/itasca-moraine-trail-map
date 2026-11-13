@@ -1837,11 +1837,10 @@ function fmtPhotoDate(dt) {
 
 /* The map's save service (Paul, Nov 12, 2026): the itm-save Worker
    commits popup classifications straight to GitHub. One constant so
-   the URL is easy to change. It is empty until the Worker is first
-   deployed — the Save button then says the service is not configured
-   yet instead of fetching a dead URL. Set it to the deployed
-   workers.dev URL (see worker/README.md). */
-var ITM_SAVE_URL = "";
+   the URL is easy to change. Set Nov 13, 2026, after Paul set the
+   GITHUB_TOKEN secret on the Worker that morning — the Save button
+   is live from this commit. */
+var ITM_SAVE_URL = "https://itm-save.pauljmorin.workers.dev";
 
 /* Full-size photo URL (Paul, Nov 13, 2026): the lightbox opens the
    largest image we hold. When a photo carries a Drive file ID the
