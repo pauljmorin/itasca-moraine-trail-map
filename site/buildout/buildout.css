@@ -1,0 +1,62 @@
+/* Finishing the Trail — build-out viewer. Meeting-room readable: big numbers, no clutter. */
+html, body { margin: 0; padding: 0; height: 100%; font-family: -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; color: #222; }
+#app { display: flex; height: 100vh; }
+#panel { width: 430px; min-width: 380px; overflow-y: auto; padding: 18px 20px 24px; background: #faf8f4; border-right: 1px solid #ddd; box-sizing: border-box; }
+#map-wrap { flex: 1; position: relative; }
+#map { position: absolute; inset: 0; }
+
+h1 { font-size: 26px; margin: 0 0 4px; letter-spacing: -0.3px; }
+.sub { font-size: 14px; color: #555; margin: 0 0 14px; line-height: 1.45; }
+h2 { font-size: 13px; text-transform: uppercase; letter-spacing: 0.08em; color: #666; margin: 20px 0 6px; border-bottom: 1px solid #ddd; padding-bottom: 4px; }
+#headlines h2 { margin-top: 12px; }
+
+#mode-toggle { display: flex; gap: 0; margin: 4px 0 6px; }
+.mode-btn { flex: 1; padding: 10px; font-size: 15px; font-weight: 600; border: 1px solid #999; background: #fff; cursor: pointer; }
+.mode-btn:first-child { border-radius: 6px 0 0 6px; }
+.mode-btn:last-child { border-radius: 0 6px 6px 0; border-left: none; }
+.mode-btn.active { background: #1a5c2a; color: #fff; border-color: #1a5c2a; }
+.mode-note { font-size: 13px; color: #666; margin: 0 0 4px; font-style: italic; }
+
+.gap-block { background: #fff; border: 1px solid #ddd; border-radius: 6px; padding: 12px 14px; margin: 10px 0; }
+.gap-block h2 { border: none; margin: 0 0 2px; padding: 0; }
+.bignum { margin: 2px 0; }
+.bignum .num { font-size: 44px; font-weight: 800; line-height: 1; }
+.bignum .unit { font-size: 18px; color: #555; }
+.tread { margin: 4px 0; font-size: 15px; }
+.tread .num-sm { font-weight: 700; }
+.detail { font-size: 13.5px; color: #444; line-height: 1.5; margin: 6px 0 0; }
+.case-lines { font-size: 14.5px; line-height: 1.5; }
+.case-lines p { margin: 8px 0; }
+.caveat { color: #666; font-size: 13px; }
+
+#layers label { display: block; font-size: 14px; line-height: 1.4; margin: 6px 0; cursor: pointer; }
+#layers input { margin-right: 6px; }
+#legend { margin: 12px 0 4px; font-size: 13.5px; line-height: 1.9; }
+#legend .sw { display: inline-block; width: 26px; height: 5px; vertical-align: middle; margin-right: 8px; border-radius: 2px; }
+.sw.foot { background: #1a9850; }
+.sw.paved { background: #fdae61; }
+.sw.road { background: #d73027; }
+.sw.sidewalk { background: #999999; }
+.sw.other { background: #999999; height: 0; border-top: 3px dashed #999999; }
+.sw.proposed { background: #2166ac; height: 5px; }
+.sw.corridor { background: rgba(33, 102, 172, 0.25); height: 12px; border: 1px solid rgba(33, 102, 172, 0.5); }
+.sw.sv { width: 12px; height: 12px; border-radius: 50%; background: #4285f4; border: 2px solid #fff; box-shadow: 0 0 0 1px #4285f4; }
+.drawn-note { font-size: 12.5px; color: #555; line-height: 1.5; }
+
+#mesabi-note p, #planning-panel p { font-size: 13.5px; line-height: 1.55; margin: 8px 0; }
+#planning-panel h2 { margin-top: 22px; }
+
+footer { margin-top: 24px; padding-top: 10px; border-top: 1px solid #ddd; font-size: 12px; color: #666; line-height: 1.5; }
+footer a { color: #1a5c2a; }
+
+.leaflet-popup-content { font-size: 14px; line-height: 1.5; }
+.leaflet-popup-content h3 { margin: 0 0 4px; font-size: 15px; }
+.leaflet-popup-content p { margin: 4px 0; }
+.leaflet-popup-content .warn { color: #8a6d00; }
+.sv-marker { background: #4285f4; border: 2px solid #fff; border-radius: 50%; box-shadow: 0 1px 4px rgba(0,0,0,0.5); text-align: center; color: #fff; font-size: 11px; line-height: 18px; font-weight: bold; }
+
+@media (max-width: 760px) {
+  #app { flex-direction: column; }
+  #panel { width: 100%; min-width: 0; max-height: 46vh; border-right: none; border-bottom: 1px solid #ddd; }
+  #map-wrap { flex: 1; }
+}

@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Finishing the Trail — North Country Trail build-out viewer</title>
+<link rel="stylesheet" href="../leaflet.css">
+<link rel="stylesheet" href="buildout.css">
+</head>
+<body>
+<div id="app">
+  <aside id="panel">
+    <h1>Finishing the Trail</h1>
+    <p class="sub">The North Country Trail in Minnesota: what is built, what is still road and bike path, and what is proposed.</p>
+
+    <div id="mode-toggle" role="tablist" aria-label="Viewer mode">
+      <button id="mode-briefing" class="mode-btn active" role="tab" aria-selected="true">Briefing</button>
+      <button id="mode-planning" class="mode-btn" role="tab" aria-selected="false">Planning</button>
+    </div>
+    <p class="mode-note" id="mode-note">For the congressional delegation: the case on one screen.</p>
+
+    <section id="headlines">
+      <div class="gap-block">
+        <h2>Arrowhead gap</h2>
+        <p class="bignum"><span class="num">182.6</span> <span class="unit">miles</span></p>
+        <p class="tread"><span class="num-sm">1.44 mi</span> of foot tread — <strong>0.8%</strong> off-road</p>
+        <p class="detail">Grand Rapids to Ely and on to Snowbank Lake. The rest is Mesabi Trail bike path and road.</p>
+      </div>
+      <div class="gap-block">
+        <h2>Western gap</h2>
+        <p class="bignum"><span class="num">106.1</span> <span class="unit">miles</span></p>
+        <p class="tread"><span class="num-sm">5.98 mi</span> of foot tread — <strong>5.6%</strong> off-road</p>
+        <p class="detail">North Dakota border (Fort Abercrombie) to east of Detroit Lakes. Traced chain, Becker County line to the border: 113.63 mi, 78.82 mi on-road (69%). The last 39.45 mi, CR-88 to the border, is 100% on-road.</p>
+      </div>
+      <div class="case-lines">
+        <p>Authorized by Congress, March 2019 (Dingell Act, P.L. 116-9).</p>
+        <p>Still on road and bike path six years later.</p>
+        <p>Minnesota will pay for the planning — <strong>$643,850</strong>, zero federal cost — the Park Service has not yet accepted it. <span class="caveat">Proposal 2027-179, latest copy labeled &ldquo;Not Submitted Final,&rdquo; March 14, 2026; not submitted.</span></p>
+      </div>
+    </section>
+
+    <section id="layers">
+      <h2>Map layers</h2>
+      <label><input type="checkbox" id="lyr-gaps" checked> Current trail, colored by surface</label>
+      <label><input type="checkbox" id="lyr-prop-a" checked> Proposed Arrowhead line — 101.5 mi of new footpath</label>
+      <label><input type="checkbox" id="lyr-prop-w" checked> Proposed western lines — Fergus Falls to the border and to Frazee</label>
+      <label><input type="checkbox" id="lyr-corridor" checked> 2004 approved corridor (faint wash)</label>
+      <label><input type="checkbox" id="lyr-sv" checked> Street View viewpoints</label>
+      <div id="legend">
+        <div><span class="sw foot"></span> Foot tread (off-road)</div>
+        <div><span class="sw paved"></span> Paved multi-use path</div>
+        <div><span class="sw road"></span> On-road walk</div>
+        <div><span class="sw sidewalk"></span> Sidewalk</div>
+        <div><span class="sw other"></span> Other / untyped</div>
+        <div><span class="sw proposed"></span> Proposed off-road line</div>
+        <div><span class="sw corridor"></span> 2004 approved corridor</div>
+        <div><span class="sw sv"></span> Street View viewpoint</div>
+      </div>
+      <p class="drawn-note">As drawn on the map (official NCTA line): Grand Rapids–Ely 152.8 mi — 114.9 mi bike path, 25.0 mi road, 1.4 mi foot tread, 11.4 mi other. Frazee–ND border 104.9 mi — 78.4 mi road, 9.6 mi bike path, 4.6 mi foot tread, 3.9 mi sidewalk, 8.3 mi other. Gap totals above are from <i>Finishing the NCT in Minnesota</i>, App. 3.</p>
+    </section>
+
+    <section id="mesabi-note">
+      <h2>Mesabi Trail — read this first</h2>
+      <p>The Mesabi Trail is <strong>not</strong> shown here as complete. The Minnesota Lottery said in October 2026 that it is &ldquo;officially complete,&rdquo; but LCCMR Proposal 2027-341 requests $1,650,000 to build the final 2.5 miles, West Two River to Tower, by June 30, 2029. The Mesabi Trail&rsquo;s own October 13, 2026 update says 0.5 mile is not finished. <strong>To confirm with the St. Louis &amp; Lake Counties Regional Railroad Authority.</strong></p>
+      <p>The NCTA official line still routes hikers on MN-135, Embarrass to Tower. The as-built trail has replaced most of that road walk; the map shows the official line, not the as-built trail.</p>
+    </section>
+
+    <section id="planning-panel" hidden>
+      <h2>Planning — readiness</h2>
+      <p><strong>McCarthy Beach to Hwy 169:</strong> route mapped, appears viable, needs ground-truthing; many parcels in the Conservation Fund land exchange; needs a new &ldquo;Triple Divide&rdquo; chapter; Superior NEPA environmental assessment possibly 2027, realistically 2028–29; state environmental assessment worksheet (EAW) also needed.</p>
+      <p><strong>Hwy 169 to Bear Head State Park:</strong> Howard Wagoner Trail Club to affiliate 2026/27; Hwy 169 to Quick Bridge digitally mapped and deconflicted from the Prospector ATV trail, needs ground-truthing; Quick Bridge to McKinley Park via the Tower Municipal Forest Plan and a St. Louis County lease update; $266,000 Recreational Trails Program grant received; Vermilion State Park — about 1.5 mi of new construction would complete the alignment, but state park permission is the barrier; Vermilion to Bear Head 75% ground-truthed.</p>
+      <p><strong>Bear Head to Glipi Road:</strong> Bear Head State Park is about 90% existing trail, with a new piece needed on the east side; Bear Head to Ely explored, mapped and ground-truthed, for the next Superior NEPA round; Ely to Glipi needs mapping, Garden Lake bridge question, Minnesota Power; Glipi to Snowbank: about 12 miles close to ready to build, awaiting the Fernberg environmental assessment decision and a state EAW.</p>
+      <p><strong>EAW in review:</strong> 23.79 miles (10.8 Lake County, 12.78 Itasca County, 0.21 Cass County) — the working model for the compliance process.</p>
+
+      <h2>Planning — funding status</h2>
+      <p><strong>Mesabi Trail, final 2.5 mi West Two River to Tower:</strong> $1,650,000 requested, LCCMR Proposal 2027-341 (not an award). Proposed completion June 30, 2029.</p>
+      <p><strong>Tower area:</strong> $266,000 RTP grant received.</p>
+      <p><strong>Wahlsten Road to Tower:</strong> $1,307,000 appropriated (2022).</p>
+      <p><strong>McKinley to Biwabik, 5.5 mi:</strong> $1,000,000 ENRTF + $500,000 IRRRB — done June 30, 2025.</p>
+      <p><strong>Planning proposal 2027-179:</strong> $643,850 requested, not submitted. Nothing awarded for the Closing the Gaps planning proposal.</p>
+      <p><strong>Glacial Edge Trail, Cabbage Hill segment (Fergus Falls–Maplewood):</strong> $1,838,000 requested, LCCMR Proposal 2027-428, proposed completion December 31, 2029.</p>
+
+      <h2>Planning — risks, as the chapters named them</h2>
+      <p><strong>Motorized / ATV conflict is the single greatest risk.</strong> The NCT is reportedly not at the table in regional trail-deconfliction meetings while Mesabi, ATV, ski and snowmobile interests are.</p>
+      <p><strong>No single finalized master plan</strong> for the Arrowhead corridor to present to partners.</p>
+      <p><strong>Grant dependency:</strong> the pipeline depends on LCCMR / ENRTF cycles; LCCMR money starts about 18 months after a proposal.</p>
+      <p><strong>Permissions still to win:</strong> Vermilion State Park, School Trust easements, Section 106 cultural surveys and SHPO concurrence, NEPA and state EAW per segment.</p>
+      <p><strong>15 miles of the Zone 4 Option A route (Cavour&rsquo;s Route) lies outside the approved planning corridor</strong> — needs NPS sign-off.</p>
+    </section>
+
+    <footer>
+      <p>Sources: NCTA nct_public service line (as drawn in this map&rsquo;s trail data, Nov 13, 2026); <i>Finishing the NCT in Minnesota</i> (July 8, 2025, and undated revision); <i>Closing the Gaps for the Minnesota Portion of the NCT</i> (Jan 6 / Mar 14, 2026); NPS Draft Route Assessment &amp; Environmental Assessment (2004); LCCMR Proposals 2027-179, 2027-341, 2027-428; Mesabi Trail construction update, Oct 13, 2026.</p>
+      <p>Figures as of Nov 13, 2026. Speeds are statutory defaults unless labeled posted; traffic counts to be added. Street View panoramas not yet confirmed — links open the nearest panorama. The U of M modeled route and the ARDC geodatabase are not in the source folder and are not shown.</p>
+      <p><a href="../">Itasca Moraine chapter map</a> · <a href="../data-sources.html">Data sources</a></p>
+    </footer>
+  </aside>
+  <main id="map-wrap">
+    <div id="map"></div>
+  </main>
+</div>
+<script src="../leaflet.js"></script>
+<script src="buildout.js"></script>
+</body>
+</html>
