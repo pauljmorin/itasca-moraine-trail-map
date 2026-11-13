@@ -19,11 +19,29 @@ server-side (as a secret) and commits the change to the repo.
   `{ok:true, serial, commit:<sha>}`. 400 on bad input, 404 when the
   serial is not found, 500 when the secret is missing or GitHub
   rejects the call.
+- `/ask` — live (Nov 13, 2026). Body `{question}` (max 500 chars).
+  Answers ONLY from the checked-in digest
+  (`site/data/trail-digest.json`, built by
+  `scripts/build_trail_digest.py`; the Worker fetches the live Pages
+  copy and caches it 10 minutes). Returns `{ok:true, answer,
+  sources, focus, unanswered, queued, queue_id, email_sent}` where
+  `focus` is `{type:"section"|"gap", name}` or
+  `{type:"asset", serial}` — validated against the digest, so a
+  hallucinated target never moves the map. When the digest cannot
+  answer, the reply is warm + partial + work-sized (effort, data
+  needed, whether the data exists, whose approval is needed), and
+  the question is queued in `data/ask-queue.json` (one commit; a
+  repeat of an open question bumps `asked_count`) and emailed to
+  Paul. 503 with `error:"ask_not_configured"` until GEMINI_API_KEY
+  is set; 429 past 20 questions/hour per IP. The queue file is also
+  the coordinator's source — the weekly watch reads it — and Paul
+  marks an entry done by editing the file (status `"done"` +
+  `resolved_note`).
 - `/report`, `/adopt`, `/pin` — stubs returning 501. Same Worker, same
   login, one more endpoint each when the chapter is ready for them:
   trail reports, adopter updates, new-pin submissions.
 
-## Secret (set once, by Paul, in the Cloudflare dashboard)
+## Secrets (set once, by Paul, in the Cloudflare dashboard)
 
 Workers & Pages → `itm-save` → Settings → Variables → Add secret,
 named `GITHUB_TOKEN`. The value is a fine-grained personal access
@@ -32,6 +50,21 @@ token on the `pauljmorin` GitHub account, scoped to
 (the token Paul created Nov 12, 2026). The Worker returns a clear
 "GITHUB_TOKEN not configured" error until the secret is set. The
 secret is never in this repo and never in a log.
+
+`GEMINI_API_KEY` — Paul's Google AI Studio API key (the same key
+the legacy-gemini connector already holds as `custom.gemini`).
+`/ask` returns 503 `ask_not_configured` until it is set. Model
+default `gemini-3.5-flash` (the connector's default — 2.5-flash
+404s on these accounts), overridable with the plain env var
+`LLM_MODEL`. Expected cost is a fraction of a cent per question
+(digest ~5,000 input tokens, answer ~300 output tokens, Flash-class
+pricing); the paid Tier 1 balance on the `custom.gemini` account
+covers thousands of questions.
+
+`RESEND_API_KEY` — the Resend API key for the unanswered-question
+email to Paul (plain text, from `Muse <onboarding@resend.dev>`,
+the established alert sender). Optional: without it the queue file
+still records every unanswered question, but no email goes out.
 
 ## Deploy
 

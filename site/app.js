@@ -5856,6 +5856,145 @@ wireCanopyHover();
   });
 })();
 
+/* --------------------------------------------------- Ask the trail
+   (Paul, Nov 13, 2026): natural-language Q&A for the chapter
+   board. The masthead button opens the panel; the question goes to
+   the itm-save Worker's /ask endpoint, which answers ONLY from the
+   checked-in digest (site/data/trail-digest.json). The reply may
+   carry a focus — a section, the gap, or an asset serial — which
+   the panel applies to the map with the existing selection
+   machinery (selectSection/zoomToSelection for sections and the
+   gap; the pin popup for an asset). An unanswered question comes
+   back queued: the Worker records it in data/ask-queue.json and
+   emails Paul, so both Paul and Muse see it. The panel never
+   invents anything and never shows adopter contact info — there
+   is none in the digest to show. */
+function applyAskFocus(focus) {
+  if (!focus || typeof focus !== "object") return;
+  var def, item, entry, i;
+  if (focus.type === "section" || focus.type === "gap") {
+    item = walkByName[focus.name];
+    if (!item) return;
+    def = layerById(item.type === "gap" ? "gaps" : "stretches");
+    if (def && def.box && !def.box.checked) {
+      def.box.checked = true;
+      ensureLayer(def, false);
+    }
+    selectSection(item, "ask");
+    zoomToSelection();
+  } else if (focus.type === "asset" && focus.serial) {
+    entry = null;
+    for (i = 0; i < assetPins.length; i++) {
+      if ((assetPins[i].feature.properties || {}).serial ===
+          focus.serial) {
+        entry = assetPins[i];
+        break;
+      }
+    }
+    if (!entry) return;
+    def = layerById("assets");
+    if (def && def.box && !def.box.checked) {
+      def.box.checked = true;
+      ensureLayer(def, false);
+    }
+    map.setView(entry.latlng, Math.max(map.getZoom(), 15));
+    entry.layer.openPopup();
+  }
+}
+
+(function wireAskPanel() {
+  var panel = document.getElementById("ask-panel");
+  var btn = document.getElementById("ask-btn");
+  var closeBtn = document.getElementById("ask-close");
+  var input = document.getElementById("ask-input");
+  var submit = document.getElementById("ask-submit");
+  var statusEl = document.getElementById("ask-status");
+  var answerEl = document.getElementById("ask-answer");
+  var answerText = document.getElementById("ask-answer-text");
+  var sourcesEl = document.getElementById("ask-sources");
+  var queuedEl = document.getElementById("ask-queued");
+  var suggestEl = document.getElementById("ask-suggest");
+  if (!panel || !btn || !input || !submit) return;
+
+  function setStatus(text) { statusEl.textContent = text || ""; }
+  function showAnswer(data) {
+    answerText.textContent = data.answer || "";
+    sourcesEl.textContent = (data.sources && data.sources.length)
+      ? "Sources: " + data.sources.join(" · ") : "";
+    if (data.unanswered) {
+      queuedEl.textContent = data.queued
+        ? "Saved for Paul — question " + (data.queue_id || "") +
+          " is on the list, and he has been emailed."
+        : "This question could not be saved this time — please tell "
+          + "Paul directly.";
+      queuedEl.hidden = false;
+    } else {
+      queuedEl.hidden = true;
+      queuedEl.textContent = "";
+    }
+    answerEl.hidden = false;
+  }
+  function askQuestion(q) {
+    q = (q || "").trim();
+    if (!q) return;
+    if (!ITM_SAVE_URL) {
+      setStatus("Ask the trail isn't set up yet — the itm-save Worker "
+        + "is not deployed.");
+      return;
+    }
+    submit.disabled = true;
+    input.disabled = true;
+    setStatus("Asking the trail…");
+    answerEl.hidden = true;
+    fetch(ITM_SAVE_URL + "/ask", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ question: q }),
+    }).then(function (res) {
+      return res.json().then(function (data) {
+        return { status: res.status, data: data };
+      });
+    }).then(function (r) {
+      submit.disabled = false;
+      input.disabled = false;
+      input.focus();
+      if (r.status === 200 && r.data && r.data.ok) {
+        setStatus("");
+        showAnswer(r.data);
+        applyAskFocus(r.data.focus);
+      } else if (r.data && r.data.error === "ask_not_configured") {
+        setStatus(r.data.message || "Ask the trail isn't set up yet.");
+      } else {
+        setStatus((r.data && r.data.error) ||
+          "Couldn't reach the answer service — try again.");
+      }
+    }).catch(function () {
+      submit.disabled = false;
+      input.disabled = false;
+      setStatus("Couldn't reach the answer service — try again.");
+    });
+  }
+  btn.addEventListener("click", function () {
+    panel.hidden = !panel.hidden;
+    if (!panel.hidden) input.focus();
+  });
+  if (closeBtn) closeBtn.addEventListener("click", function () {
+    panel.hidden = true;
+  });
+  submit.addEventListener("click", function () {
+    askQuestion(input.value);
+  });
+  input.addEventListener("keydown", function (e) {
+    if (e.key === "Enter") askQuestion(input.value);
+  });
+  if (suggestEl) suggestEl.addEventListener("click", function (e) {
+    var t = e.target.closest("button[data-q]");
+    if (!t) return;
+    input.value = t.getAttribute("data-q");
+    askQuestion(input.value);
+  });
+})();
+
 /* Optional URL hash — the shareable view (Paul, Nov 12, 2026;
    full format documented at writeShareHash):
    #view=lat,lon,zoom opens at that view instead of fitting the

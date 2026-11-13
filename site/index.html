@@ -17,11 +17,55 @@
       <h1>Itasca Moraine Chapter</h1>
       <p class="masthead-desc">Trail Map</p>
     </div>
+    <button type="button" id="ask-btn" class="ask-btn"
+      title="Ask the trail — answers from the map's own data"
+      aria-label="Ask the trail">Ask the trail</button>
     <button type="button" id="present-btn" class="present-btn"
       title="Present — big screen"
       aria-label="Present — big screen">⛶</button>
   </div>
   <button type="button" id="copy-link-btn" class="copy-link-btn" title="Copy link">Copy link</button>
+
+  <!-- Ask the trail (Paul, Nov 13, 2026): natural-language Q&A for
+       the chapter board. Answers come only from the map's own data
+       (site/data/trail-digest.json via the itm-save Worker); a
+       question the data cannot answer is queued for Paul. -->
+  <div id="ask-panel" hidden>
+    <div class="ask-head">
+      <h2>Ask the trail</h2>
+      <button type="button" id="ask-close" class="ask-close"
+        aria-label="Close">×</button>
+    </div>
+    <p class="ask-note">Answers come only from the map's own data —
+      sections, pins, parcels, timber, and the chapter's verified
+      research. If the map can't answer, the question goes to
+      Paul.</p>
+    <div class="ask-row">
+      <input id="ask-input" type="text" autocomplete="off"
+        placeholder="Ask about the trail…">
+      <button type="button" id="ask-submit" class="ask-submit">Ask</button>
+    </div>
+    <div class="ask-suggest" id="ask-suggest">
+      <button type="button"
+        data-q="Which parts of the trail have no adopter?">Which
+        parts have no adopter?</button>
+      <button type="button"
+        data-q="How many miles are unadopted?">How many miles are
+        unadopted?</button>
+      <button type="button"
+        data-q="What timber sales happened near the trail in 2026?">Timber
+        sales in 2026?</button>
+      <button type="button"
+        data-q="How many boardwalk pins are there, and what condition are they in?">Boardwalk
+        pins and their condition?</button>
+    </div>
+    <p class="ask-status" id="ask-status" role="status"></p>
+    <div class="ask-answer" id="ask-answer" hidden>
+      <p id="ask-answer-text"></p>
+      <p class="ask-sources" id="ask-sources"></p>
+      <p class="ask-queued" id="ask-queued" hidden></p>
+    </div>
+  </div>
 
   <h2>Adoption</h2>
   <p class="adopt-line"><strong>73.2 of 76.2 mi adopted.</strong>

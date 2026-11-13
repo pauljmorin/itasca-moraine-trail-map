@@ -1,0 +1,1126 @@
+{
+ "meta": {
+  "generated": "2026-11-13",
+  "generator": "scripts/build_trail_digest.py",
+  "about": "Compact summary of the Itasca Moraine chapter map's own data, for the Ask the trail Q&A. The model answers ONLY from this digest.",
+  "sources": [
+   "site/data/stretches.geojson",
+   "site/data/assets.geojson",
+   "site/data/gaps.geojson",
+   "site/data/parcels.geojson",
+   "site/data/trail.geojson",
+   "site/data/trail-minnesota.geojson",
+   "site/data/easements.geojson",
+   "site/data/logging-*.geojson",
+   "docs/gap-grand-rapids-ely-research.md",
+   "docs/gap-detroit-lakes-sd-research.md",
+   "docs/gap-economics-safety-research.md",
+   "docs/gap-atv-competition-research.md",
+   "docs/gap-ncta-track-record-research.md",
+   "docs/buildout-viewer-notes.md"
+  ]
+ },
+ "trail": {
+  "chapter": "Itasca Moraine chapter, North Country Trail",
+  "depicted_mi": 76.16,
+  "adopted_mi": 73.24,
+  "unadopted_mi": 2.92,
+  "sections_count": 30,
+  "sections": [
+   {
+    "name": "Chip-1",
+    "tracker_section": "CHP-1",
+    "length_mi": 3.4,
+    "has_adopter": true,
+    "adopter_initials": [
+     "PO",
+     "TO"
+    ]
+   },
+   {
+    "name": "Chip-10",
+    "tracker_section": "CHP-10",
+    "length_mi": 3.27,
+    "has_adopter": true,
+    "adopter_initials": [
+     "JB"
+    ]
+   },
+   {
+    "name": "Chip-11",
+    "tracker_section": "CHP-11",
+    "length_mi": 2.35,
+    "has_adopter": true,
+    "adopter_initials": [
+     "PM",
+     "LL"
+    ]
+   },
+   {
+    "name": "Chip-12",
+    "tracker_section": "CHP-12",
+    "length_mi": 4.09,
+    "has_adopter": true,
+    "adopter_initials": [
+     "L",
+     "NE"
+    ]
+   },
+   {
+    "name": "Chip-2",
+    "tracker_section": "CHP-2",
+    "length_mi": 2.87,
+    "has_adopter": true,
+    "adopter_initials": [
+     "RD",
+     "NG",
+     "BS",
+     "CL"
+    ]
+   },
+   {
+    "name": "Chip-3",
+    "tracker_section": "CHP-3",
+    "length_mi": 1.86,
+    "has_adopter": true,
+    "adopter_initials": [
+     "BM",
+     "JM"
+    ]
+   },
+   {
+    "name": "Chip-4",
+    "tracker_section": "CHP-4",
+    "length_mi": 3.38,
+    "has_adopter": true,
+    "adopter_initials": [
+     "RB",
+     "LT"
+    ]
+   },
+   {
+    "name": "Chip-5",
+    "tracker_section": "CHP-5",
+    "length_mi": 2.09,
+    "has_adopter": true,
+    "adopter_initials": [
+     "DM"
+    ]
+   },
+   {
+    "name": "Chip-6",
+    "tracker_section": "CHP-6",
+    "length_mi": 2.16,
+    "has_adopter": true,
+    "adopter_initials": [
+     "C",
+     "CB"
+    ]
+   },
+   {
+    "name": "Chip-7",
+    "tracker_section": "CHP-7",
+    "length_mi": 1.7,
+    "has_adopter": true,
+    "adopter_initials": [
+     "DA"
+    ]
+   },
+   {
+    "name": "Chip-8",
+    "tracker_section": "CHP-8",
+    "length_mi": 1.48,
+    "has_adopter": true,
+    "adopter_initials": [
+     "AT"
+    ]
+   },
+   {
+    "name": "Chip-9",
+    "tracker_section": "CHP-9",
+    "length_mi": 2.51,
+    "has_adopter": true,
+    "adopter_initials": [
+     "P",
+     "SS"
+    ]
+   },
+   {
+    "name": "West-1",
+    "tracker_section": "WEST-1",
+    "length_mi": 1.15,
+    "has_adopter": true,
+    "adopter_initials": [
+     "JR",
+     "MP",
+     "BK",
+     "BW",
+     "BB"
+    ]
+   },
+   {
+    "name": "West-10",
+    "tracker_section": "WEST-10",
+    "length_mi": 1.67,
+    "has_adopter": true,
+    "adopter_initials": [
+     "BJ"
+    ]
+   },
+   {
+    "name": "West-11",
+    "tracker_section": "WEST-11",
+    "length_mi": 3.55,
+    "has_adopter": true,
+    "adopter_initials": [
+     "BrJ"
+    ]
+   },
+   {
+    "name": "West-12",
+    "tracker_section": "WEST-12",
+    "length_mi": 2.11,
+    "has_adopter": true,
+    "adopter_initials": [
+     "C",
+     "AG"
+    ]
+   },
+   {
+    "name": "West-13",
+    "tracker_section": "WEST-13",
+    "length_mi": 2.17,
+    "has_adopter": true,
+    "adopter_initials": [
+     "C",
+     "AG"
+    ]
+   },
+   {
+    "name": "West-14",
+    "tracker_section": "WEST-14",
+    "length_mi": 2.47,
+    "has_adopter": true,
+    "adopter_initials": [
+     "L",
+     "TF",
+     "A",
+     "JG"
+    ]
+   },
+   {
+    "name": "West-15",
+    "tracker_section": "WEST-15",
+    "length_mi": 2.75,
+    "has_adopter": true,
+    "adopter_initials": [
+     "L",
+     "TF",
+     "A",
+     "JG"
+    ]
+   },
+   {
+    "name": "West-16",
+    "tracker_section": "WEST-16",
+    "length_mi": 1.77,
+    "has_adopter": true,
+    "adopter_initials": [
+     "PF",
+     "TW"
+    ]
+   },
+   {
+    "name": "West-17",
+    "tracker_section": "WEST-17",
+    "length_mi": 2.7,
+    "has_adopter": true,
+    "adopter_initials": [
+     "JI"
+    ]
+   },
+   {
+    "name": "West-2",
+    "tracker_section": "WEST-2",
+    "length_mi": 2.4,
+    "has_adopter": true,
+    "adopter_initials": [
+     "JR",
+     "MP",
+     "BW",
+     "BK",
+     "BB"
+    ]
+   },
+   {
+    "name": "West-3",
+    "tracker_section": "WEST-3",
+    "length_mi": 1.9,
+    "has_adopter": true,
+    "adopter_initials": [
+     "K",
+     "GG"
+    ]
+   },
+   {
+    "name": "West-4",
+    "tracker_section": "WEST-4",
+    "length_mi": 2.66,
+    "has_adopter": true,
+    "adopter_initials": [
+     "K",
+     "GG"
+    ]
+   },
+   {
+    "name": "West-5",
+    "tracker_section": "WEST-5",
+    "length_mi": 2.56,
+    "has_adopter": true,
+    "adopter_initials": [
+     "SB",
+     "DR"
+    ]
+   },
+   {
+    "name": "West-6",
+    "tracker_section": "WEST-6",
+    "length_mi": 2.35,
+    "has_adopter": true,
+    "adopter_initials": [
+     "ER",
+     "SL"
+    ]
+   },
+   {
+    "name": "West-7",
+    "tracker_section": "WEST-7",
+    "length_mi": 3.27,
+    "has_adopter": true,
+    "adopter_initials": [
+     "ME"
+    ]
+   },
+   {
+    "name": "West-8a",
+    "tracker_section": "WEST-8A",
+    "length_mi": 2.2,
+    "has_adopter": true,
+    "adopter_initials": [
+     "CS",
+     "MS"
+    ]
+   },
+   {
+    "name": "West-8b",
+    "tracker_section": "WEST-8B",
+    "length_mi": 2.45,
+    "has_adopter": true,
+    "adopter_initials": [
+     "CO",
+     "JS",
+     "SW"
+    ]
+   },
+   {
+    "name": "West-9",
+    "tracker_section": "WEST-9",
+    "length_mi": 1.95,
+    "has_adopter": true,
+    "adopter_initials": [
+     "SB",
+     "DR"
+    ]
+   }
+  ],
+  "gaps": [
+   {
+    "gap_id": "GAP-W",
+    "name": "West end \u2014 chapter line west of West-1",
+    "length_mi": 2.92,
+    "classification": "outside_adopted_span",
+    "land_context": "Itasca State Park"
+   }
+  ],
+  "gap_note": "The only unadopted stretch is GAP-W, 2.92 mi at the west end, inside Itasca State Park, roadless. It needs an adopter."
+ },
+ "assets": {
+  "total": 84,
+  "by_type": [
+   {
+    "code": "CP",
+    "name": "Carsonite post",
+    "count": 30
+   },
+   {
+    "code": "UN",
+    "name": "Unclassified",
+    "count": 18
+   },
+   {
+    "code": "SG",
+    "name": "Sign",
+    "count": 16
+   },
+   {
+    "code": "BW",
+    "name": "Boardwalk",
+    "count": 10
+   },
+   {
+    "code": "BN",
+    "name": "Bench",
+    "count": 3
+   },
+   {
+    "code": "BR",
+    "name": "Bridge",
+    "count": 2
+   },
+   {
+    "code": "PO",
+    "name": "Post",
+    "count": 1
+   },
+   {
+    "code": "CS",
+    "name": "Campsite",
+    "count": 1
+   },
+   {
+    "code": "LT",
+    "name": "Latrine",
+    "count": 1
+   },
+   {
+    "code": "KI",
+    "name": "Kiosk",
+    "count": 1
+   },
+   {
+    "code": "RG",
+    "name": "Register",
+    "count": 1
+   }
+  ],
+  "by_condition_recorded": {
+   "fair": 17,
+   "good": 17,
+   "new": 22,
+   "poor": 2,
+   "ungraded": 18,
+   "worn": 8
+  },
+  "unclassified_count": 18,
+  "list": [
+   {
+    "serial": "ITM-BN-001",
+    "type": "BN",
+    "type_name": "Bench",
+    "condition": "fair"
+   },
+   {
+    "serial": "ITM-BN-002",
+    "type": "BN",
+    "type_name": "Bench",
+    "condition": "fair"
+   },
+   {
+    "serial": "ITM-BN-003",
+    "type": "BN",
+    "type_name": "Bench",
+    "condition": "fair"
+   },
+   {
+    "serial": "ITM-BR-001",
+    "type": "BR",
+    "type_name": "Bridge",
+    "condition": "fair"
+   },
+   {
+    "serial": "ITM-BR-002",
+    "type": "BR",
+    "type_name": "Bridge",
+    "condition": "fair"
+   },
+   {
+    "serial": "ITM-BW-001",
+    "type": "BW",
+    "type_name": "Boardwalk",
+    "condition": "good"
+   },
+   {
+    "serial": "ITM-BW-002",
+    "type": "BW",
+    "type_name": "Boardwalk",
+    "condition": "fair"
+   },
+   {
+    "serial": "ITM-BW-003",
+    "type": "BW",
+    "type_name": "Boardwalk",
+    "condition": "fair"
+   },
+   {
+    "serial": "ITM-BW-004",
+    "type": "BW",
+    "type_name": "Boardwalk",
+    "condition": "fair"
+   },
+   {
+    "serial": "ITM-BW-005",
+    "type": "BW",
+    "type_name": "Boardwalk",
+    "condition": "fair"
+   },
+   {
+    "serial": "ITM-BW-006",
+    "type": "BW",
+    "type_name": "Boardwalk",
+    "condition": "fair"
+   },
+   {
+    "serial": "ITM-BW-007",
+    "type": "BW",
+    "type_name": "Boardwalk",
+    "condition": "fair"
+   },
+   {
+    "serial": "ITM-BW-008",
+    "type": "BW",
+    "type_name": "Boardwalk",
+    "condition": "fair"
+   },
+   {
+    "serial": "ITM-BW-009",
+    "type": "BW",
+    "type_name": "Boardwalk",
+    "condition": "fair"
+   },
+   {
+    "serial": "ITM-BW-010",
+    "type": "BW",
+    "type_name": "Boardwalk",
+    "condition": "fair"
+   },
+   {
+    "serial": "ITM-CP-001",
+    "type": "CP",
+    "type_name": "Carsonite post",
+    "condition": "worn"
+   },
+   {
+    "serial": "ITM-CP-002",
+    "type": "CP",
+    "type_name": "Carsonite post",
+    "condition": "new"
+   },
+   {
+    "serial": "ITM-CP-003",
+    "type": "CP",
+    "type_name": "Carsonite post",
+    "condition": "worn"
+   },
+   {
+    "serial": "ITM-CP-004",
+    "type": "CP",
+    "type_name": "Carsonite post",
+    "condition": "new"
+   },
+   {
+    "serial": "ITM-CP-005",
+    "type": "CP",
+    "type_name": "Carsonite post",
+    "condition": "worn"
+   },
+   {
+    "serial": "ITM-CP-006",
+    "type": "CP",
+    "type_name": "Carsonite post",
+    "condition": "new"
+   },
+   {
+    "serial": "ITM-CP-007",
+    "type": "CP",
+    "type_name": "Carsonite post",
+    "condition": "worn"
+   },
+   {
+    "serial": "ITM-CP-008",
+    "type": "CP",
+    "type_name": "Carsonite post",
+    "condition": "worn"
+   },
+   {
+    "serial": "ITM-CP-009",
+    "type": "CP",
+    "type_name": "Carsonite post",
+    "condition": "new"
+   },
+   {
+    "serial": "ITM-CP-010",
+    "type": "CP",
+    "type_name": "Carsonite post",
+    "condition": "new"
+   },
+   {
+    "serial": "ITM-CP-011",
+    "type": "CP",
+    "type_name": "Carsonite post",
+    "condition": "new"
+   },
+   {
+    "serial": "ITM-CP-012",
+    "type": "CP",
+    "type_name": "Carsonite post",
+    "condition": "new"
+   },
+   {
+    "serial": "ITM-CP-013",
+    "type": "CP",
+    "type_name": "Carsonite post",
+    "condition": "new"
+   },
+   {
+    "serial": "ITM-CP-014",
+    "type": "CP",
+    "type_name": "Carsonite post",
+    "condition": "new"
+   },
+   {
+    "serial": "ITM-CP-015",
+    "type": "CP",
+    "type_name": "Carsonite post",
+    "condition": "worn"
+   },
+   {
+    "serial": "ITM-CP-016",
+    "type": "CP",
+    "type_name": "Carsonite post",
+    "condition": "new"
+   },
+   {
+    "serial": "ITM-CP-017",
+    "type": "CP",
+    "type_name": "Carsonite post",
+    "condition": "worn"
+   },
+   {
+    "serial": "ITM-CP-018",
+    "type": "CP",
+    "type_name": "Carsonite post",
+    "condition": "new"
+   },
+   {
+    "serial": "ITM-CP-019",
+    "type": "CP",
+    "type_name": "Carsonite post",
+    "condition": "new"
+   },
+   {
+    "serial": "ITM-CP-020",
+    "type": "CP",
+    "type_name": "Carsonite post",
+    "condition": "new"
+   },
+   {
+    "serial": "ITM-CP-021",
+    "type": "CP",
+    "type_name": "Carsonite post",
+    "condition": "new"
+   },
+   {
+    "serial": "ITM-CP-022",
+    "type": "CP",
+    "type_name": "Carsonite post",
+    "condition": "new"
+   },
+   {
+    "serial": "ITM-CP-023",
+    "type": "CP",
+    "type_name": "Carsonite post",
+    "condition": "worn"
+   },
+   {
+    "serial": "ITM-CP-024",
+    "type": "CP",
+    "type_name": "Carsonite post",
+    "condition": "new"
+   },
+   {
+    "serial": "ITM-CP-025",
+    "type": "CP",
+    "type_name": "Carsonite post",
+    "condition": "new"
+   },
+   {
+    "serial": "ITM-CP-026",
+    "type": "CP",
+    "type_name": "Carsonite post",
+    "condition": "new"
+   },
+   {
+    "serial": "ITM-CP-027",
+    "type": "CP",
+    "type_name": "Carsonite post",
+    "condition": "new"
+   },
+   {
+    "serial": "ITM-CP-028",
+    "type": "CP",
+    "type_name": "Carsonite post",
+    "condition": "new"
+   },
+   {
+    "serial": "ITM-CP-029",
+    "type": "CP",
+    "type_name": "Carsonite post",
+    "condition": "new"
+   },
+   {
+    "serial": "ITM-CP-030",
+    "type": "CP",
+    "type_name": "Carsonite post",
+    "condition": "new"
+   },
+   {
+    "serial": "ITM-CS-001",
+    "type": "CS",
+    "type_name": "Campsite",
+    "condition": "good"
+   },
+   {
+    "serial": "ITM-KI-001",
+    "type": "KI",
+    "type_name": "Kiosk",
+    "condition": "good"
+   },
+   {
+    "serial": "ITM-LT-001",
+    "type": "LT",
+    "type_name": "Latrine",
+    "condition": "good"
+   },
+   {
+    "serial": "ITM-PO-001",
+    "type": "PO",
+    "type_name": "Post",
+    "condition": "poor"
+   },
+   {
+    "serial": "ITM-RG-001",
+    "type": "RG",
+    "type_name": "Register",
+    "condition": "good"
+   },
+   {
+    "serial": "ITM-SG-001",
+    "type": "SG",
+    "type_name": "Sign",
+    "condition": "good"
+   },
+   {
+    "serial": "ITM-SG-002",
+    "type": "SG",
+    "type_name": "Sign",
+    "condition": "good"
+   },
+   {
+    "serial": "ITM-SG-003",
+    "type": "SG",
+    "type_name": "Sign",
+    "condition": "good"
+   },
+   {
+    "serial": "ITM-SG-004",
+    "type": "SG",
+    "type_name": "Sign",
+    "condition": "good"
+   },
+   {
+    "serial": "ITM-SG-005",
+    "type": "SG",
+    "type_name": "Sign",
+    "condition": "fair"
+   },
+   {
+    "serial": "ITM-SG-006",
+    "type": "SG",
+    "type_name": "Sign",
+    "condition": "good"
+   },
+   {
+    "serial": "ITM-SG-008",
+    "type": "SG",
+    "type_name": "Sign",
+    "condition": "good"
+   },
+   {
+    "serial": "ITM-SG-009",
+    "type": "SG",
+    "type_name": "Sign",
+    "condition": "fair"
+   },
+   {
+    "serial": "ITM-SG-010",
+    "type": "SG",
+    "type_name": "Sign",
+    "condition": "good"
+   },
+   {
+    "serial": "ITM-SG-011",
+    "type": "SG",
+    "type_name": "Sign",
+    "condition": "good"
+   },
+   {
+    "serial": "ITM-SG-012",
+    "type": "SG",
+    "type_name": "Sign",
+    "condition": "good"
+   },
+   {
+    "serial": "ITM-SG-013",
+    "type": "SG",
+    "type_name": "Sign",
+    "condition": "good"
+   },
+   {
+    "serial": "ITM-SG-014",
+    "type": "SG",
+    "type_name": "Sign",
+    "condition": "good"
+   },
+   {
+    "serial": "ITM-SG-015",
+    "type": "SG",
+    "type_name": "Sign",
+    "condition": "good"
+   },
+   {
+    "serial": "ITM-SG-016",
+    "type": "SG",
+    "type_name": "Sign",
+    "condition": "poor"
+   },
+   {
+    "serial": "ITM-SG-017",
+    "type": "SG",
+    "type_name": "Sign",
+    "condition": "fair"
+   },
+   {
+    "serial": null,
+    "type": "UN",
+    "type_name": "Unclassified",
+    "condition": null
+   },
+   {
+    "serial": null,
+    "type": "UN",
+    "type_name": "Unclassified",
+    "condition": null
+   },
+   {
+    "serial": null,
+    "type": "UN",
+    "type_name": "Unclassified",
+    "condition": null
+   },
+   {
+    "serial": null,
+    "type": "UN",
+    "type_name": "Unclassified",
+    "condition": null
+   },
+   {
+    "serial": null,
+    "type": "UN",
+    "type_name": "Unclassified",
+    "condition": null
+   },
+   {
+    "serial": null,
+    "type": "UN",
+    "type_name": "Unclassified",
+    "condition": null
+   },
+   {
+    "serial": null,
+    "type": "UN",
+    "type_name": "Unclassified",
+    "condition": null
+   },
+   {
+    "serial": null,
+    "type": "UN",
+    "type_name": "Unclassified",
+    "condition": null
+   },
+   {
+    "serial": null,
+    "type": "UN",
+    "type_name": "Unclassified",
+    "condition": null
+   },
+   {
+    "serial": null,
+    "type": "UN",
+    "type_name": "Unclassified",
+    "condition": null
+   },
+   {
+    "serial": null,
+    "type": "UN",
+    "type_name": "Unclassified",
+    "condition": null
+   },
+   {
+    "serial": null,
+    "type": "UN",
+    "type_name": "Unclassified",
+    "condition": null
+   },
+   {
+    "serial": null,
+    "type": "UN",
+    "type_name": "Unclassified",
+    "condition": null
+   },
+   {
+    "serial": null,
+    "type": "UN",
+    "type_name": "Unclassified",
+    "condition": null
+   },
+   {
+    "serial": null,
+    "type": "UN",
+    "type_name": "Unclassified",
+    "condition": null
+   },
+   {
+    "serial": null,
+    "type": "UN",
+    "type_name": "Unclassified",
+    "condition": null
+   },
+   {
+    "serial": null,
+    "type": "UN",
+    "type_name": "Unclassified",
+    "condition": null
+   },
+   {
+    "serial": null,
+    "type": "UN",
+    "type_name": "Unclassified",
+    "condition": null
+   }
+  ]
+ },
+ "parcels": {
+  "total": 1038,
+  "crossed_by_trail": 255,
+  "adjoining_trail": 783,
+  "by_county": {
+   "Becker": 288,
+   "Cass": 305,
+   "Clearwater": 80,
+   "Hubbard": 365
+  },
+  "public_private_split": {
+   "public": 724,
+   "private": 314,
+   "rule": "Owner-name patterns (State/County/City/Town/DNR/USA/school) plus land-class signals (tax-forfeit/PILT/State/Federal/County Admin). Same family as docs/gap-parcels-design.md. Economic-development authorities and cemetery associations classify private under this rule."
+  },
+  "top_owners_by_acres": [
+   {
+    "owner": "Usa",
+    "acres": 26428.8
+   },
+   {
+    "owner": "DNR-FORESTRY-S F ATTN TAX SPECIALIST",
+    "acres": 20741.4
+   },
+   {
+    "owner": "TFL-COUNTY",
+    "acres": 12199.0
+   },
+   {
+    "owner": "Becker County Tax Forfeited",
+    "acres": 9248.9
+   },
+   {
+    "owner": "United States of America",
+    "acres": 4897.7
+   },
+   {
+    "owner": "State of Minn Dnr-Non Hunting",
+    "acres": 4431.5
+   },
+   {
+    "owner": "Tax Forfeited",
+    "acres": 2973.1
+   },
+   {
+    "owner": "State of Minnesota",
+    "acres": 2405.7
+   },
+   {
+    "owner": "State of Minn Dnr",
+    "acres": 1744.5
+   },
+   {
+    "owner": "DNR-PARKS AND RECREATION ITASCA STATE PARK ACCTS PYBLE",
+    "acres": 1448.2
+   }
+  ],
+  "parcels_without_owner_name": 119,
+  "note": "Owner names are published county records. No taxpayer fields exist in this data and none are included here. 119 parcels carry no owner name in the file and are excluded from the top-owners list."
+ },
+ "timber": {
+  "note": "Timber sales are listed by year as published. 'Active' is not a recorded status \u2014 do not present a year as active or closed unless the file says so.",
+  "by_manager": {
+   "Becker County": {
+    "sales_total": 88,
+    "by_year": {
+     "2023": 7,
+     "2024": 18,
+     "2025": 20,
+     "2026": 4
+    },
+    "acres_total": 2596.7
+   },
+   "Cass County": {
+    "sales_total": 1182,
+    "by_year": {
+     "2007": 75,
+     "2008": 137,
+     "2009": 104,
+     "2010": 117,
+     "2011": 95,
+     "2012": 91,
+     "2013": 49,
+     "2014": 67,
+     "2015": 38,
+     "2016": 35,
+     "2017": 33,
+     "2018": 28,
+     "2019": 32,
+     "2020": 27,
+     "2021": 28,
+     "2022": 36,
+     "2023": 38,
+     "2024": 51,
+     "2025": 34,
+     "2026": 28
+    },
+    "acres_total": 20554.2
+   },
+   "Hubbard County": {
+    "sales_total": 67,
+    "by_year": {
+     "2023": 2,
+     "2024": 10,
+     "2025": 21,
+     "2026": 34
+    },
+    "acres_total": 3137.5
+   },
+   "Clearwater County": {
+    "sales_total": 1,
+    "by_year": {},
+    "acres_total": 90.2
+   },
+   "Chippewa National Forest": {
+    "sales_total": 124,
+    "by_year": {
+     "2011": 1,
+     "2012": 11,
+     "2013": 17,
+     "2014": 15,
+     "2015": 10,
+     "2016": 7,
+     "2017": 7,
+     "2018": 4,
+     "2019": 8,
+     "2020": 5,
+     "2021": 5,
+     "2022": 9,
+     "2023": 4,
+     "2024": 8,
+     "2025": 9,
+     "2026": 3
+    },
+    "acres_total": 195266.1
+   }
+  }
+ },
+ "land": {
+  "conservation_easements": {
+   "count": 40,
+   "acres_total": 3370.0,
+   "source": "site/data/easements.geojson (BWSR RIM)"
+  },
+  "forest_health_2025_detections": 123,
+  "invasive_sightings": 5551,
+  "chippewa_plan_areas": 35,
+  "canopy": "Six discrete 5 m height bands (0-5 to 25+ m); hillshade removed Nov 12, 2026; height lines removed Nov 13, 2026."
+ },
+ "minnesota": {
+  "nct_features_statewide": 348,
+  "nct_miles_statewide": 566.12,
+  "nct_miles_source": "NCTA nct_public ArcGIS service (official line, state == MN)",
+  "map_sheets": "MN-001 to MN-104 (full NCTA series)",
+  "street_view_markers": 24,
+  "mile_markers": 239,
+  "chapter_places": 36
+ },
+ "buildout_verified": {
+  "source": "docs/buildout-viewer-notes.md, docs/gap-grand-rapids-ely-research.md, docs/gap-detroit-lakes-sd-research.md",
+  "arrowhead_gap_mi": 182.62,
+  "arrowhead_foot_tread_mi": 1.44,
+  "western_gap_mi": 106.1,
+  "western_foot_tread_mi": 5.98,
+  "proposed_arrowhead_offroad_mi": 101.45,
+  "proposed_western_offroad_mi": 104.49,
+  "note": "Gap mileages are the assessment's headline figures; the viewer's drawn files total 152.80 mi (Arrowhead) and 104.86 mi (western) \u2014 see buildout-viewer-notes.md for the reconciliation."
+ },
+ "economics_safety_verified": {
+  "source": "docs/gap-economics-safety-research.md",
+  "mn_state_trails_visitors_2024": "2.3M",
+  "mn_state_trails_output_per_year": "$102.5M",
+  "mn_state_trails_jobs": "626+",
+  "output_per_visitor": "~$44.60 (arithmetic)",
+  "mesabi_trail_users_2025": "~285,000 (count only; no Mesabi spending study exists)",
+  "separated_walkway_crash_reduction": "up to 88% (FHWA, site-likelihood, not all pedestrian crashes)",
+  "paved_shoulder_crash_reduction": "up to 71% (FHWA)",
+  "value_of_statistical_life_2025": "$14.2M (US DOT)"
+ },
+ "motorized_verified": {
+  "source": "docs/gap-atv-competition-research.md",
+  "atv_miles_corridor_core": "~1,083 (arithmetic sum of published system mileages; systems share tread)",
+  "prospector_loop_mi": "167 (DNR); club says 216+, SEH says 250 \u2014 unsettled",
+  "snowmobile_named_systems_mi": "598",
+  "highway_2_rule": "Minn. Stat. 84.777: unsigned forest access routes north of US Highway 2 are open to OHV riding unless posted closed. Building a NEW trail still needs DNR designation and environmental review.",
+  "hf1012_sf1245": "Would impose signed-trails-only statewide and repeal the north-of-Highway-2 carve-out. Not enacted."
+ },
+ "ncta_track_record_verified": {
+  "source": "docs/gap-ncta-track-record-research.md",
+  "new_offroad_tread_built_nationally_2016_2025_mi": 455.15,
+  "new_offroad_tread_minnesota_2016_2026_mi": "~16 at most (6 mi Arrowhead 2024 + 9.8 mi Fergus Falls urban loop 2016)",
+  "western_gap_new_tread_mi": 0,
+  "trail_protection_director": "Paul Gagnon, Director of Trail Protection (since at least 2022)",
+  "planning_director": "None on staff; planning sits with the Director of Trail Operations and one regional coordinator for ND/MN/WI",
+  "canal_park_claim": "NOT FOUND in the annual reports checked \u2014 do not assert NCTA claimed the Canal Park redevelopment. Checkable wording: NCTA counts Minnesota miles through Canal Park (Superior Hiking Trail) that it never built."
+ },
+ "not_covered": [
+  "Per-road posted speeds, traffic counts (AADT), and shoulder widths for the gap road walks (MnDOT live check in progress, Nov 13, 2026).",
+  "Hiker/visitor counts for the chapter trail itself (no trail counters in the data; the Mesabi Trail's ~285,000 users/yr and the statewide 2.3M state-trail visitors are analogues, not chapter counts).",
+  "Future timber sales or planned clear-cuts (all timber layers are past sales; DNR 4trees / Chippewa NF SOPA not yet wired).",
+  "Per-parcel taxpayer information (excluded by design).",
+  "Adopter names, phone numbers, or email addresses (initials only, by design).",
+  "Anything dated after this digest was generated."
+ ]
+}
