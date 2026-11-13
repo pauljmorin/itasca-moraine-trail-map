@@ -318,6 +318,95 @@ neither mileage reckoning above.
   project's standing line.
 
 
+## Forest health + blowdown — DNR survey 2025 (added 2026-11-13)
+
+- **What:** Minnesota DNR forest health survey polygons in the
+  chapter corridor — damage mapped in the survey year (2025),
+  not current condition.
+- **URL:** https://enterprise.gisdata.mn.gov/aghost/rest/services/us_mn_state_dnr/env_forest_health_survey_2025/FeatureServer/0
+- **Owner / publisher:** Minnesota DNR, Division of Forestry —
+  Forest Health program. Public state data.
+- **Vintage:** 2025 survey, pulled 2026-11-13 by
+  `working/land-layers/pull_land_layers.py`. 123 polygons,
+  10,084.3 ac. Agents: eastern larch beetle 41, wind-tornado
+  35, flooding-high water 13, unknown bark beetle 10, unknown 9,
+  aspen decline 6, hardwood decline 5, larch casebearer 3, forest
+  tent caterpillar 1. Damage: Mortality 70, Broken/Uprooted 35,
+  Crown Dieback 10. `category` and `pct_affected` are empty on
+  every feature in the source and are not shown; `notes` is
+  sporadic.
+- **Envelope:** lon -95.6 to -94.3, lat 46.7 to 47.35
+  (EPSG:4326), the chapter corridor.
+- **Quirks (do not re-derive):** the DNR service is in native SR
+  UTM 26915 and `f=geojson` vs `f=json` apply the envelope
+  differently, so the pull fetched `f=json` in native SR and
+  reprojected with a hand-written stdlib Snyder inverse
+  transverse Mercator (validated against the service's own
+  geojson — max vertex distance 1.11 m, the NAD83→WGS84 datum
+  shift). Pagination used `returnIdsOnly` + independent
+  OID-range chunks (`resultOffset` overlaps on this service).
+  Do NOT use `env_fast_forest_disturbances` (stale, max 2020).
+  Re-pull annually.
+- **Use here:** `site/data/forest-health-2025.geojson`, layer
+  "foresthealth", OFF by default, LAZY, group "The land".
+  Popup: agent, damage, host, year, acres, notes when present.
+
+## Invasive species sightings — DNR terrestrial observations (added 2026-11-13)
+
+- **What:** Minnesota DNR invasive terrestrial observations —
+  REPORTED sightings (observer reports, largely iNaturalist),
+  not a systematic survey. A species missing from this map is
+  not proof it is absent on the ground.
+- **URL:** https://enterprise.gisdata.mn.gov/aghost/rest/services/us_mn_state_dnr/env_invasive_terrestrial_obs/FeatureServer
+  (Layer 1 Plants + Layer 3 emerald ash borer)
+- **Owner / publisher:** Minnesota DNR. Public state data.
+- **Vintage:** pulled 2026-11-13 by
+  `working/land-layers/pull_land_layers.py`. 5,551 points:
+  Plants 5,550 (spotted knapweed 3,263; common tansy 2,158;
+  leafy spurge 62; common + European buckthorn 61; garlic
+  mustard 6) + one emerald ash borer (2023-11-13, Jonathan
+  Osthus / MN Dept of Agriculture, Cass County). Observed
+  2000-08-14 to 2026-08-13, no missing dates. `reporter` and
+  `record_source` are the provenance fields shown in the popup.
+- **Envelope:** lon -95.6 to -94.3, lat 46.7 to 47.35
+  (EPSG:4326), the chapter corridor.
+- **Quirks:** same pagination / reprojection notes as the forest
+  health pull (OID-range chunks; `f=json` in native SR +
+  stdlib reprojection). The USFS
+  EDW_InvasiveSpecies_01 service graded C — do not use.
+- **Use here:** `site/data/invasive-sightings.geojson`, layer
+  "invasives", OFF by default, LAZY, canvas-rendered dots
+  (5,551 points), group "The land". Popup: species, scientific
+  name, observed date, county, reporter, record source, plus
+  the observer-bias note.
+
+## Chippewa Forest Plan management areas — 2004 plan (added 2026-11-13)
+
+- **What:** Chippewa National Forest Land Management Plan
+  management areas (L2 Management Area only), plan year 2004.
+  The plan's desired conditions — not a harvest schedule.
+- **URL:** https://apps.fs.usda.gov/arcx/rest/services/EDW/EDW_LandManagementPlanning_01/MapServer
+  (planning page: https://www.fs.usda.gov/r09/chippewa/planning)
+- **Owner / publisher:** USDA Forest Service, Chippewa National
+  Forest. Public federal data.
+- **Vintage:** plan year 2004 for all 35 polygons; 467,512.7
+  gis_acres. Codes: UB 6, CRNA 1, RU 4, RNA 1, RE 7, LR 6,
+  WATER 6, GF 3, EF 1. The `summary` line on each area is
+  condensed from the plan's Chapter 3 (real PDF
+  https://www.fs.usda.gov/media/239376, saved in
+  `working/land-layers/`). `service_description` is "Not
+  defined" in the service and is never shown.
+  `rev_date` 20240920.
+- **Envelope:** lon -95.6 to -94.3, lat 46.7 to 47.35
+  (EPSG:4326). EDW polygons are whole management areas and
+  spill east to ~-93.9, same as the existing logging layers.
+  EDW native SR is 4269 (lon/lat) — passes through as lon/lat.
+- **Use here:** `site/data/chippewa-plan-areas.geojson`, layer
+  "chippewa-plan", OFF by default, LAZY, group "The land".
+  Popup: management-area name, code, plan year, acres, summary.
+  Honest label: "Chippewa Forest Plan management areas (2004)".
+
+
 ## Base-map tile & image services (map v2, added 2026-11-10)
 
 Live map backgrounds, consumed directly by the site (nothing is

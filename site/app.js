@@ -1501,6 +1501,20 @@ var SRC_CLEARWATER_TIMBER = "https://map.co.clearwater.mn.us/arcgis/" +
   "rest/services/Forestry/PreRX_Appraisals/FeatureServer/0";
 var SRC_EASEMENTS = "https://apps.bwsr.state.mn.us/arcgis/" +
   "rest/services/RIM/RIM_Reserve_Easements/MapServer/0";
+/* Land layers (Paul, Nov 13, 2026 — "Wire the three ready
+   layers"): DNR forest health survey 2025, DNR invasive
+   terrestrial observations, and the Chippewa National Forest
+   2004 Land Management Plan areas — all clipped to the chapter
+   corridor envelope (lon -95.6 to -94.3, lat 46.7 to 47.35).
+   Pulled Nov 13, verified on disk. */
+var SRC_FOREST_HEALTH = "https://enterprise.gisdata.mn.gov/aghost/" +
+  "rest/services/us_mn_state_dnr/env_forest_health_survey_2025/" +
+  "FeatureServer/0";
+var SRC_INVASIVES = "https://enterprise.gisdata.mn.gov/aghost/" +
+  "rest/services/us_mn_state_dnr/env_invasive_terrestrial_obs/" +
+  "FeatureServer";
+var SRC_CHIPPEWA_PLAN = "https://apps.fs.usda.gov/arcx/rest/services/" +
+  "EDW/EDW_LandManagementPlanning_01/MapServer";
 function popSourceLine(url, label) {
   return "<p class='pop-source'>Source: <a href='" + url +
     "' target='_blank' rel='noopener'>" + esc(label) + "</a></p>";
@@ -1634,6 +1648,71 @@ function easementsPopup(f) {
     kvTable(rows) +
     popSourceLine(SRC_EASEMENTS,
       "BWSR RIM Reserve Easements, MapServer layer 0");
+}
+/* Forest health + blowdown (Paul, Nov 13, 2026): DNR forest
+   health survey 2025, 123 polygons in the corridor. The survey
+   maps where damage was recorded in 2025, not current
+   condition. `category` and `pct_affected` are empty on every
+   feature in the source, so they are not shown. */
+function forestHealthPopup(f) {
+  var p = f.properties;
+  var rows = [["Agent", p.agent], ["Year", p.year]];
+  if (p.damage) { rows.push(["Damage", p.damage]); }
+  if (p.host) { rows.push(["Host", p.host]); }
+  if (p.acres != null) { rows.push(["Acres", p.acres]); }
+  if (p.notes) { rows.push(["Notes", p.notes]); }
+  return "<h3>" + esc(p.name || "Forest health survey") + "</h3>" +
+    kvTable(rows) +
+    "<p class='pop-note'>DNR forest health survey — damage mapped " +
+    "in the survey year; the map shows where damage was recorded, " +
+    "not current condition.</p>" +
+    popSourceLine(SRC_FOREST_HEALTH,
+      "DNR Forest Health Survey 2025, FeatureServer layer 0");
+}
+/* Invasive species sightings (Paul, Nov 13, 2026): DNR invasive
+   terrestrial observations — reported sightings, not a
+   systematic survey. A species missing from this map is not
+   proof it is absent on the ground. */
+function invasivesPopup(f) {
+  var p = f.properties;
+  var rows = [
+    ["Species", p.species],
+    ["Scientific name", p.scientific],
+    ["Observed", p.observed],
+    ["County", p.county],
+  ];
+  if (p.reporter) { rows.push(["Reporter", p.reporter]); }
+  if (p.record_source) { rows.push(["Record source", p.record_source]); }
+  return "<h3>" + esc(p.name || "Invasive species sighting") + "</h3>" +
+    kvTable(rows) +
+    "<p class='pop-note'>Reported sightings — observer reports " +
+    "(largely iNaturalist), not a systematic survey. A species " +
+    "missing from this map is not proof it is absent on the " +
+    "ground.</p>" +
+    popSourceLine(SRC_INVASIVES,
+      "DNR Invasive Terrestrial Observations, FeatureServer");
+}
+/* Chippewa National Forest Land Management Plan areas (Paul,
+   Nov 13, 2026): the 2004 plan's management areas. The summary
+   is condensed from the plan's Chapter 3 — the plan's desired
+   conditions, not a harvest schedule. `service_description` is
+   "Not defined" in the source and is never shown. */
+function chippewaPlanPopup(f) {
+  var p = f.properties;
+  var rows = [
+    ["Management area", p.ma_name],
+    ["Code", p.code],
+    ["Plan year", p.plan_year],
+    ["Acres", p.gis_acres],
+  ];
+  if (p.summary) { rows.push(["Summary", p.summary]); }
+  return "<h3>" + esc(p.name || "Chippewa Forest Plan area") + "</h3>" +
+    kvTable(rows) +
+    "<p class='pop-note'>Chippewa National Forest Land Management " +
+    "Plan (2004) management areas — the plan's desired " +
+    "conditions, not a harvest schedule.</p>" +
+    popSourceLine(SRC_CHIPPEWA_PLAN,
+      "Chippewa NF — Land Management Planning (EDW), MapServer");
 }
 
 
@@ -4485,6 +4564,86 @@ var LAYERS = [
     },
   },
   {
+    /* DNR forest health survey 2025 (Paul, Nov 13, 2026 — "Wire
+       the three ready layers"): 123 polygons in the corridor
+       (10,084 ac), all year 2025 — eastern larch beetle 41,
+       wind/tornado 35, flooding 13, unknown bark beetle 10,
+       unknown 9, aspen decline 6, hardwood decline 5, larch
+       casebearer 3, forest tent caterpillar 1. Pulled Nov 13 by
+       working/land-layers/pull_land_layers.py. OFF by default
+       and LAZY. The survey maps where damage was recorded in
+       2025, not current condition. */
+    id: "foresthealth", label: "Forest health + blowdown (2025)",
+    title: "DNR forest health survey 2025 — damage in the corridor",
+    file: "data/forest-health-2025.geojson",
+    onByDefault: false, group: "The land",
+    swatch: { kind: "fill", color: "#dc2626", border: "#991b1b" },
+    build: function (gj) {
+      var layer = L.geoJSON(gj, {
+        renderer: canvasFor(),
+        style: {
+          color: "#991b1b", weight: 1.5,
+          fillColor: "#dc2626", fillOpacity: 0.3,
+        },
+        onEachFeature: function (f, l) { bindPop(l, forestHealthPopup(f)); },
+      });
+      return layer;
+    },
+  },
+  {
+    /* DNR invasive terrestrial observations (Paul, Nov 13, 2026):
+       5,551 reported sightings in the corridor (spotted knapweed
+       3,263; common tansy 2,158; leafy spurge 62; buckthorn 61;
+       garlic mustard 6; one emerald ash borer, 2023), observed
+       2000–2026. Pulled Nov 13 by
+       working/land-layers/pull_land_layers.py. OFF by default
+       and LAZY (canvas-rendered dots — 5,551 points). Reported
+       sightings, not a systematic survey. */
+    id: "invasives", label: "Invasive species sightings",
+    title: "DNR invasive terrestrial observations — reported sightings",
+    file: "data/invasive-sightings.geojson",
+    onByDefault: false, group: "The land",
+    swatch: { kind: "fill", color: "#7c3aed", border: "#5b21b6" },
+    build: function (gj) {
+      var layer = L.geoJSON(gj, {
+        renderer: canvasFor(),
+        pointToLayer: function (f, latlng) {
+          return L.circleMarker(latlng, {
+            radius: 4, color: "#5b21b6", weight: 1,
+            fillColor: "#7c3aed", fillOpacity: 0.6,
+          });
+        },
+        onEachFeature: function (f, l) { bindPop(l, invasivesPopup(f)); },
+      });
+      return layer;
+    },
+  },
+  {
+    /* Chippewa National Forest Land Management Plan areas
+       (Paul, Nov 13, 2026): 35 polygons, L2 Management Area
+       only, all plan year 2004 (467,513 gis acres). Pulled Nov 13
+       by working/land-layers/pull_land_layers.py; the summary
+       line on each area is condensed from the plan's Chapter 3.
+       OFF by default and LAZY. These are the plan's management
+       areas (desired conditions), not a harvest schedule. */
+    id: "chippewa-plan", label: "Chippewa Forest Plan areas (2004)",
+    title: "Chippewa National Forest Land Management Plan (2004) areas",
+    file: "data/chippewa-plan-areas.geojson",
+    onByDefault: false, group: "The land",
+    swatch: { kind: "fill", color: "#64748b", border: "#475569" },
+    build: function (gj) {
+      var layer = L.geoJSON(gj, {
+        renderer: canvasFor(),
+        style: {
+          color: "#475569", weight: 1.5,
+          fillColor: "#64748b", fillOpacity: 0.22,
+        },
+        onEachFeature: function (f, l) { bindPop(l, chippewaPlanPopup(f)); },
+      });
+      return layer;
+    },
+  },
+  {
     /* BWSR RIM Reserve conservation easements, clipped to the
        corridor (40 easements, 3,370 ac — 38 perpetual riparian,
        1 limited cropland, 1 PWP). OFF by default and LAZY like
@@ -5597,9 +5756,13 @@ function assertDrawOrder() {
        uppermost. Nov 13, 2026: "trail-minnesota" sits directly
        under "trail" (the chapter line owns the corridor);
        "alerts-mn-lines" sits directly over it (reroutes read as
-       alternate routes); "alerts-mn" sits with "alerts". */
+       alternate routes); "alerts-mn" sits with "alerts". The
+       three Nov 13 land layers (foresthealth, invasives,
+       chippewa-plan) sit with the other "The land" fills, after
+       easements, before access. */
     ["leechlake", "parcels", "logedw", "logfim", "logcass", "loghubbard",
-     "logbecker", "logclearwater", "easements", "access",
+     "logbecker", "logclearwater", "easements", "foresthealth",
+     "invasives", "chippewa-plan", "access",
      "roads", "nctasheets", "trail-minnesota", "trail", "alerts-mn-lines",
      "stretches", "gaps",
      "boundaries", "termini", "milemarkers", "chainage", "contours",
