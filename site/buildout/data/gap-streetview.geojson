@@ -1,1 +1,236 @@
-{"type": "FeatureCollection", "features": [{"type": "Feature", "properties": {"name": "MN-135 just south of Tower", "road": "MN-135", "why": "The last unfinished stretch of the Mesabi Trail \u2014 the trail still ends here; hikers walk MN-135.", "url": "https://www.google.com/maps/@?api=1&map_action=pano&viewpoint=47.78552,-92.27775", "verified": false}, "geometry": {"type": "Point", "coordinates": [-92.27775, 47.78552]}}, {"type": "Feature", "properties": {"name": "MN-135, Wahlsten area", "road": "MN-135", "why": "The long, straight no-shoulder stretch hikers faced for ~15 mi before the trail was built \u2014 the \"before\" view.", "url": "https://www.google.com/maps/@?api=1&map_action=pano&viewpoint=47.68962,-92.28937", "verified": false}, "geometry": {"type": "Point", "coordinates": [-92.28937, 47.68962]}}, {"type": "Feature", "properties": {"name": "MN-135 at Embarrass", "road": "MN-135", "why": "South end of the old Embarrass\u2013Tower gap, where the trail dead-ended ~6 mi short of Tower.", "url": "https://www.google.com/maps/@?api=1&map_action=pano&viewpoint=47.60198,-92.2361", "verified": false}, "geometry": {"type": "Point", "coordinates": [-92.2361, 47.60198]}}, {"type": "Feature", "properties": {"name": "MN-169, Eagles Nest area", "road": "MN-169", "why": "The contrast shot: rebuilt 2018 with 8-ft shoulders \u2014 what a rebuilt highway looks like.", "url": "https://www.google.com/maps/@?api=1&map_action=pano&viewpoint=47.85725,-92.07404", "verified": false}, "geometry": {"type": "Point", "coordinates": [-92.07404, 47.85725]}}, {"type": "Feature", "properties": {"name": "MN-169 / E. Sheridan St, Ely", "road": "MN-169", "why": "East end of the Mesabi Trail, where the NCT continues east on Fernberg Rd toward Kawishiwi Falls.", "url": "https://www.google.com/maps/@?api=1&map_action=pano&viewpoint=47.90316,-91.85395", "verified": false}, "geometry": {"type": "Point", "coordinates": [-91.85395, 47.90316]}}, {"type": "Feature", "properties": {"name": "US-75 at Kent", "road": "US-75", "why": "Two-lane US highway, 55 mph statutory default, narrow-to-no shoulder \u2014 the most exposed highway stretch on the western route.", "url": "https://www.google.com/maps/@?api=1&map_action=pano&viewpoint=46.46138,-96.70734", "verified": false}, "geometry": {"type": "Point", "coordinates": [-96.70734, 46.46138]}}, {"type": "Feature", "properties": {"name": "CR-88 southeast of Rothsay", "road": "CR-88", "why": "Northwest end of the 15.8-mi CR-88 stretch; paved county road, farm traffic.", "url": "https://www.google.com/maps/@?api=1&map_action=pano&viewpoint=46.469,-96.279", "verified": false}, "geometry": {"type": "Point", "coordinates": [-96.279, 46.469]}}, {"type": "Feature", "properties": {"name": "CR-88 at Fergus Falls", "road": "CR-88", "why": "Where the CR-88 road walk reaches town.", "url": "https://www.google.com/maps/@?api=1&map_action=pano&viewpoint=46.306,-96.092", "verified": false}, "geometry": {"type": "Point", "coordinates": [-96.092, 46.306]}}, {"type": "Feature", "properties": {"name": "US-59, Fergus Falls", "road": "US-59", "why": "The route crosses I-94, US-59 and the Pelican River in close succession \u2014 the highest-traffic crossing on the corridor.", "url": "https://www.google.com/maps/@?api=1&map_action=pano&viewpoint=46.26468,-96.09495", "verified": false}, "geometry": {"type": "Point", "coordinates": [-96.09495, 46.26468]}}, {"type": "Feature", "properties": {"name": "MN-210 E, Fergus Falls", "road": "MN-210", "why": "Trunk highway through east Fergus Falls; the Central Lakes Trail trailhead sits on Hwy 210.", "url": "https://www.google.com/maps/@?api=1&map_action=pano&viewpoint=46.27081,-96.05075", "verified": false}, "geometry": {"type": "Point", "coordinates": [-96.05075, 46.27081]}}, {"type": "Feature", "properties": {"name": "ND-4 / Fort Abercrombie", "road": "ND-4", "why": "The Red River crossing: road-walk Minnesota meets off-road trail in North Dakota.", "url": "https://www.google.com/maps/@?api=1&map_action=pano&viewpoint=46.44715,-96.7239", "verified": false}, "geometry": {"type": "Point", "coordinates": [-96.7239, 46.44715]}}]}
+{
+ "type": "FeatureCollection",
+ "features": [
+  {
+   "type": "Feature",
+   "properties": {
+    "name": "MN-135 just south of Tower",
+    "road": "MN-135",
+    "why": "The last unfinished stretch of the Mesabi Trail \u2014 the trail still ends here; hikers walk MN-135.",
+    "url": "https://www.google.com/maps/@?api=1&map_action=pano&viewpoint=47.78552,-92.27775",
+    "verified": true,
+    "pano_lat": 47.785556,
+    "pano_lon": -92.277748,
+    "pano_date": "Jun 2026",
+    "pano_note": "Straight two-lane MN-135, narrow paved shoulder, dense pine forest both sides; no trail or sidewalk."
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -92.27775,
+     47.78552
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "name": "MN-135, Wahlsten area",
+    "road": "MN-135",
+    "why": "The long, straight no-shoulder stretch hikers faced for ~15 mi before the trail was built \u2014 the \"before\" view.",
+    "url": "https://www.google.com/maps/@?api=1&map_action=pano&viewpoint=47.68962,-92.28937",
+    "verified": true,
+    "pano_lat": 47.689618,
+    "pano_lon": -92.289385,
+    "pano_date": "Jun 2026",
+    "pano_note": "Straight two-lane MN-135, narrow paved shoulder (thin asphalt strip beyond the white line, then grass/gravel), dense pine forest, cracked/repaired pavement; no trail."
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -92.28937,
+     47.68962
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "name": "MN-135 at Embarrass",
+    "road": "MN-135",
+    "why": "South end of the old Embarrass\u2013Tower gap, where the trail dead-ended ~6 mi short of Tower.",
+    "url": "https://www.google.com/maps/@?api=1&map_action=pano&viewpoint=47.60198,-92.2361",
+    "verified": true,
+    "pano_lat": 47.601987,
+    "pano_lon": -92.236089,
+    "pano_date": "Jun 2026",
+    "pano_note": "Winding two-lane MN-135, very narrow paved shoulder (white line at pavement edge, gravel/dirt beyond), dense forest; no trail on the road. Mesabi Trail crosses MN-135 here."
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -92.2361,
+     47.60198
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "name": "MN-169, Eagles Nest area",
+    "road": "MN-169",
+    "why": "The contrast shot: rebuilt 2018 \u2014 what a rebuilt highway looks like. (Keypoints 2024 shows mostly 4-ft paved shoulders here, not a uniform 8 ft.)",
+    "url": "https://www.google.com/maps/@?api=1&map_action=pano&viewpoint=47.85725,-92.07404",
+    "verified": true,
+    "pano_lat": 47.857245,
+    "pano_lon": -92.074099,
+    "pano_date": "Jul 2026",
+    "pano_note": "Two-lane MN-169, wide paved (concrete) shoulder on both sides in the rotated view, pine forest, lake glimpsed through trees; no separate trail."
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -92.07404,
+     47.85725
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "name": "MN-169 / E. Sheridan St, Ely",
+    "road": "MN-169",
+    "why": "East end of the Mesabi Trail, where the NCT continues east on Fernberg Rd toward Kawishiwi Falls.",
+    "url": "https://www.google.com/maps/@?api=1&map_action=pano&viewpoint=47.90316,-91.85395",
+    "verified": true,
+    "pano_lat": 47.902982,
+    "pano_lon": -91.853981,
+    "pano_date": "Sep 2024",
+    "pano_note": "Pano ~20 m south of the point, same street. Urban E Sheridan St / Voyageur Hwy: curbs and sidewalks, brick building, person on sidewalk; no highway shoulder (urban section)."
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -91.85395,
+     47.90316
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "name": "US-75 at Kent",
+    "road": "US-75",
+    "why": "Two-lane US highway, narrow-to-no shoulder \u2014 the most exposed highway stretch on the western route.",
+    "url": "https://www.google.com/maps/@?api=1&map_action=pano&viewpoint=46.46138,-96.70734",
+    "verified": true,
+    "pano_lat": 46.461362,
+    "pano_lon": -96.707358,
+    "pano_date": "Aug 2025",
+    "pano_note": "Straight two-lane US-75, narrow gravel shoulders beyond the white edge lines, flat farmland both sides; no trail, no sidewalk \u2014 the most exposed spot in the check."
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -96.70734,
+     46.46138
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "name": "CR-88 southeast of Rothsay",
+    "road": "CR-88",
+    "why": "Northwest end of the 15.8-mi CR-88 stretch; paved county road, farm traffic.",
+    "url": "https://www.google.com/maps/@?api=1&map_action=pano&viewpoint=46.469,-96.279",
+    "verified": true,
+    "pano_lat": 46.471143,
+    "pano_lon": -96.280069,
+    "pano_date": "Sep 2025",
+    "pano_note": "Nearest pano ~238 m north-west of the point, same road. Two-lane Co Rd 88, very narrow paved shoulder, flat soybean fields, Rothsay grain silos and water tower ahead; no trail."
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -96.279,
+     46.469
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "name": "CR-88 at Fergus Falls",
+    "road": "CR-88",
+    "why": "Where the CR-88 road walk reaches town.",
+    "url": "https://www.google.com/maps/@?api=1&map_action=pano&viewpoint=46.306,-96.092",
+    "verified": true,
+    "pano_lat": 46.306109,
+    "pano_lon": -96.091931,
+    "pano_date": "Jul 2024",
+    "pano_note": "Junction of CR-88 and Maryland Ln: wide paved residential road with curb/gutter and grass verges; no trail on the county road in view."
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -96.092,
+     46.306
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "name": "US-59, Fergus Falls",
+    "road": "US-59",
+    "why": "The route crosses I-94, US-59 and the Pelican River in close succession \u2014 the highest-traffic crossing on the corridor.",
+    "url": "https://www.google.com/maps/@?api=1&map_action=pano&viewpoint=46.26468,-96.09495",
+    "verified": true,
+    "pano_lat": 46.264695,
+    "pano_lon": -96.094903,
+    "pano_date": "Aug 2025",
+    "pano_note": "US-59 southbound (signed Purple Heart Trail), wide paved shoulder on the right, semi-truck ahead, I-94 signs in the distance; no trail."
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -96.09495,
+     46.26468
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "name": "MN-210 E, Fergus Falls",
+    "road": "MN-210",
+    "why": "Trunk highway through east Fergus Falls; the Central Lakes Trail trailhead sits on Hwy 210.",
+    "url": "https://www.google.com/maps/@?api=1&map_action=pano&viewpoint=46.27081,-96.05075",
+    "verified": true,
+    "pano_lat": 46.270841,
+    "pano_lon": -96.050647,
+    "pano_date": "Aug 2024",
+    "pano_note": "MN-210 East (Otter Trail Scenic Byway), two-lane with a wide paved shoulder, plant nursery / storage buildings across the road; no trail."
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -96.05075,
+     46.27081
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "name": "ND-4 / Fort Abercrombie",
+    "road": "ND-4",
+    "why": "The Red River crossing: road-walk Minnesota meets off-road trail in North Dakota.",
+    "url": "https://www.google.com/maps/@?api=1&map_action=pano&viewpoint=46.44715,-96.7239",
+    "verified": false,
+    "pano_lat": 46.446635,
+    "pano_lon": -96.72606,
+    "pano_date": "Jul 2008",
+    "pano_note": "NO panorama on ND-4 at the point. Nearest pano ~180 m west is INSIDE Fort Abercrombie State Historic Site grounds (log cabin, split-rail fence, gravel path); no highway shown. Do not present as a road view."
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -96.7239,
+     46.44715
+    ]
+   }
+  }
+ ]
+}

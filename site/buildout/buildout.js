@@ -4,7 +4,10 @@
  * nct_public line and the three drawn-route files in the NCT Drive folder).
  * Hard rules enforced here: $643,850 labeled not-submitted; no unverified
  * parcel-count claim; Mesabi shown as disputed, never complete; road type leads;
- * speeds only as the 55 mph statutory default, labeled as such.
+ * no posted speed limit is asserted anywhere — the MnDOT sources consulted
+ * (Nov 13, 2026) publish no speed limit for any segment. AADT and shoulder
+ * widths from MnDOT EMMA / TDMS and the 2024 Keypoints reports are shown on
+ * road-walk popups where found; gaps are labeled as missing, never guessed.
  */
 (function () {
   'use strict';
@@ -36,29 +39,56 @@
     return (m == null ? '—' : (Math.round(m * 100) / 100) + ' mi');
   }
 
-  // Town traverses: the 55 mph rural default does not apply inside town.
-  // Each entry is [lon0, lon1, lat0, lat1].
-  var TOWNS = [
-    [-91.87, -91.83, 47.89, 47.94],   // Ely
-    [-96.11, -96.03, 46.25, 46.31],   // Fergus Falls
-    [-93.60, -93.52, 47.21, 47.25]    // Grand Rapids / Coleraine
-  ];
   function midpoint(f) {
     var cs = f.geometry.coordinates;
     if (f.geometry.type !== 'LineString' || !cs.length) return null;
     return cs[Math.floor(cs.length / 2)];
   }
-  function isTown(f) {
+  // inBox(f, [lon0, lon1, lat0, lat1]) — midpoint test for segment detectors.
+  function inBox(f, b) {
     var m = midpoint(f);
     if (!m) return false;
-    return TOWNS.some(function (t) { return m[0] >= t[0] && m[0] <= t[1] && m[1] >= t[2] && m[1] <= t[3]; });
+    return m[0] >= b[0] && m[0] <= b[1] && m[1] >= b[2] && m[1] <= b[3];
   }
+  // Fergus Falls town traverse (US-59 / MN-210 East crossings).
+  var FERGUS_FALLS = [-96.11, -96.03, 46.25, 46.31];
+  function isFergusFalls(f) { return inBox(f, FERGUS_FALLS); }
+  // MN-169 in Ely (E. Sheridan St eastward).
+  var ELY = [-91.84, -91.75, 47.90, 47.94];
+  function isMn169Ely(f) { return inBox(f, ELY); }
+  // Mesabi paved path paralleling Hwy 169 through Eagles Nest Twp.
+  var EAGLES_NEST = [-92.16, -92.03, 47.82, 47.86];
+  function isEaglesNestPaved(f) { return inBox(f, EAGLES_NEST); }
   // MN-135 Embarrass -> Tower road segments (NCTA line, lon ~-92.28, lat 47.60-47.81).
   // The Mesabi Trail's own wording: no usable shoulder; the NCTA line is stale here.
   function isMn135(f) {
     var cs = f.geometry.coordinates;
     if (f.geometry.type !== 'LineString') return false;
     return cs.some(function (c) { return c[0] > -92.31 && c[0] < -92.22 && c[1] > 47.59 && c[1] < 47.82; });
+  }
+
+  // MnDOT figures per road-walk segment (EMMA / TDMS AADT; 2024 Keypoints
+  // shoulder widths; read Nov 13, 2026 — see docs/gap-mndot-live-data-report.md).
+  // Detectors are geographic or by NCTA seg_name; where the reports do not
+  // cover a stretch, the popup says so instead of guessing.
+  function mndotNote(f) {
+    var p = f.properties;
+    if (isMn135(f)) {
+      return '<p class="mndot"><strong>MnDOT figures (Nov 13, 2026) — MN-135, Embarrass to Tower:</strong> AADT 703–1,720 (2025): 793 north of CSAH 26 near Tower and 1,720 north of CSAH 100 (both popup-verified in EMMA; 703 is a map label). <strong>No paved shoulder</strong> Embarrass–Wahlsten–Tower — 4 ft stabilized unpaved, 6 ft entering Tower. This confirms the Mesabi Trail&rsquo;s &ldquo;no usable shoulder&rdquo; wording. Posted speed limit not published in the MnDOT sources consulted.</p>';
+    }
+    if (isMn169Ely(f)) {
+      return '<p class="mndot"><strong>MnDOT figures (Nov 13, 2026) — MN-169 in Ely:</strong> AADT 5,542 (2025) on Sheridan St E; shoulders 8 ft paved + 1.5 ft unpaved at 19th Ave E, 10 ft paved leaving Ely east. Posted speed limit not published in the MnDOT sources consulted.</p>';
+    }
+    if (p.seg_name === 'CR-88') {
+      return '<p class="mndot"><strong>MnDOT figures (Nov 13, 2026) — County State Aid Highway 88:</strong> 16.38 mi, Fergus Falls to the Wilkin County line. It is not one 39.5-mi road to the border. Shoulders (Keypoints 2024): Fergus Falls end 8 ft paved; mid-stretch no paved shoulder, 6 ft stabilized unpaved; near Rothsay no paved shoulder, 5 ft stabilized unpaved. Traffic near Rothsay about 190 vehicles/day (2022, map label). Posted speed limit not published in the MnDOT sources consulted.</p>';
+    }
+    if (p.seg_name === 'Red River Valley Provisional Route') {
+      return '<p class="mndot"><strong>MnDOT figures (Nov 13, 2026) — Rothsay to the North Dakota border, 23.68 mi:</strong> not one road — a zigzag of Wilkin County roads, then US-75 from Kent to the Red River bridge. US-75 at Kent: AADT 1,355 (2025); in Kent 2 ft paved + 8 ft unpaved shoulder; north toward the border 2–3 ft paved + 5 ft unpaved. The Red River bridge itself is not in the Wilkin County report. No MnDOT shoulder data was found for the Wilkin county-road zigzag. Posted speed limit not published in the MnDOT sources consulted.</p>';
+    }
+    if (isFergusFalls(f)) {
+      return '<p class="mndot"><strong>MnDOT figures (Nov 13, 2026) — through Fergus Falls:</strong> the route crosses US-59 and MN-210 East. US-59: AADT 6,008–7,118 in town (2025), 13,317 north of town; shoulder widths through town, including the Pelican River crossing, are <strong>not listed</strong> — an 11.1-mi gap in the Otter Tail report. MN-210 East: AADT 11,492 / 6,008 in town (2025); shoulders 10 ft paved entering town and through town, 12 ft paved + 2 ft unpaved at one stretch, 8 ft leaving town. Posted speed limit not published in the MnDOT sources consulted.</p>';
+    }
+    return null;
   }
 
   function gapPopup(f) {
@@ -70,15 +100,19 @@
     if (p.chapter) h += ' &middot; ' + esc(p.chapter) + ' chapter';
     h += '</p>';
     if (p.surface === 'road') {
-      h += '<p>On-road walk.';
-      if (!isTown(f)) h += ' Rural two-lane roads here carry the 55 mph statutory default (Minn. Stat. &sect; 169.14) — a default, not a posted limit.';
-      h += ' Posted speeds, shoulder widths and traffic counts are not yet verified for this segment.</p>';
+      h += '<p>On-road walk.</p>';
+      var mndot = mndotNote(f);
+      if (mndot) h += mndot;
+      else h += '<p>MnDOT traffic counts and shoulder widths are not available for this stretch. Posted speed limits were not found in the MnDOT sources consulted for any segment (Nov 13, 2026).</p>';
       if (isMn135(f)) {
         h += '<p class="warn"><strong>MN-135, Embarrass to Tower:</strong> the Mesabi Trail&rsquo;s own wording is &ldquo;no usable shoulder&rdquo; and &ldquo;NOT recommended to detour to the shoulder of Hwy 135.&rdquo; The as-built Mesabi Trail has replaced most of this road walk; the NCTA line shown here is stale. Final 0.5 mi stub disputed — see the Mesabi note in the panel.</p>';
       }
     }
     if (p.surface === 'paved') {
       h += '<p>Paved multi-use path (Mesabi Trail on the Arrowhead gap; Heart of the Lakes Trail on the western gap). This is the trail as it exists today — not off-road foot tread.</p>';
+      if (isEaglesNestPaved(f)) {
+        h += '<p class="mndot"><strong>Highway 169 alongside (MnDOT, Nov 13, 2026):</strong> rebuilt 2018, $16.4M, about 6 mi. Shoulders here are mostly 4 ft paved — 8 ft only leaving Tower, with one 10-ft stretch — not a uniform 8 ft. AADT 2,370 (2025) east of Soudan. Posted speed limit not published in the MnDOT sources consulted.</p>';
+      }
     }
     if (p.surface === 'foot') {
       h += '<p>True off-road foot tread. On the Arrowhead gap this is 1.44 miles of 182.6; on the western gap 5.98 miles of 106.1.</p>';
@@ -174,10 +208,17 @@
         },
         onEachFeature: function (f, l) {
           var p = f.properties;
-          l.bindPopup('<h3>' + esc(p.name) + '</h3>' +
-            '<p>' + esc(p.why) + '</p>' +
-            '<p><a href="' + esc(p.url) + '" target="_blank" rel="noopener">Open Street View</a></p>' +
-            '<p class="warn"><strong>Panorama not yet confirmed</strong> — this link opens the nearest panorama to the viewpoint; existence has not been live-verified.</p>');
+          var h = '<h3>' + esc(p.name) + '</h3>' +
+            '<p>' + esc(p.why) + '</p>';
+          if (p.verified) {
+            h += '<p><a href="' + esc(p.url) + '" target="_blank" rel="noopener">Open Street View</a> — panorama confirmed ' + esc(p.pano_date || '') + '.</p>';
+            if (p.pano_note) h += '<p>' + esc(p.pano_note) + '</p>';
+          } else {
+            h += '<p class="warn"><strong>No Street View panorama on the road at this point.</strong></p>';
+            if (p.pano_note) h += '<p>' + esc(p.pano_note) + '</p>';
+            h += '<p><a href="' + esc(p.url) + '" target="_blank" rel="noopener">Open nearest panorama</a> (' + esc(p.pano_date || '') + ') — not a road view.</p>';
+          }
+          l.bindPopup(h);
         }
       });
       loaded['sv'] = true;

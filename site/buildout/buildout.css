@@ -57,6 +57,7 @@ footer a { color: #1a5c2a; }
 .leaflet-popup-content h3 { margin: 0 0 4px; font-size: 15px; }
 .leaflet-popup-content p { margin: 4px 0; }
 .leaflet-popup-content .warn { color: #8a6d00; }
+.leaflet-popup-content .mndot { border-left: 3px solid #2166ac; padding-left: 8px; }
 .sv-marker { background: #4285f4; border: 2px solid #fff; border-radius: 50%; box-shadow: 0 1px 4px rgba(0,0,0,0.5); text-align: center; color: #fff; font-size: 11px; line-height: 18px; font-weight: bold; }
 
 @media (max-width: 760px) {

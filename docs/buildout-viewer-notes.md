@@ -20,8 +20,9 @@ Does not touch the chapter map (`site/index.html`, `site/app.js`).
   - `corridor-2004.kmz` — 2004 NPS preferred-alternative corridor polygon
     (107 points, bbox lon −93.90..−91.37, lat 46.99..47.98; perimeter
     315.59 mi — a polygon, not a route length).
-- Street View points from the two gap research files §6; all
-  `verified:false` — panorama existence not yet live-confirmed.
+- Street View points from the two gap research files §6; 10 of 11
+  panoramas confirmed Nov 13, 2026 (see the v3 section below) — ND-4 /
+  Fort Abercrombie has no panorama on the road.
 
 ## Measured totals (from the files, `len_miles`)
 
@@ -59,8 +60,10 @@ Does not touch the chapter map (`site/index.html`, `site/app.js`).
 - No parcel-count claim. Mesabi shown as disputed, never complete
   (Lottery "complete" Oct 2026 vs LCCMR 2027-341 $1.65M for final 2.5 mi
   by June 30, 2029 — to confirm with the Railroad Authority).
-- Road type leads; speeds only as the 55 mph statutory default, labeled
-  as a default, and not shown for town-traverse segments.
+- Road type leads; no posted speed limit is asserted anywhere — the MnDOT
+  sources consulted (Nov 13, 2026) publish no speed limit for any segment
+  (the old "55 mph statutory default" line was removed with the MnDOT
+  wiring; see the v3 section below).
 - Corridor ends at the North Dakota border (Fort Abercrombie); the NCT
   does not pass through Detroit Lakes.
 - U of M modeled route + ARDC geodatabase are NOT in the Drive folder and
@@ -198,3 +201,52 @@ areas, this could significantly change the relative attractiveness of
 alternative corridors" (p. 10–11). A slope layer from USGS 3DEP (10-m,
 or 1-m LiDAR where available) is the highest-value addition not in the
 report's dataset list — rank it HIGH for a future pass.
+
+---
+
+# v3 — MnDOT live data wired into road-walk popups (Nov 13, 2026)
+
+Source: `docs/gap-mndot-live-data-report.md` — AADT from MnDOT EMMA / TDMS,
+shoulder widths from the 2024 Keypoints Details by County reports, read
+Nov 13, 2026. `buildout.js` `mndotNote()` attaches figures by geography
+(MN-135, MN-169 in Ely, Fergus Falls town traverse, Eagles Nest paved
+Mesabi stretch) or NCTA `seg_name` (CR-88, Red River Valley Provisional
+Route). No posted speed limit is asserted anywhere — none was found in the
+MnDOT sources consulted; the old "55 mph statutory default" sentence, the
+"speeds are statutory defaults" footer line, and the "CR-88 to the border"
+panel line are all removed or corrected.
+
+- MN-135 Embarrass→Tower: AADT 703–1,720 (2025); no paved shoulder
+  (4 ft stabilized unpaved; 6 ft entering Tower) — confirms the Mesabi
+  "no usable shoulder" wording.
+- MN-169 Eagles Nest: mostly 4 ft paved, 8 ft only leaving Tower, one
+  10-ft stretch — not a uniform 8 ft; 2018 rebuild ($16.4M, ~6 mi)
+  confirmed. Shown on the paved Mesabi popups alongside Hwy 169 and in
+  the Eagles Nest Street View point text.
+- MN-169 in Ely: AADT 5,542 (2025); 8 ft paved + 1.5 ft unpaved at
+  19th Ave E, 10 ft leaving Ely east.
+- CSAH 88: 16.38 mi, Fergus Falls to the Wilkin line — not one 39.5-mi
+  road to the border; 8 ft paved at the Fergus Falls end, no paved
+  shoulder mid-stretch (6 ft stabilized) or near Rothsay (5 ft).
+- Rothsay→border (23.68 mi): Wilkin county-road zigzag (no MnDOT
+  shoulder data found) + US-75 from Kent (AADT 1,355; 2 ft paved +
+  8 ft unpaved in Kent, 2–3 ft paved + 5 ft unpaved north; Red River
+  bridge not in the Wilkin report).
+- Fergus Falls town: US-59 AADT 6,008–7,118 in town, 13,317 north;
+  shoulder data missing through town incl. the Pelican River crossing
+  (11.1-mi gap in the Otter Tail report). MN-210 East: AADT 11,492 /
+  6,008 in town; shoulders 10 ft entering/through town, 12 ft + 2 ft
+  at one stretch, 8 ft leaving.
+- Street View: 10 of 11 panoramas confirmed Nov 13, 2026 (`verified:
+  true` with pano coordinates, date and notes in
+  `data/gap-streetview.geojson`); popups now show the confirmed date
+  instead of the blanket "not yet confirmed" warning. ND-4 / Fort
+  Abercrombie has no panorama on the road — nearest is inside the
+  historic site grounds (Jul 2008), marked as not a road view.
+
+NOT wired (flagged, not guessed): the Hwy 6 road walk west of Grand
+Rapids — the 10.29-mi Hwy 6 stretch is not in the gap file (it belongs
+to the Hwy 6→Tioga Beach corridor), so the MN-6 figures (AADT 396–5,566;
+mostly 2 ft paved + 2 ft unpaved, no paved near Cohasset) have no
+road-walk popup to attach to. The Grand Rapids road features in the file
+are US-169 / CR-76 town streets, not MN-6.
