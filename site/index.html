@@ -17,71 +17,37 @@
       <h1>Itasca Moraine Chapter</h1>
       <p class="masthead-desc">Trail Map</p>
     </div>
-    <button type="button" id="ask-btn" class="ask-btn"
-      title="Ask the trail — answers from the map's own data"
-      aria-label="Ask the trail">Ask the trail</button>
     <button type="button" id="present-btn" class="present-btn"
       title="Present — big screen"
       aria-label="Present — big screen">⛶</button>
   </div>
-  <button type="button" id="copy-link-btn" class="copy-link-btn" title="Copy link">Copy link</button>
 
-  <!-- Ask the trail (Paul, Nov 13, 2026): natural-language Q&A for
-       the chapter board. Answers come only from the map's own data
+  <!-- Ask the trail (Paul, Nov 13, 2026): one mic button and one
+       text box at the top of the panel, nothing else around them.
+       Tap the mic and speak, or type a question and press Enter;
+       answers are spoken, with the transcript kept below. Answers
+       come only from the map's own data
        (site/data/trail-digest.json via the itm-save Worker); a
        question the data cannot answer is queued for Paul and Muse,
        after the assistant asks what the asker would want it to do.
-       Voice mode ("Talk to the trail") is a turn-based conversation:
-       speak, hear the spoken answer, speak again. The assistant is
-       the Itasca Moraine trail assistant and answers only about the
-       North Country Trail and the Itasca Moraine chapter. -->
+       The assistant is the Itasca Moraine trail assistant and
+       answers only about the North Country Trail and the Itasca
+       Moraine chapter. -->
+  <div class="ask-bar">
+    <button type="button" id="ask-mic" class="ask-mic"
+      title="Talk to the trail — tap, speak, tap when done"
+      aria-label="Talk to the trail">🎙</button>
+    <input id="ask-input" type="text" autocomplete="off"
+      placeholder="Ask about the trail…"
+      aria-label="Ask about the trail">
+  </div>
   <div id="ask-panel" hidden>
     <div class="ask-head">
-      <h2>Ask the trail</h2>
       <button type="button" id="ask-close" class="ask-close"
         aria-label="Close">×</button>
     </div>
-    <p class="ask-note">Answers come only from the map's own data —
-      sections, pins, parcels, timber, and the chapter's verified
-      research. If the map can't answer, the question goes to
-      Paul.</p>
-    <div class="ask-row">
-      <input id="ask-input" type="text" autocomplete="off"
-        placeholder="Ask about the trail…">
-      <button type="button" id="ask-submit" class="ask-submit">Ask</button>
-    </div>
-    <p class="ask-scope">Ask about the North Country Trail and the
-      Itasca Moraine chapter.</p>
     <button type="button" id="ask-skip" class="ask-skip" hidden>Skip —
       that's all I have</button>
-    <div class="ask-suggest" id="ask-suggest">
-      <button type="button"
-        data-q="Which parts of the trail have no adopter?">Which
-        parts have no adopter?</button>
-      <button type="button"
-        data-q="How many miles are unadopted?">How many miles are
-        unadopted?</button>
-      <button type="button"
-        data-q="What timber sales happened near the trail in 2026?">Timber
-        sales in 2026?</button>
-      <button type="button"
-        data-q="How many boardwalk pins are there, and what condition are they in?">Boardwalk
-        pins and their condition?</button>
-      <button type="button"
-        data-q="How do I photograph a trail feature for the map?">How
-        do I photograph a trail feature?</button>
-      <button type="button"
-        data-q="How do I track my walk with Geo Tracker?">How do I
-        track my walk with Geo Tracker?</button>
-    </div>
-    <div class="ask-voice-row">
-      <button type="button" id="ask-talk" class="ask-talk">Talk to
-        the trail</button>
-      <button type="button" id="ask-voice-stop" class="ask-voice-stop"
-        hidden>Stop talking</button>
-      <span class="ask-voice-state" id="ask-voice-state"
-        role="status"></span>
-    </div>
     <p class="ask-status" id="ask-status" role="status"></p>
     <div class="ask-transcript" id="ask-transcript">
       <div class="ask-turn ask-assistant">
@@ -90,6 +56,7 @@
       </div>
     </div>
   </div>
+  <button type="button" id="copy-link-btn" class="copy-link-btn" title="Copy link">Copy link</button>
 
   <h2>Adoption</h2>
   <p class="adopt-line"><strong>73.2 of 76.2 mi adopted.</strong>

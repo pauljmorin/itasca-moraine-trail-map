@@ -1179,29 +1179,43 @@ body.gap-chip .gap-label span {
 }
 .present-btn:hover { background: var(--paper-hover); }
 
-/* Ask the trail button (Paul, Nov 13, 2026): a small text button
-   in the masthead, next to Present. It takes the free space so
-   Present stays pinned to the panel's right edge. */
-.ask-btn {
-  margin-left: auto;
+/* Ask the trail bar (Paul, Nov 13, 2026): one mic button and one
+   text box in a single row at the top of the panel, under the
+   masthead. The panel is 320px wide, so the box cannot live in
+   the masthead row itself. */
+.ask-bar {
+  display: flex;
+  gap: 6px;
+  margin-bottom: 10px;
+}
+.ask-mic {
   flex: 0 0 auto;
-  height: 30px;
-  padding: 0 10px;
+  width: 32px;
+  height: 32px;
+  padding: 0;
   font: inherit;
-  font-size: 0.85rem;
-  font-weight: 600;
+  font-size: 16px;
+  line-height: 1;
   color: var(--ink);
   background: #fff;
   border: 1px solid #b9cba5;
   border-radius: 6px;
   cursor: pointer;
-  white-space: nowrap;
 }
-.ask-btn:hover { background: var(--paper-hover); }
-.masthead .present-btn { margin-left: 6px; }
+.ask-mic:hover { background: var(--paper-hover); }
+.ask-mic-on {
+  background: #fbe9e7;
+  border-color: #b2182b;
+}
+.ask-mic-listening {
+  background: #f6c9c4;
+  border-color: #b2182b;
+}
+.masthead .present-btn { margin-left: auto; }
 
-/* Ask the trail panel (Paul, Nov 13, 2026): Q&A for the chapter
-   board, below the masthead. Answers carry their sources; an
+/* Ask the trail panel (Paul, Nov 13, 2026): the transcript only.
+   It opens on the first question or mic tap; the greeting is the
+   assistant introducing itself. Answers carry their sources; an
    unanswered question shows the queued note. */
 #ask-panel {
   margin-top: 10px;
@@ -1212,13 +1226,7 @@ body.gap-chip .gap-label span {
 }
 #ask-panel .ask-head {
   display: flex;
-  align-items: baseline;
-  justify-content: space-between;
-}
-#ask-panel h2 {
-  border-bottom: none;
-  margin: 0 0 4px;
-  padding-bottom: 0;
+  justify-content: flex-end;
 }
 .ask-close {
   flex: 0 0 auto;
@@ -1235,12 +1243,6 @@ body.gap-chip .gap-label span {
   cursor: pointer;
 }
 .ask-close:hover { background: var(--paper-hover); }
-.ask-note {
-  font-size: 0.85rem;
-  color: var(--ink-soft);
-  margin: 0 0 8px;
-}
-.ask-row { display: flex; gap: 6px; }
 #ask-input {
   flex: 1 1 auto;
   min-width: 0;
@@ -1252,45 +1254,12 @@ body.gap-chip .gap-label span {
   border: 1px solid #b9cba5;
   border-radius: 6px;
 }
-.ask-submit {
-  flex: 0 0 auto;
-  padding: 7px 14px;
-  font: inherit;
-  font-size: 0.9rem;
-  font-weight: 600;
-  color: #fff;
-  background: var(--trail-deep);
-  border: 1px solid var(--trail-deep);
-  border-radius: 6px;
-  cursor: pointer;
-}
-.ask-submit:disabled { opacity: 0.55; cursor: default; }
-.ask-suggest {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 6px;
-  margin-top: 8px;
-}
-.ask-suggest button {
-  padding: 4px 8px;
-  font: inherit;
-  font-size: 0.8rem;
-  color: var(--ink);
-  background: #fff;
-  border: 1px solid #d8d2bd;
-  border-radius: 20px;
-  cursor: pointer;
-}
-.ask-suggest button:hover { background: var(--paper-hover); }
 .ask-status {
   font-size: 0.85rem;
   color: var(--ink-soft);
   margin: 8px 0 0;
 }
 .ask-status:empty { display: none; }
-.ask-answer { margin-top: 10px; border-top: 1px solid #d8d2bd; padding-top: 8px; }
-.ask-answer p { margin: 0 0 6px; }
-#ask-answer-text { white-space: pre-wrap; }
 .ask-sources {
   font-size: 0.8rem;
   color: var(--ink-soft);
@@ -1302,15 +1271,9 @@ body.gap-chip .gap-label span {
 }
 
 /* Ask the trail, voice mode + transcript (Paul, Nov 13, 2026):
-   "Talk to the trail" is a turn-based voice conversation — speak,
-   hear the spoken answer, speak again — with the whole exchange
-   kept as a visible transcript. Scope note sits under the input;
-   the transcript replaces the old single-answer box. */
-.ask-scope {
-  font-size: 0.8rem;
-  color: var(--ink-soft);
-  margin: 6px 0 0;
-}
+   the mic starts a turn-based voice conversation — speak, hear
+   the spoken answer, speak again — with the whole exchange kept
+   as a visible transcript. */
 .ask-skip {
   margin-top: 6px;
   padding: 2px 0;
@@ -1322,31 +1285,6 @@ body.gap-chip .gap-label span {
   cursor: pointer;
   text-decoration: underline;
 }
-.ask-voice-row {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  margin-top: 8px;
-}
-.ask-talk, .ask-voice-stop {
-  flex: 0 0 auto;
-  padding: 5px 10px;
-  font: inherit;
-  font-size: 0.85rem;
-  font-weight: 600;
-  color: var(--ink);
-  background: #fff;
-  border: 1px solid #b9cba5;
-  border-radius: 20px;
-  cursor: pointer;
-}
-.ask-talk:hover, .ask-voice-stop:hover { background: var(--paper-hover); }
-.ask-talk:disabled { opacity: 0.55; cursor: default; }
-.ask-voice-state {
-  font-size: 0.85rem;
-  color: var(--ink-soft);
-}
-.ask-voice-state:empty { display: none; }
 .ask-transcript { margin-top: 10px; }
 .ask-turn {
   border-top: 1px solid #d8d2bd;

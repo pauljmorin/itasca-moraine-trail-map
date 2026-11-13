@@ -5856,18 +5856,20 @@ wireCanopyHover();
 })();
 
 /* --------------------------------------------------- Ask the trail
-   (Paul, Nov 13, 2026): natural-language Q&A for the chapter
-   board. The masthead button opens the panel; the question goes to
-   the itm-save Worker's /ask endpoint, which answers ONLY from the
-   checked-in digest (site/data/trail-digest.json). The reply may
-   carry a focus — a section, the gap, or an asset serial — which
-   the panel applies to the map with the existing selection
-   machinery (selectSection/zoomToSelection for sections and the
-   gap; the pin popup for an asset). An unanswered question comes
-   back queued: the Worker records it in data/ask-queue.json and
-   emails Paul, so both Paul and Muse see it. The panel never
-   invents anything and never shows adopter contact info — there
-   is none in the digest to show. */
+   (Paul, Nov 13, 2026): one mic button and one text box at the top
+   of the panel, nothing else around them. Type a question and
+   press Enter, or tap the mic and speak; answers are spoken, with
+   the transcript kept below. The question goes to the itm-save
+   Worker's /ask endpoint, which answers ONLY from the checked-in
+   digest (site/data/trail-digest.json). The reply may carry a
+   focus — a section, the gap, or an asset serial — which the panel
+   applies to the map with the existing selection machinery
+   (selectSection/zoomToSelection for sections and the gap; the pin
+   popup for an asset). An unanswered question comes back queued:
+   the Worker records it in data/ask-queue.json and emails Paul,
+   so both Paul and Muse see it. The panel never invents anything
+   and never shows adopter contact info — there is none in the
+   digest to show. */
 function applyAskFocus(focus) {
   if (!focus || typeof focus !== "object") return;
   var def, item, entry, i;
@@ -5903,18 +5905,13 @@ function applyAskFocus(focus) {
 
 (function wireAskPanel() {
   var panel = document.getElementById("ask-panel");
-  var btn = document.getElementById("ask-btn");
+  var micBtn = document.getElementById("ask-mic");
   var closeBtn = document.getElementById("ask-close");
   var input = document.getElementById("ask-input");
-  var submit = document.getElementById("ask-submit");
   var statusEl = document.getElementById("ask-status");
   var transcriptEl = document.getElementById("ask-transcript");
-  var suggestEl = document.getElementById("ask-suggest");
-  var talkBtn = document.getElementById("ask-talk");
-  var voiceStopBtn = document.getElementById("ask-voice-stop");
-  var voiceStateEl = document.getElementById("ask-voice-state");
   var skipBtn = document.getElementById("ask-skip");
-  if (!panel || !btn || !input || !submit || !transcriptEl) return;
+  if (!panel || !micBtn || !input || !transcriptEl) return;
 
   /* Conversation state: the last few exchanges go to the Worker
      with each question, so follow-ups resolve ("how many miles is
@@ -5936,8 +5933,18 @@ function applyAskFocus(focus) {
     "about the North Country Trail and the Itasca Moraine chapter.";
 
   function setStatus(text) { statusEl.textContent = text || ""; }
-  function setVoiceState(text) {
-    voiceStateEl.textContent = text || "";
+  /* The mic button carries the voice state: idle, live, or
+     listening (tap when done speaking). The status line carries
+     the words. */
+  function setMicState() {
+    micBtn.classList.toggle("ask-mic-on", voiceMode);
+    micBtn.classList.toggle("ask-mic-listening",
+      voiceMode && voiceState === "listening");
+    micBtn.title = !voiceMode
+      ? "Talk to the trail — tap, speak, tap when done"
+      : voiceState === "listening"
+        ? "Listening… tap when done speaking"
+        : "Tap to stop talking";
   }
   function el(tag, cls, text) {
     var n = document.createElement(tag);
@@ -6050,12 +6057,14 @@ function applyAskFocus(focus) {
       return;
     }
     addUserTurn(q);
+    panel.hidden = false;
     var inElicitation = !!elicitation;
-    submit.disabled = true;
     input.disabled = true;
     setStatus("Asking the trail…");
-    if (voiceMode) voiceState = "asking";
-    if (voiceMode) setVoiceState("Asking the trail…");
+    if (voiceMode) {
+      voiceState = "asking";
+      setMicState();
+    }
     pushHistory("user", q);
     var body = { question: q, history: history.slice(0, -1) };
     if (inElicitation) body.elicitation = elicitation;
@@ -6068,7 +6077,6 @@ function applyAskFocus(focus) {
         return { status: res.status, data: data };
       });
     }).then(function (r) {
-      submit.disabled = false;
       input.disabled = false;
       input.focus();
       if (r.status === 200 && r.data && r.data.ok) {
@@ -6107,8 +6115,8 @@ function applyAskFocus(focus) {
         }
         if (voiceMode) {
           voiceState = "speaking";
-          setVoiceState("Speaking…");
-          talkBtn.disabled = true;
+          setMicState();
+          setStatus("Speaking…");
           speakText(spoken).catch(function () {
             /* Spoken answer failed; the text is already on
                screen. Carry on listening. */
@@ -6130,7 +6138,6 @@ function applyAskFocus(focus) {
         }
       }
     }).catch(function () {
-      submit.disabled = false;
       input.disabled = false;
       setStatus("Couldn't reach the answer service — try again.");
       if (voiceMode) stopVoice();
@@ -6138,13 +6145,13 @@ function applyAskFocus(focus) {
   }
 
   /* ---- Voice conversation (turn-based, not full duplex) ----
-     Tap "Talk to the trail": the assistant greets you aloud, then
-     listens. Speak, tap "Done speaking" (or wait 30 seconds), the
-     turn is transcribed, answered, and spoken back — then it
-     listens again, so follow-ups just work. Typing stays available
-     alongside. Microphone access needs a user gesture and HTTPS;
-     a denied or missing microphone falls back to typing with a
-     plain message. */
+     Tap the mic: the assistant greets you aloud, then listens.
+     Speak, tap the mic again when done, the turn is transcribed,
+     answered, and spoken back — then it listens again, so
+     follow-ups just work. Typing stays available alongside.
+     Microphone access needs a user gesture and HTTPS; a denied
+     or missing microphone falls back to typing with a plain
+     message. */
   function voiceSupported() {
     return !!(navigator.mediaDevices &&
       navigator.mediaDevices.getUserMedia && window.MediaRecorder);
@@ -6182,10 +6189,8 @@ function applyAskFocus(focus) {
       try { voiceAudio.pause(); } catch (e) {}
       voiceAudio = null;
     }
-    talkBtn.disabled = false;
-    talkBtn.textContent = "Talk to the trail";
-    if (voiceStopBtn) voiceStopBtn.hidden = true;
-    setVoiceState("");
+    setMicState();
+    setStatus("");
   }
   function startListening() {
     if (!voiceMode) return;
@@ -6196,9 +6201,8 @@ function applyAskFocus(focus) {
       return;
     }
     voiceState = "listening";
-    setVoiceState("Listening… tap Done speaking when finished.");
-    talkBtn.disabled = false;
-    talkBtn.textContent = "Done speaking";
+    setMicState();
+    setStatus("Listening… tap the mic when done speaking.");
     navigator.mediaDevices.getUserMedia({ audio: true }).then(
       function (stream) {
         if (!voiceMode) {
@@ -6257,8 +6261,8 @@ function applyAskFocus(focus) {
       return;
     }
     voiceState = "transcribing";
-    setVoiceState("Transcribing…");
-    talkBtn.disabled = true;
+    setMicState();
+    setStatus("Transcribing…");
     var blob = new Blob(chunks,
       { type: recordMime || "audio/webm" });
     var reader = new FileReader();
@@ -6292,7 +6296,8 @@ function applyAskFocus(focus) {
           /* Nothing heard, or transcription failed: say so and
              listen again rather than dropping the conversation. */
           voiceState = "speaking";
-          setVoiceState("Speaking…");
+          setMicState();
+          setStatus("Speaking…");
           speakText("I didn't catch that — could you say it " +
             "again?").catch(function () {}).then(function () {
               if (voiceMode) startListening();
@@ -6317,10 +6322,8 @@ function applyAskFocus(focus) {
     }
     voiceMode = true;
     voiceState = "speaking";
-    setVoiceState("Speaking…");
-    talkBtn.disabled = true;
-    talkBtn.textContent = "Talk to the trail";
-    if (voiceStopBtn) voiceStopBtn.hidden = false;
+    setMicState();
+    setStatus("Speaking…");
     /* Opening line, spoken: the identity, in Paul's words. If the
        spoken greeting fails (service not set up), the written
        greeting is already on screen — carry on to listening. */
@@ -6329,29 +6332,12 @@ function applyAskFocus(focus) {
     });
   }
 
-  btn.addEventListener("click", function () {
-    panel.hidden = !panel.hidden;
-    if (!panel.hidden) input.focus();
-    if (panel.hidden && voiceMode) stopVoice();
-  });
   if (closeBtn) closeBtn.addEventListener("click", function () {
     panel.hidden = true;
     if (voiceMode) stopVoice();
   });
-  submit.addEventListener("click", function () {
-    askQuestion(input.value);
-  });
   input.addEventListener("keydown", function (e) {
     if (e.key === "Enter") askQuestion(input.value);
-  });
-  if (suggestEl) suggestEl.addEventListener("click", function (e) {
-    var t = e.target.closest("button[data-q]");
-    if (!t) return;
-    /* A suggested question is a fresh question, not a reply to a
-       clarifying question. */
-    resetElicitation();
-    input.value = t.getAttribute("data-q");
-    askQuestion(input.value);
   });
   if (skipBtn) skipBtn.addEventListener("click", function () {
     /* The asker has nothing more to add: close the loop locally.
@@ -6363,8 +6349,11 @@ function applyAskFocus(focus) {
     addAssistantTurn({ answer: close, sources: [], unanswered: false });
     pushHistory("assistant", close);
   });
-  if (talkBtn) talkBtn.addEventListener("click", function () {
+  /* The mic is the whole voice control: tap to start talking,
+     tap again when done speaking, tap any other time to stop. */
+  micBtn.addEventListener("click", function () {
     if (!voiceMode) {
+      panel.hidden = false;
       startVoice();
     } else if (voiceState === "listening") {
       /* Done speaking: stop the recorder; onstop finishes the
@@ -6372,10 +6361,9 @@ function applyAskFocus(focus) {
       if (recorder && recorder.state !== "inactive") {
         try { recorder.stop(); } catch (e) {}
       }
+    } else {
+      stopVoice();
     }
-  });
-  if (voiceStopBtn) voiceStopBtn.addEventListener("click", function () {
-    stopVoice();
   });
 })();
 
