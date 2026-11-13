@@ -5391,15 +5391,15 @@ var LAYERS = [
        none). One camera marker per spot at the panorama location
        (where the photo was taken from), and the Street View link
        opens aimed at the trail crossing / trailhead (heading in
-       the data). Off by default. Standalone group for now — Paul
-       will say which panel group it goes under. The east Hwy 113
+       the data). Off by default. Under "The trail" since Nov 13,
+       2026 (Paul: "put street view under the trail"). The east Hwy 113
        spot is a user-contributed photosphere, not Google car
        coverage, and its popup says so. */
     id: "streetview", label: "Street View",
     title: "Google Street View at the trailheads and road " +
       "crossings that have it — opens aimed at the trail",
     file: "data/streetview.geojson", onByDefault: false,
-    group: "Street View",
+    group: "The trail",
     swatch: { kind: "pin", color: "#4285f4" },
     build: function (gj) {
       var camSvg = "<svg width='12' height='12' viewBox='0 0 16 16' " +
@@ -5652,8 +5652,7 @@ function writeShareHash() {
    order; the PANEL order is this list, so a def's group decides
    where its toggle lands, not its position in the array. */
 var PANEL_GROUPS = ["The trail", "ITM inventory",
-                    "The land", "Land ownership", "Around the trail",
-                    "Street View"];
+                    "The land", "Land ownership", "Around the trail"];
 LAYERS.forEach(function (def) {
   def.layer = null;
   def.loading = false;
