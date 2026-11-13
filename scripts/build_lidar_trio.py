@@ -10,10 +10,12 @@ hillshade; this script builds the two missing surfaces over a
   1. "MN LiDAR Canopy"        -- hillshade of the first-return
                                  surface (DSM), grey, same visual
                                  language as the bare-earth shade.
-  2. "Canopy height (LiDAR)"  -- CHM = DSM - DTM as a colour ramp
-                                 (pale ground at ~0 m to deep green
-                                 at 25 m+), so clearcuts/fields read
-                                 bare and mature canopy reads dark.
+  2. "Canopy height (LiDAR)"  -- CHM = DSM - DTM as six flat
+                                 5 m colour bands (viridis, Nov 13
+                                 2026 redesign — the smooth green
+                                 ramp was too subtle to read), so
+                                 clearcuts/fields read purple and
+                                 mature canopy reads yellow.
 
 DATA SOURCES (see SOURCES.md for the full provenance + the fork):
   DTM: MnGeo seamless second-generation 0.5 m DEM VRT
@@ -637,26 +639,41 @@ def stage_dtm():
 # Stage: tiles
 # ------------------------------------------------------------------
 
-# 2026-11-11 redesign (Paul, from the masked CHM histogram):
-# white at 0-1 m (no vegetation); greens deepening upward; saturate
-# above 25 m. 2 m is the six-foot / head-height line; 20 m is the
-# old-growth line. The old 32 m top stop is dropped -- only 0.08%
-# of corridor pixels are above 32 m, and p99 is 25.25 m.
-RAMP_STOPS = [  # (height m, (r, g, b))
-    (0.0, (255, 255, 255)), (1.0, (255, 255, 255)),
-    (2.0, (215, 238, 200)), (5.0, (180, 220, 165)),
-    (9.0, (140, 200, 120)), (14.0, (100, 175, 90)),
-    (19.0, (64, 145, 72)), (20.0, (34, 110, 55)),
-    (25.0, (12, 64, 30)),
+# 2026-11-13 discrete-band redesign (Paul, Nov 13: the smooth green
+# ramp was too subtle to read — "Decreed band"): six flat 5 m bands
+# in viridis (purple -> blue -> teal -> green -> yellow-green ->
+# yellow), sampled at the band centres (t = 0.1, 0.3, 0.5, 0.7, 0.9,
+# 1.0 of matplotlib viridis). Each band is one flat colour, so the
+# height reads at a glance; the hover readout and the legend use
+# these exact six colours (see site/app.js CANOPY_BANDS — the two
+# lists must agree). 0-5 m is ground / low brush / clearings
+# (28.1% of corridor pixels are 0-1 m); the canopy mode is 17-18 m;
+# only 1.14% of pixels are above 25 m (histogram
+# docs/chm-histogram-2026-11-11.md).
+CANOPY_BANDS = [  # (lo m, hi m or None, (r, g, b), label)
+    (0.0, 5.0, (72, 36, 117), "0–5 m"),
+    (5.0, 10.0, (53, 95, 141), "5–10 m"),
+    (10.0, 15.0, (33, 145, 140), "10–15 m"),
+    (15.0, 20.0, (68, 191, 112), "15–20 m"),
+    (20.0, 25.0, (189, 223, 38), "20–25 m"),
+    (25.0, None, (253, 231, 37), "25+ m"),
 ]
 
 
 def ramp_lut():
-    hs = np.array([s[0] for s in RAMP_STOPS])
-    cs = np.array([s[1] for s in RAMP_STOPS], dtype=np.float64)
-    xs = np.linspace(0, 25, 257)
-    lut = np.stack([np.interp(xs, hs, cs[:, i]) for i in range(3)],
-                   axis=1).astype(np.uint8)
+    """257-entry LUT over 0-25 m (index i = height i*25/256):
+    flat band colour for the band containing that height, so the
+    tile renderer (idx = h/25*256) and the sample sheets paint
+    the same six colours."""
+    lut = np.zeros((257, 3), dtype=np.uint8)
+    for i in range(257):
+        h = i * 25.0 / 256.0
+        for lo, hi, c, _label in CANOPY_BANDS:
+            if hi is None or h < hi:
+                lut[i] = c
+                break
+        else:
+            lut[i] = CANOPY_BANDS[-1][2]
     return lut
 
 

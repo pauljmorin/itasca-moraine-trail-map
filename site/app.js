@@ -387,9 +387,10 @@ var winterBase = L.layerGroup([mnHillshade, snowPistes]);
    it the tiles simply end (ragged edges are by design).
    Canopy is a grey hillshade of the first-return surface --
    the bare-earth hillshade's sibling, same register.
-   Canopy height is canopy-minus-ground as a colour ramp:
-   pale at ground level (clearcuts, fields, the tread) to
-   deep green at mature-canopy height. Both credit the
+   Canopy height is canopy-minus-ground in six flat 5 m bands
+   (viridis: purple ground/low brush to yellow 25+ m — Nov 13,
+   2026 redesign; the smooth green ramp was too subtle to read).
+   Both credit the
    second-generation collection (2021-2024 statewide; the
    corridor blocks were flown spring 2022, leaf-off -- see
    SOURCES.md). Tiles are this repo's own files (site/tiles/),
@@ -3872,51 +3873,37 @@ function swatchFor(def) {
 var gapLabelGroupRef = null;
 
 /* Canopy height hover readout (Paul, Nov 12, 2026): hovering
-   the Tree height overlay reads the height in metres under the
-   cursor. The canopy-height tiles colour each pixel by the same
-   ramp the tile builder uses (scripts/build_lidar_trio.py
-   RAMP_STOPS: white 0–1 m, greens deepening to 25 m), so the
-   readout samples the tile pixel and inverts the ramp. Tiles
-   are same-origin, so canvas readback is allowed. A
-   transparent pixel means outside the corridor (no data). */
-var CANOPY_RAMP = [  /* (height m, [r, g, b]) — mirrors RAMP_STOPS */
-  [0, [255, 255, 255]], [1, [255, 255, 255]],
-  [2, [215, 238, 200]], [5, [180, 220, 165]],
-  [9, [140, 200, 120]], [14, [100, 175, 90]],
-  [19, [64, 145, 72]], [20, [34, 110, 55]],
-  [25, [12, 64, 30]],
+   the Tree height overlay reads the height band under the
+   cursor. The canopy-height tiles colour each pixel with one of
+   six flat 5 m bands (scripts/build_lidar_trio.py CANOPY_BANDS,
+   viridis — Nov 13, 2026 redesign; the smooth green ramp was too
+   subtle to read), so the readout samples the tile pixel and
+   reports the band it falls in. Tiles are same-origin, so canvas
+   readback is allowed. A transparent pixel means outside the
+   corridor (no data). */
+var CANOPY_BANDS = [  /* {lo m, hi m (null = open), label, [r,g,b]}
+   Must agree exactly with CANOPY_BANDS in
+   scripts/build_lidar_trio.py — same six colours, same order. */
+  { lo: 0, hi: 5, label: "0–5 m", rgb: [72, 36, 117] },
+  { lo: 5, hi: 10, label: "5–10 m", rgb: [53, 95, 141] },
+  { lo: 10, hi: 15, label: "10–15 m", rgb: [33, 145, 140] },
+  { lo: 15, hi: 20, label: "15–20 m", rgb: [68, 191, 112] },
+  { lo: 20, hi: 25, label: "20–25 m", rgb: [189, 223, 38] },
+  { lo: 25, hi: null, label: "25+ m", rgb: [253, 231, 37] },
 ];
-var canopyLut = null;
-function canopyLutBuild() {
-  if (canopyLut) return canopyLut;
-  canopyLut = [];
-  for (var i = 0; i <= 256; i++) {
-    var h = i * 25 / 256;
-    var c = CANOPY_RAMP[CANOPY_RAMP.length - 1][1];
-    for (var j = 0; j < CANOPY_RAMP.length - 1; j++) {
-      var h0 = CANOPY_RAMP[j][0], h1 = CANOPY_RAMP[j + 1][0];
-      if (h >= h0 && h <= h1) {
-        var t = h1 === h0 ? 0 : (h - h0) / (h1 - h0);
-        var c0 = CANOPY_RAMP[j][1], c1 = CANOPY_RAMP[j + 1][1];
-        c = [Math.round(c0[0] + (c1[0] - c0[0]) * t),
-             Math.round(c0[1] + (c1[1] - c0[1]) * t),
-             Math.round(c0[2] + (c1[2] - c0[2]) * t)];
-        break;
-      }
-    }
-    canopyLut.push(c);
-  }
-  return canopyLut;
-}
 function canopyHeightFromRGB(r, g, b) {
-  var lut = canopyLutBuild();
+  /* Nearest band colour; returns the band label ("10–15 m").
+     Tile resampling at low zoom blends band edges, so the match
+     is nearest, not exact — the band is still the right one
+     except within a pixel of a boundary. */
   var best = 0, bestD = Infinity;
-  for (var i = 0; i < lut.length; i++) {
-    var dr = lut[i][0] - r, dg = lut[i][1] - g, db = lut[i][2] - b;
+  for (var i = 0; i < CANOPY_BANDS.length; i++) {
+    var c = CANOPY_BANDS[i].rgb;
+    var dr = c[0] - r, dg = c[1] - g, db = c[2] - b;
     var d = dr * dr + dg * dg + db * db;
     if (d < bestD) { bestD = d; best = i; }
   }
-  return best * 25 / 256;
+  return CANOPY_BANDS[best].label;
 }
 /* One cached tile: the tile the cursor is over, drawn to an
    offscreen canvas so a pixel read is cheap. Reloaded only
@@ -3956,9 +3943,9 @@ function canopyReadoutShow(latlng) {
       canopyReadoutEl.textContent = "No canopy data here.";
       return;
     }
-    var h = canopyHeightFromRGB(d[0], d[1], d[2]);
+    var band = canopyHeightFromRGB(d[0], d[1], d[2]);
     canopyReadoutEl.textContent =
-      "Canopy height here: " + h.toFixed(1) + " m";
+      "Canopy height here: " + band;
   }
   if (canopyTileCache.key === key && canopyTileCache.loaded) {
     readPixel();
@@ -5211,12 +5198,12 @@ var LAYERS = [
        overlay never paints a rectangle. The NW hillshade
        companion was removed Nov 12, 2026 (Paul) — the colour
        alone carries the height. Hovering the overlay reads the
-       height in metres (see the canopy hover readout). The two
+       height band (see the canopy hover readout). The two
        canopy radios are retired from Background (see BASES). */
     id: "treeheight", label: "Tree height",
     title: "How tall the trees are, over any background",
     noFetch: true, onByDefault: false, group: "The land", subgroup: "Management",
-    swatch: { kind: "fill", color: "#64af5a", border: "#406f48" },
+    swatch: { kind: "fill", color: "#44bf70", border: "#2a7a45" },
     build: function () {
       if (!map.getPane("treeColor")) {
         var pc = map.createPane("treeColor");
@@ -6188,9 +6175,20 @@ function legendHtml() {
   add("<span class='swatch chapterdisc closed'>C</span>",
     "Chapter place — CLOSED");
   add("", "<strong>The land</strong>");
-  add("<span class='swatch fill' style='background:#64af5a'></span>",
-    "Tree height — how tall the trees are (overlay, over any " +
-    "background; white is open ground)");
+  add("", "<strong>Tree height</strong> — six flat 5 m bands " +
+    "(overlay, over any background)");
+  add("<span class='swatch fill' style='background:#482475'></span>",
+    "0–5 m — ground, clearings, low brush");
+  add("<span class='swatch fill' style='background:#355f8d'></span>",
+    "5–10 m — young trees");
+  add("<span class='swatch fill' style='background:#21918c'></span>",
+    "10–15 m — mid canopy");
+  add("<span class='swatch fill' style='background:#44bf70'></span>",
+    "15–20 m — mature canopy");
+  add("<span class='swatch fill' style='background:#bddf26'></span>",
+    "20–25 m — tall canopy");
+  add("<span class='swatch fill' style='background:#fde725'></span>",
+    "25+ m — emergent / tallest");
   /* Height lines legend entry removed Nov 13, 2026 with the
      layer (Paul: the contours were "absolutely useless").
      Restore alongside the def's `enabled: false` line if the
