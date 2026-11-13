@@ -17,22 +17,11 @@
       <h1>Itasca Moraine Chapter</h1>
       <p class="masthead-desc">Trail Map</p>
     </div>
-  </div>
-  <div id="view-switch" role="group" aria-label="Map view">
-    <button type="button" data-view="work" class="on"
-      aria-pressed="true">Work</button>
-    <button type="button" data-view="explore"
-      aria-pressed="false">Explore</button>
-    <button type="button" data-view="visit"
-      aria-pressed="false">Visit</button>
+    <button type="button" id="present-btn" class="present-btn"
+      title="Present — big screen"
+      aria-label="Present — big screen">⛶</button>
   </div>
   <button type="button" id="copy-link-btn" class="copy-link-btn" title="Copy link">Copy link</button>
-  <p id="visit-welcome" hidden>Welcome — the Itasca Moraine is 76
-    miles of North Country Trail through lakes and forest. Type a
-    place above, or tap the trail.</p>
-
-  <button type="button" id="present-btn" class="present-btn">▶
-    Present — big screen</button>
 
   <h2>Adoption</h2>
   <p class="adopt-line"><strong>73.2 of 76.2 mi adopted.</strong>
@@ -57,15 +46,13 @@
 
   <div id="layer-toggles"><!-- checkboxes injected by app.js --></div>
 
-  <h2>Basemap</h2>
+  <h2 id="basemap-head">Basemap</h2>
   <div id="background-choices"><!-- base choices injected by app.js --></div>
 
   <p id="load-status" class="status"></p>
 
   <p class="panel-foot"><a href="data-sources.html" target="_blank"
-    rel="noopener" id="data-sources-link">Data sources</a> — every
-    dataset this map draws on, and where it comes from. ·
-    <a href="#" id="hide-panel-link">Hide panel</a></p>
+    rel="noopener" id="data-sources-link">Data sources</a></p>
 
   <div id="legend-print" aria-hidden="true">
     <h2>Legend</h2>

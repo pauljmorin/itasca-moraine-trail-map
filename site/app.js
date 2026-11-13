@@ -642,6 +642,12 @@ function baseByCode(code) {
   });
   main.appendChild(yearMenu()); /* the year menu sits at the
     bottom of the Basemap section (Paul, Nov 13, 2026) */
+  /* Basemap is a pull-down (Paul, Nov 13, 2026): the buttons
+     start hidden behind a disclosure on the Basemap heading;
+     the button opens them. Same pattern as the layer
+     sub-toggles. */
+  var bgHead = document.getElementById("basemap-head");
+  if (bgHead) wireSubToggleExpand(bgHead, main, "basemap choices");
 })();
 L.control.scale({ imperial: true, metric: true }).addTo(map);
 
@@ -5513,29 +5519,16 @@ function setView(view) {
   writeShareHash();
 }
 (function initView() {
-  /* Default is Work — the mockup's home-screen state (work
-     list leading, tree height on). A saved choice or a
-     #view=… link wins over the default. */
+  /* Work-only for now (Paul, Nov 13, 2026): the Work / Explore /
+     Visit switch is off the panel, so the view is always Work.
+     A saved choice or a #v=… link no longer wins over it. The
+     Explore / Visit presets stay in VIEW_PRESETS for a later
+     return — only the switch and the override are gone. */
   var view = "work";
-  try {
-    var saved = localStorage.getItem("itm-view");
-    if (saved && VIEW_PRESETS[saved]) view = saved;
-  } catch (e) {}
-  var m = /(?:#|&)v=(work|explore|visit)/.exec(location.hash || "");
-  if (m) view = m[1];
   currentView = view;
   /* The toggles are applied once the panel exists (the panel
-     builder calls applyViewPreset); the switch buttons and the
-     body class are set here so the first paint is right. */
-  var sw = document.getElementById("view-switch");
-  if (sw) {
-    var btns = sw.querySelectorAll("button");
-    for (var i = 0; i < btns.length; i++) {
-      var on = btns[i].getAttribute("data-view") === view;
-      btns[i].classList.toggle("on", on);
-      btns[i].setAttribute("aria-pressed", on ? "true" : "false");
-    }
-  }
+     builder calls applyViewPreset); the body class is set here
+     so the first paint is right. */
   document.body.classList.toggle("view-work", view === "work");
   document.body.classList.toggle("view-explore", view === "explore");
   document.body.classList.toggle("view-visit", view === "visit");
@@ -5744,25 +5737,12 @@ setView(currentView);
    element the panelExtra created is already in place. */
 wireCanopyHover();
 
-/* Wire the panel's own buttons (R4/R6/R7): the view switch,
-   Present, Hide panel, and the footer About link (Sources
-   behind it). */
+/* Wire the panel's own buttons (R4/R6/R7): Present and the
+   Copy link. The view switch and Hide panel are gone (Paul,
+   Nov 13, 2026 — Work-only for now). */
 (function wirePanelButtons() {
-  var sw = document.getElementById("view-switch");
-  if (sw) {
-    var btns = sw.querySelectorAll("button");
-    for (var i = 0; i < btns.length; i++) {
-      btns[i].addEventListener("click", function () {
-        setView(this.getAttribute("data-view"));
-      });
-    }
-  }
   var presentBtn = document.getElementById("present-btn");
   if (presentBtn) presentBtn.addEventListener("click", function () {
-    setPresent(true);
-  });
-  var hideBtn = document.getElementById("hide-panel-link");
-  if (hideBtn) hideBtn.addEventListener("click", function () {
     setPresent(true);
   });
   var showBtn = document.getElementById("show-panel-btn");

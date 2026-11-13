@@ -1134,6 +1134,25 @@ body.gap-chip .gap-label span {
 }
 .copy-link-btn:hover { background: var(--paper-hover); }
 
+/* Present button (Paul, Nov 13, 2026): a small icon at the
+   panel edge, not a wide text button — it rides at the right
+   end of the masthead row, next to the panel's right edge. */
+.present-btn {
+  margin-left: auto;
+  flex: 0 0 auto;
+  width: 30px;
+  height: 30px;
+  padding: 0;
+  font-size: 16px;
+  line-height: 1;
+  color: var(--ink);
+  background: #fff;
+  border: 1px solid #b9cba5;
+  border-radius: 6px;
+  cursor: pointer;
+}
+.present-btn:hover { background: var(--paper-hover); }
+
 /* Hover chip (Nov 11 redesign — docs/design-notes-2026-11-11-
    hover-chip.md): small, static, non-interactive triage card.
    The old chip's ribbon failure was structural — max-width with
@@ -1532,6 +1551,13 @@ body.base-imagery.gap-chip .gap-label span {
    Streets and Trails sit right after Topo in the order — they
    are its sub-choices — but they are full-size buttons like
    every other base. --- */
+/* Basemap pull-down (Paul, Nov 13, 2026): the heading is a
+   flex row so the disclosure button rides at the right edge,
+   like the layer-group pull-downs. The collapsed rule needs
+   the ID — #background-choices' own display:grid outranks the
+   generic .sub-toggles.collapsed rule. */
+#basemap-head { display: flex; align-items: baseline; }
+#background-choices.collapsed { display: none; }
 #background-choices {
   display: grid;
   grid-template-columns: 1fr 1fr;
