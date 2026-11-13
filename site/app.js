@@ -405,26 +405,27 @@ var mnCanopyHeight = L.tileLayer(
 /* ------------------------------------------------------- Basemap
    (design review R2): the base-map chooser lives in the panel,
    not in a floating box over the map. The working maps first —
-   Topo, with Streets and Trails as sub-choices under it — then
-   LiDAR Shaded (the merged Terrain/Winter hillshade), then the
-   aerials (one menu, by year), then USGS Topo and National
-   Geographic. Every base is listed (Paul, Nov 13, 2026): the
-   old "More backgrounds" disclosure is gone. The two canopy
-   radios are retired (see the note above): once Tree height
-   exists as an overlay, a corridor-only base is a trap.
+   OpenTopoMap, with OpenStreetMap and Trails as sub-choices
+   under it — then Bare Earth MN LiDAR (the merged
+   Terrain/Winter hillshade), then the aerials (one menu, by
+   year), then USGS Topo and National Geographic. Every base is
+   listed (Paul, Nov 13, 2026): the old "More backgrounds"
+   disclosure is gone. The two canopy radios are retired (see
+   the note above): once Tree height exists as an overlay, a
+   corridor-only base is a trap.
    setBase() is the only way the base changes; it keeps the
    imagery label flip, the casing register, and the Winter
    snowmobile emphasis in step (the old Leaflet layers control
    and its baselayerchange handler are gone). */
 var BASES = [
-  { name: "Topo (OpenTopoMap)", code: "topo", label: "Topo",
-    sub: "the working map", layer: topo },
+  { name: "Topo (OpenTopoMap)", code: "topo", label: "OpenTopoMap",
+    layer: topo },
   /* Streets and Trails sit under Topo (Paul, Nov 13, 2026):
      they are the street-level working maps, so they read as
      sub-choices of Topo (indented, subChoice) rather than
      separate top-level bases. */
-  { name: "Streets (OSM)", code: "streets", label: "Streets",
-    sub: "OpenStreetMap", layer: osm, subChoice: true },
+  { name: "Streets (OSM)", code: "streets", label: "OpenStreetMap",
+    layer: osm, subChoice: true },
   { name: "Trails (CyclOSM)", code: "trails", label: "Trails",
     sub: "CyclOSM", layer: cyclosm, subChoice: true },
   /* LiDAR Shaded (Paul, Nov 13, 2026): Terrain and Winter were
@@ -435,7 +436,7 @@ var BASES = [
      Aerial (NAIP 2023/25) is gone the same day: the year menu
      below carries recent aerial photography (2025 Dec newest),
      so a separate undated Aerial was redundant. */
-  { name: "LiDAR Shaded", code: "lidar", label: "LiDAR Shaded",
+  { name: "LiDAR Shaded", code: "lidar", label: "Bare Earth MN LiDAR",
     layer: winterBase, winter: true },
   /* Added Nov 13, 2026 (Paul: year-by-year aerials, labelled by
      year and season): newest first, Wayback above NAIP within a
@@ -492,14 +493,14 @@ var BASES = [
     sub: "FSA", layer: mnAerial2003 },
   { name: "Aerial 1991 (black-and-white)", code: "aerial-1991", label: "Aerial 1991 (black-and-white)",
     sub: "USGS DOQ · 1 m", layer: mnAerial1991 },
-  { name: "Aerial (Esri)", code: "esri-aerial", label: "Aerial (Esri)",
-    sub: "Esri World Imagery", layer: esriImagery },
+  { name: "Aerial (Esri)", code: "esri-aerial", label: "ESRI World Imagery",
+    layer: esriImagery },
   { name: "Aerial + Topo (NAIP 2023/25)", code: "aerial-topo", label: "Aerial + Topo",
     sub: "NAIP with topo labels", layer: usgsImageryTopo },
   { name: "USGS Topo 1:24k", code: "usgs", label: "USGS Topo",
     sub: "1:24k quadrangles", layer: usgsTopo },
   { name: "National Geographic (Esri)", code: "natgeo", label: "National Geographic",
-    sub: "Esri", layer: esriNatGeo },
+    layer: esriNatGeo },
   /* Retired Nov 11, 2026 (design review §7): the two canopy
      bases are the Tree height overlay's source now, not
      choices. They stay defined above and are NOT listed here. */
@@ -4767,6 +4768,11 @@ var LAYERS = [
     id: "access", label: "Non-road access",
     title: "Forest roads, OHV, other trails",
     file: "data/access.geojson", onByDefault: false, group: "Around the trail",
+    /* Removed from the panel Nov 13, 2026 (Paul: the road and
+       access linework duplicates the basemaps' own roads).
+       The data file stays on disk — delete this line to bring
+       the layer back. */
+    enabled: false,
     swatch: { kind: "line", color: ACCESS_STYLES.state_trail.color },
     build: function (gj) {
       var layer = L.geoJSON(gj, {
@@ -4784,6 +4790,11 @@ var LAYERS = [
   {
     id: "roads", label: "Roads", file: "data/roads.geojson",
     onByDefault: false, group: "Around the trail",
+    /* Removed from the panel Nov 13, 2026 (Paul: the road and
+       access linework duplicates the basemaps' own roads).
+       The data file stays on disk — delete this line to bring
+       the layer back. */
+    enabled: false,
     swatch: { kind: "line", color: ROADS_STYLE.color },
     build: function (gj) {
       /* §2.10/§2.12: four class sublayers drawn C, B, F, A (minor
@@ -5641,13 +5652,14 @@ LAYERS.forEach(function (def) {
   if (box.checked) ensureLayer(def, false);
 });
 /* Phase 2: lay the toggles out in panel (task) order. */
-var GROUP_PULLDOWNS = ["The trail", "Land ownership"]; /* Paul,
-  Nov 13, 2026 — these groups are pull-downs: a disclosure on
-  the heading, the layers hidden until opened. The other groups
-  stay always open. A def with a `subgroup` (Timber sales and
-  Management under The land) gets its own sub-heading +
-  pull-down inside its group, created on first use. Both start
-  collapsed, like the
+var GROUP_PULLDOWNS = ["The trail", "ITM inventory", "The land",
+  "Land ownership"]; /* Paul, Nov 13, 2026 — these groups are
+  pull-downs: a disclosure on the heading, the layers hidden
+  until opened. (The trail + Land ownership first; ITM inventory
+  + The land added the same day.) A def with a `subgroup`
+  (Timber sales and Management under The land) gets its own
+  sub-heading + pull-down inside its group, created on first
+  use. Both start collapsed, like the
   ITM Assets / NCTA Places sub-toggles. */
 PANEL_GROUPS.forEach(function (group) {
   var container = togglesEl;
@@ -6089,16 +6101,14 @@ function legendHtml() {
     "NCTA mile number");
   add("<span class='swatch num'>30</span>",
     "— miles from the west end (chapter chainage)");
-  add("", "<strong>Non-road access</strong>");
-  Object.keys(ACCESS_STYLES).forEach(function (k) {
-    var s = ACCESS_STYLES[k];
-    add(line(s.color, !!s.dashArray), s.label);
-  });
-  add("", "<strong>Roads</strong>");
-  ["A", "B", "C", "F"].forEach(function (cls) {
-    var s = ROAD_CLASS_STYLES[cls];
-    add(line(s.color), s.short);
-  });
+  /* Non-road access + Roads legend entries removed Nov 13,
+     2026 with the layers (Paul: they duplicate the basemaps'
+     own roads). Restore alongside the defs' `enabled: false`
+     lines if the layers come back:
+       add("", "<strong>Non-road access</strong>");
+       Object.keys(ACCESS_STYLES).forEach(...)
+       add("", "<strong>Roads</strong>");
+       ["A", "B", "C", "F"].forEach(...) */
   add("", "<strong>Parcels</strong>");
   add("<span class='swatch fill' style='background:#fdbb84'></span>",
     "Parcel the trail crosses");

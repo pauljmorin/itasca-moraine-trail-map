@@ -139,10 +139,12 @@
 
 <h3>Roads</h3>
 <p>Public road centerlines for the working extent, shown within a corridor of the trail. Road classes are derived from the source&rsquo;s route-system codes, verified against road names; the source carries no private-road identifier, so private lanes are not separately flagged.</p>
+<p><em>Currently not shown on the map</em> &mdash; removed November 13, 2026, because the road linework duplicated the basemaps&rsquo; own roads. The data is still in the project and the layer can be restored.</p>
 <p class="src">Source: Minnesota Department of Transportation road data, served open by MnGeo &mdash; <a href="https://enterprise.gisdata.mn.gov/aghost/rest/services/us_mn_state_mngeo/trans_road_centerlines_open/FeatureServer">trans_road_centerlines_open FeatureServer</a>; plus Minnesota DNR state forest roads. Pulled November 10, 2026.</p>
 
 <h3>Non-road access</h3>
 <p>Forest roads and recreation trails near the trail: DNR state forest roads, OHV trails, snowmobile trails, hunter walking trails, state trails, and state park trails and roads (chiefly the Itasca State Park network). Shown within 800 metres of the trail; faded ends continue beyond it.</p>
+<p><em>Currently not shown on the map</em> &mdash; removed November 13, 2026, because the access linework duplicated the basemaps&rsquo; own roads and trails. The data is still in the project and the layer can be restored.</p>
 <p class="src">Source: Minnesota DNR, on the state enterprise host, under the Minnesota DNR General Geographic Data License Agreement. Pulled November 10, 2026.</p>
 
 <h3>Matt&rsquo;s NCTA map sheets</h3>
@@ -152,11 +154,11 @@
 <h2>Basemaps</h2>
 <p>The backgrounds the map can be drawn on. All are live services, consumed directly by the site &mdash; nothing is downloaded into the project.</p>
 
-<h3>Topo (the default)</h3>
+<h3>OpenTopoMap (the default)</h3>
 <p>OpenStreetMap data rendered with SRTM contours and hillshading. A new visitor meets terrain first.</p>
 <p class="src">Source: OpenTopoMap (map data &copy; OpenStreetMap contributors, SRTM; map style &copy; OpenTopoMap, CC-BY-SA) &mdash; <a href="https://opentopomap.org/">opentopomap.org</a>.</p>
 
-<h3>Streets</h3>
+<h3>OpenStreetMap</h3>
 <p>The standard OpenStreetMap rendering.</p>
 <p class="src">Source: OpenStreetMap &mdash; <a href="https://www.openstreetmap.org/">openstreetmap.org</a>. &copy; OpenStreetMap contributors.</p>
 
@@ -164,11 +166,11 @@
 <p>An OpenStreetMap-based rendering that emphasises trails and paths (CyclOSM).</p>
 <p class="src">Source: CyclOSM &mdash; <a href="https://www.cyclosm.org/">cyclosm.org</a>. &copy; OpenStreetMap contributors.</p>
 
-<h3>LiDAR Shaded</h3>
+<h3>Bare Earth MN LiDAR</h3>
 <p>Shaded relief derived from 1-metre LiDAR (statewide elevation collection, 2008&ndash;2012), with OpenSnowMap&rsquo;s ski and snow-trail lines over it. The shaded-relief view &mdash; the moraine itself; recommended for reading the land. The snow trails are the nordic ski trails around Itasca State Park and the Leech Lake shore; most of the corridor has no mapped pistes, and there the base reads as plain hillshade.</p>
 <p class="src">Source: Minnesota Geospatial Image Service (MnGeo / Minnesota DNR), WMS layer <em>hillshd</em> &mdash; <a href="https://imageserver.gisdata.mn.gov/cgi-bin/wmswm?">imageserver.gisdata.mn.gov</a>; snow trails: OpenSnowMap &mdash; <a href="https://www.opensnowmap.org/">opensnowmap.org</a>.</p>
 
-<h3>Aerial (Esri)</h3>
+<h3>ESRI World Imagery</h3>
 <p>Current aerial imagery.</p>
 <p class="src">Source: Esri World Imagery (Esri, Maxar, Earthstar Geographics) &mdash; <a href="https://www.arcgis.com/home/item.html?id=10df2279f9684e4a9f6a7f08febac23">Esri World Imagery</a>.</p>
 
