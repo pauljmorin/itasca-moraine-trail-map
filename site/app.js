@@ -195,7 +195,16 @@ var esriWayback2014 = L.tileLayer(
    byte-identical tiles to the 2014 base. 2026 is NOT added: the
    current Aerial (Esri) base already serves the newest imagery.
    Tiles 301-redirect to the release that published that tile, so
-   a year entry shows imagery "of that year or earlier". */
+   a year entry shows imagery "of that year or earlier". RELABELLED
+   Nov 13, 2026 (Paul): the menu labels are the year the photo was
+   actually taken (capture year, from Esri's per-release metadata
+   SRC_DATE), not the release date — the release date is when Esri
+   published the snapshot, and the photos inside it are older.
+   Measured Nov 13 at 3 corridor points: 2025 release = 2024,
+   2023 = 2019, 2022 = 2021, 2021 = 2017–19, 2019 = 2017,
+   2014 = 1999. The 2018, 2020 and 2024 releases are UNMEASURED
+   (metadata service timed out) — their labels still show the
+   release year until they are measured. */
 var esriWayback2018 = L.tileLayer(
   "https://wayback.maptiles.arcgis.com/arcgis/rest/services/" +
     "World_Imagery/WMTS/1.0.0/default028mm/MapServer/tile/23448/" +
@@ -444,37 +453,42 @@ var BASES = [
      definitions above and the research note in SOURCES.md. The
      2014 entry sits in its chronological slot, not at the head.
      Leaf state is labelled only where it is leaf-off (2013
-     spring); the rest carry no leaf label (Paul, Nov 13). */
-  { name: "Aerial 2025 (Dec)", code: "aerial-2025", label: "Aerial 2025 (Dec)",
-    sub: "Esri Wayback · summer", layer: esriWayback2025 },
+     spring); the rest carry no leaf label (Paul, Nov 13).
+     RELABELLED Nov 13, 2026 (Paul): the Wayback entries are
+     labelled by the year the photo was taken (capture year),
+     not the release date — see the Wayback comment above. The
+     2018, 2020 and 2024 releases are unmeasured, so those three
+     labels still show the release year. */
+  { name: "Aerial 2025 (Dec)", code: "aerial-2025", label: "Aerial 2024",
+    sub: "Esri Wayback snapshot", layer: esriWayback2025 },
   { name: "Aerial 2025 (summer)", code: "aerial-2025-naip", label: "Aerial 2025 (summer)",
     sub: "NAIP", layer: mnAerial2025 },
   { name: "Aerial 2024 (Dec)", code: "aerial-2024", label: "Aerial 2024 (Dec)",
-    sub: "Esri Wayback · summer", layer: esriWayback2024 },
-  { name: "Aerial 2023 (Dec)", code: "aerial-2023", label: "Aerial 2023 (Dec)",
-    sub: "Esri Wayback · summer", layer: esriWayback2023 },
+    sub: "Esri Wayback snapshot", layer: esriWayback2024 },
+  { name: "Aerial 2023 (Dec)", code: "aerial-2023", label: "Aerial 2019",
+    sub: "Esri Wayback snapshot", layer: esriWayback2023 },
   { name: "Aerial 2023 (summer)", code: "aerial-2023-naip", label: "Aerial 2023 (summer)",
     sub: "NAIP", layer: mnAerial2023 },
-  { name: "Aerial 2022 (Dec)", code: "aerial-2022", label: "Aerial 2022 (Dec)",
-    sub: "Esri Wayback · summer", layer: esriWayback2022 },
-  { name: "Aerial 2021 (Dec)", code: "aerial-2021", label: "Aerial 2021 (Dec)",
-    sub: "Esri Wayback · summer", layer: esriWayback2021 },
+  { name: "Aerial 2022 (Dec)", code: "aerial-2022", label: "Aerial 2021",
+    sub: "Esri Wayback snapshot", layer: esriWayback2022 },
+  { name: "Aerial 2021 (Dec)", code: "aerial-2021", label: "Aerial 2017–19",
+    sub: "Esri Wayback snapshot", layer: esriWayback2021 },
   { name: "Aerial 2021 (summer)", code: "aerial-2021-naip", label: "Aerial 2021 (summer)",
     sub: "NAIP", layer: mnAerial2021 },
   { name: "Aerial 2020 (Dec)", code: "aerial-2020", label: "Aerial 2020 (Dec)",
-    sub: "Esri Wayback · summer", layer: esriWayback2020 },
-  { name: "Aerial 2019 (Dec)", code: "aerial-2019", label: "Aerial 2019 (Dec)",
-    sub: "Esri Wayback · summer", layer: esriWayback2019 },
+    sub: "Esri Wayback snapshot", layer: esriWayback2020 },
+  { name: "Aerial 2019 (Dec)", code: "aerial-2019", label: "Aerial 2017",
+    sub: "Esri Wayback snapshot", layer: esriWayback2019 },
   { name: "Aerial 2019 (summer)", code: "aerial-2019-naip", label: "Aerial 2019 (summer)",
     sub: "NAIP", layer: mnAerial2019 },
   { name: "Aerial 2018 (Dec)", code: "aerial-2018", label: "Aerial 2018 (Dec)",
-    sub: "Esri Wayback · summer", layer: esriWayback2018 },
+    sub: "Esri Wayback snapshot", layer: esriWayback2018 },
   { name: "Aerial 2017 (summer)", code: "aerial-2017-naip", label: "Aerial 2017 (summer)",
     sub: "NAIP", layer: mnAerial2017 },
   { name: "Aerial 2015 (summer)", code: "aerial-2015-naip", label: "Aerial 2015 (summer)",
     sub: "NAIP", layer: mnAerial2015 },
-  { name: "Aerial 2014 (Dec)", code: "aerial-2014", label: "Aerial 2014 (Dec)",
-    sub: "Esri Wayback · summer", layer: esriWayback2014 },
+  { name: "Aerial 2014 (Dec)", code: "aerial-2014", label: "Aerial 1999",
+    sub: "Esri Wayback snapshot", layer: esriWayback2014 },
   { name: "Aerial 2013 (spring, leaf-off)", code: "aerial-2013-spring", label: "Aerial 2013 (spring, leaf-off)",
     sub: "MnGeo NW 50 cm · SAIP", layer: mnAerial2013Spring },
   { name: "Aerial 2013 (summer)", code: "aerial-2013-naip", label: "Aerial 2013 (summer)",
@@ -613,6 +627,9 @@ function baseByCode(code) {
     label.className = "bg-year-label";
     label.setAttribute("for", "bg-year-select");
     label.textContent = "Aerial photography by year";
+    var note = document.createElement("div");
+    note.className = "bg-year-note";
+    note.textContent = "Wayback entries are labelled by the year the photo was taken; some span more than one year.";
     var sel = document.createElement("select");
     sel.id = "bg-year-select";
     sel.className = "bg-year-select";
@@ -631,6 +648,7 @@ function baseByCode(code) {
       if (sel.value) setBase(sel.value);
     });
     wrap.appendChild(label);
+    wrap.appendChild(note);
     wrap.appendChild(sel);
     yearSelect = sel;
     return wrap;
