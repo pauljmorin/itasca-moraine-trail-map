@@ -1914,10 +1914,32 @@ body.base-imagery.gap-chip .gap-label span {
    key strip under the Tree height toggle. --- */
 .land-extra { padding: 2px 4px 6px 26px; }
 /* --- Per-type asset toggles (Paul, Nov 12, 2026): the eleven
-   type checkboxes under Asset pins, indented like the land
-   extras. The labels themselves reuse #layer-toggles label. --- */
-.asset-types { padding: 2px 4px 6px 26px; }
-.asset-types label { padding: 2px 4px; font-size: 0.85rem; }
+   type checkboxes under ITM Assets, indented like the land
+   extras. The labels themselves reuse #layer-toggles label.
+   NCTA Places kinds (Paul, Nov 13, 2026) share the same
+   indent. --- */
+.asset-types, .places-kinds { padding: 2px 4px 6px 26px; }
+.asset-types label, .places-kinds label {
+  padding: 2px 4px; font-size: 0.85rem;
+}
+/* --- Expandable sub-toggles (Paul, Nov 13, 2026): the per-item
+   checkboxes under ITM Assets / NCTA Places start hidden behind
+   a disclosure button on the layer row; the button opens them.
+   The main checkbox still controls the whole layer. --- */
+.sub-toggles.collapsed { display: none; }
+.tog-expand {
+  margin-left: auto;
+  flex: 0 0 auto;
+  background: none;
+  border: none;
+  font: inherit;
+  font-size: 0.9rem;
+  color: var(--ink-soft);
+  cursor: pointer;
+  padding: 2px 4px;
+  border-radius: 4px;
+}
+.tog-expand:hover { background: var(--paper-hover); color: var(--ink); }
 .land-extra .opacity {
   display: flex;
   align-items: center;
@@ -2019,6 +2041,45 @@ body.view-visit #background-choices,
 body.view-visit #bg-more-btn,
 body.view-visit #background-more,
 body.view-visit .panel-foot { display: none; }
+
+/* --- Work view declutter (Paul, Nov 13, 2026): the Adoption bar,
+   the Find gazetteer, and the inspector ("Select a section") are
+   hidden in Work view to make panel space. Nothing is deleted —
+   the elements stay in the DOM and in Explore/Visit; removing
+   these rules brings them back. --- */
+body.view-work h2:has(+ .adopt-line),
+body.view-work .adopt-line,
+body.view-work h2:has(+ #gazetteer),
+body.view-work #gazetteer,
+body.view-work .gaz-hint,
+body.view-work #inspector { display: none; }
+
+/* --- Work view Copy link (Paul, Nov 13, 2026): in Work view the
+   Copy link button leaves the panel and becomes a small link icon
+   in the upper-right corner of the window. The button stays in
+   the panel DOM (its click handler is unchanged) — in Work view
+   it is fixed to the corner and shows only a link glyph; in
+   Explore/Visit it stays the full-width panel button. --- */
+body.view-work #copy-link-btn {
+  position: fixed;
+  top: 10px;
+  right: 10px;
+  z-index: 1100;
+  width: 36px;
+  height: 36px;
+  margin: 0;
+  padding: 0;
+  font-size: 0;
+  background-color: var(--paper);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%231c2a1e' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71'/%3E%3Cpath d='M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 20px 20px;
+  border: 1px solid #b9cba5;
+  border-radius: 6px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.25);
+}
+body.view-work #copy-link-btn:hover { background-color: var(--paper-hover); }
 
 /* --- Present mode (R4): the panel chrome hides and the
    record card floats over the map, bottom-left, above the

@@ -1402,7 +1402,11 @@ document.addEventListener("click", function (e) {
         if (body.note !== undefined) fp.note = body.note;
         entry.layer.setIcon(
           assetMarker(entry.feature, entry.latlng).options.icon);
-        var pop = map.getPopup();
+        /* The popup is bound to the pin's layer (bindPop), so it is
+           reached through the layer — Leaflet's Map has no
+           getPopup() in 1.9.4, and the old call threw here, which
+           reported a successful save as a failure. */
+        var pop = entry.layer.getPopup ? entry.layer.getPopup() : null;
         if (pop) pop.setContent(assetPopup(entry.feature, "Saved."));
       } else {
         setMsg("Saved.", false);
@@ -1886,6 +1890,49 @@ var ASSET_TYPE_TOGGLES = [
 var assetTypeOn = {};
 ASSET_TYPE_TOGGLES.forEach(function (t) { assetTypeOn[t[0]] = true; });
 var assetsTypeLayers = {};
+
+/* Per-kind NCTA Places toggles (Paul, Nov 13, 2026): the Places
+   layer draws four kinds, each with its own sublayer + checkbox,
+   just like the asset types. Counts verified against
+   data/gazetteer.geojson (78 NCTA points); camping is NOT here —
+   all 36 campsites are chapter records, drawn by Chapter places.
+   Order is largest first. */
+var PLACES_KIND_TOGGLES = [
+  ["Parking", 43], ["POI", 29], ["Water", 4], ["Shelter", 2],
+];
+var PLACES_KIND_NAMES = {
+  Parking: "Parking", POI: "Points of interest",
+  Water: "Water", Shelter: "Shelter",
+};
+var placesKindOn = {};
+PLACES_KIND_TOGGLES.forEach(function (t) { placesKindOn[t[0]] = true; });
+var placesKindLayers = {};
+var placesKindBoxes = {};
+
+/* Expandable sub-toggles (Paul, Nov 13, 2026): a layer whose
+   panelExtra builds per-item checkboxes gets a disclosure button
+   on its label row; the items start hidden and the button opens
+   them. The main checkbox still controls the whole layer — the
+   button only shows or hides the item list. */
+function wireSubToggleExpand(label, wrap, openLabel) {
+  wrap.classList.add("sub-toggles", "collapsed");
+  var btn = document.createElement("button");
+  btn.type = "button";
+  btn.className = "tog-expand";
+  btn.textContent = "▸";
+  btn.setAttribute("aria-expanded", "false");
+  btn.setAttribute("aria-label", "Show " + openLabel);
+  btn.title = "Show " + openLabel;
+  btn.addEventListener("click", function () {
+    var collapsed = wrap.classList.toggle("collapsed");
+    btn.textContent = collapsed ? "▸" : "▾";
+    btn.setAttribute("aria-expanded", collapsed ? "false" : "true");
+    btn.setAttribute("aria-label",
+      (collapsed ? "Show " : "Hide ") + openLabel);
+    btn.title = (collapsed ? "Show " : "Hide ") + openLabel;
+  });
+  label.appendChild(btn);
+}
 function assetTypeCode(f) {
   var t = (f.properties || {}).type;
   if (!t) return "UN";
@@ -4862,13 +4909,20 @@ var LAYERS = [
     },
   },
   {
-    /* S4 Places: the gazetteer's 114 NCTA waypoints (parking,
-       camping, water, shelters, POIs) as a map layer, Z3+ only.
-       Letter discs in the terminus idiom; POIs are plain slate
-       dots. Popups reuse the gazetteer record (gazPopupHtml), so
-       the layer and Find can never disagree. */
-    id: "places", label: "Places",
-    title: "NCTA waypoints: parking, camping, water, shelters, " +
+    /* S4 NCTA Places (renamed from Places, Paul, Nov 13, 2026):
+       the gazetteer's 78 NCTA waypoints (parking, water,
+       shelters, POIs) as a map layer, Z3+ only. Camping is NOT
+       here — all 36 campsites are chapter records, drawn by
+       Chapter places. Letter discs in the terminus idiom; POIs
+       are plain slate dots. Popups reuse the gazetteer record
+       (gazPopupHtml), so the layer and Find can never disagree.
+       One sublayer per kind (see PLACES_KIND_TOGGLES): the
+       panel's per-kind checkboxes add and remove these from the
+       group, so a kind can be hidden without touching the
+       others. The main NCTA Places checkbox still controls the
+       whole group. */
+    id: "places", label: "NCTA Places",
+    title: "NCTA waypoints: parking, water, shelters, " +
       "points of interest",
     file: "data/gazetteer.geojson", onByDefault: false,
     group: "ITM inventory",
@@ -4880,6 +4934,10 @@ var LAYERS = [
       placesOuterRef = outer;
       var glyphs = { Parking: "P", Camping: "C", Water: "W",
                      Shelter: "S" };
+      placesKindLayers = {};
+      PLACES_KIND_TOGGLES.forEach(function (t) {
+        placesKindLayers[t[0]] = L.layerGroup();
+      });
       gj.features.forEach(function (f) {
         var p = f.properties;
         /* Chapter entries ride the gazetteer for Find, but the
@@ -4887,6 +4945,8 @@ var LAYERS = [
         if (p.source === "chapter") return;
         var glyph = glyphs[p.kind];
         if (p.kind !== "POI" && !glyph) return;
+        var sub = placesKindLayers[p.kind];
+        if (!sub) return; /* a kind with no toggle draws nothing */
         var c = f.geometry.coordinates;
         var ll = L.latLng(c[1], c[0]);
         var mk;
@@ -4906,15 +4966,49 @@ var LAYERS = [
           });
         }
         bindPop(mk, gazPopupHtml(f));
-        inner.addLayer(mk);
+        sub.addLayer(mk);
+      });
+      PLACES_KIND_TOGGLES.forEach(function (t) {
+        if (placesKindOn[t[0]]) inner.addLayer(placesKindLayers[t[0]]);
       });
       outer.addLayer(inner);
       applyPlacesGate();
       return outer;
     },
+    panelExtra: function (label) {
+      var wrap = document.createElement("div");
+      wrap.className = "places-kinds";
+      PLACES_KIND_TOGGLES.forEach(function (t) {
+        var kind = t[0], count = t[1];
+        var lab = document.createElement("label");
+        var box = document.createElement("input");
+        box.type = "checkbox";
+        box.checked = !!placesKindOn[kind];
+        placesKindBoxes[kind] = box; /* applyHash + the share writer read it */
+        box.setAttribute("aria-label",
+          PLACES_KIND_NAMES[kind] + " places");
+        lab.appendChild(box);
+        lab.appendChild(document.createTextNode(
+          PLACES_KIND_NAMES[kind] + " (" + count + ")"));
+        box.addEventListener("change", function () {
+          placesKindOn[kind] = box.checked;
+          var sub = placesKindLayers[kind];
+          var def = layerById("places");
+          if (!sub || !def || !def.layer || !placesInnerRef) {
+            writeShareHash(); return;
+          }
+          if (box.checked) placesInnerRef.addLayer(sub);
+          else placesInnerRef.removeLayer(sub);
+          writeShareHash(); /* a kind change is a new shareable view */
+        });
+        wrap.appendChild(lab);
+      });
+      label.parentNode.insertBefore(wrap, label.nextSibling);
+      wireSubToggleExpand(label, wrap, "place kinds");
+    },
   },
   {
-    id: "assets", label: "Asset pins",
+    id: "assets", label: "ITM Assets",
     file: "data/assets.geojson", onByDefault: true, missingOk: true,
     emptyUntilData: true, group: "ITM inventory",
     swatch: { kind: "pin", color: COLORS.assetPin },
@@ -4989,6 +5083,7 @@ var LAYERS = [
         wrap.appendChild(lab);
       });
       label.parentNode.insertBefore(wrap, label.nextSibling);
+      wireSubToggleExpand(label, wrap, "asset types");
     },
   },
   {
@@ -5369,6 +5464,7 @@ function setView(view) {
      base=topo|aerial|...     background, by BASES code
      layers=id,-id,...        EVERY layer toggle (id = on, -id = off)
      types=CP,SG,-BW,...      EVERY asset-type toggle, same convention
+     places=Parking,POI,...   EVERY NCTA Places kind toggle, same convention
    The writer always records the FULL state, so a link is exact
    and self-contained. The reader (applyHash) is delta-tolerant:
    an old link that lists only some layers still works — listed
@@ -5394,6 +5490,11 @@ function writeShareHash() {
     typeParts.push(assetTypeOn[t[0]] ? t[0] : "-" + t[0]);
   });
   parts.push("types=" + typeParts.join(","));
+  var placeParts = [];
+  PLACES_KIND_TOGGLES.forEach(function (t) {
+    placeParts.push(placesKindOn[t[0]] ? t[0] : "-" + t[0]);
+  });
+  parts.push("places=" + placeParts.join(","));
   history.replaceState(null, "", "#" + parts.join("&"));
 }
 
@@ -5574,7 +5675,8 @@ wireCanopyHover();
    whole trail; #base=code picks the background; #layers=… lists
    layers to switch on (a token prefixed with "-" switches that
    layer OFF); #types=… does the same for the asset-type toggles
-   (uppercase codes). A token not listed leaves that toggle as
+   (uppercase codes); #places=… does the same for the NCTA Places
+   kind toggles. A token not listed leaves that toggle as
    the preset left it, so old partial links still work. */
 var requestedView = null;
 (function applyHash() {
@@ -5628,6 +5730,29 @@ var requestedView = null;
       if (!sub || !def || !def.layer) return;
       if (!off) def.layer.addLayer(sub);
       else def.layer.removeLayer(sub);
+    });
+  }
+  var pm = /places=([A-Za-z,\-]+)/.exec(hash);
+  if (pm) {
+    pm[1].split(",").forEach(function (tok) {
+      var off = tok.charAt(0) === "-";
+      var kind = off ? tok.slice(1) : tok;
+      if (!kind) return;
+      var known = false;
+      PLACES_KIND_TOGGLES.forEach(function (t) {
+        if (t[0] === kind) known = true;
+      });
+      if (!known) return;
+      placesKindOn[kind] = !off;
+      var pbox = placesKindBoxes[kind];
+      if (pbox) pbox.checked = !off;
+      var sub = placesKindLayers[kind];
+      var def = layerById("places");
+      /* If the places layer has not built yet, the build reads
+         placesKindOn and picks this up; nothing more to do here. */
+      if (!sub || !def || !def.layer || !placesInnerRef) return;
+      if (!off) placesInnerRef.addLayer(sub);
+      else placesInnerRef.removeLayer(sub);
     });
   }
   /* Adoption segment ends: an explicit hash token for them (on or
