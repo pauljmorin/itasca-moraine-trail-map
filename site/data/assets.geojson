@@ -15,14 +15,14 @@
     "datetime": "2026:11:11 11:33:53",
     "photographer": "PJM",
     "type": "BW",
-    "condition": "fair",
+    "condition": "good",
     "drive_id": null,
     "derivative": "pxl_20261111_173353595-mp.jpg",
     "direction_deg": null,
     "direction_ref": null,
     "direction_compass": null,
     "gps_source": "gpx",
-    "gpx_offset_s": 7.0,
+    "gpx_offset_s": 7,
     "gpx_file": "Nov_11,_2026,_10_36_12_AM.gpx",
     "serial": "ITM-BW-001",
     "sign_kind": null,
@@ -42,7 +42,8 @@
       "datetime": "2026:11:11 11:34:03",
       "drive_id": null
      }
-    ]
+    ],
+    "note": ""
    }
   },
   {
@@ -66,7 +67,7 @@
     "direction_ref": null,
     "direction_compass": null,
     "gps_source": "gpx",
-    "gpx_offset_s": 7.0,
+    "gpx_offset_s": 7,
     "gpx_file": "Nov_11,_2026,_10_36_12_AM.gpx",
     "serial": "ITM-CP-002",
     "sign_kind": null,
@@ -104,7 +105,7 @@
     "direction_ref": null,
     "direction_compass": null,
     "gps_source": "gpx",
-    "gpx_offset_s": 6.0,
+    "gpx_offset_s": 6,
     "gpx_file": "Nov_11,_2026,_10_36_12_AM.gpx",
     "serial": "ITM-CP-003",
     "sign_kind": null,
@@ -142,7 +143,7 @@
     "direction_ref": null,
     "direction_compass": null,
     "gps_source": "gpx",
-    "gpx_offset_s": 3.0,
+    "gpx_offset_s": 3,
     "gpx_file": "Nov_11,_2026,_10_36_12_AM.gpx",
     "serial": "ITM-SG-004",
     "sign_kind": null,
@@ -180,7 +181,7 @@
     "direction_ref": null,
     "direction_compass": null,
     "gps_source": "gpx",
-    "gpx_offset_s": 4.0,
+    "gpx_offset_s": 4,
     "gpx_file": "Nov_11,_2026,_10_36_12_AM.gpx",
     "serial": "ITM-BW-002",
     "sign_kind": null,
@@ -218,7 +219,7 @@
     "direction_ref": null,
     "direction_compass": null,
     "gps_source": "gpx",
-    "gpx_offset_s": 2.0,
+    "gpx_offset_s": 2,
     "gpx_file": "Nov_11,_2026,_10_36_12_AM.gpx",
     "serial": "ITM-CP-004",
     "sign_kind": null,
@@ -262,7 +263,7 @@
     "direction_ref": null,
     "direction_compass": null,
     "gps_source": "gpx",
-    "gpx_offset_s": 12.0,
+    "gpx_offset_s": 12,
     "gpx_file": "Nov_11,_2026,_10_36_12_AM.gpx",
     "serial": "ITM-PO-001",
     "sign_kind": null,
@@ -300,7 +301,7 @@
     "direction_ref": null,
     "direction_compass": null,
     "gps_source": "gpx",
-    "gpx_offset_s": 5.0,
+    "gpx_offset_s": 5,
     "gpx_file": "Nov_11,_2026,_10_36_12_AM.gpx",
     "serial": "ITM-CP-005",
     "sign_kind": null,
@@ -344,7 +345,7 @@
     "direction_ref": null,
     "direction_compass": null,
     "gps_source": "gpx",
-    "gpx_offset_s": 4.0,
+    "gpx_offset_s": 4,
     "gpx_file": "Nov_11,_2026,_10_36_12_AM.gpx",
     "serial": "ITM-CP-006",
     "sign_kind": null,
@@ -388,7 +389,7 @@
     "direction_ref": null,
     "direction_compass": null,
     "gps_source": "gpx",
-    "gpx_offset_s": 1.0,
+    "gpx_offset_s": 1,
     "gpx_file": "Nov_11,_2026,_10_36_12_AM.gpx",
     "serial": "ITM-CP-007",
     "sign_kind": null,
@@ -432,7 +433,7 @@
     "direction_ref": null,
     "direction_compass": null,
     "gps_source": "gpx",
-    "gpx_offset_s": 3.0,
+    "gpx_offset_s": 3,
     "gpx_file": "Nov_11,_2026,_10_36_12_AM.gpx",
     "serial": "ITM-CP-008",
     "sign_kind": null,
@@ -471,7 +472,7 @@
     "direction_ref": null,
     "direction_compass": null,
     "gps_source": "gpx",
-    "gpx_offset_s": 7.0,
+    "gpx_offset_s": 7,
     "gpx_file": "Nov_11,_2026,_10_36_12_AM.gpx",
     "serial": "ITM-CP-009",
     "sign_kind": null,
@@ -509,7 +510,7 @@
     "direction_ref": null,
     "direction_compass": null,
     "gps_source": "gpx",
-    "gpx_offset_s": 3.0,
+    "gpx_offset_s": 3,
     "gpx_file": "Nov_11,_2026,_10_36_12_AM.gpx",
     "serial": "ITM-CP-010",
     "sign_kind": null,
@@ -547,7 +548,7 @@
     "direction_ref": null,
     "direction_compass": null,
     "gps_source": "gpx",
-    "gpx_offset_s": 8.0,
+    "gpx_offset_s": 8,
     "gpx_file": "Nov_11,_2026,_10_36_12_AM.gpx",
     "serial": "ITM-CP-011",
     "sign_kind": null,
@@ -591,7 +592,7 @@
     "direction_ref": null,
     "direction_compass": null,
     "gps_source": "gpx",
-    "gpx_offset_s": 7.0,
+    "gpx_offset_s": 7,
     "gpx_file": "Nov_11,_2026,_10_36_12_AM.gpx",
     "serial": "ITM-CP-012",
     "sign_kind": null,
@@ -629,7 +630,7 @@
     "direction_ref": null,
     "direction_compass": null,
     "gps_source": "gpx",
-    "gpx_offset_s": 4.0,
+    "gpx_offset_s": 4,
     "gpx_file": "Nov_11,_2026,_10_36_12_AM.gpx",
     "serial": null,
     "sign_kind": null,
@@ -673,7 +674,7 @@
     "direction_ref": null,
     "direction_compass": null,
     "gps_source": "gpx",
-    "gpx_offset_s": 13.0,
+    "gpx_offset_s": 13,
     "gpx_file": "Nov_11,_2026,_10_36_12_AM.gpx",
     "serial": null,
     "sign_kind": null,
@@ -711,7 +712,7 @@
     "direction_ref": null,
     "direction_compass": null,
     "gps_source": "gpx",
-    "gpx_offset_s": 10.0,
+    "gpx_offset_s": 10,
     "gpx_file": "Nov_11,_2026,_10_36_12_AM.gpx",
     "serial": "ITM-SG-006",
     "sign_kind": null,
@@ -749,7 +750,7 @@
     "direction_ref": null,
     "direction_compass": null,
     "gps_source": "gpx",
-    "gpx_offset_s": 5.0,
+    "gpx_offset_s": 5,
     "gpx_file": "Nov_11,_2026,_10_36_12_AM.gpx",
     "serial": null,
     "sign_kind": null,
@@ -764,7 +765,7 @@
       "drive_id": null
      }
     ],
-    "note": "Paper notice \u2014 wording unreadable; may be a temporary posting. Re-photo close enough to read it before it belongs in the inventory. Serial ITM-SG-007 is reserved for it in the registry."
+    "note": "Paper notice — wording unreadable; may be a temporary posting. Re-photo close enough to read it before it belongs in the inventory. Serial ITM-SG-007 is reserved for it in the registry."
    }
   },
   {
@@ -788,7 +789,7 @@
     "direction_ref": null,
     "direction_compass": null,
     "gps_source": "gpx",
-    "gpx_offset_s": 9.0,
+    "gpx_offset_s": 9,
     "gpx_file": "Nov_11,_2026,_10_36_12_AM.gpx",
     "serial": "ITM-CP-013",
     "sign_kind": null,
@@ -832,7 +833,7 @@
     "direction_ref": null,
     "direction_compass": null,
     "gps_source": "gpx",
-    "gpx_offset_s": 5.0,
+    "gpx_offset_s": 5,
     "gpx_file": "Nov_11,_2026,_10_36_12_AM.gpx",
     "serial": null,
     "sign_kind": null,
@@ -876,7 +877,7 @@
     "direction_ref": null,
     "direction_compass": null,
     "gps_source": "gpx",
-    "gpx_offset_s": 4.0,
+    "gpx_offset_s": 4,
     "gpx_file": "Nov_11,_2026,_10_36_12_AM.gpx",
     "serial": "ITM-CP-014",
     "sign_kind": null,
@@ -920,7 +921,7 @@
     "direction_ref": null,
     "direction_compass": null,
     "gps_source": "gpx",
-    "gpx_offset_s": 3.0,
+    "gpx_offset_s": 3,
     "gpx_file": "Nov_11,_2026,_10_36_12_AM.gpx",
     "serial": "ITM-CP-015",
     "sign_kind": null,
@@ -964,7 +965,7 @@
     "direction_ref": null,
     "direction_compass": null,
     "gps_source": "gpx",
-    "gpx_offset_s": 3.0,
+    "gpx_offset_s": 3,
     "gpx_file": "Nov_11,_2026,_10_36_12_AM.gpx",
     "serial": "ITM-BW-003",
     "sign_kind": null,
@@ -1002,7 +1003,7 @@
     "direction_ref": null,
     "direction_compass": null,
     "gps_source": "gpx",
-    "gpx_offset_s": 7.0,
+    "gpx_offset_s": 7,
     "gpx_file": "Nov_11,_2026,_10_36_12_AM.gpx",
     "serial": "ITM-SG-008",
     "sign_kind": null,
@@ -1040,7 +1041,7 @@
     "direction_ref": null,
     "direction_compass": null,
     "gps_source": "gpx",
-    "gpx_offset_s": 5.0,
+    "gpx_offset_s": 5,
     "gpx_file": "Nov_11,_2026,_10_36_12_AM.gpx",
     "serial": "ITM-BW-004",
     "sign_kind": null,
@@ -1078,7 +1079,7 @@
     "direction_ref": null,
     "direction_compass": null,
     "gps_source": "gpx",
-    "gpx_offset_s": 8.0,
+    "gpx_offset_s": 8,
     "gpx_file": "Nov_11,_2026,_10_36_12_AM.gpx",
     "serial": "ITM-SG-009",
     "sign_kind": null,
@@ -1116,7 +1117,7 @@
     "direction_ref": null,
     "direction_compass": null,
     "gps_source": "gpx",
-    "gpx_offset_s": 10.0,
+    "gpx_offset_s": 10,
     "gpx_file": "Nov_11,_2026,_10_36_12_AM.gpx",
     "serial": "ITM-BN-001",
     "sign_kind": null,
@@ -1154,7 +1155,7 @@
     "direction_ref": null,
     "direction_compass": null,
     "gps_source": "gpx",
-    "gpx_offset_s": 13.0,
+    "gpx_offset_s": 13,
     "gpx_file": "Nov_11,_2026,_10_36_12_AM.gpx",
     "serial": "ITM-CS-001",
     "sign_kind": null,
@@ -1199,7 +1200,7 @@
     "direction_ref": null,
     "direction_compass": null,
     "gps_source": "gpx",
-    "gpx_offset_s": 10.0,
+    "gpx_offset_s": 10,
     "gpx_file": "Nov_11,_2026,_10_36_12_AM.gpx",
     "serial": "ITM-SG-010",
     "sign_kind": null,
@@ -1237,7 +1238,7 @@
     "direction_ref": null,
     "direction_compass": null,
     "gps_source": "gpx",
-    "gpx_offset_s": 6.0,
+    "gpx_offset_s": 6,
     "gpx_file": "Nov_11,_2026,_10_36_12_AM.gpx",
     "serial": "ITM-LT-001",
     "sign_kind": null,
@@ -1287,7 +1288,7 @@
     "direction_ref": null,
     "direction_compass": null,
     "gps_source": "gpx",
-    "gpx_offset_s": 7.0,
+    "gpx_offset_s": 7,
     "gpx_file": "Nov_11,_2026,_10_36_12_AM.gpx",
     "serial": null,
     "sign_kind": null,
@@ -1325,7 +1326,7 @@
     "direction_ref": null,
     "direction_compass": null,
     "gps_source": "gpx",
-    "gpx_offset_s": 8.0,
+    "gpx_offset_s": 8,
     "gpx_file": "Nov_11,_2026,_10_36_12_AM.gpx",
     "serial": "ITM-CP-016",
     "sign_kind": null,
@@ -1369,7 +1370,7 @@
     "direction_ref": null,
     "direction_compass": null,
     "gps_source": "gpx",
-    "gpx_offset_s": 4.0,
+    "gpx_offset_s": 4,
     "gpx_file": "Nov_11,_2026,_10_36_12_AM.gpx",
     "serial": "ITM-BW-005",
     "sign_kind": null,
@@ -1407,7 +1408,7 @@
     "direction_ref": null,
     "direction_compass": null,
     "gps_source": "gpx",
-    "gpx_offset_s": 4.0,
+    "gpx_offset_s": 4,
     "gpx_file": "Nov_11,_2026,_10_36_12_AM.gpx",
     "serial": "ITM-BW-006",
     "sign_kind": null,
@@ -1469,7 +1470,7 @@
     "direction_ref": null,
     "direction_compass": null,
     "gps_source": "gpx",
-    "gpx_offset_s": 7.0,
+    "gpx_offset_s": 7,
     "gpx_file": "Nov_11,_2026,_10_36_12_AM.gpx",
     "serial": "ITM-CP-017",
     "sign_kind": null,
@@ -1513,7 +1514,7 @@
     "direction_ref": null,
     "direction_compass": null,
     "gps_source": "gpx",
-    "gpx_offset_s": 6.0,
+    "gpx_offset_s": 6,
     "gpx_file": "Nov_11,_2026,_10_36_12_AM.gpx",
     "serial": "ITM-CP-018",
     "sign_kind": null,
@@ -1551,7 +1552,7 @@
     "direction_ref": null,
     "direction_compass": null,
     "gps_source": "gpx",
-    "gpx_offset_s": 10.0,
+    "gpx_offset_s": 10,
     "gpx_file": "Nov_11,_2026,_10_36_12_AM.gpx",
     "serial": "ITM-SG-011",
     "sign_kind": null,
@@ -1589,7 +1590,7 @@
     "direction_ref": null,
     "direction_compass": null,
     "gps_source": "gpx",
-    "gpx_offset_s": 11.0,
+    "gpx_offset_s": 11,
     "gpx_file": "Nov_11,_2026,_10_36_12_AM.gpx",
     "serial": "ITM-SG-005",
     "sign_kind": null,
@@ -1627,7 +1628,7 @@
     "direction_ref": null,
     "direction_compass": null,
     "gps_source": "gpx",
-    "gpx_offset_s": 4.0,
+    "gpx_offset_s": 4,
     "gpx_file": "Nov_11,_2026,_10_36_12_AM.gpx",
     "serial": "ITM-SG-001",
     "sign_kind": null,
@@ -1665,7 +1666,7 @@
     "direction_ref": null,
     "direction_compass": null,
     "gps_source": "gpx",
-    "gpx_offset_s": 7.0,
+    "gpx_offset_s": 7,
     "gpx_file": "Nov_11,_2026,_10_36_12_AM.gpx",
     "serial": "ITM-CP-001",
     "sign_kind": null,
@@ -1709,7 +1710,7 @@
     "direction_ref": null,
     "direction_compass": null,
     "gps_source": "gpx",
-    "gpx_offset_s": 2.0,
+    "gpx_offset_s": 2,
     "gpx_file": "Nov_11,_2026,_10_36_12_AM.gpx",
     "serial": "ITM-SG-002",
     "sign_kind": null,
@@ -1747,7 +1748,7 @@
     "direction_ref": null,
     "direction_compass": null,
     "gps_source": "gpx",
-    "gpx_offset_s": 6.0,
+    "gpx_offset_s": 6,
     "gpx_file": "Nov_11,_2026,_10_36_12_AM.gpx",
     "serial": "ITM-SG-003",
     "sign_kind": null,
@@ -1785,13 +1786,13 @@
     "direction_ref": null,
     "direction_compass": null,
     "gps_source": "gpx",
-    "gpx_offset_s": 5.0,
+    "gpx_offset_s": 5,
     "gpx_file": "Nov_11,_2026,_10_36_12_AM.gpx",
     "serial": "ITM-SG-012",
     "sign_kind": null,
     "chainage_mi": 56.5,
     "section": "Chip-5",
-    "snap_m": 183.0,
+    "snap_m": 183,
     "photos": [
      {
       "photo": "PXL_20261111_163632766.MP.jpg",
@@ -1823,7 +1824,7 @@
     "direction_ref": null,
     "direction_compass": null,
     "gps_source": "gpx",
-    "gpx_offset_s": 2.0,
+    "gpx_offset_s": 2,
     "gpx_file": "Nov_11,_2026,_10_36_12_AM.gpx",
     "serial": "ITM-CP-019",
     "sign_kind": null,
@@ -1844,7 +1845,7 @@
       "drive_id": null
      }
     ],
-    "note": "Probably the back of the 163653226 post, photographed 7 s later from the lot side \u2014 the link is a judgment call; confirm on Paul's walk-through."
+    "note": "Probably the back of the 163653226 post, photographed 7 s later from the lot side — the link is a judgment call; confirm on Paul's walk-through."
    }
   },
   {
@@ -1868,7 +1869,7 @@
     "direction_ref": null,
     "direction_compass": null,
     "gps_source": "gpx",
-    "gpx_offset_s": 5.0,
+    "gpx_offset_s": 5,
     "gpx_file": "Nov_11,_2026,_10_36_12_AM.gpx",
     "serial": "ITM-CP-020",
     "sign_kind": null,
@@ -1883,7 +1884,7 @@
       "drive_id": null
      }
     ],
-    "note": "Decal set differs from the 163653226 post \u2014 treated as a second post at the trailhead; may be the same post's opposite face, confirm on Paul's walk-through."
+    "note": "Decal set differs from the 163653226 post — treated as a second post at the trailhead; may be the same post's opposite face, confirm on Paul's walk-through."
    }
   },
   {
@@ -1907,7 +1908,7 @@
     "direction_ref": null,
     "direction_compass": null,
     "gps_source": "gpx",
-    "gpx_offset_s": 1.0,
+    "gpx_offset_s": 1,
     "gpx_file": "Nov_11,_2026,_10_36_12_AM.gpx",
     "serial": "ITM-KI-001",
     "sign_kind": null,
@@ -1946,7 +1947,7 @@
       "drive_id": null
      }
     ],
-    "note": "Needs Paul's walk-through \u2014 the leaning board is unidentified (a loose post? a kiosk panel?)."
+    "note": "Needs Paul's walk-through — the leaning board is unidentified (a loose post? a kiosk panel?)."
    }
   },
   {
@@ -1970,7 +1971,7 @@
     "direction_ref": null,
     "direction_compass": null,
     "gps_source": "gpx",
-    "gpx_offset_s": 0.0,
+    "gpx_offset_s": 0,
     "gpx_file": "Nov_11,_2026,_10_36_12_AM.gpx",
     "serial": "ITM-SG-017",
     "sign_kind": null,
@@ -2008,7 +2009,7 @@
     "direction_ref": null,
     "direction_compass": null,
     "gps_source": "gpx",
-    "gpx_offset_s": 3.0,
+    "gpx_offset_s": 3,
     "gpx_file": "Nov_11,_2026,_10_36_12_AM.gpx",
     "serial": "ITM-BR-001",
     "sign_kind": null,
@@ -2052,7 +2053,7 @@
     "direction_ref": null,
     "direction_compass": null,
     "gps_source": "gpx",
-    "gpx_offset_s": 4.0,
+    "gpx_offset_s": 4,
     "gpx_file": "Nov_11,_2026,_10_36_12_AM.gpx",
     "serial": null,
     "sign_kind": null,
@@ -2090,7 +2091,7 @@
     "direction_ref": null,
     "direction_compass": null,
     "gps_source": "gpx",
-    "gpx_offset_s": 1.0,
+    "gpx_offset_s": 1,
     "gpx_file": "Nov_11,_2026,_10_36_12_AM.gpx",
     "serial": "ITM-BW-010",
     "sign_kind": null,
@@ -2128,7 +2129,7 @@
     "direction_ref": null,
     "direction_compass": null,
     "gps_source": "gpx",
-    "gpx_offset_s": 4.0,
+    "gpx_offset_s": 4,
     "gpx_file": "Nov_11,_2026,_10_36_12_AM.gpx",
     "serial": null,
     "sign_kind": null,
@@ -2172,7 +2173,7 @@
     "direction_ref": null,
     "direction_compass": null,
     "gps_source": "gpx",
-    "gpx_offset_s": 1.0,
+    "gpx_offset_s": 1,
     "gpx_file": "Nov_11,_2026,_10_36_12_AM.gpx",
     "serial": null,
     "sign_kind": null,
@@ -2210,7 +2211,7 @@
     "direction_ref": null,
     "direction_compass": null,
     "gps_source": "gpx",
-    "gpx_offset_s": 3.0,
+    "gpx_offset_s": 3,
     "gpx_file": "Nov_11,_2026,_10_36_12_AM.gpx",
     "serial": "ITM-BR-002",
     "sign_kind": null,
@@ -2237,7 +2238,7 @@
       "drive_id": null
      }
     ],
-    "note": "Fallen limb across the deck \u2014 see maintenance list."
+    "note": "Fallen limb across the deck — see maintenance list."
    }
   },
   {
@@ -2261,7 +2262,7 @@
     "direction_ref": null,
     "direction_compass": null,
     "gps_source": "gpx",
-    "gpx_offset_s": 5.0,
+    "gpx_offset_s": 5,
     "gpx_file": "Nov_11,_2026,_10_36_12_AM.gpx",
     "serial": "ITM-BN-003",
     "sign_kind": null,
@@ -2299,7 +2300,7 @@
     "direction_ref": null,
     "direction_compass": null,
     "gps_source": "gpx",
-    "gpx_offset_s": 8.0,
+    "gpx_offset_s": 8,
     "gpx_file": "Nov_11,_2026,_10_36_12_AM.gpx",
     "serial": "ITM-BW-007",
     "sign_kind": null,
@@ -2343,7 +2344,7 @@
     "direction_ref": null,
     "direction_compass": null,
     "gps_source": "gpx",
-    "gpx_offset_s": 3.0,
+    "gpx_offset_s": 3,
     "gpx_file": "Nov_11,_2026,_10_36_12_AM.gpx",
     "serial": null,
     "sign_kind": null,
@@ -2381,7 +2382,7 @@
     "direction_ref": null,
     "direction_compass": null,
     "gps_source": "gpx",
-    "gpx_offset_s": 6.0,
+    "gpx_offset_s": 6,
     "gpx_file": "Nov_11,_2026,_10_36_12_AM.gpx",
     "serial": "ITM-BW-008",
     "sign_kind": null,
@@ -2414,7 +2415,7 @@
       "drive_id": null
      }
     ],
-    "note": "Loose plank beside the run \u2014 see maintenance list."
+    "note": "Loose plank beside the run — see maintenance list."
    }
   },
   {
@@ -2438,7 +2439,7 @@
     "direction_ref": null,
     "direction_compass": null,
     "gps_source": "gpx",
-    "gpx_offset_s": 14.0,
+    "gpx_offset_s": 14,
     "gpx_file": "Nov_11,_2026,_10_36_12_AM.gpx",
     "serial": "ITM-BN-002",
     "sign_kind": null,
@@ -2482,7 +2483,7 @@
     "direction_ref": null,
     "direction_compass": null,
     "gps_source": "gpx",
-    "gpx_offset_s": 10.0,
+    "gpx_offset_s": 10,
     "gpx_file": "Nov_11,_2026,_10_36_12_AM.gpx",
     "serial": "ITM-SG-013",
     "sign_kind": null,
@@ -2520,7 +2521,7 @@
     "direction_ref": null,
     "direction_compass": null,
     "gps_source": "gpx",
-    "gpx_offset_s": 3.0,
+    "gpx_offset_s": 3,
     "gpx_file": "Nov_11,_2026,_10_36_12_AM.gpx",
     "serial": "ITM-CP-021",
     "sign_kind": null,
@@ -2558,7 +2559,7 @@
     "direction_ref": null,
     "direction_compass": null,
     "gps_source": "gpx",
-    "gpx_offset_s": 3.0,
+    "gpx_offset_s": 3,
     "gpx_file": "Nov_11,_2026,_10_36_12_AM.gpx",
     "serial": "ITM-SG-014",
     "sign_kind": null,
@@ -2596,7 +2597,7 @@
     "direction_ref": null,
     "direction_compass": null,
     "gps_source": "gpx",
-    "gpx_offset_s": 8.0,
+    "gpx_offset_s": 8,
     "gpx_file": "Nov_11,_2026,_10_36_12_AM.gpx",
     "serial": null,
     "sign_kind": null,
@@ -2611,7 +2612,7 @@
       "drive_id": null
      }
     ],
-    "note": "Needs Paul's walk-through \u2014 the two stumps are unidentified (old sign or barrier posts?)."
+    "note": "Needs Paul's walk-through — the two stumps are unidentified (old sign or barrier posts?)."
    }
   },
   {
@@ -2635,7 +2636,7 @@
     "direction_ref": null,
     "direction_compass": null,
     "gps_source": "gpx",
-    "gpx_offset_s": 12.0,
+    "gpx_offset_s": 12,
     "gpx_file": "Nov_11,_2026,_10_36_12_AM.gpx",
     "serial": "ITM-CP-022",
     "sign_kind": null,
@@ -2673,7 +2674,7 @@
     "direction_ref": null,
     "direction_compass": null,
     "gps_source": "gpx",
-    "gpx_offset_s": 11.0,
+    "gpx_offset_s": 11,
     "gpx_file": "Nov_11,_2026,_10_36_12_AM.gpx",
     "serial": "ITM-SG-015",
     "sign_kind": null,
@@ -2688,7 +2689,7 @@
       "drive_id": null
      }
     ],
-    "note": "A MnDOT highway marker, not a trail sign \u2014 keep or drop from the inventory is Paul's call."
+    "note": "A MnDOT highway marker, not a trail sign — keep or drop from the inventory is Paul's call."
    }
   },
   {
@@ -2712,7 +2713,7 @@
     "direction_ref": null,
     "direction_compass": null,
     "gps_source": "gpx",
-    "gpx_offset_s": 2.0,
+    "gpx_offset_s": 2,
     "gpx_file": "Nov_11,_2026,_10_36_12_AM.gpx",
     "serial": "ITM-CP-023",
     "sign_kind": null,
@@ -2750,7 +2751,7 @@
     "direction_ref": null,
     "direction_compass": null,
     "gps_source": "gpx",
-    "gpx_offset_s": 3.0,
+    "gpx_offset_s": 3,
     "gpx_file": "Nov_11,_2026,_10_36_12_AM.gpx",
     "serial": "ITM-RG-001",
     "sign_kind": null,
@@ -2777,7 +2778,7 @@
       "drive_id": null
      }
     ],
-    "note": "Trail register box \u2014 type RG (register), code approved by Paul Nov 11, 2026. Notebook close-up (165431497) HELD BACK from the public map \u2014 legible hiker names; publish only on Paul's explicit word. Original kept in Drive + batch-2 working folder."
+    "note": "Trail register box — type RG (register), code approved by Paul Nov 11, 2026. Notebook close-up (165431497) HELD BACK from the public map — legible hiker names; publish only on Paul's explicit word. Original kept in Drive + batch-2 working folder."
    }
   },
   {
@@ -2801,7 +2802,7 @@
     "direction_ref": null,
     "direction_compass": null,
     "gps_source": "gpx",
-    "gpx_offset_s": 3.0,
+    "gpx_offset_s": 3,
     "gpx_file": "Nov_11,_2026,_10_36_12_AM.gpx",
     "serial": null,
     "sign_kind": null,
@@ -2839,7 +2840,7 @@
     "direction_ref": null,
     "direction_compass": null,
     "gps_source": "gpx",
-    "gpx_offset_s": 7.0,
+    "gpx_offset_s": 7,
     "gpx_file": "Nov_11,_2026,_10_36_12_AM.gpx",
     "serial": null,
     "sign_kind": null,
@@ -2854,7 +2855,7 @@
       "drive_id": null
      }
     ],
-    "note": "Tree-mounted marker, not a freestanding sign \u2014 whether tree markers belong in the inventory is Paul's call."
+    "note": "Tree-mounted marker, not a freestanding sign — whether tree markers belong in the inventory is Paul's call."
    }
   },
   {
@@ -2878,7 +2879,7 @@
     "direction_ref": null,
     "direction_compass": null,
     "gps_source": "gpx",
-    "gpx_offset_s": 5.0,
+    "gpx_offset_s": 5,
     "gpx_file": "Nov_11,_2026,_10_36_12_AM.gpx",
     "serial": "ITM-CP-024",
     "sign_kind": null,
@@ -2916,7 +2917,7 @@
     "direction_ref": null,
     "direction_compass": null,
     "gps_source": "gpx",
-    "gpx_offset_s": 12.0,
+    "gpx_offset_s": 12,
     "gpx_file": "Nov_11,_2026,_10_36_12_AM.gpx",
     "serial": "ITM-SG-016",
     "sign_kind": null,
@@ -2931,7 +2932,7 @@
       "drive_id": null
      }
     ],
-    "note": "Sign face destroyed by gunfire \u2014 needs replacement; see maintenance list."
+    "note": "Sign face destroyed by gunfire — needs replacement; see maintenance list."
    }
   },
   {
@@ -2955,7 +2956,7 @@
     "direction_ref": null,
     "direction_compass": null,
     "gps_source": "gpx",
-    "gpx_offset_s": 2.0,
+    "gpx_offset_s": 2,
     "gpx_file": "Nov_11,_2026,_10_36_12_AM.gpx",
     "serial": "ITM-CP-025",
     "sign_kind": null,
@@ -2993,7 +2994,7 @@
     "direction_ref": null,
     "direction_compass": null,
     "gps_source": "gpx",
-    "gpx_offset_s": 0.0,
+    "gpx_offset_s": 0,
     "gpx_file": "Nov_11,_2026,_10_36_12_AM.gpx",
     "serial": null,
     "sign_kind": null,
@@ -3008,7 +3009,7 @@
       "drive_id": null
      }
     ],
-    "note": "Blowdown across the trail \u2014 see maintenance list."
+    "note": "Blowdown across the trail — see maintenance list."
    }
   },
   {
@@ -3032,7 +3033,7 @@
     "direction_ref": null,
     "direction_compass": null,
     "gps_source": "gpx",
-    "gpx_offset_s": 6.0,
+    "gpx_offset_s": 6,
     "gpx_file": "Nov_11,_2026,_10_36_12_AM.gpx",
     "serial": null,
     "sign_kind": null,
@@ -3047,7 +3048,7 @@
       "drive_id": null
      }
     ],
-    "note": "Blowdown across the trail \u2014 see maintenance list."
+    "note": "Blowdown across the trail — see maintenance list."
    }
   },
   {
@@ -3071,7 +3072,7 @@
     "direction_ref": null,
     "direction_compass": null,
     "gps_source": "gpx",
-    "gpx_offset_s": 8.0,
+    "gpx_offset_s": 8,
     "gpx_file": "Nov_11,_2026,_10_36_12_AM.gpx",
     "serial": null,
     "sign_kind": null,
@@ -3086,7 +3087,7 @@
       "drive_id": null
      }
     ],
-    "note": "Blowdown across the trail \u2014 see maintenance list."
+    "note": "Blowdown across the trail — see maintenance list."
    }
   },
   {
@@ -3110,7 +3111,7 @@
     "direction_ref": null,
     "direction_compass": null,
     "gps_source": "gpx",
-    "gpx_offset_s": 8.0,
+    "gpx_offset_s": 8,
     "gpx_file": "Nov_11,_2026,_10_36_12_AM.gpx",
     "serial": null,
     "sign_kind": null,
@@ -3131,7 +3132,7 @@
       "drive_id": null
      }
     ],
-    "note": "Blowdown across the trail \u2014 see maintenance list."
+    "note": "Blowdown across the trail — see maintenance list."
    }
   },
   {
@@ -3155,7 +3156,7 @@
     "direction_ref": null,
     "direction_compass": null,
     "gps_source": "gpx",
-    "gpx_offset_s": 9.0,
+    "gpx_offset_s": 9,
     "gpx_file": "Nov_11,_2026,_10_36_12_AM.gpx",
     "serial": null,
     "sign_kind": null,
@@ -3170,7 +3171,7 @@
       "drive_id": null
      }
     ],
-    "note": "Blowdown across the trail \u2014 see maintenance list."
+    "note": "Blowdown across the trail — see maintenance list."
    }
   },
   {
@@ -3194,7 +3195,7 @@
     "direction_ref": null,
     "direction_compass": null,
     "gps_source": "gpx",
-    "gpx_offset_s": 5.0,
+    "gpx_offset_s": 5,
     "gpx_file": "Nov_11,_2026,_10_36_12_AM.gpx",
     "serial": "ITM-CP-026",
     "sign_kind": null,
@@ -3238,11 +3239,11 @@
     "direction_ref": null,
     "direction_compass": null,
     "gps_source": "gpx",
-    "gpx_offset_s": 10.0,
+    "gpx_offset_s": 10,
     "gpx_file": "Nov_11,_2026,_10_36_12_AM.gpx",
     "serial": "ITM-CP-027",
     "sign_kind": null,
-    "chainage_mi": 58.0,
+    "chainage_mi": 58,
     "section": "Chip-5",
     "snap_m": 0.58,
     "photos": [
@@ -3282,7 +3283,7 @@
     "direction_ref": null,
     "direction_compass": null,
     "gps_source": "gpx",
-    "gpx_offset_s": 5.0,
+    "gpx_offset_s": 5,
     "gpx_file": "Nov_11,_2026,_10_36_12_AM.gpx",
     "serial": "ITM-CP-028",
     "sign_kind": null,
@@ -3326,7 +3327,7 @@
     "direction_ref": null,
     "direction_compass": null,
     "gps_source": "gpx",
-    "gpx_offset_s": 6.0,
+    "gpx_offset_s": 6,
     "gpx_file": "Nov_11,_2026,_10_36_12_AM.gpx",
     "serial": null,
     "sign_kind": null,
@@ -3341,7 +3342,7 @@
       "drive_id": null
      }
     ],
-    "note": "Tree-mounted marker, not a freestanding sign \u2014 whether tree markers belong in the inventory is Paul's call."
+    "note": "Tree-mounted marker, not a freestanding sign — whether tree markers belong in the inventory is Paul's call."
    }
   },
   {
@@ -3365,7 +3366,7 @@
     "direction_ref": null,
     "direction_compass": null,
     "gps_source": "gpx",
-    "gpx_offset_s": 4.0,
+    "gpx_offset_s": 4,
     "gpx_file": "Nov_11,_2026,_10_36_12_AM.gpx",
     "serial": "ITM-CP-029",
     "sign_kind": null,
@@ -3403,7 +3404,7 @@
     "direction_ref": null,
     "direction_compass": null,
     "gps_source": "gpx",
-    "gpx_offset_s": 7.0,
+    "gpx_offset_s": 7,
     "gpx_file": "Nov_11,_2026,_10_36_12_AM.gpx",
     "serial": "ITM-CP-030",
     "sign_kind": null,
@@ -3441,7 +3442,7 @@
     "direction_ref": null,
     "direction_compass": null,
     "gps_source": "gpx",
-    "gpx_offset_s": 15.0,
+    "gpx_offset_s": 15,
     "gpx_file": "Nov_11,_2026,_10_36_12_AM.gpx",
     "serial": "ITM-BW-009",
     "sign_kind": null,
@@ -3468,7 +3469,7 @@
       "drive_id": null
      }
     ],
-    "note": "Board end slightly raised at the bend \u2014 see maintenance list."
+    "note": "Board end slightly raised at the bend — see maintenance list."
    }
   }
  ]
