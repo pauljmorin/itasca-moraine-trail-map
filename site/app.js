@@ -1908,6 +1908,14 @@ var placesKindOn = {};
 PLACES_KIND_TOGGLES.forEach(function (t) { placesKindOn[t[0]] = true; });
 var placesKindLayers = {};
 var placesKindBoxes = {};
+var campingBox = null; /* the Camping sub-toggle checkbox under NCTA Places */
+/* Keep the Camping sub-toggle in step with the chapterplaces
+   layer: view presets and shared links set the layer's own
+   checkbox directly, so this re-reads it after those run. */
+function syncCampingBox() {
+  var def = layerById("chapterplaces");
+  if (campingBox && def && def.box) campingBox.checked = def.box.checked;
+}
 
 /* Expandable sub-toggles (Paul, Nov 13, 2026): a layer whose
    panelExtra builds per-item checkboxes gets a disclosure button
@@ -4875,11 +4883,14 @@ var LAYERS = [
        deliberately unlike the paper Places discs, the red alert
        diamonds and the orange asset pins; a CLOSED place greys
        out under a red ring and a diagonal bar. No zoom gate:
-       the chapter's own places should never hide. */
-    id: "chapterplaces", label: "Chapter places",
-    title: "Places the chapter itself records — campsites first",
+       the chapter's own places should never hide. Renamed
+       Camping and nested under NCTA Places (Paul, Nov 13,
+       2026): it has no panel row of its own (hiddenToggle) —
+       the Camping sub-toggle under NCTA Places drives it. */
+    id: "chapterplaces", label: "Camping",
+    title: "The chapter's own campsites",
     file: "data/chapter-places.geojson", onByDefault: false,
-    group: "ITM inventory",
+    group: "ITM inventory", hiddenToggle: true,
     swatch: { kind: "chapter", color: COLORS.trailDeep },
     build: function (gj) {
       var glyphs = { Parking: "P", Camping: "C", Water: "W",
@@ -5003,6 +5014,30 @@ var LAYERS = [
         });
         wrap.appendChild(lab);
       });
+      /* Camping (the chapter's own campsites) rides under NCTA
+         Places as a fifth item. It is a separate layer
+         (chapterplaces) with its own deep-green discs and no
+         zoom gate, so it is not a Places kind — this checkbox
+         drives that layer's own toggle instead. Count verified
+         against data/chapter-places.geojson (36). */
+      var cdef = layerById("chapterplaces");
+      var clab = document.createElement("label");
+      var cbox = document.createElement("input");
+      cbox.type = "checkbox";
+      cbox.checked = !!(cdef && cdef.box && cdef.box.checked);
+      campingBox = cbox; /* setView + applyHash re-sync it */
+      cbox.setAttribute("aria-label", "Camping places");
+      clab.appendChild(cbox);
+      clab.appendChild(document.createTextNode("Camping (36)"));
+      cbox.addEventListener("change", function () {
+        var def = layerById("chapterplaces");
+        if (!def || !def.box) { writeShareHash(); return; }
+        def.box.checked = cbox.checked;
+        if (cbox.checked) ensureLayer(def, true);
+        else if (def.layer) map.removeLayer(def.layer);
+        writeShareHash(); /* a Camping change is a new shareable view */
+      });
+      wrap.appendChild(clab);
       label.parentNode.insertBefore(wrap, label.nextSibling);
       wireSubToggleExpand(label, wrap, "place kinds");
     },
@@ -5423,6 +5458,7 @@ function setView(view) {
      load shareHashReady is false, so the preset application here
      never clobbers an incoming link; applyHash turns the writer
      on once the link is applied. */
+  syncCampingBox(); /* the preset may have switched Camping */
   writeShareHash();
 }
 (function initView() {
@@ -5770,6 +5806,7 @@ var requestedView = null;
   /* The link is applied: the live writer may now record state
      without clobbering it. Normalize the hash to the full
      canonical form so Copy link works before any interaction. */
+  syncCampingBox(); /* the link may have switched Camping */
   shareHashReady = true;
   writeShareHash();
 })();
