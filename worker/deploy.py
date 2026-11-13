@@ -10,29 +10,26 @@ arguments, or in logs.
 Usage:
   python3 worker/deploy.py worker/itm-save.js
 
-The upload is a PUT of the raw JavaScript (Content-Type:
-application/javascript) to
+The script uses ES-module syntax (`export default`), so the upload
+is a multipart PUT to
   /accounts/<account>/workers/scripts/itm-save
-which the generic cf-api helper cannot do (it sends JSON bodies).
+with a JSON metadata part naming the main module and the script
+part itself. A plain raw-JS PUT is treated as a classic service
+worker and rejects `export` (HTTP 400, error 10021). The generic
+cf-api helper cannot do this (it sends JSON bodies).
 """
 import json
 import sys
-import urllib.request
-import urllib.error
 
 sys.path.insert(0, "/opt/muse/skills/custom-connector-setup/bin")
-from dynamic_credentials import add_surrogate_to_request, read_json_response
+from dynamic_credentials import dynamic_credential_entry
+
+import requests
 
 API = "https://api.cloudflare.com/client/v4"
 ACCOUNT_ID = "2a85f76947df5901cc13e2dba2f02082"
 SCRIPT_NAME = "itm-save"
 CONNECTOR = "custom.cloudflare"
-HOSTS = ["api.cloudflare.com"]
-
-
-class NoRedirect(urllib.request.HTTPRedirectHandler):
-    def redirect_request(self, *args):
-        raise RuntimeError("redirect refused, verify the endpoint")
 
 
 def main(argv):
@@ -40,23 +37,29 @@ def main(argv):
         print(__doc__)
         return 2
     with open(argv[1], "rb") as f:
-        body = f.read()
+        script_bytes = f.read()
+    metadata = {
+        "main_module": "worker.js",
+        "compatibility_date": "2024-01-01",
+    }
+    entry = dynamic_credential_entry(CONNECTOR, "access_token")
+    token = str(entry["surrogate"]).strip()
     url = "%s/accounts/%s/workers/scripts/%s" % (API, ACCOUNT_ID, SCRIPT_NAME)
-    req = urllib.request.Request(url, data=body, method="PUT")
-    req.add_header("Content-Type", "application/javascript")
-    add_surrogate_to_request(req, CONNECTOR, allowed_hosts=HOSTS)
-    opener = urllib.request.build_opener(NoRedirect())
+    files = {
+        "metadata": (None, json.dumps(metadata), "application/json"),
+        "worker.js": ("worker.js", script_bytes, "application/javascript+module"),
+    }
+    resp = requests.put(
+        url,
+        files=files,
+        headers={"Authorization": "Bearer " + token},
+        timeout=120,
+    )
     try:
-        with opener.open(req, timeout=120) as resp:
-            print(json.dumps(read_json_response(resp), indent=1))
-            return 0
-    except urllib.error.HTTPError as e:
-        try:
-            detail = e.read().decode("utf-8", errors="replace")
-        except Exception:
-            detail = ""
-        print("HTTP %d %s" % (e.code, detail[:1000]), file=sys.stderr)
-        return 1
+        print(json.dumps(resp.json(), indent=1))
+    except Exception:
+        print("HTTP %d %s" % (resp.status_code, resp.text[:1000]))
+    return 0 if resp.ok else 1
 
 
 if __name__ == "__main__":
