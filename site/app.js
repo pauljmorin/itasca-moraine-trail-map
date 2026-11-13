@@ -270,7 +270,8 @@ var esriWayback2025 = L.tileLayer(
    whole corridor, unlike nw14, which is blank over most of it).
    fall12 is the 2012 fall Central layer. The fsa* layers are the
    per-vintage NAIP mosaics (summer leaf-on); fsa2023/fsa2025 are
-   NOT added — they duplicate the year menu's 2023/2025 aerials. usgs2006, fsa (2003) and doq (1991) are the older
+   in the menu as the 2023/2025 summer entries, beside the Dec
+   Wayback entries for those years. usgs2006, fsa (2003) and doq (1991) are the older
    statewide layers. */
 var mnAerial2013Spring = L.tileLayer.wms(MN_WMS, {
   layers: "nc13hm", format: "image/jpeg", transparent: false,
@@ -282,6 +283,16 @@ var mnAerial2012Fall = L.tileLayer.wms(MN_WMS, {
   layers: "fall12", format: "image/jpeg", transparent: false,
   version: "1.1.1",
   attribution: "Aerial imagery (2012, fall): MnGeo",
+});
+var mnAerial2025 = L.tileLayer.wms(MN_WMS, {
+  layers: "fsa2025", format: "image/jpeg", transparent: false,
+  version: "1.1.1",
+  attribution: "Aerial imagery (2025 NAIP): USDA / MnGeo",
+});
+var mnAerial2023 = L.tileLayer.wms(MN_WMS, {
+  layers: "fsa2023", format: "image/jpeg", transparent: false,
+  version: "1.1.1",
+  attribution: "Aerial imagery (2023 NAIP): USDA / MnGeo",
 });
 var mnAerial2021 = L.tileLayer.wms(MN_WMS, {
   layers: "fsa2021", format: "image/jpeg", transparent: false,
@@ -436,10 +447,14 @@ var BASES = [
      spring); the rest carry no leaf label (Paul, Nov 13). */
   { name: "Aerial 2025 (Dec)", code: "aerial-2025", label: "Aerial 2025 (Dec)",
     sub: "Esri Wayback · summer", layer: esriWayback2025 },
+  { name: "Aerial 2025 (summer)", code: "aerial-2025-naip", label: "Aerial 2025 (summer)",
+    sub: "NAIP", layer: mnAerial2025 },
   { name: "Aerial 2024 (Dec)", code: "aerial-2024", label: "Aerial 2024 (Dec)",
     sub: "Esri Wayback · summer", layer: esriWayback2024 },
   { name: "Aerial 2023 (Dec)", code: "aerial-2023", label: "Aerial 2023 (Dec)",
     sub: "Esri Wayback · summer", layer: esriWayback2023 },
+  { name: "Aerial 2023 (summer)", code: "aerial-2023-naip", label: "Aerial 2023 (summer)",
+    sub: "NAIP", layer: mnAerial2023 },
   { name: "Aerial 2022 (Dec)", code: "aerial-2022", label: "Aerial 2022 (Dec)",
     sub: "Esri Wayback · summer", layer: esriWayback2022 },
   { name: "Aerial 2021 (Dec)", code: "aerial-2021", label: "Aerial 2021 (Dec)",
@@ -657,8 +672,10 @@ var CASING_BY_BASE = {
   /* Added Nov 13, 2026 (year-by-year aerials): every new aerial
      base is imagery, so all take the photo register. */
   "Aerial 2025 (Dec)": "photo",
+  "Aerial 2025 (summer)": "photo",
   "Aerial 2024 (Dec)": "photo",
   "Aerial 2023 (Dec)": "photo",
+  "Aerial 2023 (summer)": "photo",
   "Aerial 2022 (Dec)": "photo",
   "Aerial 2021 (Dec)": "photo",
   "Aerial 2021 (summer)": "photo",
