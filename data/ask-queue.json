@@ -1,1 +1,29 @@
-{"about":"Questions the Ask the trail button could not answer from the map's own data. Each entry is a to-do for Paul and Muse: Paul approves the work, Muse builds it. Written by the itm-save Worker's /ask endpoint (one commit per new question; repeat questions bump asked_count instead of duplicating). Paul marks an entry done by editing this file on GitHub: set status to \"done\" and add a resolved_note. NEVER put adopter phone/email or taxpayer fields in this file — questions and data-gap notes only.","entries":[],"version":1}
+{
+ "about": "Questions the Ask the trail button could not answer from the map's own data. Each entry is a to-do for Paul and Muse: Paul approves the work, Muse builds it. Written by the itm-save Worker's /ask endpoint (one commit per new question; repeat questions bump asked_count instead of duplicating). Paul marks an entry done by editing this file on GitHub: set status to \"done\" and add a resolved_note. NEVER put adopter phone/email or taxpayer fields in this file â questions and data-gap notes only.",
+ "entries": [
+  {
+   "id": "AQ-0001",
+   "asked_at": "2026-11-13T22:45:11.611Z",
+   "last_asked_at": "2026-11-13T22:45:11.611Z",
+   "asked_count": 1,
+   "status": "open",
+   "question": "where is lake erin",
+   "missing_data": "Specific location coordinates and descriptions for named chapter places including Lake Erin",
+   "partial_answer": "That's a really good question. The digest tracks 36 chapter places in Minnesota (minnesota.chapter_places), but it does not include specific coordinates, section assignments, or location details for Lake Erin.\n\nMapping named landmarks like Lake Erin would take a short data pull from our spatial place-names layer to attach coordinates and milepoints to each chapter place. I'll get this to Paul now.",
+   "work_estimate": "a short GIS data pull",
+   "data_needed": "Coordinates and trail mileposts for named chapter places",
+   "data_exists": "yes",
+   "approval_needed": null,
+   "suggested_next_step": "Export named chapter places with coordinates into the digest generator",
+   "design_criteria": [
+    "location of Lake Erin"
+   ],
+   "elicitation_complete": false,
+   "sources": [
+    "minnesota.chapter_places"
+   ],
+   "resolved_note": null
+  }
+ ],
+ "version": 1
+}
