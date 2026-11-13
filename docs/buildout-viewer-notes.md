@@ -250,3 +250,81 @@ to the Hwy 6→Tioga Beach corridor), so the MN-6 figures (AADT 396–5,566;
 mostly 2 ft paved + 2 ft unpaved, no paved near Cohasset) have no
 road-walk popup to attach to. The Grand Rapids road features in the file
 are US-169 / CR-76 town streets, not MN-6.
+
+## Motorized competition — v4 (Nov 13, 2026)
+
+Planning mode only. Two new layers, off by default, lazy-loaded like soils:
+ATV (purple `#762a83`) and snowmobile (icy blue `#67a9cf`).
+
+### Sources (this is the DNR OHV map-service address the ATV research file was missing)
+
+- Minnesota DNR OHV Trails, 2026 season — ArcGIS REST FeatureServer,
+  `https://enterprise.gisdata.mn.gov/aghost/rest/services/us_mn_state_dnr/trans_ohv_trails_mn/FeatureServer/0`
+  (item 3a71aaab703a4454823758b1810f31a5). 1,642 features in the envelope
+  (lon −93.8..−91.2, lat 47.3..48.05); 25 named systems.
+- Minnesota DNR Snowmobile Trails — same host, `.../trans_snowmobile_trails_mn/FeatureServer/0`.
+  36 features in the envelope; 30 named systems. Contact fields
+  (`public_poc`, `public_pho`, `pocemail`) deliberately NOT pulled.
+- Published mileages / inventory / honest lines:
+  `docs/gap-atv-competition-research.md` and `docs/gap-atv-trails-inventory.csv`
+  (55 rows). Build script: `site/buildout/build-motorized.py` (re-runnable;
+  re-injects the panel section between the MOTORIZED-SECTION markers in
+  `index.html`). Stats: `site/buildout/src/motorized-stats.json`.
+
+### Method
+
+- Drawn layers: both services clipped to a 2-mile buffer around the
+  proposed Arrowhead line + 2004 corridor + current gap line, simplified
+  ~30 m. ATV: 1,074 features / 16 systems, 413 KB. Snowmobile: 26 features /
+  23 systems, 89 KB.
+- Overlaps (UTM 15N, EPSG:26915): motorized miles inside the 2004 corridor
+  polygon; proposed-line miles within 100 m of a motorized line; crossing
+  LOCATIONS (intersection points clustered within 250 m — see below);
+  current-line miles within 100 m.
+- The envelope geometry query silently dropped 23 features on the first
+  run (Red Dot segments just south of the envelope, two Voyageur segments
+  just north) while the id list returned all 1,642. The build script now
+  fetches the id list first, then features by objectId in chunks. The
+  missing 23 are all outside the corridor/buffer and cannot affect the
+  overlap numbers or the drawn layers.
+
+### Numbers (GIS-measured off the DNR services, Nov 13, 2026)
+
+- Inside the 2004 corridor: **ATV 120.1 mi; snowmobile 367.7 mi.**
+- Proposed line within 100 m of motorized trail: **ATV 23.8 mi; snowmobile 56.8 mi.**
+  Crossing locations: **ATV 20; snowmobile 32.**
+- Current official line within 100 m of motorized trail: **ATV 14.0 mi; snowmobile 48.3 mi.**
+- Headline overlap: **50.9 of the proposed line's 101.4 mi lie within 100 m
+  of the Taconite State Trail** (groomed snowmobile spine, Grand Rapids–Ely);
+  **16.6 mi lie within 100 m of the Taconite–Big Aspen ATV connection.**
+- Raw point counts are NOT used: where the proposed line runs along a
+  motorized corridor the two digitizations weave across each other
+  (Taconite–Big Aspen Connection 227 raw points; Taconite snowmobile 616 raw
+  points). Clustering within 250 m gives the 20 / 32 locations above.
+- GIS miles differ from published system totals (segmentation, shared tread
+  counted twice). Both are shown; neither is silently substituted. Example:
+  Prospectors measures 176.4 GIS mi in the envelope vs 167 published (and the
+  published figure itself is disputed: club 216+, consultant 250).
+
+### What is list-only (19 of 55 CSV rows drawn; 36 listed, never drawn)
+
+Systems outside the 2-mi buffer (Finland / Gunflint / Cook County approach
+systems, Itasca County systems west and south of the corridor, adjacent
+counties), club aggregates (Ely Igloo 152-mi system — its Tomahawk Trail IS
+drawn), the three snowmobile county totals (not additive), and the two
+blank-mileage rows (Two Harbors Corridor / Yukon, Gunflint — mileage not
+found, left blank). Voyageur Country Phase 2 (+125 mi roadway + 76 mi
+natural-surface trail) is EAW stage with no geometry — noted in the
+Voyageur row's flag, not drawn. No line was invented anywhere.
+
+### Honest lines carried into the panel
+
+- § 84.777 (north of Highway 2, unsigned forest access routes open unless
+  posted closed) is a rule about *riding* unsigned routes, not a right to
+  *build* — building needs DNR designation and environmental review.
+- HF 1012 / SF 1245 (signed-trails-only statewide) are not enacted.
+- Snowmobile: groomed corridors 20–26 ft (32–36 ft at crossings), groomers
+  to 17,000 lb — wide clearing, tread intact, unlike ATVs.
+- The deconfliction-meeting claim (NCT not at the table) is reported in the
+  folder but unverified against any meeting record — carried as reported,
+  not asserted as fact.

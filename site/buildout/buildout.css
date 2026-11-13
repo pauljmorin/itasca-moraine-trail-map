@@ -45,6 +45,15 @@ h2 { font-size: 13px; text-transform: uppercase; letter-spacing: 0.08em; color: 
 .sw.proposed { background: #2166ac; height: 5px; }
 .sw.corridor { background: rgba(33, 102, 172, 0.25); height: 12px; border: 1px solid rgba(33, 102, 172, 0.5); }
 .sw.sv { width: 12px; height: 12px; border-radius: 50%; background: #4285f4; border: 2px solid #fff; box-shadow: 0 0 0 1px #4285f4; }
+.sw.atv { background: #762a83; }
+.sw.snow { background: #67a9cf; }
+#legend-motorized { margin: 8px 0 4px; font-size: 13px; line-height: 1.8; }
+.motortable { width: 100%; border-collapse: collapse; font-size: 12.5px; line-height: 1.45; margin: 6px 0 12px; }
+.motortable th, .motortable td { border: 1px solid #ddd; padding: 4px 6px; text-align: left; vertical-align: top; }
+.motortable th { background: #eee; }
+.motortable .flag { display: block; font-size: 11.5px; color: #666; margin-top: 2px; }
+#planning-panel details { font-size: 13.5px; }
+#planning-panel summary { cursor: pointer; font-weight: 600; margin: 10px 0; }
 .drawn-note { font-size: 12.5px; color: #555; line-height: 1.5; }
 
 #mesabi-note p, #planning-panel p { font-size: 13.5px; line-height: 1.55; margin: 8px 0; }

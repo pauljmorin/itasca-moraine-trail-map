@@ -304,6 +304,65 @@
     });
   }
 
+  // Motorized competition — planning mode only, off by default, lazy.
+  // Geometries from the Minnesota DNR OHV Trails (2026 season) and
+  // Snowmobile Trails services, clipped to 2 mi around the proposed
+  // Arrowhead line and the 2004 corridor (build-motorized.py).
+  var ATV_COLOR = '#762a83';   // purple — distinct from foot tread green
+  var SNOW_COLOR = '#67a9cf';  // icy blue
+  var motorLoading = {};
+  function atvPopup(p) {
+    var h = '<h3>ATV &mdash; ' + esc(p.name) + '</h3>';
+    if (p.segment) h += '<p>' + esc(p.segment) + '</p>';
+    if (p.classes) h += '<p><strong>Vehicles:</strong> ' + esc(p.classes) + '</p>';
+    if (p.surface) h += '<p><strong>Surface:</strong> ' + esc(p.surface) + '</p>';
+    if (p.funding) h += '<p><strong>Funding:</strong> ' + esc(p.funding) + '</p>';
+    if (p.pub_miles != null) h += '<p><strong>This segment:</strong> ' + esc(p.pub_miles) + ' mi (DNR service)</p>';
+    if (/^prospectors$/i.test(p.name))
+      h += '<p class="warn"><strong>Mileage disputed:</strong> DNR lists 167 mi; the club says 216+ mi; a consultant says 250 mi. The panel shows DNR&rsquo;s figure and notes the dispute.</p>';
+    if (p.website) h += '<p><a href="' + esc(p.website) + '" target="_blank" rel="noopener">DNR trail page</a></p>';
+    h += '<p class="drawn-note">Minnesota DNR OHV Trails, 2026 season, via the MnGeo FeatureServer. Lines within 2 mi of the proposed Arrowhead line / 2004 corridor.</p>';
+    return h;
+  }
+  var SNOW_SHARED = {
+    'Taconite State Trail': 'ATV is allowed on 11 mi (Ely&ndash;Purvis, May 15&ndash;Oct 31) and the 18-mi Big Aspen Connection &mdash; this groomed spine is shared-use in places.',
+    'C.J. Ramstad/North Shore State Trail': 'The only ATV miles on this trail are a 7-mi segment in Lake County; HF 274 (2025) proposes ATV use on the Cook and Lake County portions.'
+  };
+  function snowPopup(p) {
+    var h = '<h3>Snowmobile &mdash; ' + esc(p.name) + '</h3>';
+    if (p.segment) h += '<p>' + esc(p.segment) + '</p>';
+    if (p.maintained_by) h += '<p><strong>Maintained by:</strong> ' + esc(p.maintained_by) + '</p>';
+    if (p.owner) h += '<p><strong>Owner:</strong> ' + esc(p.owner) + '</p>';
+    if (p.trail_num != null) h += '<p><strong>Trail no.:</strong> ' + esc(p.trail_num) + '</p>';
+    if (p.stud_restr) h += '<p><strong>Stud restriction:</strong> ' + esc(p.stud_restr) + '</p>';
+    if (p.pub_miles != null) h += '<p><strong>This segment:</strong> ' + esc(p.pub_miles) + ' mi (DNR service)</p>';
+    if (SNOW_SHARED[p.name]) h += '<p>' + SNOW_SHARED[p.name] + '</p>';
+    h += '<p class="drawn-note">Minnesota DNR Snowmobile Trails, via the MnGeo FeatureServer. Groomed corridors run 20&ndash;26 ft wide (32&ndash;36 ft at crossings), groomers up to 17,000 lb.</p>';
+    return h;
+  }
+  function addMotorized(id, path, color, popupFn) {
+    if (loaded[id] || motorLoading[id]) return;
+    motorLoading[id] = true;
+    fetchGeo(path).then(function (gj) {
+      layers[id] = L.geoJSON(gj, {
+        style: { color: color, weight: 3, opacity: 0.85 },
+        onEachFeature: function (f, l) { l.bindPopup(popupFn(f.properties)); }
+      });
+      loaded[id] = true;
+      // Motorized sits under the gap and proposed lines so their popups win.
+      layers[id].bringToBack();
+      if (layers['gap-a']) layers['gap-a'].bringToFront();
+      if (layers['gap-w']) layers['gap-w'].bringToFront();
+      if (layers['prop-a']) layers['prop-a'].bringToFront();
+      if (layers['prop-w']) layers['prop-w'].bringToFront();
+      var box = document.getElementById(id === 'atv' ? 'lyr-atv' : 'lyr-snow');
+      if (box && box.checked) layers[id].addTo(map);
+    }).catch(function (err) {
+      motorLoading[id] = false;
+      if (window.console && console.error) console.error(id + ' load failed:', err);
+    });
+  }
+
   function applyGroundLayers() {
     // Ground layers are planning-only: in briefing mode they leave the map
     // (checkboxes keep their state for the return to planning).
@@ -315,6 +374,16 @@
       else map.removeLayer(layers['soils']);
     } else if (document.getElementById('lyr-soils').checked && planning) {
       addSoils();
+    }
+    applyMotorLayer('atv', 'lyr-atv', 'data/motorized-atv.geojson', ATV_COLOR, atvPopup, planning);
+    applyMotorLayer('snow', 'lyr-snow', 'data/motorized-snow.geojson', SNOW_COLOR, snowPopup, planning);
+  }
+  function applyMotorLayer(id, checkboxId, path, color, popupFn, planning) {
+    var on = document.getElementById(checkboxId).checked && planning;
+    if (loaded[id]) {
+      if (on) layers[id].addTo(map); else map.removeLayer(layers[id]);
+    } else if (on) {
+      addMotorized(id, path, color, popupFn);
     }
   }
 
@@ -334,6 +403,8 @@
   document.getElementById('lyr-sv').addEventListener('change', function (e) { toggleLayer('sv', e.target.checked); });
   document.getElementById('lyr-landcover').addEventListener('change', applyGroundLayers);
   document.getElementById('lyr-soils').addEventListener('change', applyGroundLayers);
+  document.getElementById('lyr-atv').addEventListener('change', applyGroundLayers);
+  document.getElementById('lyr-snow').addEventListener('change', applyGroundLayers);
 
   // Mode toggle: briefing (default) vs planning. Same map; planning adds the
   // readiness / funding / risks panel.
