@@ -544,6 +544,11 @@ LAYERS = [
     # (source, dest, tolerance key, keep-list or mapping function)
     ("data/segments/official-line-chapter-extent.geojson",
      "site/data/trail.geojson", "trail", TRAIL_KEEP),
+    # NCT — all Minnesota (Nov 13, 2026): same keep-list and
+    # tolerance as the chapter line; source is
+    # scripts/pull_minnesota_line.py (state == 'MN').
+    ("data/segments/official-line-minnesota.geojson",
+     "site/data/trail-minnesota.geojson", "trail", TRAIL_KEEP),
     ("data/parcels/parcels-corridor.geojson",
      "site/data/parcels.geojson", "parcels", map_parcel),
     # access + roads are built by build_corridor_layers() below

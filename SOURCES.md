@@ -32,6 +32,62 @@ pulled.
   DataStore, https://irma.nps.gov/DataStore/ — unit NOCO geospatial
   datasets. Not used to date.
 
+## Official trail line — Minnesota portion (added 2026-11-13)
+
+- **What:** The same official NCTA line as above, kept for the whole
+  state instead of the chapter extent: every feature whose `state`
+  attribute is `MN`, full geometry, all attributes.
+- **Pulled by:** `scripts/pull_minnesota_line.py` (same paging method
+  as `pull_official_line.py`), Nov 13, 2026. Working file
+  `data/segments/official-line-minnesota.geojson` (full attributes);
+  site file `site/data/trail-minnesota.geojson` built by
+  `scripts/build_site_data.py` with the same `TRAIL_KEEP` list and
+  10 m tolerance as the chapter line (348 features, 252 KB, 0
+  dropped in simplification).
+- **Contents:** 348 features, 566.12 mi (geodesic, full geometry),
+  lon −96.72 to −89.93, lat 46.25 to 48.10 — North Dakota border
+  (Fargo) to the Border Route Trail junction (Grand Portage).
+  Chapters west to east: MWP (Minnesota Waters and Prairie) 86,
+  LLC (Laurentian Lakes) 65, ITM (Itasca Moraine) 40, STN (Star of
+  the North) 2, ARW (Arrowhead) 90, ELY (Ely Northwoods) 5, KEK
+  (Kekekabic Trail) 41, BRT (Border Route Trail) 11, BSC 2,
+  unassigned 6 (short connectors near Duluth/Superior).
+- **Use here:** the "NCT — all Minnesota" layer — a thin slate
+  context line drawn UNDER the chapter line (see `assertDrawOrder`
+  in `site/app.js`), ON by default. Popups reuse `trailPopup`;
+  the other Minnesota chapter names were added to `CHAPTER_NAMES`
+  with this layer (BRT = Border Route Trail; BSC left unmapped).
+- **Note:** the often-quoted "~800 miles" for the NCT in Minnesota
+  is not what the official service draws — the service's Minnesota
+  features measure 566 mi. The gap is unexamined (service gaps vs
+  the figure counting the Border Route / Kekekabic / SHT links).
+
+## Trail alerts — NCTA (chapter extent + Minnesota)
+
+- **What:** NCTA's own current-awareness notices — closures, storm
+  damage, reroutes, new routes — quoted verbatim, credited to NCTA.
+- **URL:** https://services2.arcgis.com/UfGVyqUm4GHa2zrj/arcgis/rest/services/trail_alerts/FeatureServer
+  — layer 1 "trail_alerts" (alert points), layer 2
+  "trail_alerts_new_rte" (reroute lines). Same NCTA ArcGIS
+  organisation as the official line.
+- **Chapter layer (Nov 10, 2026):** `scripts/pull_trail_alerts.py`
+  clips to the chapter working extent — 5 alert points, 0 reroute
+  lines. Site file `site/data/trail-alerts.geojson`.
+- **Minnesota layer (Nov 13, 2026):**
+  `scripts/pull_minnesota_alerts.py` pulls the same service over a
+  Minnesota bounding box (lon −97.3 to −89.5, lat 46.0 to 49.4) and
+  EXCLUDES anything inside the chapter working extent, so the two
+  layers are complementary: both on shows every Minnesota alert
+  exactly once. 22 alert points + 7 reroute lines (Nov 13, 2026).
+  Site files `site/data/trail-alerts-minnesota.geojson` and
+  `site/data/trail-alert-lines-minnesota.geojson`. A few points sit
+  just across the border (Fargo, Superior, and the Wisconsin NCT)
+  — NCTA alerts on this same trail, kept for the end-to-end hiker.
+- **Date handling:** the service stores each alert's Date as UTC
+  midnight of the day AFTER the intended calendar date; the
+  scripts carry both the raw epoch ms (`date_ms`) and the
+  America/Chicago calendar date (`date`). The map displays `date`.
+
 ## Minnesota county parcels — corridor clip
 
 - **What:** Tax parcel boundaries with ownership attributes,
@@ -340,7 +396,56 @@ added later the same day** (Paul approved the pair): Aerial
   Keyless. Verified live 2026-11-11: sample tiles over the
   chapter returned HTTP 200 JPEGs (256×256). Attribution:
   "Aerial imagery (2014): Esri World Imagery Wayback, release
-  of 2014-12-30".
+  of 2014-12-30". **Relabelled Nov 13, 2026 to "Aerial 2014
+  (Dec)"** so it matches the year-by-year entries below.
+
+**Nov 13, 2026 — year-by-year aerials (Paul: "putting all of
+them in and labeling them by year... and by season or month"):
+21 new entries, all verified live over the corridor Nov 13
+(z12 tiles at 5 points for Wayback, GetMap requests for MnGeo
+WMS), all keyless, all non-primary (behind "More
+backgrounds…"). Two corrections to the premise came out of the
+check: the leaf-off layer Paul remembered is the 2013 spring
+imagery (`nc13hm`), not the 2014 one (`nw14` — blank white over
+most of the corridor, so NOT re-added); and Wayback 2015, 2016
+and 2017 are pixel-identical to the 2014 base (all resolve to
+release 31144, 2014-06-11), so they were NOT added. 2018–2025
+are each genuinely distinct.**
+
+- **Esri Wayback year-end releases 2018–2025** — one release per
+  year, the release closest to (and on/before) Dec 31, from the
+  Wayback config (198 releases, 2014-02-20 → 2026-10-29,
+  fetched Nov 13, 2026): 2018 → 23448 (2018-12-14), 2019 → 4756
+  (2019-12-12), 2020 → 29260 (2020-12-16), 2021 → 26120
+  (2021-12-21), 2022 → 45134 (2022-12-14), 2023 → 56102
+  (2023-12-07), 2024 → 16453 (2024-12-12), 2025 → 13192
+  (2025-12-18). WMTS pattern as the 2014 entry, with the release
+  id swapped in. Release dates are publication dates; the
+  underlying Minnesota imagery is summer leaf-on (visually
+  confirmed on z14 tiles for 2018 and 2025). Labels "Aerial YYYY
+  (Dec)", sub "Esri Wayback · summer leaf-on". 2026 NOT added —
+  the current Aerial (Esri) base already serves the newest
+  imagery.
+- **MnGeo Geospatial Image Service** — same WMS endpoint and
+  pattern as the hillshade (`L.tileLayer.wms`, endpoint
+  `https://imageserver.gisdata.mn.gov/cgi-bin/wmswm?`), layers:
+  `nc13hm` (2013 spring leaf-off, SAIP 50 cm — the leaf-off
+  layer; covers the whole corridor), `fall12` (2012 fall
+  Central), `fsa2021`, `fsa2019`, `fsa2017`, `fsa2015`,
+  `fsa2013`, `fsa2010`, `fsa2009`, `fsa2008` (per-vintage NAIP
+  mosaics, summer leaf-on), `usgs2006` (2006 summer/fall, mixed
+  leaf-on/off), `fsa` (2003 FSA, summer leaf-on), `doq` (1991
+  USGS black-and-white). `fsa2023`/`fsa2025` NOT added — they
+  duplicate the current Aerial (NAIP 2023/25) base. Labels carry
+  year and season ("Aerial 2013 (spring, leaf-off)", "Aerial
+  2012 (fall)", "Aerial 1991 (black-and-white)", the NAIP years
+  as "Aerial YYYY (summer)"). Not added after checking:
+  `nw14` (2014, blank over most of the corridor), `nc13ft`
+  (2013, real only at the west end), `fall11`, `itas18`, `polk`,
+  `belt20`/`belt23`, `ncir09`/`ncclr09` (bboxes north of the
+  trail or no trail coverage), `landsat` (30 m, too coarse),
+  and the `*cir` color-infrared renderings (same years already
+  covered in colour).
 - **Winter (snow trails)** — a COMPOSED base: OpenSnowMap
   pistes tiles
   `https://tiles.opensnowmap.org/pistes/{z}/{x}/{y}.png`

@@ -15,7 +15,6 @@
   }
   header {
     background: #2e5d3a; color: #fff; padding: 18px 24px;
-    position: sticky; top: 0; z-index: 10;
   }
   header h1 { margin: 0; font-size: 26px; line-height: 1.25; }
   header p { margin: 6px 0 0; font-size: 17px; opacity: .92; }
@@ -75,7 +74,12 @@
   }
   .type-check:has(input:checked) { border-color: #2e5d3a; background: #e8f2e9; }
   .type-check input { width: 22px; height: 22px; accent-color: #2e5d3a; flex: none; }
-  .type-glyph { font-size: 24px; line-height: 1; flex: none; width: 30px; text-align: center; }
+  .type-glyph {
+    flex: none; width: 30px; height: 30px; border-radius: 50%;
+    background: #e6550d; display: inline-flex; align-items: center;
+    justify-content: center; vertical-align: middle;
+  }
+  .type-glyph svg { width: 20px; height: 20px; display: block; }
   .type-name { flex: 1; }
   .type-code { font-size: 15px; color: #666; font-weight: 700; }
   @media (max-width: 720px) {
@@ -140,6 +144,52 @@
   .merged-from { font-size: 16px; color: #555; }
   .groupbox .info { font-size: 17px; margin: 10px 0; }
   footer { max-width: 980px; margin: 0 auto; padding: 0 24px 40px; font-size: 16px; color: #555; }
+  .photo-hint { font-size: 16px; color: #555; margin: 0 0 12px; }
+  #next-after-save {
+    font-size: 18px; font-weight: 700; padding: 10px 18px; border-radius: 10px;
+    border: 2px solid #2e5d3a; background: #fff; color: #2e5d3a; cursor: pointer;
+  }
+  #next-after-save[hidden] { display: none; }
+  button:focus-visible, select:focus-visible, input:focus-visible,
+  textarea:focus-visible, a:focus-visible {
+    outline: 3px solid #2e5d3a; outline-offset: 2px;
+  }
+  /* --- Photo lightbox (Paul, Nov 13, 2026): the same full-size
+     viewer as the map popup. Click a photo to open it large on
+     this page instead of a new tab; Escape closes, arrows step
+     through the pin's photos. --- */
+  .lb {
+    position: fixed; inset: 0; z-index: 3000;
+    background: rgba(18, 22, 18, 0.92);
+    display: flex; align-items: center; justify-content: center;
+  }
+  .lb[hidden] { display: none; }
+  .lb-img {
+    max-width: 92vw; max-height: 84vh; object-fit: contain;
+    border-radius: 4px; box-shadow: 0 8px 40px rgba(0, 0, 0, 0.6);
+  }
+  .lb-close, .lb-prev, .lb-next {
+    position: absolute; z-index: 2; min-width: 48px; min-height: 48px;
+    border: 2px solid rgba(255, 255, 255, 0.85); border-radius: 50%;
+    background: rgba(0, 0, 0, 0.45); color: #fff; font-size: 28px;
+    line-height: 1; cursor: pointer; display: flex; align-items: center;
+    justify-content: center; padding: 0;
+  }
+  .lb-close { top: 16px; right: 16px; }
+  .lb-prev { left: 16px; top: 50%; transform: translateY(-50%); }
+  .lb-next { right: 16px; top: 50%; transform: translateY(-50%); }
+  .lb-close:hover, .lb-prev:hover, .lb-next:hover { background: rgba(255, 255, 255, 0.25); }
+  .lb-close:focus-visible, .lb-prev:focus-visible,
+  .lb-next:focus-visible, .lb-drive:focus-visible {
+    outline: 3px solid #fff; outline-offset: 2px;
+  }
+  .lb-bar {
+    position: absolute; left: 0; right: 0; bottom: 0;
+    padding: 14px 20px 18px; text-align: center; color: #fff; font-size: 15px;
+    background: linear-gradient(transparent, rgba(0, 0, 0, 0.7));
+  }
+  .lb-drive { display: inline-block; margin-left: 14px; color: #fff; font-weight: 700; }
+  .lb-drive[hidden] { display: none; }
 </style>
 </head>
 <body>
@@ -166,11 +216,9 @@
   <div class="howto">
     <strong>How to use</strong>
     <ol>
-      <li>Work through the pins one at a time — the photos of one thing are shown together.</li>
-      <li>Pick the type and condition, add the photographer's initials and any notes, then press <b>Confirm this pin</b>.</li>
-      <li>Your work is saved in this browser as you go, so you can stop and come back.</li>
-      <li>When you are done, press <b>Export classifications</b> and send the downloaded file to Muse.</li>
-      <li>If the grouping is wrong, use <b>Fix the grouping</b> below the photos — split photos out into a new pin, merge this pin into another, or correct a photo's role (front / back / detail). The pipeline only guesses the grouping; you decide.</li>
+      <li>Look at the photos — click any photo to see it larger.</li>
+      <li>Pick the type and condition, add your initials and any notes, then press <b>Confirm this pin</b>.</li>
+      <li>When you are done, press <b>Export classifications</b> and send the downloaded file to Muse. Your work is saved in this browser as you go.</li>
     </ol>
   </div>
 
@@ -192,6 +240,7 @@
       <label><input type="checkbox" id="show-backsides"> Show backside photos</label>
       <span class="backside-note" id="backside-note"></span>
     </div>
+    <p class="photo-hint">Click any photo to see it larger.</p>
     <div class="photos" id="photos"></div>
     <div class="groupbox" id="groupbox">
       <h3>Fix the grouping</h3>
@@ -232,6 +281,7 @@
           <div class="actions">
             <button type="button" id="confirm-btn">Confirm this pin</button>
             <span id="saved" aria-live="polite"></span>
+            <button type="button" id="next-after-save" hidden>Next pin &rarr;</button>
           </div>
         </div>
       </div>
@@ -261,14 +311,42 @@
     WT: "Water source", UN: "Unclassified"
   };
   var TYPE_ORDER = ["CP", "BW", "SG", "BN", "CS", "PO", "LT", "BR", "KI", "RG", "PK", "SH", "WT", "UN"];
-  // One glyph per type, shown wherever the type appears. NCTA signs and
-  // partner signs are both SG in the taxonomy, so SG has one sign glyph.
+  // One glyph per type, shown wherever the type appears. These are
+  // the same inline SVG pictographs the map pins use (white on the
+  // orange disc) — no emoji anywhere on this page.
   var TYPE_GLYPHS = {
-    CP: "📍", BW: "🪵", SG: "🪧", BN: "🪑", CS: "⛺", PO: "📌",
-    LT: "🚻", BR: "🌉", KI: "ℹ️", RG: "📖", PK: "🅿️", SH: "🏠",
-    WT: "💧", UN: "❓"
+    CP: "<svg viewBox=\"0 0 16 16\" aria-hidden=\"true\"><rect x=\"5\" y=\"1.5\" width=\"6\" height=\"4\" rx=\"0.8\" fill=\"#fff\"/><rect x=\"7\" y=\"5\" width=\"2\" height=\"9\" fill=\"#fff\"/></svg>",
+    SG: "<svg viewBox=\"0 0 16 16\" aria-hidden=\"true\"><rect x=\"2\" y=\"2\" width=\"12\" height=\"6\" rx=\"1\" fill=\"#fff\"/><rect x=\"4\" y=\"4\" width=\"8\" height=\"1.2\" fill=\"#e6550d\"/><rect x=\"7\" y=\"8\" width=\"2\" height=\"6\" fill=\"#fff\"/></svg>",
+    BW: "<svg viewBox=\"0 0 16 16\" aria-hidden=\"true\"><rect x=\"2\" y=\"2.5\" width=\"12\" height=\"2.6\" rx=\"0.6\" fill=\"#fff\"/><rect x=\"2\" y=\"6.7\" width=\"12\" height=\"2.6\" rx=\"0.6\" fill=\"#fff\"/><rect x=\"2\" y=\"10.9\" width=\"12\" height=\"2.6\" rx=\"0.6\" fill=\"#fff\"/></svg>",
+    BN: "<svg viewBox=\"0 0 16 16\" aria-hidden=\"true\"><rect x=\"2\" y=\"2\" width=\"12\" height=\"2.2\" rx=\"0.6\" fill=\"#fff\"/><rect x=\"2\" y=\"6.5\" width=\"12\" height=\"2.2\" rx=\"0.6\" fill=\"#fff\"/><rect x=\"3.5\" y=\"8.7\" width=\"1.8\" height=\"5\" fill=\"#fff\"/><rect x=\"10.7\" y=\"8.7\" width=\"1.8\" height=\"5\" fill=\"#fff\"/></svg>",
+    BR: "<svg viewBox=\"0 0 16 16\" aria-hidden=\"true\"><path d=\"M2 13 Q8 3 14 13\" fill=\"none\" stroke=\"#fff\" stroke-width=\"2\" stroke-linecap=\"round\"/><rect x=\"1\" y=\"13\" width=\"14\" height=\"1.6\" fill=\"#fff\"/></svg>",
+    CS: "<svg viewBox=\"0 0 16 16\" aria-hidden=\"true\"><path d=\"M8 2 L14.5 13 L1.5 13 Z\" fill=\"#fff\"/><path d=\"M8 7.5 L10.5 13 L5.5 13 Z\" fill=\"#e6550d\"/></svg>",
+    KI: "<svg viewBox=\"0 0 16 16\" aria-hidden=\"true\"><path d=\"M1.5 6.5 L8 1.5 L14.5 6.5 Z\" fill=\"#fff\"/><rect x=\"4\" y=\"7\" width=\"8\" height=\"4.5\" rx=\"0.5\" fill=\"#fff\"/><rect x=\"4.8\" y=\"11.5\" width=\"1.6\" height=\"2.5\" fill=\"#fff\"/><rect x=\"9.6\" y=\"11.5\" width=\"1.6\" height=\"2.5\" fill=\"#fff\"/></svg>",
+    LT: "<svg viewBox=\"0 0 16 16\" aria-hidden=\"true\"><path d=\"M2.5 6.5 L8 1.5 L13.5 6.5 Z\" fill=\"#fff\"/><rect x=\"4\" y=\"6.5\" width=\"8\" height=\"7\" fill=\"#fff\"/><rect x=\"7\" y=\"9\" width=\"2\" height=\"4.5\" fill=\"#e6550d\"/></svg>",
+    PO: "<svg viewBox=\"0 0 16 16\" aria-hidden=\"true\"><rect x=\"6\" y=\"1.5\" width=\"4\" height=\"1.8\" rx=\"0.6\" fill=\"#fff\"/><rect x=\"7\" y=\"3\" width=\"2\" height=\"11\" fill=\"#fff\"/></svg>",
+    RG: "<svg viewBox=\"0 0 16 16\" aria-hidden=\"true\"><rect x=\"3.5\" y=\"1.5\" width=\"9\" height=\"6\" rx=\"1\" fill=\"#fff\"/><rect x=\"5.5\" y=\"3.5\" width=\"5\" height=\"1.2\" fill=\"#e6550d\"/><rect x=\"7\" y=\"7.5\" width=\"2\" height=\"6.5\" fill=\"#fff\"/></svg>",
+    PK: "<svg viewBox=\"0 0 16 16\" aria-hidden=\"true\"><text x=\"8\" y=\"12.5\" text-anchor=\"middle\" font-size=\"12\" font-weight=\"800\" fill=\"#fff\" font-family=\"sans-serif\">P</text></svg>",
+    SH: "<svg viewBox=\"0 0 16 16\" aria-hidden=\"true\"><path d=\"M1.5 8 L8 2 L14.5 8 Z\" fill=\"#fff\"/><rect x=\"3\" y=\"8.5\" width=\"1.8\" height=\"5.5\" fill=\"#fff\"/><rect x=\"11.2\" y=\"8.5\" width=\"1.8\" height=\"5.5\" fill=\"#fff\"/></svg>",
+    WT: "<svg viewBox=\"0 0 16 16\" aria-hidden=\"true\"><path d=\"M8 1.5 C8 1.5 3.5 7 3.5 9.8 A4.5 4.5 0 0 0 12.5 9.8 C12.5 7 8 1.5 8 1.5 Z\" fill=\"#fff\"/></svg>",
+    UN: "<svg viewBox=\"0 0 16 16\" aria-hidden=\"true\"><text x=\"8\" y=\"12.5\" text-anchor=\"middle\" font-size=\"12\" font-weight=\"800\" fill=\"#fff\" font-family=\"sans-serif\">?</text></svg>"
   };
-  function typeGlyph(code) { return TYPE_GLYPHS[normType(code)] || "❓"; }
+  function typeGlyph(code) { return TYPE_GLYPHS[normType(code)] || TYPE_GLYPHS.UN; }
+  function escText(s) {
+    return String(s == null ? "" : s).replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;").replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;");
+  }
+  function fmtPhotoDateTime(dt) {
+    /* EXIF "2026:11:11 11:27:40" -> "Nov 11, 2026, 11:27 AM". */
+    var m = /^(\d{4}):(\d{2}):(\d{2}) (\d{2}):(\d{2})/.exec(dt || "");
+    if (!m) return dt || "";
+    var months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun",
+      "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+    var h = +m[4], ap = h >= 12 ? "PM" : "AM";
+    h = h % 12; if (h === 0) h = 12;
+    return months[+m[2] - 1] + " " + (+m[3]) + ", " + m[1] + ", " +
+      h + ":" + m[5] + " " + ap;
+  }
   function displayTypeName(code) {
     var n = TYPE_NAMES[code] || code;
     return n.charAt(0).toUpperCase() + n.slice(1);
@@ -400,16 +478,22 @@
     return active;
   }
   function pinLabel(p) {
+    /* Text only — this feeds <select> options, which cannot hold
+       markup. No glyph here. */
     var s = p.serial ? p.serial : (p.splitId ? ("Split from " + pinDisplayName(p.splitFrom)) : "No serial yet");
     var where = [p.section, p.chainage_mi != null ? ("mile " + p.chainage_mi) : null].filter(Boolean).join(" · ");
     var n = effectivePhotos(p).length;
     var t = effectiveType(p);
-    return typeGlyph(t) + " " + t + " · " + s + (where ? " — " + where : "") + " (" + n + " photo" + (n === 1 ? "" : "s") + ")";
+    return t + " · " + s + (where ? " — " + where : "") + " (" + n + " photo" + (n === 1 ? "" : "s") + ")";
   }
   function setPinTitle(p, type) {
-    document.getElementById("pin-title").textContent =
-      (p.splitId ? ("Split from " + pinDisplayName(p.splitFrom) + " — ")
-        : (p.serial ? p.serial + " — " : "")) + typeGlyph(type) + " " + displayTypeName(type);
+    /* The badge carries the type code and the meta line carries the
+       serial, so the title is just the type name (with its glyph) —
+       no more serial twice on one card. */
+    document.getElementById("pin-title").innerHTML =
+      (p.splitId ? ("Split from " + escText(pinDisplayName(p.splitFrom)) + " — ")
+        : "") + "<span class=\"type-glyph\">" + typeGlyph(type) +
+      "</span> " + escText(displayTypeName(type));
   }
   function reviewedCount() { return activePins().filter(isReviewed).length; }
 
@@ -450,7 +534,7 @@
       lab.appendChild(inp);
       var g = document.createElement("span");
       g.className = "type-glyph";
-      g.textContent = typeGlyph(code);
+      g.innerHTML = typeGlyph(code);
       lab.appendChild(g);
       var nm = document.createElement("span");
       nm.className = "type-name";
@@ -563,6 +647,9 @@
       var el = document.getElementById("saved");
       el.textContent = "Saved ✓ " + new Date().toLocaleTimeString();
       setTimeout(function () { el.textContent = ""; }, 4000);
+      /* The next step is unmistakable: offer the next pin right
+         here, next to the confirmation. */
+      document.getElementById("next-after-save").hidden = false;
     }
   }
   function onTypeChange() {
@@ -575,7 +662,15 @@
     saveCurrent(false);
     refreshBacksideVisibility(); // backsides hide for CP/UN, show for other types
     var p = currentPin();
-    if (p) setPinTitle(p, effectiveType(p)); // header glyph follows the new type
+    if (p) {
+      setPinTitle(p, effectiveType(p)); // header glyph follows the new type
+      /* The badge is the type code too, so it follows as well. */
+      var badge = document.getElementById("pin-badge");
+      if (!p.splitId) {
+        badge.textContent = effectiveType(p);
+        badge.classList.toggle("un", effectiveType(p) === "UN");
+      }
+    }
   }
 
   function render() {
@@ -604,15 +699,18 @@
       badge.textContent = "SPLIT";
       badge.classList.add("un");
     } else {
-      badge.textContent = p.serial || "UN";
-      badge.classList.toggle("un", !p.serial);
+      /* Badge is the type code; the serial lives in the meta line
+         below, so nothing repeats. */
+      badge.textContent = type;
+      badge.classList.toggle("un", type === "UN");
     }
     setPinTitle(p, type);
     document.getElementById("pin-meta").textContent =
-      [p.section, p.chainage_mi != null ? ("mile " + p.chainage_mi) : null,
-       p.datetime ? ("photographed " + p.datetime.replace(/:/g, ":").replace(/^(\d{4}):(\d{2}):(\d{2})/, "$1-$2-$3")) : null,
+      [p.serial, p.section, p.chainage_mi != null ? ("mile " + p.chainage_mi) : null,
+       p.datetime ? ("photographed " + fmtPhotoDateTime(p.datetime)) : null,
        "Pin " + (currentIndex + 1) + " of " + list.length + " in this view"
       ].filter(Boolean).join(" · ");
+    document.getElementById("next-after-save").hidden = true;
 
     var photosEl = document.getElementById("photos");
     photosEl.innerHTML = "";
@@ -625,6 +723,7 @@
       var ph = item.ph;
       var fig = document.createElement("figure");
       fig.setAttribute("data-photo", ph.photo);
+      if (ph.drive_id) fig.setAttribute("data-drive", ph.drive_id);
       var img = document.createElement("img");
       img.src = "assets-photos/" + ph.derivative;
       img.alt = "Photo " + (i + 1) + " of " + photoList.length + " for " + (p.serial || p.photo);
@@ -636,7 +735,7 @@
       fig.appendChild(a);
       var cap = document.createElement("figcaption");
       cap.textContent = "Photo " + (i + 1) + " of " + photoList.length +
-        " — " + ph.photo + (ph.datetime ? " · " + ph.datetime : "");
+        " — " + ph.photo + (ph.datetime ? " · " + fmtPhotoDateTime(ph.datetime) : "");
       fig.appendChild(cap);
       if (!item.own) {
         var from = document.createElement("div");
@@ -980,6 +1079,106 @@
     saveStore();
   }
 
+  /* ---- Photo lightbox (Paul, Nov 13, 2026) ----
+     Clicking a photo opens it large on this page instead of a new
+     tab. Same viewer as the map popup: Escape closes, arrows step
+     through this pin's photos, the Drive original opens when the
+     photo carries a drive_id (none do today — every drive_id in
+     the GeoJSON is null — so the 1600 px derivative opens). The
+     <a> around each photo stays as the no-JavaScript fallback. */
+  var lbState = null;
+  function lbEl() {
+    var el = document.getElementById("lb");
+    if (el) return el;
+    el = document.createElement("div");
+    el.id = "lb";
+    el.className = "lb";
+    el.setAttribute("hidden", "");
+    el.setAttribute("role", "dialog");
+    el.setAttribute("aria-modal", "true");
+    el.setAttribute("aria-label", "Photo viewer");
+    el.innerHTML =
+      "<button type=\"button\" class=\"lb-close\" aria-label=\"Close photo viewer\">×</button>" +
+      "<button type=\"button\" class=\"lb-prev\" aria-label=\"Previous photo\">‹</button>" +
+      "<img class=\"lb-img\" alt=\"\">" +
+      "<button type=\"button\" class=\"lb-next\" aria-label=\"Next photo\">›</button>" +
+      "<div class=\"lb-bar\"><span class=\"lb-cap\"></span>" +
+      "<a class=\"lb-drive\" target=\"_blank\" rel=\"noopener\" hidden>Open the original in Drive</a></div>";
+    document.body.appendChild(el);
+    el.addEventListener("click", function (e) { if (e.target === el) lbClose(); });
+    el.querySelector(".lb-close").addEventListener("click", lbClose);
+    el.querySelector(".lb-prev").addEventListener("click", function () { lbStep(-1); });
+    el.querySelector(".lb-next").addEventListener("click", function () { lbStep(1); });
+    return el;
+  }
+  function lbShow(i) {
+    if (!lbState) return;
+    var n = lbState.items.length;
+    lbState.index = ((i % n) + n) % n;
+    var item = lbState.items[lbState.index];
+    var el = lbEl();
+    var img = el.querySelector(".lb-img");
+    img.setAttribute("src", item.src);
+    img.setAttribute("alt", item.caption || "Trail photo");
+    el.querySelector(".lb-cap").textContent = item.caption +
+      (n > 1 ? "  (" + (lbState.index + 1) + " of " + n + ")" : "");
+    var drv = el.querySelector(".lb-drive");
+    if (item.drive) { drv.href = item.drive; drv.hidden = false; }
+    else drv.hidden = true;
+    el.querySelector(".lb-prev").style.display = n > 1 ? "" : "none";
+    el.querySelector(".lb-next").style.display = n > 1 ? "" : "none";
+  }
+  function lbOpen(items, index, returnFocus) {
+    if (!items || !items.length) return;
+    lbState = { items: items, index: index || 0, returnFocus: returnFocus || null };
+    var el = lbEl();
+    el.hidden = false;
+    document.body.style.overflow = "hidden";
+    lbShow(lbState.index);
+    el.querySelector(".lb-close").focus();
+  }
+  function lbClose() {
+    var el = document.getElementById("lb");
+    if (el) el.hidden = true;
+    document.body.style.overflow = "";
+    if (lbState && lbState.returnFocus && lbState.returnFocus.focus) {
+      try { lbState.returnFocus.focus(); } catch (e) { /* figure gone */ }
+    }
+    lbState = null;
+  }
+  function lbStep(d) { if (lbState) lbShow(lbState.index + d); }
+  function lbOpenFromFigure(fig) {
+    var items = [];
+    var idx = 0;
+    document.querySelectorAll("#photos figure").forEach(function (f) {
+      /* Every photo of the pin is in the viewer, including a
+         backside the classify view hides — the hiding is a layout
+         convenience, not a deletion, and the caption names each
+         photo's role. */
+      var im = f.querySelector("img");
+      if (!im) return;
+      var driveId = f.getAttribute("data-drive") || null;
+      var capEl = f.querySelector("figcaption");
+      items.push({
+        src: driveId
+          ? "https://drive.google.com/thumbnail?id=" + encodeURIComponent(driveId) + "&sz=w4000"
+          : im.getAttribute("src"),
+        drive: driveId
+          ? "https://drive.google.com/file/d/" + encodeURIComponent(driveId) + "/view"
+          : null,
+        caption: capEl ? capEl.textContent : ""
+      });
+      if (f === fig) idx = items.length - 1;
+    });
+    lbOpen(items, idx, fig ? fig.querySelector("img") : null);
+  }
+  document.addEventListener("keydown", function (ev) {
+    if (!lbState) return;
+    if (ev.key === "Escape") { ev.preventDefault(); ev.stopImmediatePropagation(); lbClose(); }
+    else if (ev.key === "ArrowLeft") { ev.preventDefault(); ev.stopImmediatePropagation(); lbStep(-1); }
+    else if (ev.key === "ArrowRight") { ev.preventDefault(); ev.stopImmediatePropagation(); lbStep(1); }
+  });
+
   function init(data) {
     lastData = data;
     var feats = (data && data.features) || [];
@@ -997,7 +1196,8 @@
         note: p.note || "",
         seq: 0,
         photos: (p.photos || []).map(function (ph) {
-          return { photo: ph.photo, derivative: ph.derivative, datetime: ph.datetime || "" };
+          return { photo: ph.photo, derivative: ph.derivative,
+            datetime: ph.datetime || "", drive_id: ph.drive_id || null };
         })
       };
     });
@@ -1087,6 +1287,16 @@
     document.getElementById("next-btn").addEventListener("click", function () { goTo(currentIndex + 1); });
     document.getElementById("jump").addEventListener("change", function (ev) { goTo(parseInt(ev.target.value, 10)); });
     document.getElementById("confirm-btn").addEventListener("click", function () { saveCurrent(true); });
+    document.getElementById("next-after-save").addEventListener("click", function () { goTo(currentIndex + 1); });
+    document.getElementById("photos").addEventListener("click", function (ev) {
+      /* Lightbox (Paul, Nov 13, 2026): a photo click opens the
+         viewer on this page. Without JavaScript the <a> still
+         opens the full-size photo in a new tab. */
+      var a = ev.target.closest ? ev.target.closest("a") : null;
+      if (!a || !a.querySelector("img")) return;
+      ev.preventDefault();
+      lbOpenFromFigure(a.closest("figure"));
+    });
     document.getElementById("split-btn").addEventListener("click", doSplit);
     document.getElementById("merge-btn").addEventListener("click", function () {
       var sel = document.getElementById("merge-target");
@@ -1111,6 +1321,7 @@
     document.getElementById("photographer").addEventListener("change", function () { saveCurrent(false); });
     document.getElementById("notes").addEventListener("change", function () { saveCurrent(false); });
     document.addEventListener("keydown", function (ev) {
+      if (lbState) return; // the lightbox owns the arrow keys while open
       var tag = (ev.target && ev.target.tagName) || "";
       if (tag === "INPUT" || tag === "TEXTAREA" || tag === "SELECT") return;
       if (ev.key === "ArrowRight") goTo(currentIndex + 1);

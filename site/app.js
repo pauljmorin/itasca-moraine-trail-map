@@ -60,6 +60,17 @@ var CHAPTER_COLORS = { ITM: COLORS.trail, LLC: COLORS.neighbour };
 var CHAPTER_NAMES = {
   ITM: "Itasca Moraine Chapter",
   LLC: "Laurentian Lakes Chapter",
+  /* Added Nov 13, 2026 (NCT — all Minnesota): the other Minnesota
+     chapters, west to east, as the NCTA codes them in the official
+     line. BRT is the Border Route Trail (Border Route Trail
+     Association). BSC is left unmapped — 2 short features near
+     Duluth, code meaning unknown; the popup falls back to "BSC". */
+  MWP: "Minnesota Waters and Prairie Chapter",
+  STN: "Star of the North Chapter",
+  ARW: "Arrowhead Chapter",
+  ELY: "Ely Northwoods Chapter",
+  KEK: "Kekekabic Trail Chapter",
+  BRT: "Border Route Trail",
 };
 
 /* ------------------------------------------------------------- map */
@@ -173,6 +184,162 @@ var esriWayback2014 = L.tileLayer(
       "Wayback, release of 2014-12-30",
   });
 
+/* Added Nov 13, 2026 (Paul: year-by-year aerials, labelled by year
+   and season): Esri Wayback year-end releases 2018–2025. Same
+   rule as the 2014 entry — the release closest to (and on/before)
+   Dec 31 of each year, from the Wayback config (198 releases,
+   2014-02-20 → 2026-10-29, fetched 2026-11-13). Verified live
+   over the chapter: z12 tiles at 5 points, HTTP 200 JPEG, each
+   year byte-distinct. 2015–2017 are NOT added: at all 5 points
+   they 301-redirect to release 31144 (2014-06-11) and return
+   byte-identical tiles to the 2014 base. 2026 is NOT added: the
+   current Aerial (Esri) base already serves the newest imagery.
+   Tiles 301-redirect to the release that published that tile, so
+   a year entry shows imagery "of that year or earlier". */
+var esriWayback2018 = L.tileLayer(
+  "https://wayback.maptiles.arcgis.com/arcgis/rest/services/" +
+    "World_Imagery/WMTS/1.0.0/default028mm/MapServer/tile/23448/" +
+    "{z}/{y}/{x}", {
+    maxZoom: 18,
+    attribution: "Aerial imagery (2018): Esri World Imagery " +
+      "Wayback, release of 2018-12-14",
+  });
+var esriWayback2019 = L.tileLayer(
+  "https://wayback.maptiles.arcgis.com/arcgis/rest/services/" +
+    "World_Imagery/WMTS/1.0.0/default028mm/MapServer/tile/4756/" +
+    "{z}/{y}/{x}", {
+    maxZoom: 18,
+    attribution: "Aerial imagery (2019): Esri World Imagery " +
+      "Wayback, release of 2019-12-12",
+  });
+var esriWayback2020 = L.tileLayer(
+  "https://wayback.maptiles.arcgis.com/arcgis/rest/services/" +
+    "World_Imagery/WMTS/1.0.0/default028mm/MapServer/tile/29260/" +
+    "{z}/{y}/{x}", {
+    maxZoom: 18,
+    attribution: "Aerial imagery (2020): Esri World Imagery " +
+      "Wayback, release of 2020-12-16",
+  });
+var esriWayback2021 = L.tileLayer(
+  "https://wayback.maptiles.arcgis.com/arcgis/rest/services/" +
+    "World_Imagery/WMTS/1.0.0/default028mm/MapServer/tile/26120/" +
+    "{z}/{y}/{x}", {
+    maxZoom: 18,
+    attribution: "Aerial imagery (2021): Esri World Imagery " +
+      "Wayback, release of 2021-12-21",
+  });
+var esriWayback2022 = L.tileLayer(
+  "https://wayback.maptiles.arcgis.com/arcgis/rest/services/" +
+    "World_Imagery/WMTS/1.0.0/default028mm/MapServer/tile/45134/" +
+    "{z}/{y}/{x}", {
+    maxZoom: 18,
+    attribution: "Aerial imagery (2022): Esri World Imagery " +
+      "Wayback, release of 2022-12-14",
+  });
+var esriWayback2023 = L.tileLayer(
+  "https://wayback.maptiles.arcgis.com/arcgis/rest/services/" +
+    "World_Imagery/WMTS/1.0.0/default028mm/MapServer/tile/56102/" +
+    "{z}/{y}/{x}", {
+    maxZoom: 18,
+    attribution: "Aerial imagery (2023): Esri World Imagery " +
+      "Wayback, release of 2023-12-07",
+  });
+var esriWayback2024 = L.tileLayer(
+  "https://wayback.maptiles.arcgis.com/arcgis/rest/services/" +
+    "World_Imagery/WMTS/1.0.0/default028mm/MapServer/tile/16453/" +
+    "{z}/{y}/{x}", {
+    maxZoom: 18,
+    attribution: "Aerial imagery (2024): Esri World Imagery " +
+      "Wayback, release of 2024-12-12",
+  });
+var esriWayback2025 = L.tileLayer(
+  "https://wayback.maptiles.arcgis.com/arcgis/rest/services/" +
+    "World_Imagery/WMTS/1.0.0/default028mm/MapServer/tile/13192/" +
+    "{z}/{y}/{x}", {
+    maxZoom: 18,
+    attribution: "Aerial imagery (2025): Esri World Imagery " +
+      "Wayback, release of 2025-12-18",
+  });
+
+/* Added Nov 13, 2026 (Paul: year-by-year aerials): MnGeo
+   Geospatial Image Service layers, same WMS endpoint and pattern
+   as the hillshade (L.tileLayer.wms, MN_WMS). All verified live
+   over the chapter with GetMap requests (2 km box around lat
+   47.05, lon -95.0, 512x512 JPEG). nc13hm is the Spring Aerial
+   Imagery Program leaf-off layer (spring 2013, 50 cm; covers the
+   whole corridor, unlike nw14, which is blank over most of it).
+   fall12 is the 2012 fall Central layer. The fsa* layers are the
+   per-vintage NAIP mosaics (summer leaf-on); fsa2023/fsa2025 are
+   NOT added — they duplicate the current Aerial (NAIP 2023/25)
+   base. usgs2006, fsa (2003) and doq (1991) are the older
+   statewide layers. */
+var mnAerial2013Spring = L.tileLayer.wms(MN_WMS, {
+  layers: "nc13hm", format: "image/jpeg", transparent: false,
+  version: "1.1.1",
+  attribution: "Aerial imagery (2013, spring leaf-off): MnGeo / " +
+    "Minnesota DNR (Spring Aerial Imagery Program)",
+});
+var mnAerial2012Fall = L.tileLayer.wms(MN_WMS, {
+  layers: "fall12", format: "image/jpeg", transparent: false,
+  version: "1.1.1",
+  attribution: "Aerial imagery (2012, fall): MnGeo",
+});
+var mnAerial2021 = L.tileLayer.wms(MN_WMS, {
+  layers: "fsa2021", format: "image/jpeg", transparent: false,
+  version: "1.1.1",
+  attribution: "Aerial imagery (2021 NAIP): USDA / MnGeo",
+});
+var mnAerial2019 = L.tileLayer.wms(MN_WMS, {
+  layers: "fsa2019", format: "image/jpeg", transparent: false,
+  version: "1.1.1",
+  attribution: "Aerial imagery (2019 NAIP): USDA / MnGeo",
+});
+var mnAerial2017 = L.tileLayer.wms(MN_WMS, {
+  layers: "fsa2017", format: "image/jpeg", transparent: false,
+  version: "1.1.1",
+  attribution: "Aerial imagery (2017 NAIP): USDA / MnGeo",
+});
+var mnAerial2015 = L.tileLayer.wms(MN_WMS, {
+  layers: "fsa2015", format: "image/jpeg", transparent: false,
+  version: "1.1.1",
+  attribution: "Aerial imagery (2015 NAIP): USDA / MnGeo",
+});
+var mnAerial2013 = L.tileLayer.wms(MN_WMS, {
+  layers: "fsa2013", format: "image/jpeg", transparent: false,
+  version: "1.1.1",
+  attribution: "Aerial imagery (2013 NAIP): USDA / MnGeo",
+});
+var mnAerial2010 = L.tileLayer.wms(MN_WMS, {
+  layers: "fsa2010", format: "image/jpeg", transparent: false,
+  version: "1.1.1",
+  attribution: "Aerial imagery (2010 NAIP): USDA / MnGeo",
+});
+var mnAerial2009 = L.tileLayer.wms(MN_WMS, {
+  layers: "fsa2009", format: "image/jpeg", transparent: false,
+  version: "1.1.1",
+  attribution: "Aerial imagery (2009 NAIP): USDA / MnGeo",
+});
+var mnAerial2008 = L.tileLayer.wms(MN_WMS, {
+  layers: "fsa2008", format: "image/jpeg", transparent: false,
+  version: "1.1.1",
+  attribution: "Aerial imagery (2008 NAIP): USDA / MnGeo",
+});
+var mnAerial2006 = L.tileLayer.wms(MN_WMS, {
+  layers: "usgs2006", format: "image/jpeg", transparent: false,
+  version: "1.1.1",
+  attribution: "Aerial imagery (2006): USGS / MnGeo",
+});
+var mnAerial2003 = L.tileLayer.wms(MN_WMS, {
+  layers: "fsa", format: "image/jpeg", transparent: false,
+  version: "1.1.1",
+  attribution: "Aerial imagery (2003): USDA FSA / MnGeo",
+});
+var mnAerial1991 = L.tileLayer.wms(MN_WMS, {
+  layers: "doq", format: "image/jpeg", transparent: false,
+  version: "1.1.1",
+  attribution: "Aerial imagery (1991, black-and-white): USGS / MnGeo",
+});
+
 /* Winter is a COMPOSED base: OpenSnowMap's pistes are a
    transparent overlay tile set with no cartography of their own
    (OpenSnowMap's own base snow map stays unused -- its author
@@ -257,8 +424,54 @@ var BASES = [
     sub: "Esri World Imagery", layer: esriImagery },
   { name: "Aerial + Topo (NAIP 2023/25)", code: "aerial-topo", label: "Aerial + Topo",
     sub: "NAIP with topo labels", layer: usgsImageryTopo },
-  { name: "Aerial (2014)", code: "aerial-2014", label: "Aerial (2014)",
-    sub: "the view at the end of 2014", layer: esriWayback2014 },
+  { name: "Aerial 2014 (Dec)", code: "aerial-2014", label: "Aerial 2014 (Dec)",
+    sub: "Esri Wayback · summer leaf-on", layer: esriWayback2014 },
+  /* Added Nov 13, 2026 (Paul: year-by-year aerials, labelled by
+     year and season): newest first, Wayback above NAIP within a
+     year. All verified live over the corridor — see the tile-layer
+     definitions above and the research note in SOURCES.md. */
+  { name: "Aerial 2025 (Dec)", code: "aerial-2025", label: "Aerial 2025 (Dec)",
+    sub: "Esri Wayback · summer leaf-on", layer: esriWayback2025 },
+  { name: "Aerial 2024 (Dec)", code: "aerial-2024", label: "Aerial 2024 (Dec)",
+    sub: "Esri Wayback · summer leaf-on", layer: esriWayback2024 },
+  { name: "Aerial 2023 (Dec)", code: "aerial-2023", label: "Aerial 2023 (Dec)",
+    sub: "Esri Wayback · summer leaf-on", layer: esriWayback2023 },
+  { name: "Aerial 2022 (Dec)", code: "aerial-2022", label: "Aerial 2022 (Dec)",
+    sub: "Esri Wayback · summer leaf-on", layer: esriWayback2022 },
+  { name: "Aerial 2021 (Dec)", code: "aerial-2021", label: "Aerial 2021 (Dec)",
+    sub: "Esri Wayback · summer leaf-on", layer: esriWayback2021 },
+  { name: "Aerial 2021 (summer)", code: "aerial-2021-naip", label: "Aerial 2021 (summer)",
+    sub: "NAIP · leaf-on", layer: mnAerial2021 },
+  { name: "Aerial 2020 (Dec)", code: "aerial-2020", label: "Aerial 2020 (Dec)",
+    sub: "Esri Wayback · summer leaf-on", layer: esriWayback2020 },
+  { name: "Aerial 2019 (Dec)", code: "aerial-2019", label: "Aerial 2019 (Dec)",
+    sub: "Esri Wayback · summer leaf-on", layer: esriWayback2019 },
+  { name: "Aerial 2019 (summer)", code: "aerial-2019-naip", label: "Aerial 2019 (summer)",
+    sub: "NAIP · leaf-on", layer: mnAerial2019 },
+  { name: "Aerial 2018 (Dec)", code: "aerial-2018", label: "Aerial 2018 (Dec)",
+    sub: "Esri Wayback · summer leaf-on", layer: esriWayback2018 },
+  { name: "Aerial 2017 (summer)", code: "aerial-2017-naip", label: "Aerial 2017 (summer)",
+    sub: "NAIP · leaf-on", layer: mnAerial2017 },
+  { name: "Aerial 2015 (summer)", code: "aerial-2015-naip", label: "Aerial 2015 (summer)",
+    sub: "NAIP · leaf-on", layer: mnAerial2015 },
+  { name: "Aerial 2013 (spring, leaf-off)", code: "aerial-2013-spring", label: "Aerial 2013 (spring, leaf-off)",
+    sub: "MnGeo NW 50 cm · SAIP", layer: mnAerial2013Spring },
+  { name: "Aerial 2013 (summer)", code: "aerial-2013-naip", label: "Aerial 2013 (summer)",
+    sub: "NAIP · leaf-on", layer: mnAerial2013 },
+  { name: "Aerial 2012 (fall)", code: "aerial-2012-fall", label: "Aerial 2012 (fall)",
+    sub: "MnGeo Central", layer: mnAerial2012Fall },
+  { name: "Aerial 2010 (summer)", code: "aerial-2010-naip", label: "Aerial 2010 (summer)",
+    sub: "NAIP · leaf-on", layer: mnAerial2010 },
+  { name: "Aerial 2009 (summer)", code: "aerial-2009-naip", label: "Aerial 2009 (summer)",
+    sub: "NAIP · leaf-on", layer: mnAerial2009 },
+  { name: "Aerial 2008 (summer)", code: "aerial-2008-naip", label: "Aerial 2008 (summer)",
+    sub: "NAIP · leaf-on", layer: mnAerial2008 },
+  { name: "Aerial 2006 (summer/fall)", code: "aerial-2006", label: "Aerial 2006 (summer/fall)",
+    sub: "USGS 40-county · 1 m", layer: mnAerial2006 },
+  { name: "Aerial 2003 (summer)", code: "aerial-2003", label: "Aerial 2003 (summer)",
+    sub: "FSA · leaf-on", layer: mnAerial2003 },
+  { name: "Aerial 1991 (black-and-white)", code: "aerial-1991", label: "Aerial 1991 (black-and-white)",
+    sub: "USGS DOQ · 1 m", layer: mnAerial1991 },
   { name: "Streets (OSM)", code: "streets", label: "Streets",
     sub: "OpenStreetMap", layer: osm },
   { name: "Trails (CyclOSM)", code: "trails", label: "Trails",
@@ -372,7 +585,30 @@ var CASING_BY_BASE = {
   "Aerial (NAIP 2023/25)": "photo",
   "Aerial (Esri)": "photo",
   "Aerial + Topo (NAIP 2023/25)": "photo",
-  "Aerial (2014)": "photo",
+  "Aerial 2014 (Dec)": "photo",
+  /* Added Nov 13, 2026 (year-by-year aerials): every new aerial
+     base is imagery, so all take the photo register. */
+  "Aerial 2025 (Dec)": "photo",
+  "Aerial 2024 (Dec)": "photo",
+  "Aerial 2023 (Dec)": "photo",
+  "Aerial 2022 (Dec)": "photo",
+  "Aerial 2021 (Dec)": "photo",
+  "Aerial 2021 (summer)": "photo",
+  "Aerial 2020 (Dec)": "photo",
+  "Aerial 2019 (Dec)": "photo",
+  "Aerial 2019 (summer)": "photo",
+  "Aerial 2018 (Dec)": "photo",
+  "Aerial 2017 (summer)": "photo",
+  "Aerial 2015 (summer)": "photo",
+  "Aerial 2013 (spring, leaf-off)": "photo",
+  "Aerial 2013 (summer)": "photo",
+  "Aerial 2012 (fall)": "photo",
+  "Aerial 2010 (summer)": "photo",
+  "Aerial 2009 (summer)": "photo",
+  "Aerial 2008 (summer)": "photo",
+  "Aerial 2006 (summer/fall)": "photo",
+  "Aerial 2003 (summer)": "photo",
+  "Aerial 1991 (black-and-white)": "photo",
   "Winter (snow trails)": "relief",
   "MN LiDAR Hillshade": "relief",
   /* The two canopy bases are retired (design review §7): their
@@ -860,12 +1096,58 @@ document.addEventListener("click", function (e) {
 document.addEventListener("click", function (e) {
   var t = e.target;
   if (!t || !t.classList) return;
+  if (t.classList.contains("pop-photo")) {
+    /* Lightbox (Paul, Nov 13, 2026): any popup photo opens full
+       size. The set is every photo in this popup, de-duplicated
+       by URL (the main face and its grid thumb are the same
+       photo twice). */
+    var scope = t.closest(".pop-flip") ||
+      t.closest(".leaflet-popup-content");
+    var items = [];
+    var idx = 0;
+    if (scope) {
+      var imgs = scope.querySelectorAll(".pop-photo");
+      var seen = {};
+      for (var k = 0; k < imgs.length; k++) {
+        var full = imgs[k].getAttribute("data-full") ||
+          imgs[k].getAttribute("src") || "";
+        if (!full || seen[full]) continue;
+        seen[full] = true;
+        items.push({
+          src: full,
+          drive: imgs[k].getAttribute("data-drive") || null,
+          caption: imgs[k].getAttribute("data-caption") || "",
+        });
+        if (imgs[k] === t) idx = items.length - 1;
+      }
+    }
+    if (!items.length) {
+      items.push({
+        src: t.getAttribute("data-full") || t.getAttribute("src") || "",
+        drive: t.getAttribute("data-drive") || null,
+        caption: t.getAttribute("data-caption") || "",
+      });
+    }
+    openLightbox(items, idx, t);
+    return;
+  }
   if (t.classList.contains("pop-face")) {
     var wrap = t.closest(".pop-flip");
     if (!wrap) return;
     var img = wrap.querySelector(".pop-face-img");
     var d = t.getAttribute("data-derivative");
     if (img && d) img.setAttribute("src", "assets-photos/" + d);
+    if (img) {
+      /* The lightbox follows the face: full-size URL, caption and
+         Drive link all move with the visible photo. */
+      var full = t.getAttribute("data-full");
+      if (full) img.setAttribute("data-full", full);
+      var cap = t.getAttribute("data-caption");
+      if (cap) img.setAttribute("data-caption", cap);
+      var drv = t.getAttribute("data-drive");
+      if (drv) img.setAttribute("data-drive", drv);
+      else img.removeAttribute("data-drive");
+    }
     var label = wrap.querySelector(".pop-face-label");
     if (label) {
       var lab = t.getAttribute("data-label") || "";
@@ -883,9 +1165,107 @@ document.addEventListener("click", function (e) {
     if (!w) return;
     var grid = w.querySelector(".pop-face-grid");
     if (!grid) return;
-    var open = grid.style.display !== "none";
+    /* Visibility comes from the computed style, not the inline
+       style: the stylesheet hides the grid (display:none), so the
+       inline style is empty on first click and reading it alone
+       made the first "Show all photos" click a no-op. */
+    var open = window.getComputedStyle(grid).display !== "none";
     grid.style.display = open ? "none" : "flex";
     t.textContent = open ? "Show all photos" : "Hide all photos";
+  }
+});
+
+/* ---- Photo lightbox (Paul, Nov 13, 2026) ----
+   A click on any popup photo opens the largest image we hold in a
+   full-screen overlay. No library — one overlay element, built
+   once, reused for every photo. Escape or the close button
+   dismisses it; arrow keys step through the pin's photos; a click
+   on the dark backdrop closes it. Focus goes to the close button
+   on open and returns to the photo that opened it on close. */
+var lbState = null;
+function lightboxEl() {
+  var el = document.getElementById("itm-lightbox");
+  if (el) return el;
+  el = document.createElement("div");
+  el.id = "itm-lightbox";
+  el.className = "itm-lightbox";
+  el.setAttribute("hidden", "");
+  el.setAttribute("role", "dialog");
+  el.setAttribute("aria-modal", "true");
+  el.setAttribute("aria-label", "Photo viewer");
+  el.innerHTML =
+    "<button type=\"button\" class=\"itm-lb-close\" " +
+      "aria-label=\"Close photo viewer\">×</button>" +
+    "<button type=\"button\" class=\"itm-lb-prev\" " +
+      "aria-label=\"Previous photo\">‹</button>" +
+    "<img class=\"itm-lb-img\" alt=\"\">" +
+    "<button type=\"button\" class=\"itm-lb-next\" " +
+      "aria-label=\"Next photo\">›</button>" +
+    "<div class=\"itm-lb-bar\"><span class=\"itm-lb-cap\"></span>" +
+    "<a class=\"itm-lb-drive\" target=\"_blank\" rel=\"noopener\" " +
+      "hidden>Open the original in Drive</a></div>";
+  document.body.appendChild(el);
+  el.addEventListener("click", function (e) {
+    if (e.target === el) closeLightbox();
+  });
+  el.querySelector(".itm-lb-close").addEventListener("click", closeLightbox);
+  el.querySelector(".itm-lb-prev").addEventListener("click",
+    function () { lightboxStep(-1); });
+  el.querySelector(".itm-lb-next").addEventListener("click",
+    function () { lightboxStep(1); });
+  return el;
+}
+function lightboxShow(i) {
+  if (!lbState) return;
+  var n = lbState.items.length;
+  lbState.index = ((i % n) + n) % n;
+  var item = lbState.items[lbState.index];
+  var el = lightboxEl();
+  var img = el.querySelector(".itm-lb-img");
+  img.setAttribute("src", item.src);
+  img.setAttribute("alt", item.caption || "Trail photo");
+  el.querySelector(".itm-lb-cap").textContent = item.caption +
+    (n > 1 ? "  (" + (lbState.index + 1) + " of " + n + ")" : "");
+  var drv = el.querySelector(".itm-lb-drive");
+  if (item.drive) { drv.href = item.drive; drv.hidden = false; }
+  else drv.hidden = true;
+  el.querySelector(".itm-lb-prev").style.display = n > 1 ? "" : "none";
+  el.querySelector(".itm-lb-next").style.display = n > 1 ? "" : "none";
+}
+function openLightbox(items, index, returnFocus) {
+  if (!items || !items.length) return;
+  lbState = { items: items, index: index || 0,
+    returnFocus: returnFocus || null };
+  var el = lightboxEl();
+  el.hidden = false;
+  document.body.style.overflow = "hidden";
+  lightboxShow(lbState.index);
+  el.querySelector(".itm-lb-close").focus();
+}
+function closeLightbox() {
+  var el = document.getElementById("itm-lightbox");
+  if (el) el.hidden = true;
+  document.body.style.overflow = "";
+  if (lbState && lbState.returnFocus && lbState.returnFocus.focus) {
+    try { lbState.returnFocus.focus(); } catch (e) { /* popup gone */ }
+  }
+  lbState = null;
+}
+function lightboxStep(d) { if (lbState) lightboxShow(lbState.index + d); }
+document.addEventListener("keydown", function (e) {
+  if (!lbState) return;
+  if (e.key === "Escape") { e.preventDefault(); closeLightbox(); }
+  else if (e.key === "ArrowLeft") { e.preventDefault(); lightboxStep(-1); }
+  else if (e.key === "ArrowRight") { e.preventDefault(); lightboxStep(1); }
+});
+/* Keyboard-open for popup photos: a focused photo opens with
+   Enter or Space, the same as a click. */
+document.addEventListener("keydown", function (e) {
+  var t = e.target;
+  if (t && t.classList && t.classList.contains("pop-photo") &&
+      (e.key === "Enter" || e.key === " ")) {
+    e.preventDefault();
+    t.click();
   }
 });
 
@@ -1054,6 +1434,17 @@ var SRC_CASS_FIM = "https://cassweb.casscountymn.gov/arcgis/" +
   "rest/services/Forestry_ForestPlan_Base/MapServer/63";
 var SRC_EDW = "https://apps.fs.usda.gov/arcx/rest/services/EDW/" +
   "EDW_ActivityProjectAreas_01/MapServer/2";
+/* County timber sources (Paul, Nov 13, 2026 — the other counties
+   the chapter crosses; pulled Nov 13, verified live). Hubbard's
+   service has separate sold / upcoming layers; Becker and
+   Clearwater share the PreRX Appraisals service pattern on their
+   own county servers. */
+var SRC_HUBBARD_TIMBER = "https://services.arcgis.com/auNjCUvKlkSqV04X/" +
+  "ArcGIS/rest/services/Hubbard_County_Timber_Sales/FeatureServer";
+var SRC_BECKER_TIMBER = "https://gis-server.co.becker.mn.us/arcgis/" +
+  "rest/services/Forestry/PreRX_Appraisals/FeatureServer/0";
+var SRC_CLEARWATER_TIMBER = "https://map.co.clearwater.mn.us/arcgis/" +
+  "rest/services/Forestry/PreRX_Appraisals/FeatureServer/0";
 var SRC_EASEMENTS = "https://apps.bwsr.state.mn.us/arcgis/" +
   "rest/services/RIM/RIM_Reserve_Easements/MapServer/0";
 function popSourceLine(url, label) {
@@ -1121,6 +1512,50 @@ function logEdwPopup(f) {
     popSourceLine(SRC_EDW,
       "USFS EDW Activity Project Areas — Timber Sale, " +
       "Chippewa National Forest");
+}
+function logHubbardPopup(f) {
+  var p = f.properties;
+  var status = p.status === "upcoming" ? "Upcoming (planned sale)"
+    : p.status === "sold" ? "Sold" : p.status;
+  return "<h3>" + esc(p.name || "Timber sale") + "</h3>" + kvTable([
+    ["Permit", p.permit],
+    ["Acres", p.acres],
+    ["Year", p.year],
+    ["Status", status],
+    ["Operator", p.operator],
+  ]) + "<p class='pop-note'>Status is the county's own sold / " +
+    "upcoming split — 'upcoming' is a planned sale, not a cut " +
+    "yet. The year is read off the sale number.</p>" +
+    popSourceLine(SRC_HUBBARD_TIMBER,
+      "Hubbard County Timber Sales — Timber sales, layer 0; " +
+      "Upcoming Timber Sales, layer 1");
+}
+function logBeckerPopup(f) {
+  var p = f.properties;
+  var closed = p.closed === "Yes" ? "Yes"
+    : p.closed === "No" ? "No" : null;
+  return "<h3>" + esc(p.name || "Timber sale") + "</h3>" + kvTable([
+    ["Permit", p.permit],
+    ["Acres", p.acres],
+    ["Year", p.year],
+    ["Closed", closed],
+  ]) + "<p class='pop-note'>Closed is the source's past / future " +
+    "signal where it is filled — about half the records leave it " +
+    "blank.</p>" +
+    popSourceLine(SRC_BECKER_TIMBER,
+      "Becker County Forestry — PreRX Appraisals, layer 0");
+}
+function logClearwaterPopup(f) {
+  var p = f.properties;
+  return "<h3>" + esc(p.name || "Timber appraisal") + "</h3>" + kvTable([
+    ["Acres", p.acres],
+    ["Year", p.year],
+    ["Closed", p.closed],
+  ]) + "<p class='pop-note'>The county's appraisal service holds " +
+    "almost nothing in the corridor — one appraisal. Clearwater's " +
+    "real sales live in its auction packets, not this service.</p>" +
+    popSourceLine(SRC_CLEARWATER_TIMBER,
+      "Clearwater County Forestry — PreRX Appraisals, layer 0");
 }
 /* Conservation easements (Nov 12, 2026): BWSR RIM Reserve
    easements clipped to the corridor (40 easements, 3,370 ac —
@@ -1354,37 +1789,80 @@ function fmtPhotoDate(dt) {
    workers.dev URL (see worker/README.md). */
 var ITM_SAVE_URL = "";
 
+/* Full-size photo URL (Paul, Nov 13, 2026): the lightbox opens the
+   largest image we hold. When a photo carries a Drive file ID the
+   original opens from Drive; today every drive_id in
+   data/assets.geojson is null, so the lightbox opens the site's
+   1600 px derivative at native size. The Drive branch is live the
+   moment the pipeline records IDs — no code change needed then. */
+function photoFullUrl(ph) {
+  if (ph && ph.drive_id) {
+    return "https://drive.google.com/thumbnail?id=" +
+      encodeURIComponent(ph.drive_id) + "&sz=w4000";
+  }
+  return ph && ph.derivative ? "assets-photos/" + ph.derivative : "";
+}
+function photoDriveUrl(ph) {
+  return ph && ph.drive_id ?
+    "https://drive.google.com/file/d/" +
+      encodeURIComponent(ph.drive_id) + "/view" : null;
+}
+function photoCaption(p, ph, label) {
+  var bits = [];
+  if (p.serial) bits.push(p.serial);
+  if (label) bits.push(label);
+  var d = fmtPhotoDate((ph && ph.datetime) || p.datetime);
+  if (d) bits.push(d);
+  return bits.join(" · ");
+}
+
 function assetPopup(f, savedMsg) {
   var p = f.properties || {};
   var typeName = assetTypeName(p.type);
   var unidentified = !p.type || p.type.toUpperCase() === "UN" ||
     p.type.toLowerCase() === "unclassified";
-  var html;
+  var cond = p.condition || null;
+  /* Condition chip in the header (Paul, Nov 13, 2026): the grade is
+     visible at a glance without scrolling to the facts table. The
+     ring colour is the pin's own grade colour. */
+  var condChip = "";
+  if (cond && CONDITION_GLOSS[cond]) {
+    var ring = CONDITION_RINGS[cond] || "#555";
+    condChip = "<span class=\"pop-cond-chip\" style=\"border-color:" +
+      ring + ";color:" + ring + "\">" +
+      esc(cond.charAt(0).toUpperCase() + cond.slice(1)) + "</span>";
+  }
+  /* Sticky header (Paul, Nov 13, 2026): the type, serial and grade
+     stay put while the popup scrolls, so a volunteer projected in
+     the meeting room always knows which pin is open. */
+  var where = "";
+  if (p.serial) where = esc(p.serial);
+  if (p.section) where += (where ? " · " : "") + esc(p.section);
+  if (p.chainage_mi != null) {
+    where += (where ? " · " : "") + "mi " + p.chainage_mi;
+  }
+  var html = "<div class=\"pop-head\"><div class=\"pop-head-text\">";
   if (unidentified) {
     /* R5: a pin we cannot name says so — never a guessed
        type. The note (what the classifier could see) is the
        description; the walk-through is the next step. */
-    html = "<h3>Not yet identified</h3>" +
+    html += "<h3>Not yet identified</h3>" +
       "<p class='pop-sub'>Needs a walk-through — we don't know " +
       "what this is yet.</p>";
-    /* Serial on unidentified pins too (Paul, Nov 12): the serial
-       is the key for classifying, so it shows here as well as on
-       identified pins. */
-    if (p.serial) {
-      html += "<p class='pop-sub'>" + esc(p.serial) +
-        (p.section ? " · " + esc(p.section) : "") +
-        (p.chainage_mi != null ? " · mi " + p.chainage_mi : "") +
-        "</p>";
-    }
+    if (where) html += "<p class='pop-sub'>" + where + "</p>";
   } else {
-    html = "<h3>" + esc(typeName) + "</h3>";
-    if (p.serial) {
-      html += "<p class='pop-sub'>" + esc(p.serial) +
-        (p.section ? " · " + esc(p.section) : "") +
-        (p.chainage_mi != null ? " · mi " + p.chainage_mi : "") +
-        "</p>";
-    }
+    html += "<h3>" + esc(typeName) + "</h3>";
+    if (where) html += "<p class='pop-sub'>" + where + "</p>";
   }
+  html += "</div>" + condChip + "</div>";
+  /* The rest of the card scrolls inside .pop-body while the header
+     stays put (Paul, Nov 13, 2026). position:sticky on the header
+     did NOT work here — measured Nov 13: the sticky header rendered
+     at the BOTTOM of the popup in the headless shell, and Leaflet's
+     own maxHeight never takes effect because the photos load after
+     its layout pass — so the body caps its own height in CSS and
+     scrolls, and the header is simply outside it. */
+  html += "<div class=\"pop-body\">";
   /* Every photo of the item, not just the primary: the inventory
      collapses duplicate photos onto one pin (Nov 11, 2026), and
      the extra photos live in p.photos. Pins without a photos
@@ -1393,8 +1871,19 @@ function assetPopup(f, savedMsg) {
   var photos = (p.photos && p.photos.length) ? p.photos :
     (p.derivative ? [{ derivative: p.derivative }] : []);
   if (photos.length === 1 && photos[0].derivative) {
-    html += "<img src=\"assets-photos/" + esc(photos[0].derivative) +
-      "\" alt=\"\" style=\"max-width:100%;display:block;margin:6px 0 2px\">";
+    /* Click to enlarge (Paul, Nov 13, 2026): the photo opens the
+       lightbox at full size. data-full is the Drive original when
+       the photo carries a drive_id, else the site derivative. */
+    var drive1 = photoDriveUrl(photos[0]);
+    html += "<img class=\"pop-photo\" src=\"assets-photos/" +
+      esc(photos[0].derivative) + "\" alt=\"Photo of " +
+      esc(typeName) + "\" tabindex=\"0\" role=\"button\" " +
+      "aria-label=\"Open photo full size\" data-full=\"" +
+      esc(photoFullUrl(photos[0])) + "\" data-caption=\"" +
+      esc(photoCaption(p, photos[0], null)) + "\"" +
+      (drive1 ? " data-drive=\"" + esc(drive1) + "\"" : "") + ">";
+    html += "<div class=\"pop-zoom-hint\">Click the photo to see " +
+      "it full size</div>";
     /* Photo date under the photo (Paul, Nov 12): the date the
        photo was taken, from its EXIF datetime. */
     var d1 = fmtPhotoDate(photos[0].datetime || p.datetime);
@@ -1421,31 +1910,52 @@ function assetPopup(f, savedMsg) {
       return faceLabel(i) + (d ? " · " + d : "");
     };
     html += "<div class=\"pop-flip\">";
-    html += "<img class=\"pop-face-img\" src=\"assets-photos/" +
-      esc(photos[0].derivative) +
-      "\" alt=\"\" style=\"max-width:100%;display:block;margin:6px 0 2px\">";
+    var drive0 = photoDriveUrl(photos[0]);
+    html += "<img class=\"pop-face-img pop-photo\" src=\"assets-photos/" +
+      esc(photos[0].derivative) + "\" alt=\"Photo of " +
+      esc(typeName) + "\" tabindex=\"0\" role=\"button\" " +
+      "aria-label=\"Open photo full size\" data-full=\"" +
+      esc(photoFullUrl(photos[0])) + "\" data-caption=\"" +
+      esc(photoCaption(p, photos[0], faceLabel(0))) + "\"" +
+      (drive0 ? " data-drive=\"" + esc(drive0) + "\"" : "") + ">";
     html += "<div class=\"pop-face-label\">" + esc(faceLabelDate(0)) + "</div>";
+    html += "<div class=\"pop-zoom-hint\">Click any photo to see " +
+      "it full size</div>";
     html += "<div class=\"pop-face-btns\">";
     photos.forEach(function (ph, i) {
       if (!ph.derivative) return;
+      var drv = photoDriveUrl(ph);
       html += "<button type=\"button\" class=\"pop-face" +
         (i === 0 ? " active" : "") + "\" data-derivative=\"" +
         esc(ph.derivative) + "\" data-label=\"" + esc(faceLabel(i)) +
         "\" data-date=\"" + esc(faceDate(i) || "") +
-        "\">" + esc(faceLabel(i)) + "</button>";
+        "\" data-full=\"" + esc(photoFullUrl(ph)) +
+        "\" data-caption=\"" + esc(photoCaption(p, ph, faceLabel(i))) +
+        "\"" + (drv ? " data-drive=\"" + esc(drv) + "\"" : "") +
+        ">" + esc(faceLabel(i)) + "</button>";
     });
     html += "<button type=\"button\" class=\"pop-faces-all\">" +
       "Show all photos</button>";
     html += "</div>";
     html += "<div class=\"pop-face-grid\">";
-    photos.forEach(function (ph) {
+    photos.forEach(function (ph, i) {
       if (ph.derivative) {
-        html += "<img src=\"assets-photos/" + esc(ph.derivative) +
-          "\" alt=\"\">";
+        var drvg = photoDriveUrl(ph);
+        html += "<img class=\"pop-photo\" src=\"assets-photos/" +
+          esc(ph.derivative) + "\" alt=\"Photo " + (i + 1) +
+          " of " + photos.length + "\" tabindex=\"0\" role=\"button\" " +
+          "aria-label=\"Open photo " + (i + 1) + " full size\" " +
+          "data-full=\"" + esc(photoFullUrl(ph)) +
+          "\" data-caption=\"" +
+          esc(photoCaption(p, ph, faceLabel(i))) + "\"" +
+          (drvg ? " data-drive=\"" + esc(drvg) + "\"" : "") + ">";
       }
     });
     html += "</div></div>";
   }
+  /* Facts (Paul, Nov 13, 2026): only what varies per pin. The
+     "Source" line was the same on every pin and the photo count
+     duplicates the face pills, so both are gone. */
   var rows = [];
   if (unidentified) {
     rows.push(["Section", p.section]);
@@ -1456,17 +1966,16 @@ function assetPopup(f, savedMsg) {
   }
   rows.push(["Photographed", fmtPhotoDate(p.datetime)]);
   rows.push(["Photographer", p.photographer]);
-  rows.push(["Source", "Itasca Moraine Chapter — volunteer photo inventory"]);
-  if (photos.length > 1) rows.push(["Photos", photos.length + " photos"]);
-  /* Classify link (Paul, Nov 12): the pin opens the
-     classification interface at this pin, so the chapter can
-     jump from the map to classifying it. Serial is the key;
-     unclassified pins link to the interface's Needs
-     classification view. */
+  html += kvTable(rows);
+  /* Full record (Paul, Nov 12): the pin opens the classification
+     interface at this pin, so the chapter can jump from the map to
+     classifying it. Serial is the key; unclassified pins link to
+     the interface's Needs classification view. */
   var classifyHref = "classify.html" +
     (p.serial ? "#pin=" + encodeURIComponent(p.serial) : "");
-  html += "<p class='pop-classify'><a href='" + classifyHref +
-    "' target='_blank' rel='noopener'>Classify this pin</a></p>";
+  html += "<p class='pop-classify'><a class='pop-record-link' href='" +
+    classifyHref + "' target='_blank' rel='noopener'>Open the full " +
+    "record</a></p>";
   /* Classify in the popup (Paul, Nov 12): type, condition,
      photographer and note, saved straight to GitHub through the
      itm-save Worker. The separate classify.html page stays as the
@@ -1501,7 +2010,7 @@ function assetPopup(f, savedMsg) {
       "<div class='pop-cls-msg'>" + (esc(savedMsg) || "") + "</div>" +
       "</div>";
   }
-  return html + kvTable(rows);
+  return html + "</div>";
 }
 
 /* §2.11: an asset pin whose photo was condition-graded wears a
@@ -3278,6 +3787,39 @@ function applyContoursGate() {
 
 var LAYERS = [
   {
+    /* NCT — all Minnesota (Paul, Nov 13, 2026 — "get the trail in
+       there"): the official NCTA line for the whole state, North
+       Dakota border to the Border Route Trail — 348 features,
+       566 mi, pulled Nov 13 by scripts/pull_minnesota_line.py
+       (state == 'MN'). A thin slate context line, drawn UNDER
+       the chapter line (see assertDrawOrder) so the chapter's
+       own green line still owns the corridor; outside it, this
+       is the trail. ON by default — the extension is the point.
+       Popups reuse trailPopup (chapter, type, source); the
+       chapter names for the other Minnesota chapters were added
+       to CHAPTER_NAMES with this layer. */
+    id: "trail-minnesota", label: "NCT — all Minnesota",
+    title: "The North Country Trail across all of Minnesota — " +
+      "North Dakota border to the Border Route Trail",
+    file: "data/trail-minnesota.geojson",
+    onByDefault: true, group: "The trail",
+    swatch: { kind: "line", color: "#64748b" },
+    build: function (gj) {
+      var layer = L.geoJSON(gj, {
+        renderer: canvasFor(),
+        style: function (f) {
+          return {
+            color: "#64748b", weight: 2, opacity: 0.75,
+            dashArray: isOnRoad(f.properties) ? "2 7" : null,
+            lineCap: "round",
+          };
+        },
+        onEachFeature: function (f, l) { bindPop(l, trailPopup(f)); },
+      });
+      return layer;
+    },
+  },
+  {
     id: "trail", label: "NCTA Trail", file: "data/trail.geojson",
     onByDefault: true, group: "The trail",
     swatch: { kind: "line", color: CHAPTER_COLORS.ITM },
@@ -3807,6 +4349,89 @@ var LAYERS = [
     },
   },
   {
+    /* Hubbard County timber sales (Paul, Nov 13, 2026 — "I'm
+       seeing Cass County, but I'm not seeing Hubbard County"):
+       67 sales in the corridor, 3,137.5 ac, 2023–2026, pulled
+       Nov 13 from the county's own ArcGIS Online service
+       (scripts in working/logging-burns/county-timber-sales/).
+       OFF by default and LAZY. The Status field is the past /
+       future signal Paul asked for: 65 sold, 2 upcoming. Year
+       is read off the sale-number prefix (verified 23/23
+       against Becker's Year field). Recent sales (2024–2026)
+       render amber via timberSaleStyle, like Cass. */
+    id: "loghubbard", label: "Hubbard timber sales",
+    title: "Hubbard County timber sales — status is the past/future signal",
+    file: "data/logging-hubbard-timber-sales.geojson",
+    onByDefault: false, group: "The land",
+    swatch: { kind: "fill", color: "#a16207", border: "#713f12" },
+    build: function (gj) {
+      var layer = L.geoJSON(gj, {
+        renderer: canvasFor(),
+        style: function (f) {
+          return timberSaleStyle(f, {
+            color: "#713f12", weight: 1.5,
+            fillColor: "#a16207", fillOpacity: 0.28,
+          });
+        },
+        onEachFeature: function (f, l) { bindPop(l, logHubbardPopup(f)); },
+      });
+      return layer;
+    },
+  },
+  {
+    /* Becker County timber appraisals (Paul, Nov 13, 2026): 88
+       in the corridor, 2,596.7 ac, 2023–2026, pulled Nov 13
+       from the county's PreRX Appraisals service. OFF by default
+       and LAZY. The Closed field is the past / future signal
+       where filled (Yes 37, No 1, null 50); 39 records carry no
+       year. Recent sales render amber via timberSaleStyle. */
+    id: "logbecker", label: "Becker timber sales",
+    title: "Becker County timber appraisals",
+    file: "data/logging-becker-timber-sales.geojson",
+    onByDefault: false, group: "The land",
+    swatch: { kind: "fill", color: "#15803d", border: "#14532d" },
+    build: function (gj) {
+      var layer = L.geoJSON(gj, {
+        renderer: canvasFor(),
+        style: function (f) {
+          return timberSaleStyle(f, {
+            color: "#14532d", weight: 1.5,
+            fillColor: "#15803d", fillOpacity: 0.28,
+          });
+        },
+        onEachFeature: function (f, l) { bindPop(l, logBeckerPopup(f)); },
+      });
+      return layer;
+    },
+  },
+  {
+    /* Clearwater County timber appraisals (Paul, Nov 13, 2026):
+       the county's PreRX service holds almost nothing — 1
+       appraisal in the corridor (90.2 ac, no year), 3
+       county-wide. OFF by default and LAZY. Clearwater's real
+       sales live in its auction packets (Spring + Summer 2026
+       PDFs on disk) — a PLSS-conversion build, not a service
+       pull; that build is still owed. */
+    id: "logclearwater", label: "Clearwater timber sales",
+    title: "Clearwater County timber appraisals — nearly empty service",
+    file: "data/logging-clearwater-timber-sales.geojson",
+    onByDefault: false, group: "The land",
+    swatch: { kind: "fill", color: "#1d4ed8", border: "#1e3a8a" },
+    build: function (gj) {
+      var layer = L.geoJSON(gj, {
+        renderer: canvasFor(),
+        style: function (f) {
+          return timberSaleStyle(f, {
+            color: "#1e3a8a", weight: 1.5,
+            fillColor: "#1d4ed8", fillOpacity: 0.28,
+          });
+        },
+        onEachFeature: function (f, l) { bindPop(l, logClearwaterPopup(f)); },
+      });
+      return layer;
+    },
+  },
+  {
     /* BWSR RIM Reserve conservation easements, clipped to the
        corridor (40 easements, 3,370 ac — 38 perpetual riparian,
        1 limited cropland, 1 PWP). OFF by default and LAZY like
@@ -3907,6 +4532,74 @@ var LAYERS = [
           });
         },
         onEachFeature: function (f, l) { bindPop(l, alertPopup(f)); },
+      });
+    },
+  },
+  {
+    /* Trail alerts — all Minnesota (Paul, Nov 13, 2026): NCTA's
+       alert points for the rest of the state, pulled Nov 13 by
+       scripts/pull_minnesota_alerts.py (22 points, 2022–2026).
+       The chapter's own 5 alerts are NOT in this file — they
+       stay in the chapter layer — so both layers on shows every
+       Minnesota alert exactly once. Same red warning diamond as
+       the chapter alerts. OFF by default and LAZY, like the
+       chapter layer. A few points sit just across the border
+       (Fargo, Superior, and the Wisconsin NCT) — they are NCTA
+       alerts on this same trail, kept for the end-to-end hiker. */
+    id: "alerts-mn", label: "Trail alerts — all Minnesota",
+    title: "Trail alerts from the North Country Trail Association " +
+      "for the rest of Minnesota",
+    file: "data/trail-alerts-minnesota.geojson", onByDefault: false,
+    group: "Around the trail",
+    swatch: { kind: "alert", color: COLORS.gap },
+    build: function (gj) {
+      return L.geoJSON(gj, {
+        pointToLayer: function (f, latlng) {
+          return L.marker(latlng, {
+            keyboard: false,
+            icon: L.divIcon({
+              className: "alert-marker-wrap", iconSize: [18, 18],
+              iconAnchor: [9, 9],
+              html: "<span class='alert-marker'>" +
+                "<span class='alert-glyph'>!</span></span>",
+            }),
+          });
+        },
+        onEachFeature: function (f, l) { bindPop(l, alertPopup(f)); },
+      });
+    },
+  },
+  {
+    /* Trail reroutes — all Minnesota (Paul, Nov 13, 2026): the
+       NCTA reroute LINES for the rest of the state (7 lines),
+       pulled with the alerts above. The chapter extent has no
+       reroute lines, so there is no chapter counterpart. OFF by
+       default and LAZY. Drawn dashed red, above the trail line. */
+    id: "alerts-mn-lines", label: "Trail reroutes — all Minnesota",
+    title: "NCTA reroute lines for the rest of Minnesota",
+    file: "data/trail-alert-lines-minnesota.geojson",
+    onByDefault: false, group: "Around the trail",
+    swatch: { kind: "line", color: COLORS.gap },
+    build: function (gj) {
+      return L.geoJSON(gj, {
+        renderer: canvasFor(),
+        style: {
+          color: COLORS.gap, weight: 3, opacity: 0.8,
+          dashArray: "6 4", lineCap: "round",
+        },
+        onEachFeature: function (f, l) {
+          var p = f.properties;
+          bindPop(l, "<h3>" + esc(p.name || "Reroute") + "</h3>" +
+            kvTable([
+              ["Status", p.trail_stat],
+              ["Length", p.length_mi != null
+                ? p.length_mi + " mi" : null],
+              ["Property", p.property],
+              ["Managing authority", p.managing_authority],
+              ["Special regulations", p.special_regs],
+            ]) + "<p class='pop-note'>NCTA reroute line — the " +
+            "alert point carries the detail.</p>");
+        },
       });
     },
   },
@@ -4840,13 +5533,17 @@ function assertDrawOrder() {
        the amber highlight must read as lying over the green),
        the gap, boundary ticks and chapter ends, mile markers
        with the ticks, then Places, trail alerts and asset pins
-       uppermost. */
-    ["leechlake", "parcels", "logedw", "logfim", "logcass", "easements", "access",
-     "roads", "nctasheets", "trail",
+       uppermost. Nov 13, 2026: "trail-minnesota" sits directly
+       under "trail" (the chapter line owns the corridor);
+       "alerts-mn-lines" sits directly over it (reroutes read as
+       alternate routes); "alerts-mn" sits with "alerts". */
+    ["leechlake", "parcels", "logedw", "logfim", "logcass", "loghubbard",
+     "logbecker", "logclearwater", "easements", "access",
+     "roads", "nctasheets", "trail-minnesota", "trail", "alerts-mn-lines",
      "stretches", "gaps",
      "boundaries", "termini", "milemarkers", "chainage", "contours",
      "places",
-     "alerts", "chapterplaces", "assets"].forEach(function (id) {
+     "alerts", "alerts-mn", "chapterplaces", "assets"].forEach(function (id) {
       var d = layerById(id);
       if (!d || !d.layer || !map.hasLayer(d.layer)) return;
       if (d.layer.bringToFront) { d.layer.bringToFront(); return; }

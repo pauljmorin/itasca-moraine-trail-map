@@ -1693,6 +1693,190 @@ body.base-imagery.gap-chip .gap-label span {
 }
 .leaflet-popup-content .pop-cls-msg.pop-cls-err { color: #b2182b; }
 
+/* --- Asset popup redesign (Paul, Nov 13, 2026): the header stays
+   put while the popup scrolls (projection: the title never scrolls
+   away); the condition is a chip in the header; photos are
+   click-to-enlarge; the record link and the Save button read as
+   real actions. --- */
+.leaflet-popup-content .pop-head {
+  margin: 0 -24px 8px -20px;
+  padding: 8px 24px 8px 20px;
+  background: #fff;
+  border-bottom: 1px solid var(--paper-line);
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 10px;
+}
+.leaflet-popup-content .pop-head h3 { margin: 0; }
+.leaflet-popup-content .pop-head .pop-sub { margin: 2px 0 0; }
+/* The body scrolls inside the popup while the header stays put
+   (Paul, Nov 13, 2026). The cap keeps the whole popup under
+   Leaflet's own 70 vh maxHeight, so no second scrollbar appears. */
+.leaflet-popup-content .pop-body {
+  max-height: calc(70vh - 140px);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+.pop-head-text { min-width: 0; }
+.pop-cond-chip {
+  flex: none;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  border: 2px solid #555;
+  border-radius: 20px;
+  padding: 3px 10px;
+  margin-top: 2px;
+  white-space: nowrap;
+}
+.leaflet-popup-content .pop-photo {
+  display: block;
+  max-width: 100%;
+  height: auto;
+  margin: 6px 0 2px;
+  border-radius: 6px;
+  cursor: zoom-in;
+}
+.leaflet-popup-content .pop-photo:focus-visible {
+  outline: 3px solid var(--trail-deep);
+  outline-offset: 2px;
+}
+.leaflet-popup-content .pop-face-grid .pop-photo {
+  max-width: 32%;
+  margin: 0;
+  flex: 1 1 30%;
+}
+.pop-zoom-hint {
+  font-size: 12px;
+  color: var(--ink-soft);
+  margin: 0 0 4px;
+}
+.pop-face, .pop-faces-all {
+  padding: 6px 12px;
+  min-height: 32px;
+  border: 1.5px solid #888;
+  border-radius: 20px;
+  background: #fff;
+  cursor: pointer;
+  font: inherit;
+  font-size: 0.85rem;
+}
+.pop-face.active {
+  background: #e8f2e9;
+  border-color: #2e5d3a;
+  color: #2e5d3a;
+  font-weight: 700;
+}
+.leaflet-popup-content .pop-classify { margin: 10px 0 2px; }
+.pop-record-link {
+  display: inline-block;
+  padding: 8px 14px;
+  border: 2px solid var(--trail-deep);
+  border-radius: 8px;
+  color: var(--trail-deep);
+  font-weight: 700;
+  font-size: 0.9rem;
+  text-decoration: none;
+  background: #fff;
+}
+.pop-record-link:hover { background: #eef4ee; }
+.pop-record-link:focus-visible,
+.pop-face:focus-visible,
+.pop-faces-all:focus-visible,
+.pop-cls-save:focus-visible {
+  outline: 3px solid var(--trail-deep);
+  outline-offset: 2px;
+}
+.leaflet-popup-content .pop-cls label { font-size: 0.9rem; }
+.leaflet-popup-content .pop-cls select,
+.leaflet-popup-content .pop-cls input[type="text"] {
+  font-size: 0.9rem;
+  padding: 6px 8px;
+  min-height: 34px;
+}
+.pop-cls-save {
+  display: block;
+  width: 100%;
+  padding: 10px 14px;
+  min-height: 42px;
+  margin-top: 8px;
+  border: 2px solid #2e5d3a;
+  border-radius: 10px;
+  background: #2e5d3a;
+  color: #fff;
+  font-weight: 700;
+  font-size: 0.95rem;
+  cursor: pointer;
+}
+.pop-cls-save:hover { background: #24512f; }
+
+/* --- Photo lightbox (Paul, Nov 13, 2026): full-size photo
+   overlay. Hand-rolled, no library. Sits above the map. --- */
+.itm-lightbox {
+  position: fixed;
+  inset: 0;
+  z-index: 3000;
+  background: rgba(18, 22, 18, 0.92);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.itm-lightbox[hidden] { display: none; }
+.itm-lb-img {
+  max-width: 92vw;
+  max-height: 84vh;
+  object-fit: contain;
+  border-radius: 4px;
+  box-shadow: 0 8px 40px rgba(0, 0, 0, 0.6);
+}
+.itm-lb-close, .itm-lb-prev, .itm-lb-next {
+  position: absolute;
+  z-index: 2;
+  min-width: 48px;
+  min-height: 48px;
+  border: 2px solid rgba(255, 255, 255, 0.85);
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.45);
+  color: #fff;
+  font-size: 28px;
+  line-height: 1;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+}
+.itm-lb-close { top: 16px; right: 16px; }
+.itm-lb-prev { left: 16px; top: 50%; transform: translateY(-50%); }
+.itm-lb-next { right: 16px; top: 50%; transform: translateY(-50%); }
+.itm-lb-close:hover, .itm-lb-prev:hover, .itm-lb-next:hover {
+  background: rgba(255, 255, 255, 0.25);
+}
+.itm-lb-close:focus-visible, .itm-lb-prev:focus-visible,
+.itm-lb-next:focus-visible, .itm-lb-drive:focus-visible {
+  outline: 3px solid #fff;
+  outline-offset: 2px;
+}
+.itm-lb-bar {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  padding: 14px 20px 18px;
+  text-align: center;
+  color: #fff;
+  font-size: 15px;
+  background: linear-gradient(transparent, rgba(0, 0, 0, 0.7));
+}
+.itm-lb-drive {
+  display: inline-block;
+  margin-left: 14px;
+  color: #fff;
+  font-weight: 700;
+}
+.itm-lb-drive[hidden] { display: none; }
+
 /* --- Legend: the amber "can wait" diamond (R1). The red
    .swatch.alert already exists. --- */
 #legend .swatch.alert.wait,
@@ -1848,6 +2032,14 @@ body.present .pop-faces-all {
   padding: 8px 14px;
   font-size: 0.95rem;
 }
+/* Popup redesign (Paul, Nov 13, 2026): the Save button and the
+   lightbox caption stay legible at projection distance too. */
+body.present .pop-cls-save {
+  min-height: 44px;
+  font-size: 1rem;
+}
+body.present .itm-lb-bar { font-size: 1.1rem; }
+body.present .pop-zoom-hint { font-size: 0.9rem; }
 #present-strip {
   position: fixed;
   left: 0;

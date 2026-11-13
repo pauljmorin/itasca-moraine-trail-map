@@ -1,0 +1,401 @@
+{
+ "type": "FeatureCollection",
+ "metadata": {
+  "dataset": "NCTA trail alerts (alert points), Minnesota outside the chapter working extent",
+  "source_layer_id": 1,
+  "source_layer_name": "trail_alerts",
+  "date_note": "date_ms is the service's stored instant verbatim; date is its America/Chicago calendar date (see pull_trail_alerts.py).",
+  "feature_count": 22,
+  "source_service": "https://services2.arcgis.com/UfGVyqUm4GHa2zrj/arcgis/rest/services/trail_alerts/FeatureServer",
+  "pulled_utc_date": "2026-11-13",
+  "envelope_wgs84": {
+   "xmin": -97.3,
+   "ymin": 46.0,
+   "xmax": -89.5,
+   "ymax": 49.4
+  },
+  "excluded_extent_wgs84": {
+   "min_lon": -95.6,
+   "max_lon": -94.3,
+   "min_lat": 46.7,
+   "max_lat": 47.35
+  },
+  "clip_method": "Envelope selection (object-id fetch, chunk-verified); points inside the chapter working extent excluded so this layer complements data/trail-alerts.geojson."
+ },
+ "features": [
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -93.937686,
+     47.133051
+    ]
+   },
+   "properties": {
+    "title": "Trail Alert - Trail Alert - Milton Lake Rd.",
+    "location": "Trail Alert - Milton Lake Rd.",
+    "date": "2022-09-01",
+    "date_ms": 1662076800000,
+    "description": "The segment along Milton Lake Rd may be underwater and deep enough to prevent vehicle access to Trailhead. The road has a gravel bottom but exercise caution when crossing. Hikers may need to use the bypass trail following Milton Lake Dr, CR-52 and FR2321"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -95.882009,
+     46.564706
+    ]
+   },
+   "properties": {
+    "title": "Trail Alert - Trail Alert - Heart of the Lakes Trail",
+    "location": "Trail Alert - Heart of the Lakes Trail",
+    "date": "2023-07-04",
+    "date_ms": 1688515200000,
+    "description": "The NCT now follows the Heart of the Lakes paved multi-use trail which lies adjacent to the roads.  This NCT segment is not yet signed."
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -92.201983,
+     47.824572
+    ]
+   },
+   "properties": {
+    "title": "Trail Alert - Trail Alert - Lake Vermilion State Park",
+    "location": "Trail Alert - Lake Vermilion State Park",
+    "date": "2023-07-04",
+    "date_ms": 1688515200000,
+    "description": "In Lake Vermilion State Park, there are backcountry campsites (fee required) just off the NCT's route on the Mesabi Trail.  See https://files.dnr.state.mn.us/maps/state_parks/spk00285.pdf"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -90.660391,
+     46.325711
+    ]
+   },
+   "properties": {
+    "title": "Trail Alert - Trail Alert - Mellen",
+    "location": "Trail Alert - Mellen",
+    "date": "2024-03-11",
+    "date_ms": 1710201600000,
+    "description": "The City of Mellen will be replacing the highway bridge starting in June, necessitating a detour this summer."
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -91.41867,
+     47.196447
+    ]
+   },
+   "properties": {
+    "title": "Trail Alert - Trail Alert - Superior Hiking Trail - Split Rock River Loop",
+    "location": "Trail Alert - Superior Hiking Trail - Split Rock River Loop",
+    "date": "2024-04-29",
+    "date_ms": 1714435200000,
+    "description": "The eastern side of the Split Rock River Loop will close September 1 and impact 1.8 miles of the main SHT corridor. This project is designed to allow trail users to easily bypass the closed trail section using temporary reroutes."
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -91.287921,
+     47.298876
+    ]
+   },
+   "properties": {
+    "title": "Trail Alert - Trail Alert - Superior Hiking Trail - Bean and Bear Loop",
+    "location": "Trail Alert - Superior Hiking Trail - Bean and Bear Loop",
+    "date": "2024-04-29",
+    "date_ms": 1714435200000,
+    "description": "The Bean and Bear Lakes Loop closure will begin May 15 and impacts 2.2 miles of the main SHT corridor.  This project is designed to allow trail users to easily bypass the closed trail section using temporary reroutes."
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -90.590013,
+     46.394519
+    ]
+   },
+   "properties": {
+    "title": "Trail Alert - USGS River Gauge for Tyler Forks River at Stricker Road",
+    "location": "USGS River Gauge for Tyler Forks River at Stricker Road",
+    "date": "2024-06-24",
+    "date_ms": 1719273600000,
+    "description": "https://waterdata.usgs.gov/monitoring-location/04026561/#parameterCode=00065&period=P7D&showMedian=false"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -95.647543,
+     46.87893
+    ]
+   },
+   "properties": {
+    "title": "Trail Alert - Rochert, MN",
+    "location": "Rochert, MN",
+    "date": "2024-07-01",
+    "date_ms": 1719878400000,
+    "description": "The NCT is currently flooded south of the Otter Tail River ford where it goes around a private land cornerpost.  The water may be up to 12\" deep.  Note: this flooded spot is between the white- blazed ford bypass trail and the river ford."
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -93.638994,
+     47.221392
+    ]
+   },
+   "properties": {
+    "title": null,
+    "location": null,
+    "date": "2024-07-15",
+    "date_ms": 1721088000000,
+    "description": "The NCT is now complete from CR-17 west to True Road but this is currently a dead-end segment.  The Arrowhead Chapter has cleared the corridor south of True Road and built a 200' puncheon but the trail corridor is not mowed and the tread is not finished."
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -90.825826,
+     48.090148
+    ]
+   },
+   "properties": {
+    "title": "Trail Alert - Gunflint Trail",
+    "location": "Gunflint Trail",
+    "date": "2024-07-15",
+    "date_ms": 1721088000000,
+    "description": "A new segment of the NCT was built in May that connects the Kekekabic Trail with the Border Route Trail directly across CR-12 (Gunflint Trail).  The old Kekekabic Trail out to CR-12 is now a spur to the trailhead parking area."
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -90.562072,
+     46.405513
+    ]
+   },
+   "properties": {
+    "title": "Trail Alert - Middle crossing of Hwy 169",
+    "location": "Middle crossing of Hwy 169",
+    "date": "2025-06-07",
+    "date_ms": 1749340800000,
+    "description": "This is a gated private road - no public access is available to the NCT"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -91.874341,
+     47.902336
+    ]
+   },
+   "properties": {
+    "title": "Trail Alert - Ely, MN",
+    "location": "Ely, MN",
+    "date": "2025-08-28",
+    "date_ms": 1756425600000,
+    "description": "New Ely regional trailhead center is open"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -93.561923,
+     47.2247
+    ]
+   },
+   "properties": {
+    "title": "Trail Alert: City of Grand Rapids, MN",
+    "location": "City of Grand Rapids, MN",
+    "date": "2025-11-16",
+    "date_ms": 1763337600000,
+    "description": "There is a construction project that has temporarily closed a section of the paved multi-use trail between the Forest History Center and the Grand Itasca hospital.  Hikers should walk CR-76 and SW 8th Street around it until completed."
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -93.761352,
+     47.16894
+    ]
+   },
+   "properties": {
+    "title": "Trail Alert: Between Remer and Cohasset",
+    "location": "Between Remer and Cohasset",
+    "date": "2026-03-02",
+    "date_ms": 1772496000000,
+    "description": "The NCT is cleared and blazed east of Hwy 6 and the tread is constructed to the new campsite just east of the little pond"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -92.071354,
+     47.771363
+    ]
+   },
+   "properties": {
+    "title": "Trail Alert: Embarrass to Tower",
+    "location": "Embarrass to Tower",
+    "date": "2026-03-02",
+    "date_ms": 1772496000000,
+    "description": "The Mesabi Trail between Embarrass and Tower will be completed in late summer 2026."
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -93.256172,
+     47.328485
+    ]
+   },
+   "properties": {
+    "title": "Trail Alert: Calumet",
+    "location": "Calumet",
+    "date": "2026-03-02",
+    "date_ms": 1772496000000,
+    "description": "Hill Annex Mine State Park is permanently closed as they're mining iron ore again"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -90.534003,
+     46.403959
+    ]
+   },
+   "properties": {
+    "title": "Trail Alert: Enbridge Line 5",
+    "location": "Enbridge Line 5",
+    "date": "2026-04-26",
+    "date_ms": 1777248000000,
+    "description": "Enbridge has begun Line 5 relocation work affecting the NCT between Mellen and Gurney. Expect heavy traffic on Vogues Rd and Box Spring Rd. Possible detours/closures. Access Wren Falls via Casey Sag Rd to Sullivan Forest R"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -91.851087,
+     46.284234
+    ]
+   },
+   "properties": {
+    "title": "Trail Alert: Douglas County Wildlife Area (Bird Sanctuary)",
+    "location": "Douglas County Wildlife Area (Bird Sanctuary)",
+    "date": "2026-06-22",
+    "date_ms": 1782172800000,
+    "description": "Questionable water source at \"Rover Lake\" as it continues to shrink. I would call the water there questionable at best. The nearest water sources now are Spring Creek (46.270284, -91.905587) or Leo Creek ~(46.319867, -91.824471)."
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -90.04921,
+     46.64307
+    ]
+   },
+   "properties": {
+    "title": "Trail Alert: Black River - Ottawa National Forest",
+    "location": "Black River - Ottawa National Forest",
+    "date": "2026-07-12",
+    "date_ms": 1783900800000,
+    "description": "The Ottawa NF will be repairing and replacing waterfall viewing platforms, stairways, and trail structures along the Black River corridor. Expected closures could last thru fall 2027. "
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -93.62218,
+     47.22542
+    ]
+   },
+   "properties": {
+    "title": "Trail Alert: CR-17 to Tioga Beach",
+    "location": "CR-17 to Tioga Beach",
+    "date": "2026-09-10",
+    "date_ms": 1789084800000,
+    "description": "Due to a private landowner rescinding their permission, the section from CR-17 to Tioga Beach Rd is closed to hiking through.  The Chapter is working on a bypass route.  The NCT is open up to the private land on both sides but continuing on the closed NC"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -90.64244,
+     46.37182
+    ]
+   },
+   "properties": {
+    "title": "Trail Alert: Copper Falls State Park",
+    "location": "Copper Falls State Park",
+    "date": "2026-09-28",
+    "date_ms": 1790640000000,
+    "description": "Doughboys Trail / NCT segment closed Oct. 12-16, 2026, with a detour. Submitted expiration: Oct. 16, 2026. Details: https://dnr.wisconsin.gov/topic/parks/copperfalls/conditions"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -91.964355,
+     46.255836
+    ]
+   },
+   "properties": {
+    "title": "Trail Alert: Moose River Trailhead, Douglas County",
+    "location": "Moose River Trailhead, Douglas County",
+    "date": "2026-10-25",
+    "date_ms": 1792972800000,
+    "description": "S. Mail Rd access from the south is closed for bridge replacement. Approach from Douglas County M to the north. Trailhead parking is blocked; park along the road. Completion expected Jan. 1, 2027."
+   }
+  }
+ ]
+}
