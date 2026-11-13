@@ -1566,6 +1566,8 @@ body.base-imagery.gap-chip .gap-label span {
   margin: 4px 0 6px;
 }
 .bg-choice {
+  display: grid;
+  align-content: center;
   padding: 6px 8px;
   font: inherit;
   font-size: 0.88rem;
