@@ -24,7 +24,7 @@
 var REPO = "pauljmorin/itasca-moraine-trail-map";
 var GEOJSON_PATH = "site/data/assets.geojson";
 var ALLOWED_ORIGINS = ["https://pauljmorin.github.io"];
-var ASSET_TYPES = ["BN", "BR", "BW", "CP", "CS", "KI", "LT",
+var ASSET_TYPES = ["BN", "BO", "BR", "BW", "CP", "CS", "KI", "LT",
                    "PK", "PO", "RG", "SG", "SH", "UN", "WT"];
 var CONDITIONS = ["good", "fair", "poor", "new", "worn", "replace"];
 

@@ -1905,7 +1905,7 @@ function roadPopup(f) {
 /* Type codes to display names (registry data/assets/registry.json).
    Shared by the popup title and the hover chip. */
 var ASSET_TYPE_NAMES = {
-  BN: "Bench", BR: "Bridge", BW: "Boardwalk", CP: "Carsonite post",
+  BN: "Bench", BO: "Bollard", BR: "Bridge", BW: "Boardwalk", CP: "Carsonite post",
   CS: "Campsite", KI: "Kiosk", LT: "Latrine", PK: "Parking area",
   PO: "Post", RG: "Register", SG: "Sign", SH: "Shelter",
   UN: "Unclassified", WT: "Water source",
@@ -1916,14 +1916,16 @@ function assetTypeName(code) {
     (String(code).charAt(0).toUpperCase() + String(code).slice(1));
 }
 /* Per-type asset toggles (Paul, Nov 12, 2026): the Asset pins
-   toggle grows eleven sub-toggles, one per type, with the pin
+   toggle grows twelve sub-toggles, one per type, with the pin
    count each carries. Counts verified against
    data/assets.geojson (84 pins total); UN covers both "UN"
-   and "unclassified" (17 + 1 = 18). Order is the brief's
-   order — largest first. */
+   and "unclassified" (17 + 1 = 18). BO (bollard, added
+   Nov 13) has no pins yet. Order is the brief's order —
+   largest first, UN (the bucket) last. */
 var ASSET_TYPE_TOGGLES = [
   ["CP", 30], ["SG", 16], ["BW", 10], ["BN", 3], ["BR", 2],
-  ["CS", 1], ["LT", 1], ["KI", 1], ["PO", 1], ["RG", 1], ["UN", 18],
+  ["CS", 1], ["LT", 1], ["KI", 1], ["PO", 1], ["RG", 1], ["BO", 0],
+  ["UN", 18],
 ];
 var assetTypeOn = {};
 ASSET_TYPE_TOGGLES.forEach(function (t) { assetTypeOn[t[0]] = true; });
@@ -2283,6 +2285,8 @@ var ASSET_GLYPHS = {
     "<path d=\"M2 13 Q8 3 14 13\" fill=\"none\" stroke=\"#fff\" " +
     "stroke-width=\"2\" stroke-linecap=\"round\"/>" +
     "<rect x=\"1\" y=\"13\" width=\"14\" height=\"1.6\" fill=\"#fff\"/></svg>",
+  BO: "<svg viewBox=\"0 0 16 16\" aria-hidden=\"true\">" +
+    "<rect x=\"5\" y=\"3\" width=\"6\" height=\"11\" rx=\"1.5\" fill=\"#fff\"/></svg>",
   CS: "<svg viewBox=\"0 0 16 16\" aria-hidden=\"true\">" +
     "<path d=\"M8 2 L14.5 13 L1.5 13 Z\" fill=\"#fff\"/>" +
     "<path d=\"M8 7.5 L10.5 13 L5.5 13 Z\" fill=\"#e6550d\"/></svg>",

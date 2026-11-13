@@ -535,6 +535,11 @@
     }
    },
    "retired": []
+  },
+  "BO": {
+   "issued": {},
+   "next": 1,
+   "retired": []
   }
  },
  "format": "ITM-<type>-<nnn>",
@@ -544,6 +549,11 @@
   "BN": {
    "name": "bench",
    "note": "Paul's example; not yet observed in any classified photo.",
+   "status": "proposed"
+  },
+  "BO": {
+   "name": "bollard",
+   "note": "Vehicle barrier — a short vertical log/timber post at a trail entrance; blocks vehicles, lets hikers through.",
    "status": "proposed"
   },
   "BR": {
