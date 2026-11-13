@@ -185,6 +185,98 @@
     });
   }
 
+  // Ground conditions — planning mode only, off by default, lazy.
+  // Land cover: NLCD 2021 as live WMS tiles from the MRLC GeoServer
+  // (mrlc_display:NLCD_2021_Land_Cover_L48). The tile layer object is cheap
+  // to create; no tiles are fetched until it is added to the map.
+  var landcover = L.tileLayer.wms('https://www.mrlc.gov/geoserver/wms', {
+    layers: 'mrlc_display:NLCD_2021_Land_Cover_L48',
+    format: 'image/png',
+    transparent: true,
+    opacity: 0.55,
+    attribution: 'NLCD 2021, USGS / MRLC'
+  });
+
+  var DRAIN = {
+    'Very poorly drained': '#084594',
+    'Poorly drained': '#2171b5',
+    'Somewhat poorly drained': '#6baed6',
+    'Moderately well drained': '#a6d96a',
+    'Well drained': '#66bd63',
+    'Somewhat excessively drained': '#fdae61',
+    'Excessively drained': '#f46d43'
+  };
+  function soilMeaning(p) {
+    var d = p.drainage;
+    if (d === 'Very poorly drained' || d === 'Poorly drained')
+      return 'Wet ground — expect boardwalk or puncheon; a dry footpath tread will not hold here.';
+    if (d === 'Somewhat poorly drained')
+      return 'Seasonally wet — tread needs drainage work; boardwalk likely in the low spots.';
+    if (d === 'Moderately well drained' || d === 'Well drained')
+      return 'Generally workable tread; check the low spots after rain.';
+    if (d === 'Somewhat excessively drained' || d === 'Excessively drained')
+      return 'Dry, sandy or gravelly — tread holds well but can erode on slopes.';
+    return 'No drainage class recorded for this map unit.';
+  }
+  function soilPopup(p) {
+    var h = '<h3>Soil — ' + esc(p.musym || p.mukey) + '</h3>';
+    h += '<p>' + esc(p.muname || 'Map unit name not recorded') + '</p>';
+    h += '<p><strong>Drainage:</strong> ' + esc(p.drainage || 'not recorded');
+    if (p.hydric === 'Yes') h += ' &middot; <strong>hydric</strong> (wetland indicator)';
+    else if (p.hydric === 'No') h += ' &middot; not hydric';
+    h += '</p>';
+    if (p.slope != null) h += '<p><strong>Slope:</strong> about ' + esc(p.slope) + '%</p>';
+    if (p.flood && p.flood !== 'None') h += '<p><strong>Flooding:</strong> ' + esc(p.flood) + '</p>';
+    h += '<p>' + esc(soilMeaning(p)) + '</p>';
+    if (p.hydric === 'Yes')
+      h += '<p class="warn">Hydric soil is a wetland indicator — expect permitting questions where the line crosses it.</p>';
+    h += '<p class="drawn-note">USDA NRCS SSURGO, via Soil Data Access, retrieved Nov 13, 2026. Map unit ' + esc(p.mukey) + '.</p>';
+    return h;
+  }
+  function soilStyle(f) {
+    return {
+      color: '#555555', weight: 0.5, opacity: 0.7,
+      fillColor: DRAIN[f.properties.drainage] || '#cccccc',
+      fillOpacity: 0.45
+    };
+  }
+  var soilsLoading = false;
+  function addSoils() {
+    if (loaded['soils'] || soilsLoading) return;
+    soilsLoading = true;
+    fetchGeo('data/soils-corridor.geojson').then(function (gj) {
+      layers['soils'] = L.geoJSON(gj, {
+        style: soilStyle,
+        onEachFeature: function (f, l) { l.bindPopup(soilPopup(f.properties)); }
+      });
+      loaded['soils'] = true;
+      // Soils sit under the gap and proposed lines so their popups win.
+      layers['soils'].bringToBack();
+      if (layers['gap-a']) layers['gap-a'].bringToFront();
+      if (layers['gap-w']) layers['gap-w'].bringToFront();
+      if (layers['prop-a']) layers['prop-a'].bringToFront();
+      if (layers['prop-w']) layers['prop-w'].bringToFront();
+      if (document.getElementById('lyr-soils').checked) layers['soils'].addTo(map);
+    }).catch(function (err) {
+      soilsLoading = false;
+      if (window.console && console.error) console.error('soils load failed:', err);
+    });
+  }
+
+  function applyGroundLayers() {
+    // Ground layers are planning-only: in briefing mode they leave the map
+    // (checkboxes keep their state for the return to planning).
+    var planning = !document.getElementById('planning-panel').hidden;
+    if (document.getElementById('lyr-landcover').checked && planning) landcover.addTo(map);
+    else map.removeLayer(landcover);
+    if (loaded['soils']) {
+      if (document.getElementById('lyr-soils').checked && planning) layers['soils'].addTo(map);
+      else map.removeLayer(layers['soils']);
+    } else if (document.getElementById('lyr-soils').checked && planning) {
+      addSoils();
+    }
+  }
+
   function toggleLayer(id, on) {
     var l = layers[id];
     if (!l) return;
@@ -199,6 +291,8 @@
   document.getElementById('lyr-prop-w').addEventListener('change', function (e) { toggleLayer('prop-w', e.target.checked); });
   document.getElementById('lyr-corridor').addEventListener('change', function (e) { toggleLayer('corridor', e.target.checked); });
   document.getElementById('lyr-sv').addEventListener('change', function (e) { toggleLayer('sv', e.target.checked); });
+  document.getElementById('lyr-landcover').addEventListener('change', applyGroundLayers);
+  document.getElementById('lyr-soils').addEventListener('change', applyGroundLayers);
 
   // Mode toggle: briefing (default) vs planning. Same map; planning adds the
   // readiness / funding / risks panel.
@@ -216,6 +310,7 @@
     note.textContent = planning
       ? 'For chapter discussions: readiness, funding status, and the risks the chapters named.'
       : 'For the congressional delegation: the case on one screen.';
+    applyGroundLayers();
     try { window.location.hash = mode === 'planning' ? '#planning' : '#briefing'; } catch (e) { /* no-op */ }
   }
   btnB.addEventListener('click', function () { setMode('briefing'); });

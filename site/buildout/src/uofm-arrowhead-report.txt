@@ -1,0 +1,477 @@
+North Country National Scenic Trail Route Plan
+              North Star Consulting
+               December 8, 2025
+
+
+
+
+                                                 1
+                                                         Table of Contents
+
+I. Introduction................................................................................................................................ 3
+II. Project Objectives and Study Area......................................................................................... 4
+III. Methods.................................................................................................................................... 5
+IV. Results....................................................................................................................................... 8
+V. Tools and Data Products......................................................................................................... 10
+VI. Discussion and Recommendations....................................................................................... 10
+VII. Conclusion.............................................................................................................................11
+VIII. Appendix............................................................................................................................. 13
+    A. Data Sources...................................................................................................................... 13
+    B. Billable Hours.................................................................................................................... 14
+    C. Contact Information......................................................................................................... 14
+
+
+
+
+                                                                                                                                                  2
+I. Introduction
+The North Country National Scenic Trail (NCT) is the longest continuous hiking trail in the
+United States, extending more than 4,800 miles across eight states and connecting a remarkable
+diversity of ecological, cultural, and recreational landscapes. In Minnesota, roughly 859 miles of
+the route traverse the northern half of the state, incorporating established segments such as the
+Superior Hiking Trail and the Border Route Trail. Despite this progress, significant gaps remain
+where the trail has not yet been constructed as a permanent, natural-surface route. One of the
+highest priorities is the segment between Grand Rapids and Snowbank Lake, also referred to as
+the Arrowhead region, where approximately 150 miles of the current alignment rely heavily on
+road walks and temporary connections rather than purpose-built hiking trails.
+
+In the Arrowhead region, the present state of the trail is characterized by long stretches along
+state and county highways and local roads. These segments diminish scenic quality, increase
+exposure to vehicle traffic, and fragment the sense of immersion that long-distance hikers expect
+from a National Scenic Trail. At present, there is an active, long-running volunteer effort to
+identify and secure off-road reroutes. Volunteers, chapter leaders, and partner agencies have
+sketched preliminary route ideas, walked candidate corridors, and discussed possibilities with
+land managers, but they have had limited access to a unified geospatial framework that allows
+them to evaluate options across the entire corridor in a consistent way.
+
+Through the University of Minnesota’s GIS 8501 course, 18 Master of Geographic Information
+Science (MGIS) students formed North Star Consulting to support the North Country Trail
+Association (NCTA) in advancing this work. Over the course of a semester, the team developed a
+geospatial workflow, suitability model, and suite of map products designed to highlight where
+the landscape is most favorable for an off-road NCT alignment and where major constraints
+remain. The analysis emphasizes features that are desirable for trail development such as public
+land, existing non-motorized trails, campgrounds, and bridge crossings, while identifying
+features that are difficult or undesirable to cross, including private parcels, wetlands, large water
+bodies, major roads, and portions of multi-use trails that emphasize motorized or paved use.
+
+This report summarizes that work, describing the study area and objectives, explaining how the
+suitability model and least-cost path analysis were constructed, and presenting results for three
+focus areas: Grand Rapids, the central Arrowhead region around the Taconite State Trail, and the
+Ely area near Snowbank Lake. The report concludes with a discussion of tools delivered to
+NCTA, limitations of the model, and recommendations for future ground-truthing, partnership
+development, and higher-resolution re-modeling. This report intended to complement the project
+StoryMap and web maps and to serve as a baseline document for future phases of route planning
+and environmental review.
+
+
+
+
+                                                                                                   3
+II. Project Objectives and Study Area
+At the beginning of the course,the class identified a shared set of objectives for the North
+Country Trail project. The first objective was to compile a standardized collection of
+environmental, infrastructural, and ownership datasets for the Grand Rapids–Snowbank Lake
+corridor, drawing on Minnesota Geospatial Commons, MnDOT resources, and data shared by
+such as the North Country Trail Association and state agencies. Second, the project aimed to
+construct a suitability model that classifies the landscape into more and less appropriate locations
+for a natural-surface hiking trail, based on factors such as public versus private ownership,
+proximity to existing trails, and the presence of hydrologic barriers. Third, the team aimed to use
+that suitability surface to generate candidate trail alignments through least-cost path analysis
+between key anchor points. Finally, the project sought to deliver web and desktop tools
+(shapefiles, KMLs, web maps, and summary tables) that NCTA and local volunteers can use in
+ongoing route evaluation, ground-truthing, and environmental documentation.
+
+The study area is defined by the NCT’s revised preferred alternative corridor between Grand
+Rapids and Snowbank Lake. This corridor polygon, provided by NCTA, represents a broad
+swath of land north of the existing trail within which a future permanent route is desired (Figure
+1). To account for edge effects and provide routing flexibility around the corridor boundary,
+North Star Consulting worked within a buffered version of this corridor that extends modestly
+beyond the preferred alignment. The primary counties intersecting this area of interest are Itasca,
+St. Louis, and Lake Counties, with a small overlap into Aitkin County.
+
+
+
+
+   Figure 1. Location of the North Country National Scenic Trail in Minnesota and the focus segment
+    between Grand Rapids and Snowbank Lake (pink) and the new preferred route corridor (yellow).
+
+
+                                                                                                      4
+To keep the analysis focused and computationally efficient, parcels and other land-based datasets
+were restricted to the counties that clearly intersect the main routing direction between Grand
+Rapids and Snowbank Lake. Parcel data from opt-in open data counties and an additional Itasca
+parcel dataset were integrated to provide the best available coverage. Because Aitkin County’s
+overlap with the corridor is minimal and lies south of the primary east–west routing direction, its
+parcels were not included in the final suitability model.
+
+Within this corridor, the analysis focuses particularly on three subregions: Grand Rapids, the
+central Arrowhead region around the Taconite State Trail, and the Ely area near Snowbank Lake.
+Near Grand Rapids, the trail already uses a mix of off-road segments and road walks as it
+approaches and leaves the city. In the central Arrowhead, the current alignment relies heavily on
+roads but runs near the Taconite State Trail and other public lands that offer opportunities for
+rerouting. Near Ely and Snowbank Lake, the corridor is constrained by a combination of private
+land patterns and transportation infrastructure, making partnership with existing right-of-way
+(ROW) managers especially important.
+
+
+III. Methods
+In order to identify candidate NCT alignments within the corridor, North Star Consulting
+developed a raster-based suitability model and least-cost path workflow. The analytical
+framework is based on two main steps. First, diverse datasets representing ownership, recreation
+infrastructure, and environmental constraints were translated into a common ordinal suitability
+scale. Second, these datasets were combined into a composite cost surface that guides least-cost
+path analysis between chosen locations on the trail.
+
+The suitability model uses a seven-class scale, where low values represent highly suitable
+locations, values in the middle of the scale represent neutral or moderately suitable areas, and
+higher values represent increasingly unsuitable or effectively excluded locations. For example,
+existing non-motorized hiking trails, state forest campgrounds, and public lands were generally
+assigned lower values, while private parcels, wetlands, lakes, and road surfaces were assigned
+higher values.. For each input layer, the team created a consistent classification field and applied
+reclassification rules that reflected the expected feasibility and desirability of routing the trail
+through those features (Figure 2).
+
+Data acquisition and preparation followed a consistent pattern. First, statewide or regional
+datasets were gathered from Minnesota Geospatial Commons, MnDOT, and other open sources.
+These included parcel layers from opt-in counties, a statewide trails layer, a state forest
+campground dataset, a hydrology dataset containing rivers, lakes, and wetlands, and a MnDOT
+bridge inventory, among others (Appendix A). All layers were reprojected to a common
+coordinate system (NAD 1983 UTM Zone 15N) to ensure alignment during overlay and raster
+conversion. Each dataset was then clipped to the buffered NCT corridor or to the intersecting
+
+                                                                                                   5
+counties so that only features relevant to the study area remained. This reduced processing time
+and avoided including features far outside the corridor that would not reasonably influence the
+final alignment.
+
+
+
+
+Figure 2. Data flow diagram data and methods used to create the suitability map and trail route model.
+
+The parcel dataset required particular pre-processing. Parcels from open-data counties were
+combined with Itasca County parcels obtained from another source. Ownership codes were
+generalized into a smaller number of categories reflecting their likely feasibility for trail
+development. Lands held by federal, state, county, or similar public entities were grouped into a
+“public” category that received favorable suitability scores. Regional or special-purpose lands,
+such as local authorities or institutional holdings, were grouped into a more neutral category.
+Private parcels were placed in a category that received relatively unfavorable scores, reflecting
+the negotiation and uncertainty inherent in securing access across them. Aitkin County parcels
+were not brought into the final classification, in order to maintain focus on the main alignment
+between Grand Rapids and Snowbank Lake rather than encouraging large southerly detours.
+
+Existing hiking trails were processed to highlight non-motorized hiking infrastructure that could
+potentially be shared with the NCT. Trails coded as allowing hiking were selected and clipped to
+the corridor. To allow for slight deviations around the mapped alignments, the trails were
+buffered by a small distance before conversion to raster. Both the trail polylines and their buffers
+were translated into cells with low suitability values that encourage the model to use these
+corridors wherever possible.
+
+Campgrounds were processed as attractive nodes along the potential route. State forest
+campgrounds and day-use sites were reviewed, and sites used exclusively for horses or day use
+were removed. Remaining campgrounds were clipped to the corridor, buffered to represent the
+broader area within walking distance of each site, and assigned favorable suitability values that
+encourage routes to favor those areas. These buffered polygons were converted to raster and
+incorporated into the composite cost surface.
+
+
+                                                                                                         6
+Bridges were treated as key crossing opportunities over rivers and highways. The MnDOT
+bridge inventory was filtered to retain only pedestrian and mixed-use structures, then clipped to
+the corridor, then buffered to create a small zone within which the model could approach the
+crossing. Buffers were ranked based on whether the structure primarily served pedestrians or a
+mix of highway and pedestrian use, and whether it crossed a water feature. This ranking gave the
+highest preference to purely non-motorized water crossings, while still recognizing the value of
+shared-use bridges that provide safe, established crossings. The buffers were converted to raster
+and added to the cost surface as favorable cells around viable crossing locations.
+
+Hydrologic features were treated largely as constraints. Rivers, lakes, and wetlands were selected
+where they intersect the corridor then converted into a raster with high suitability scores that
+discourage routing through them, except where bridge buffers provide designated crossings. This
+approach reduces the likelihood that a modeled route will propose crossing open water or
+saturated ground at locations where no practical bridge or boardwalk is present.
+
+After all layers were prepared and reclassified, they were converted to a common 30-meter raster
+resolution and combined into a composite cost surface using raster algebra. This step effectively
+stacked the influences of ownership, hydrology, trails, campgrounds, and bridges. Areas where
+multiple favorable features overlapped, for example public lands near an existing trail and a
+campground, received low combined cost values, while areas with overlapping constraints, such
+as private parcels covered by wetlands, received high cost values. The resulting surface
+describes, cell by cell, the relative “effort” required to construct and manage a trail.
+
+Least-cost path analysis was then used to derive candidate NCT alignments. For this project,
+anchor points were placed where the current NCT changes from road walks to more suitable
+natural-surface segments and at key locations where major route decisions must be made along
+the corridor. Using the composite cost surface, the least-cost path algorithm identified routes that
+minimize cumulative cost while remaining within the corridor. These raster paths were converted
+back to vector polylines, visually reviewed, and compared with the current road-based alignment
+and with preliminary routes that volunteers had previously drafted.
+
+Although the model provides powerful screening capabilities, it has important limitations. The
+choice of 30-meter resolution balances regional coverage with computation time but cannot
+capture fine-scale microtopography, small streams, or short steep slopes that may matter to field
+crews. The seven-class suitability scale compresses complex factors into a limited set of
+categories; for example, not all private land is equally difficult to negotiate, and not all public
+land is equally suitable for trail development. The model also relies on the best available open
+data at a single point in time, and it does not include confidential environmental or cultural
+resource datasets that would need to be considered in formal environmental review. These
+limitations reinforce that the modeled route is a tool for screening and prioritization rather than a
+final decision.
+
+
+
+                                                                                                    7
+IV. Results
+The modeling results can be understood at two scales. At the corridor scale, the suitability
+surface distinguishes broad trends of opportunity from broad trends of constraint, helping
+planners see where the landscape naturally supports an off-road NCT alignment (Figure 3). At
+the local scale, least-cost paths show how a candidate route might thread through these bands as
+it passes through specific communities and land ownership patterns.
+
+
+
+
+Figure 3. Final suitability raster layer classifying the route suitability of the North Country Trail
+Corridor where green is most suitable and red is least suitable.
+
+In the Grand Rapids area, the current NCT alignment is relatively strong compared to other
+segments. Much of the trail already uses off-road corridors and passes through public land and
+negotiates urban traversability constraints. The suitability model reinforces this pattern: large
+swaths of favorable cells appear around the existing off-road segments, and the least-cost path
+tends to follow these areas closely. The road-based segments near the city limits and within
+Grand Rapids itself, however, stand out as stretches where the cost surface becomes less
+favorable because of denser development, more complex ownership, and a higher density of
+paved surfaces. For the city itself, we did not re-model detailed street-by-street options as, given
+present constraints, road-based travel through Grand Rapids remains the most practical option.
+The surrounding layers still help identify where future easements or short connecting paths might
+allow the trail to reach quieter streets or improved crossings in the long term, and these are
+decisions that local planners and chapter leaders can evaluate using their on-the-ground
+knowledge.
+
+
+                                                                                                    8
+In the central Arrowhead region, where the current alignment relies heavily on roads, the
+suitability model reveals a different picture. The corridor provided by NCT already directed
+attention to the area north of the existing road-based route, and the model further supports this
+emphasis by highlighting large areas of public and industrial forest land, along with the presence
+of the Taconite State Trail. Within this band of higher suitability, the least-cost path aligns
+closely with preliminary volunteer-drafted routes that have been sketched as conceptual reroutes.
+This convergence between modeled and volunteer routes is encouraging, because it suggests that
+the statewide datasets and suitability rules are capturing many of the same advantages and
+constraints that volunteers have observed on the ground.
+
+The Taconite State Trail itself emerged as a key feature in our analysis. The model recognizes it
+as an existing corridor through public land and thus assigns favorable cost values to cells in its
+vicinity. However, the trail’s mixed-use character complicates its suitability for the NCT. All
+segments allow horses and bicycles, some allow all-terrain vehicles, and small sections are
+paved. These attributes may not fully align with the desired characteristics of a primarily
+pedestrian, natural-surface National Scenic Trail. At the same time, most of the Taconite corridor
+is natural terrain or gravel, and it already has a right-of-way and management plan in place,
+which can make co-location or parallel routing more feasible than securing entirely new
+easements. The model does not encode these policy and experience nuances in full; instead, it
+highlights where co-location might be geographically efficient, leaving detailed decisions about
+how closely and for how long to share the corridor to later planning stages.
+
+In the Ely and Snowbank Lake area, the modeling results underscore just how constrained the
+corridor becomes. The composite suitability surface reveals bottlenecks where highway
+crossings, hydrologic barriers, and private parcels converge. Bridge and hydrology layers
+identify the crossing that can safely be used by hikers, and this location effectively functions as a
+gate through which any continuous route must pass. Beyond that crossing, the candidate route
+must still contend with dense private ownership and the need to weave between lakes, wetlands,
+and existing infrastructure. This pattern makes it clear that purely data-driven routing has limits
+in such settings and that strong partnerships will be as important as the suitability surface itself.
+There is already an existing mowed utility clearing for electrical transmission that runs through
+much of this area, and that corridor may offer a tangible starting point for discussions about
+co-located or adjacent trail segments
+
+Because of these constraints and the relative coarseness of the available data, the Ely segment of
+the modeled route should be viewed as a first pass. It provides a helpful indication of where the
+landscape and infrastructure make a continuous off-road route most feasible, but it will need to
+be revisited with higher resolution terrain data, more detailed ownership information, and close
+collaboration with agencies and landowners before any route is advanced toward
+implementation.
+
+
+
+
+                                                                                                    9
+V. Tools and Data Products
+North Star Consulting delivered a set of geospatial tools meant to integrate smoothly into
+NCTA’s existing workflow. The most direct product is a shapefile representing the modeled NCT
+alignment between Grand Rapids and Snowbank Lake. This file can be loaded into ArcGIS Pro,
+ArcGIS Online, or other GIS software for visualization and editing. A KML version of the same
+line was also created for easy use with GPS devices and mobile apps, allowing volunteers to
+download the modeled route, walk it, and record suggested edits back with project coordinators.
+
+The project also produced a trail suitability map derived from the composite cost surface. In web
+map and static form, this heat map uses a progression from softer, lighter tones for less suitable
+areas to deeper, more saturated tones for highly suitable areas. When combined with parcel
+layers and point of interest locations, the suitability map becomes a useful tool for designing
+field visits and prioritizing which segments of the corridor warrant more detailed investigation.
+
+A third major product is a notification-style web application built around parcels intersected by
+the potential trail corridor and modeled route. This web app allows planners and volunteers to
+see which landowners would potentially be affected by a given alignment and to begin
+organizing outreach and negotiation strategies. As NCTA and partners refine the route, they can
+update this impacted-parcels dataset to reflect new trail alignments. Additionally, the app is
+designed to draw on data provided by the state so that parcel-related information stays current as
+those underlying data are updated on the state’s schedule.
+
+All of these products are hosted or compatible with ArcGIS Online, so they can be shared among
+NCTA staff, chapter leaders, agency partners, and volunteers.
+
+
+VI. Discussion and Recommendations
+This project demonstrates how a relatively simple suitability model, when combined with
+thoughtfully prepared datasets, can provide valuable guidance for a complex trail-planning
+problem However, the results also highlight the importance of ground-truthing,
+partnership-building, and iterative modeling.
+
+The most immediate recommendation is to continue and formalize the iterative workflow that
+volunteers have already been using. With the modeled route now available in KML format,
+NCTA can encourage field teams to download a segment, hike it, record their observations and
+preferred micro-reroutes, and then feed those edits back into the central geodatabase. Over time,
+these corrections and refinements can be used to adjust suitability scores, revisit the weight
+placed on certain features, and create a tighter fit between the model and the realities of the
+landscape.
+
+
+                                                                                                10
+In constrained areas, particularly near Ely and along major highways, strategic partnerships will
+be crucial. Utility corridors and transportation rights-of-way are sometimes the only places
+where continuous, legally defensible alignments can be achieved. Planners in Minnesota have
+access to a statewide right-of-way GIS resource maintained by MnDOT, which provides detailed
+maps of transportation right-of-way and related information across the state. This resource,
+available at https://www.dot.state.mn.us/maps/gisweb/row/, can help NCTA and partners identify
+where existing ROW may offer opportunities for co-located trail segments or parallel paths that
+remain within state or county control.
+
+Another recommendation is to re-run the model in high-priority segments using higher resolution
+terrain data. LiDAR-derived bare-earth digital elevation models, slope maps, and
+flow-accumulation indices would allow the suitability surface to capture local landform patterns
+and drainage features that the 30-meter model cannot. In wet or steep areas, this could
+significantly change the relative attractiveness of alternative corridors. As higher-resolution
+hydrology and land cover datasets become available, they can be added to the same modeling
+framework using the existing pattern of classification, rasterization, and overlay.
+
+It will also be valuable to experiment with alternative parcel-weighting scenarios. The current
+model treats all private parcels as uniformly difficult, but in practice some landowners are
+enthusiastic supporters of the trail, while others may be opposed or constrained by institutional
+requirements. Running multiple scenarios, such as one that strongly avoids all private land, one
+that assumes some private-land partnerships, and one that emphasizes minimizing road-walks
+even at the cost of more complex negotiations, would give NCTA a richer picture of potential
+tradeoffs. These scenarios could be shared with the NCTA board, agency partners, and funders to
+inform strategic decisions about where to invest staff and volunteer energy.
+
+Finally, the workflow developed in this project can be extended to other NCT gaps in Minnesota
+and beyond. Because it relies primarily on publicly available datasets and documented
+processing steps, it offers a scalable framework for route planning across the entire trail system.
+As new data become available and as volunteers continue to walk and refine the route, the
+modeling framework can be updated and reused, ensuring that the tools remain relevant as the
+trail itself evolves.
+
+
+VII. Conclusion
+The work presented in this report represents a semester-long collaboration between the North
+Country Trail Association and graduate students at the University of Minnesota. By building a
+suitability model, generating candidate routes, and packaging results into accessible GIS
+products, North Star Consulting has provided a regional-scale view of where a future off-road
+NCT alignment between Grand Rapids and Snowbank Lake is most likely to succeed. The model
+
+
+
+                                                                                                 11
+confirms the promise of areas already being explored by volunteers, such as corridors near the
+Taconite State Trail, while drawing attention to remaining bottlenecks in places like the Ely area.
+
+At its core, the project is not about prescribing a single “correct” route, but about giving NCTA
+and its partners better tools for thinking about the landscape. The maps and datasets developed
+here can be used to focus ground-truthing where it will matter most, to organize outreach to
+landowners and ROW managers, and to support future environmental review and funding
+applications. As new data become available and as volunteers continue to walk and refine the
+route, the modeling framework can be updated and extended to other segments along the North
+Country Trail. In this way, the work of North Star Consulting forms one step in the long,
+collective effort to turn a line on a map into a continuous, safe, and inspiring trail on the ground.
+
+
+
+
+                                                                                                   12
+VIII. Appendix
+
+   A.​Data Sources
+Data Layer         Source                Access
+Current Proposed   North Country Trail
+Trails             Association
+                   North Country Trail
+Trail Boundary     Association
+                                         https://utility.arcgis.com/usrsvcs/servers/1627519e8d3f42bc
+                                         b55532d48e9a61e5/rest/services/OpenParcels/plan_parcels_
+Parcels            State of MN           open/MapServer/0/0
+                   MN Geospatial         https://gisdata.mn.gov/dataset/struc-state-forest-campgroun
+Campgrounds        commons               ds
+                   MN Geospatial
+Bridges            commons               https://gisdata.mn.gov/dataset/trans-bridges
+                   MN Geospatial
+Current Trails     commons               https://gisdata.mn.gov/dataset/trans-state-trails-minnesota
+                   MN Geospatial
+Bike Trails        commons               https://gisdata.mn.gov/dataset/trans-bikeway
+                  MN Geospatial
+Snowmobile Trails Commons                https://gisdata.mn.gov/dataset/trans-snowmobile-trails-mn
+                   MN Geospatial
+Roads              Commons               https://gisdata.mn.gov/dataset/trans-road-centerlines-open
+ATV Trails         State of MN           https://gisdata.mn.gov/dataset/trans-state-park-trails-roads
+                                         https://services.arcgis.com/P3ePLMYs2RVChkJx/arcgis/rest
+Wetlands           Living Atlas          /services/USA_Wetlands/FeatureServer
+                   DNR - MN Geospatial
+Lakes              Commons             https://gisdata.mn.gov/dataset/water-dnr-hydrography
+                   DNR - MN Geospatial
+Rivers             Commons             https://gisdata.mn.gov/dataset/water-dnr-hydrography
+                   MN Geospatial Info
+Surface water      Office                https://www.mngeo.state.mn.us/chouse/water.html
+
+
+
+
+                                                                                                        13
+    B.​Billable Hours
+                                                     Billable Hourly Rate
+   Start of
+                 End of Week                       (includes overhead and   Spending
+    Week                            Total
+                                                          fringe costs)
+     10/28          11/3             36                    $81.00           $2,916.00
+     11/4           11/10           51.5                   $81.00           $4,171.50
+     11/11          11/17           79.25                  $81.00           $6,419.25
+     11/18          11/24            57                    $81.00           $4,617.00
+     11/25          12/1            37.1                   $81.00           $3,005.10
+     12/2           12/8             65                    $81.00           $4,941.00
+                                   325.85                                   $26,069.85
+
+
+    C.​Contact Information
+Name                           Email Address
+Alaina Portoghese              alaina.portoghese@gmail.com
+Amanda Hoffman                 ajd.hoffman@gmail.com
+Anitra Conover                 anitra.conover@gmail.com
+Ankila Kumari                  ankilagd@gmail.com
+Devin Mcgill                   devinmcgill100@gmail.com
+Faith Christensen              faith.la.christensen@gmail.com
+Irie Stein                     steinirie94@gmail.com
+Isaac Kim                      ijkim13935@gmail.com
+Jen Bays                       jenbays@gmail.com
+Max Kortebein                  mek890@gmail.com
+Miles Sterner                  mms.reader@gmail.com
+Paulina Vergara Buitrago       paulina.vergarabuitrago@gmail.com
+Rhea Martinez                  rheamartinez343@gmail.com
+Sasha Resig                    sashiii35@gmail.com
+Sean Broom                     sdbroom@gmail.com
+Shaam Adams                    shaamadam1@gmail.com
+Will Weatherhead               weath190@gmail.com
+Ziliang Jin                    zjin923000gt@gmail.com
+
+
+
+
+                                                                                         14
+

@@ -32,6 +32,10 @@ h2 { font-size: 13px; text-transform: uppercase; letter-spacing: 0.08em; color: 
 #layers label { display: block; font-size: 14px; line-height: 1.4; margin: 6px 0; cursor: pointer; }
 #layers input { margin-right: 6px; }
 #legend { margin: 12px 0 4px; font-size: 13.5px; line-height: 1.9; }
+#legend-nlcd, #legend-soils { margin: 8px 0 4px; font-size: 13px; line-height: 1.8; }
+#planning-panel label { display: block; font-size: 14px; line-height: 1.4; margin: 10px 0 2px; cursor: pointer; }
+#planning-panel input { margin-right: 6px; }
+.sw.sq { width: 14px; height: 14px; border-radius: 2px; vertical-align: -2px; }
 #legend .sw { display: inline-block; width: 26px; height: 5px; vertical-align: middle; margin-right: 8px; border-radius: 2px; }
 .sw.foot { background: #1a9850; }
 .sw.paved { background: #fdae61; }

@@ -39,15 +39,18 @@ Does not touch the chapter map (`site/index.html`, `site/app.js`).
 
 - The DL research file traces **113.63 mi / 78.82 mi on-road (91 features)**
   for the same western chain. The clean chain cut above totals 104.86 mi /
-  78.38 mi on-road (90 features). The 8.77-mi difference sits in the
-  research file's off-road figure (13.75 mi vs 5.38 mi in the cut); no
-  additional chain segment in the NCTA data accounts for it, and haversine
-  re-measurement agrees with `len_miles` (104.51 mi). Most likely the
-  research chain double-counted the 8.35-mi Becker connector (8.35 + 0.44
-  ≈ 8.79 ≈ the gap). The viewer headlines use the research/assessment
-  figures (106.1-mi gap, 113.63-mi traced chain) with sources labeled, and
-  the legend shows the drawn file's own totals. Resolve before citing the
-  113.63 figure in a meeting as the drawn line's length.
+  78.38 mi on-road (90 features). **Reconciled Nov 13 (coordinator-verified,
+  corrects the double-count guess below):** the 8.77-mi difference is a
+  single 9.96-mi LLC Foot Path feature (Frazee→Vergas, lat 46.99→47.09,
+  start −95.493, 46.986 to end −95.451, 47.088) that the research chain
+  includes and this cut excludes (chapter LLC, seg_name None — not one of
+  the four Becker connectors). The missing miles are footpath, not road:
+  research foot 13.75 mi vs cut foot 4.64 mi, while road reconciles 78.82
+  vs 78.38. The viewer headlines use the research/assessment figures
+  (106.1-mi gap, 113.63-mi traced chain) with sources labeled, and the
+  legend shows the drawn file's own totals. Whether the 9.96-mi footpath
+  belongs in the western gap definition is the open question for v2 — it
+  sits east of Frazee in LLC territory, on the Becker Co line → Vergas leg.
 
 ## Hard rules enforced (v1)
 
@@ -72,3 +75,126 @@ Does not touch the chapter map (`site/index.html`, `site/app.js`).
   (ERR_TUNNEL_CONNECTION_FAILED — known VM artifact, tiles load live).
 - Screenshots: `~/workspace/itm-verify/buildout-briefing.png`,
   `buildout-planning.png`, `buildout-popup.png`.
+
+---
+
+# v2 — Land cover + soils (Nov 13, 2026)
+
+## Correction to the brief: the students used NO land-cover dataset
+
+The U of M report ("North Country National Scenic Trail Route Plan,"
+North Star Consulting, 18 MGIS students, Dec 8, 2025; report PDF in
+`site/buildout/src/uofm-arrowhead-report.pdf`, 3.3 MB, text in
+`uofm-arrowhead-report.txt`) lists its inputs in Appendix A (pp. 12–13).
+Land cover is NOT among them. It appears exactly once, in Recommendations
+(p. 10–11): "As higher-resolution hydrology and land cover datasets become
+available, they can be added to the same modeling framework." The model was
+a 30-m raster, seven-class suitability, least-cost paths, built from
+ownership, recreation infrastructure and environmental constraints by
+raster algebra. So the land-cover layer in this viewer is sourced fresh,
+not recovered from the students' inputs: **NLCD 2021** (National Land Cover
+Database, USGS / Multi-Resolution Land Characteristics Consortium, 30-m
+Landsat-based, CONUS). The Esri Living Atlas NLCD ImageServer requires a
+token (HTTP 499) and is not usable unauthenticated; the working service is
+the **MRLC GeoServer WMS, https://www.mrlc.gov/geoserver/wms,
+layer `mrlc_display:NLCD_2021_Land_Cover_L48`** (WMS GetMap verified in
+EPSG:4326 and EPSG:3857; WCS GetCoverage verified for the corridor
+histogram). The viewer shows it as live WMS tiles — no file shipped.
+
+## Soils
+
+**USDA NRCS SSURGO** (Soil Survey Geographic Database), vector map-unit
+polygons, via **Soil Data Access (SDA) tabular REST,
+https://sdmdataaccess.sc.egov.usda.gov/Tabular/post.rest** (POST JSON
+`{"query": ..., "format": "JSON"}`, no auth). Retrieved Nov 13, 2026.
+Mukeys via `SDA_Get_Mukey_from_intersection_with_WktWgs84`, polygons via
+`SDA_Get_Mupolygonkey_from_intersection_with_WktWgs84` + `mupolygon`
+(`mupolygongeo`, WGS84 WKT); attributes from `mapunit` (musym, muname),
+`muaggatt` (drclassdcd, slopegradwta, flodfreqdcd) and `component`
+(hydricrating for major components — muaggatt has no hydric column;
+`hydricrating` and `hydgrp` do NOT exist in muaggatt). The Esri
+USA_Soils_Map_Units FeatureServer also requires a token and was not used.
+
+## What was built
+
+- Buffer: **0.5 mile (804.67 m)** around the two gap lines
+  (`data/gap-arrowhead.geojson` + `data/gap-western.geojson`), UTM 15N,
+  saved as `src/corridor-buffer-arrowhead.geojson` /
+  `src/corridor-buffer-western.geojson`.
+- `data/soils-corridor.geojson` — **7,273 features, 2,830,532 bytes**,
+  584 map units, clipped to the buffer, simplified ~70–90 m, coordinates
+  rounded to 4 decimals. Properties: mukey, musym, muname, drainage,
+  hydric, slope, flood, gap. Drainage split: well 2,810; very poorly
+  1,242; moderately well 868; poorly 756; somewhat poorly 388; somewhat
+  excessively 344; excessively 275; no data 590. Hydric Yes 2,348 (32%).
+- `src/nlcd-corridor-stats.json` — NLCD 2021 class histogram inside the
+  buffer (WCS, 1,600 px per gap bbox, masked to the buffer): cultivated
+  crops 29.0%, deciduous forest 16.9%, pasture/hay 9.0%, open water 8.2%,
+  woody wetlands 7.5%, mixed forest 6.3%, emergent herbaceous wetlands
+  5.4%, developed open space 5.0%, developed low 3.7%, shrub/scrub 2.3%,
+  developed medium 2.3%, evergreen forest 1.4%, grassland 1.4%,
+  developed high 0.8%, barren 0.8%.
+- Build script: `site/buildout/build-soils.py` (shapely + pyproj + PIL +
+  numpy; re-runnable). Wiring: both layers planning-mode only, off by
+  default, lazy (land cover fetches tiles on first check; soils fetches
+  the 2.7 MB GeoJSON on first check), leave the map when the viewer
+  switches back to briefing. Land cover has no click popup (raster
+  tiles); soils popups show map unit, drainage, hydric flag, slope,
+  flooding and a one-line trail meaning.
+- Not obtained: nothing. Both datasets were obtainable in-session. The
+  U of M modeled-alignment shapefile/KML and the ARDC geodatabase remain
+  missing from the Drive folder and are still not shown.
+
+## Ranked inventory — the report's other datasets as future viewer layers
+
+From Appendix A (pp. 12–13) plus the methods text (pp. 5–7). Not built in
+this pass; ranked by value to the delegation/chapter case.
+
+1. **Wetlands** (Living Atlas USA_Wetlands FeatureServer) — HIGH.
+   Boardwalk/tread planning: wetlands are the biggest construction-cost
+   driver alongside soils, and the visible counterpart to the hydric-soils
+   layer. (Caveat: NWI vintage varies by quad; check currency per county.)
+2. **Parcels** (State of MN, MnGeo OpenParcels MapServer/0/0) — HIGH. The
+   land-acquisition question; the crossed-parcels + one adjoining ring
+   design is already approved — build once routes settle. Note the MnGeo
+   layer numbering flipped in the Nov 2026 refresh (layer_id 1→0).
+   Coverage caveat from the report: parcels came from opt-in open-data
+   counties + Itasca from another source; Aitkin County parcels were NOT
+   in the final suitability model.
+3. **Public land / ownership** (ownership codes generalized from the
+   parcel data — no standalone public-land layer in Appendix A) — HIGH.
+   The model's desirability factor; a public-vs-private tint would make
+   "where can we build" visible at a glance.
+4. **Roads** (MnGeo road centerlines, gisdata.mn.gov/dataset/trans-road-centerlines-open)
+   — MEDIUM. Context for access points and the road-walk segments; the
+   OSM basemap already shows roads, so this adds little until access
+   planning starts.
+5. **Current Trails + Bike Trails** (MnGeo trans-state-trails-minnesota,
+   trans-bikeway) — MEDIUM. Shows the Mesabi/Taconite and other trails
+   the corridor crosses or could share; partly redundant with the gap
+   lines themselves.
+6. **Lakes / Rivers / Surface water** (DNR hydrography,
+   gisdata.mn.gov/dataset/water-dnr-hydrography; surface water via MnGeo
+   Info Office) — MEDIUM. Water crossings are bridge/permitting pinch
+   points; OSM shows water, but hydrography polygons would let the viewer
+   flag crossings explicitly.
+7. **Bridges** (MnDOT bridge inventory, gisdata.mn.gov/dataset/trans-bridges)
+   — MEDIUM-LOW. Existing crossings are reuse opportunities; a small
+   point layer, cheap to add once routes settle.
+8. **Snowmobile Trails / ATV Trails** (MnGeo trans-snowmobile-trails-mn;
+   State of MN trans-state-park-trails-roads) — LOW as routing layers,
+   but worth a risks-panel exhibit: they show where the proposed line
+   would share or cross motorized corridors — the motorized-conflict risk
+   the chapters named as their single greatest risk.
+9. **Campgrounds** (state forest campgrounds,
+   gisdata.mn.gov/dataset/struc-state-forest-campgrounds) — LOW.
+   Amenity/overnight context for the hiker case, not a routing input.
+10. **Current Proposed Trails / Trail Boundary** (NCTA) — ALREADY IN THE
+    VIEWER as the gap and proposed lines; no separate layer needed.
+
+Not in the report, flagged anyway: **DEM / slope**. The students' model
+had no elevation input, and the report itself warns that "in wet or steep
+areas, this could significantly change the relative attractiveness of
+alternative corridors" (p. 10–11). A slope layer from USGS 3DEP (10-m,
+or 1-m LiDAR where available) is the highest-value addition not in the
+report's dataset list — rank it HIGH for a future pass.

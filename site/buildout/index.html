@@ -86,10 +86,45 @@
       <p><strong>Grant dependency:</strong> the pipeline depends on LCCMR / ENRTF cycles; LCCMR money starts about 18 months after a proposal.</p>
       <p><strong>Permissions still to win:</strong> Vermilion State Park, School Trust easements, Section 106 cultural surveys and SHPO concurrence, NEPA and state EAW per segment.</p>
       <p><strong>15 miles of the Zone 4 Option A route (Cavour&rsquo;s Route) lies outside the approved planning corridor</strong> — needs NPS sign-off.</p>
+
+      <h2>Planning — ground conditions</h2>
+      <p>Land cover and soils, clipped to a half-mile buffer around the two gap lines. Planning mode only; both layers are off by default and load on first use.</p>
+      <label><input type="checkbox" id="lyr-landcover"> Land cover — NLCD 2021 (live tiles, USGS / MRLC)</label>
+      <div id="legend-nlcd">
+        <div><span class="sw sq" style="background:#ab6c28"></span> Cultivated crops — 29.0% of corridor</div>
+        <div><span class="sw sq" style="background:#68ab5f"></span> Deciduous forest — 16.9%</div>
+        <div><span class="sw sq" style="background:#dcd939"></span> Pasture / hay — 9.0%</div>
+        <div><span class="sw sq" style="background:#466b9f"></span> Open water — 8.2%</div>
+        <div><span class="sw sq" style="background:#b8d9eb"></span> Woody wetlands — 7.5%</div>
+        <div><span class="sw sq" style="background:#b5c58f"></span> Mixed forest — 6.3%</div>
+        <div><span class="sw sq" style="background:#6c9fb8"></span> Emergent herbaceous wetlands — 5.4%</div>
+        <div><span class="sw sq" style="background:#dec5c5"></span> Developed, open space — 5.0%</div>
+        <div><span class="sw sq" style="background:#d99282"></span> Developed, low intensity — 3.7%</div>
+        <div><span class="sw sq" style="background:#ccb879"></span> Shrub / scrub — 2.3%</div>
+        <div><span class="sw sq" style="background:#eb0000"></span> Developed, medium intensity — 2.3%</div>
+        <div><span class="sw sq" style="background:#1c5f2c"></span> Evergreen forest — 1.4%</div>
+        <div><span class="sw sq" style="background:#dfdfc2"></span> Grassland / herbaceous — 1.4%</div>
+        <div><span class="sw sq" style="background:#ab0000"></span> Developed, high intensity — 0.8%</div>
+        <div><span class="sw sq" style="background:#b3ac9f"></span> Barren land — 0.8%</div>
+      </div>
+      <p class="drawn-note">Shares are the sampled share of the half-mile corridor (both gaps), from the NLCD 2021 raster. The U of M student routing study did <strong>not</strong> use a land-cover dataset — land cover appears only in its recommendations. This layer is sourced fresh from NLCD 2021 for planning use. Raster tiles: no click popup; the legend is the key.</p>
+      <label><input type="checkbox" id="lyr-soils"> Soils — SSURGO map units (USDA NRCS, retrieved Nov 13, 2026)</label>
+      <div id="legend-soils">
+        <div><span class="sw sq" style="background:#084594"></span> Very poorly drained</div>
+        <div><span class="sw sq" style="background:#2171b5"></span> Poorly drained</div>
+        <div><span class="sw sq" style="background:#6baed6"></span> Somewhat poorly drained</div>
+        <div><span class="sw sq" style="background:#a6d96a"></span> Moderately well drained</div>
+        <div><span class="sw sq" style="background:#66bd63"></span> Well drained</div>
+        <div><span class="sw sq" style="background:#fdae61"></span> Somewhat excessively drained</div>
+        <div><span class="sw sq" style="background:#f46d43"></span> Excessively drained</div>
+        <div><span class="sw sq" style="background:#cccccc"></span> No drainage data</div>
+      </div>
+      <p class="drawn-note">Click a soil polygon for its map unit, drainage class, hydric flag, slope and flooding — plus what it means for tread and boardwalk. 7,273 map-unit polygons, 584 map units, clipped to the half-mile corridor. About a third of the corridor&rsquo;s soils are hydric (wetland indicator) — that is the boardwalk question in one number.</p>
     </section>
 
     <footer>
       <p>Sources: NCTA nct_public service line (as drawn in this map&rsquo;s trail data, Nov 13, 2026); <i>Finishing the NCT in Minnesota</i> (July 8, 2025, and undated revision); <i>Closing the Gaps for the Minnesota Portion of the NCT</i> (Jan 6 / Mar 14, 2026); NPS Draft Route Assessment &amp; Environmental Assessment (2004); LCCMR Proposals 2027-179, 2027-341, 2027-428; Mesabi Trail construction update, Oct 13, 2026.</p>
+      <p>Ground conditions (planning mode): land cover — NLCD 2021 (National Land Cover Database), USGS / Multi-Resolution Land Characteristics Consortium, 30-m raster, live tiles from the MRLC GeoServer WMS; soils — USDA NRCS SSURGO map-unit polygons via Soil Data Access, retrieved Nov 13, 2026, clipped to a half-mile buffer around the two gap lines (7,273 polygons, 584 map units). The U of M student routing study (North Star Consulting, Dec 8, 2025) used no land-cover dataset; its inputs were parcels, wetlands, hydrology, roads, trails and recreation infrastructure — see the provenance note.</p>
       <p>Figures as of Nov 13, 2026. Speeds are statutory defaults unless labeled posted; traffic counts to be added. Street View panoramas not yet confirmed — links open the nearest panorama. The U of M modeled route and the ARDC geodatabase are not in the source folder and are not shown.</p>
       <p><a href="../">Itasca Moraine chapter map</a> · <a href="../data-sources.html">Data sources</a></p>
     </footer>
