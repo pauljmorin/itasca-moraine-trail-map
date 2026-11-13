@@ -4875,8 +4875,10 @@ var LAYERS = [
   },
   {
     /* NCTA map sheets (Paul, Nov 11, 2026 — "make it another
-       layer"): NCTA's own Minnesota map-series sheets MN-023 to
-       MN-044 as image overlays, one per sheet, over any base.
+       layer"; extended to the full series Nov 13, 2026 — Paul:
+       "add the rest of the state's sheets"): NCTA's own
+       Minnesota map-series sheets MN-001 to MN-104 as image
+       overlays, one per sheet, over any base.
        OFF by default and LAZY like parcels — nothing fetches
        data/ncta-sheets.geojson (or any sheet image) until the box
        is first checked. The source is the series GeoPDF
@@ -4884,6 +4886,12 @@ var LAYERS = [
        edition): each page's georeferencing viewport gives the
        sheet frame's true lat/lon quad; the web derivative is the
        frame crop rendered at 200 dpi, <=1600 px wide, JPEG.
+       The series is 104 sheets, not 99: pages 100-104 are sheets
+       MN-100 to MN-104 (Border Route Trail Association region),
+       tiling east from MN-099 and covering trail miles ~530-558.
+       Per-sheet mile ranges are geometry-derived from the chained
+       official MN trail and cross-checked against the printed mile
+       labels (working/ncta-sheets/build_sheets_full.py).
        Alignment was re-measured Nov 11, 2026 (docs/
        research-sheets-alignment-2026-11-11.md): the GeoPDF
        registration is exact to 1-3 m at most printed mile
@@ -4899,12 +4907,12 @@ var LAYERS = [
        103-256 m at corners, and doubled the trail up to 374 m
        in overlap strips). Sheet
        outlines + number labels ride the same toggle and stay
-       visible at low zoom where 22 near-white sheets would just
+       visible at low zoom where 104 near-white sheets would just
        be a blanket. Overlay opacity 0.92 keeps the base faintly
        present at sheet seams. */
     id: "nctasheets", label: "NCTA map sheets",
     title: "The North Country Trail Association's printed " +
-      "Minnesota map sheets (MN-023 to MN-044), laid over the map",
+      "Minnesota map sheets (MN-001 to MN-104), laid over the map",
     file: "data/ncta-sheets.geojson", onByDefault: false,
     group: "Around the trail",
     swatch: { kind: "fill", color: "#fdf6d8", border: "#8a6d1a" },
