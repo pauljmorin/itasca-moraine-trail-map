@@ -195,6 +195,7 @@ def main():
                 "docs/gap-atv-competition-research.md",
                 "docs/gap-ncta-track-record-research.md",
                 "docs/buildout-viewer-notes.md",
+                "docs/data-collection-protocol.md",
             ],
         },
         "trail": {
@@ -332,6 +333,73 @@ def main():
                 "do not assert NCTA claimed the Canal Park redevelopment. "
                 "Checkable wording: NCTA counts Minnesota miles through "
                 "Canal Park (Superior Hiking Trail) that it never built.",
+        },
+        "field_protocol": {
+            "source": "docs/data-collection-protocol.md (also live as "
+                      "site/protocol.html)",
+            "what_it_is": "The chapter's volunteer data-collection "
+                "protocol: how to photograph trail features and record "
+                "the GPS track so the map can place them.",
+            "apps": {
+                "geo_tracker": "Geo Tracker by Ilya Bogdanovich, free "
+                    "on iPhone and Android. Records the walk as a track "
+                    "file (GPX).",
+                "drive": "Google Drive app, signed in with the "
+                    "volunteer's Google account.",
+            },
+            "key_rule": "A phone camera records NO location in photos. "
+                "The Geo Tracker track is how each photo is placed on "
+                "the map — the map matches photos to the track by time, "
+                "so the phone clock must be on automatic.",
+            "before_you_go": [
+                "Install Geo Tracker (Ilya Bogdanovich, free, iPhone + "
+                "Android) and the Google Drive app.",
+                "The chapter shares the photos-inbox folder with each "
+                "volunteer by Google email, with Editor access. Inside "
+                "it is a subfolder named with the volunteer's "
+                "photographer code — their initials (for example, PJM). "
+                "That is where the photos and track go.",
+                "No Google account, or can't use the Drive app: tell "
+                "the chapter and they will send a simple upload-form "
+                "link instead.",
+            ],
+            "in_the_field": [
+                "Start Geo Tracker recording BEFORE you start walking "
+                "or photographing. Keep it running the whole walk.",
+                "Photograph each thing you find with the phone's "
+                "regular Camera app — signs, posts, boardwalks, "
+                "puncheons, bridges, bollards, benches, kiosks, "
+                "shelters, campsites, latrines, registers, water "
+                "sources, anything built or placed on the trail.",
+                "For each thing: a front photo, a back photo if there "
+                "is anything on the back, and a close-up of any text, "
+                "numbers, or damage. Those get combined into one pin "
+                "on the map.",
+                "Keep the phone's clock on automatic.",
+                "If you can't tell what something is, photograph it "
+                "anyway and note it — don't guess. It is marked "
+                "unclassified and sorted out later.",
+            ],
+            "when_you_get_back": [
+                "Stop Geo Tracker and save/export the track (a GPX "
+                "file).",
+                "In the Drive app, go to the chapter's photos-inbox "
+                "folder, then into the subfolder named with your "
+                "photographer code (your initials). Upload your "
+                "original photos AND the GPX track file there.",
+                "Upload the originals, straight from the Camera app. "
+                "Do NOT send photos by text, chat, or the share "
+                "button — those copies lose the timing information "
+                "the map needs to place them, and they can't be used.",
+                "Don't rename photos.",
+            ],
+            "what_happens_next": "The chapter looks at each photo "
+                "group and classifies it — what it is, what condition "
+                "it's in — using the classification page. Each thing "
+                "gets its own number (like ITM-CP-001). A photo that "
+                "can't be identified is marked unclassified and "
+                "flagged for a walk-through — someone goes to look at "
+                "it in person.",
         },
         "not_covered": [
             "Per-road posted speeds, traffic counts (AADT), and shoulder "

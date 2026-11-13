@@ -5909,31 +5909,139 @@ function applyAskFocus(focus) {
   var input = document.getElementById("ask-input");
   var submit = document.getElementById("ask-submit");
   var statusEl = document.getElementById("ask-status");
-  var answerEl = document.getElementById("ask-answer");
-  var answerText = document.getElementById("ask-answer-text");
-  var sourcesEl = document.getElementById("ask-sources");
-  var queuedEl = document.getElementById("ask-queued");
+  var transcriptEl = document.getElementById("ask-transcript");
   var suggestEl = document.getElementById("ask-suggest");
-  if (!panel || !btn || !input || !submit) return;
+  var talkBtn = document.getElementById("ask-talk");
+  var voiceStopBtn = document.getElementById("ask-voice-stop");
+  var voiceStateEl = document.getElementById("ask-voice-state");
+  var skipBtn = document.getElementById("ask-skip");
+  if (!panel || !btn || !input || !submit || !transcriptEl) return;
+
+  /* Conversation state: the last few exchanges go to the Worker
+     with each question, so follow-ups resolve ("how many miles is
+     that?"). Elicitation state carries an in-progress unanswered
+     question: the queue id (so later turns update the same entry),
+     the original question, the missing data, the criteria gathered
+     so far, and how many clarifying questions have been asked. */
+  var history = [];
+  var elicitation = null;
+  var voiceMode = false;
+  var voiceState = "idle"; /* idle|listening|transcribing|asking|speaking */
+  var recorder = null;
+  var micStream = null;
+  var audioChunks = [];
+  var recordMime = "";
+  var listenTimer = null;
+  var voiceAudio = null;
+  var GREETING = "I am the Itasca Moraine trail assistant. Ask me " +
+    "about the North Country Trail and the Itasca Moraine chapter.";
 
   function setStatus(text) { statusEl.textContent = text || ""; }
-  function showAnswer(data) {
-    answerText.textContent = data.answer || "";
-    sourcesEl.textContent = (data.sources && data.sources.length)
-      ? "Sources: " + data.sources.join(" · ") : "";
+  function setVoiceState(text) {
+    voiceStateEl.textContent = text || "";
+  }
+  function el(tag, cls, text) {
+    var n = document.createElement(tag);
+    if (cls) n.className = cls;
+    if (text !== undefined && text !== null) n.textContent = text;
+    return n;
+  }
+  function trimTranscript() {
+    /* Keep the greeting (first child) and the last 23 turns. */
+    while (transcriptEl.children.length > 24) {
+      transcriptEl.removeChild(transcriptEl.children[1]);
+    }
+    transcriptEl.scrollTop = transcriptEl.scrollHeight;
+  }
+  function addUserTurn(text) {
+    var turn = el("div", "ask-turn ask-user");
+    turn.appendChild(el("p", "ask-turn-who", "You"));
+    turn.appendChild(el("p", null, text));
+    transcriptEl.appendChild(turn);
+    trimTranscript();
+  }
+  function addAssistantTurn(data) {
+    var turn = el("div", "ask-turn ask-assistant");
+    turn.appendChild(el("p", "ask-turn-who", "Trail assistant"));
+    var spoken = data.answer || "";
+    if (data.clarify) spoken += "\n\n" + data.clarify;
+    turn.appendChild(el("p", "ask-answer-text", spoken));
+    if (data.sources && data.sources.length) {
+      turn.appendChild(el("p", "ask-sources",
+        "Sources: " + data.sources.join(" · ")));
+    }
     if (data.unanswered) {
-      queuedEl.textContent = data.queued
+      turn.appendChild(el("p", "ask-queued", data.queued
         ? "Saved for Paul — question " + (data.queue_id || "") +
           " is on the list, and he has been emailed."
         : "This question could not be saved this time — please tell "
-          + "Paul directly.";
-      queuedEl.hidden = false;
-    } else {
-      queuedEl.hidden = true;
-      queuedEl.textContent = "";
+          + "Paul directly."));
     }
-    answerEl.hidden = false;
+    var hear = el("button", "ask-hear", "Hear this");
+    hear.type = "button";
+    hear.addEventListener("click", function () {
+      if (voiceMode) return;
+      speakText(spoken).catch(function () {
+        setStatus("Couldn't play the spoken answer — try again.");
+      });
+    });
+    turn.appendChild(hear);
+    transcriptEl.appendChild(turn);
+    trimTranscript();
+    return spoken;
   }
+  function pushHistory(role, text) {
+    history.push({ role: role, text: text });
+    if (history.length > 8) history = history.slice(-8);
+  }
+  function setElicitationUI(active) {
+    if (skipBtn) skipBtn.hidden = !active;
+    input.placeholder = active ? "Your reply…" : "Ask about the trail…";
+  }
+  function resetElicitation() {
+    elicitation = null;
+    setElicitationUI(false);
+  }
+
+  /* Speak one answer through the Worker's /speak endpoint (Gemini
+     TTS, voice Sulafat). Returns a promise that resolves when
+     playback ends. A failed speak never blocks the text answer. */
+  function speakText(text) {
+    if (voiceAudio) {
+      try { voiceAudio.pause(); } catch (e) {}
+      voiceAudio = null;
+    }
+    return fetch(ITM_SAVE_URL + "/speak", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ text: text }),
+    }).then(function (res) {
+      return res.json().then(function (data) {
+        return { status: res.status, data: data };
+      });
+    }).then(function (r) {
+      if (r.status !== 200 || !r.data || !r.data.ok ||
+          !r.data.audio_b64) {
+        throw new Error("speak failed");
+      }
+      return new Promise(function (resolve, reject) {
+        var audio = new Audio("data:audio/wav;base64," +
+          r.data.audio_b64);
+        voiceAudio = audio;
+        audio.onended = function () {
+          if (voiceAudio === audio) voiceAudio = null;
+          resolve();
+        };
+        audio.onerror = function () {
+          if (voiceAudio === audio) voiceAudio = null;
+          reject(new Error("audio error"));
+        };
+        var played = audio.play();
+        if (played && played.catch) played.catch(reject);
+      });
+    });
+  }
+
   function askQuestion(q) {
     q = (q || "").trim();
     if (!q) return;
@@ -5942,14 +6050,20 @@ function applyAskFocus(focus) {
         + "is not deployed.");
       return;
     }
+    addUserTurn(q);
+    var inElicitation = !!elicitation;
     submit.disabled = true;
     input.disabled = true;
     setStatus("Asking the trail…");
-    answerEl.hidden = true;
+    if (voiceMode) voiceState = "asking";
+    if (voiceMode) setVoiceState("Asking the trail…");
+    pushHistory("user", q);
+    var body = { question: q, history: history.slice(0, -1) };
+    if (inElicitation) body.elicitation = elicitation;
     fetch(ITM_SAVE_URL + "/ask", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ question: q }),
+      body: JSON.stringify(body),
     }).then(function (res) {
       return res.json().then(function (data) {
         return { status: res.status, data: data };
@@ -5960,26 +6074,270 @@ function applyAskFocus(focus) {
       input.focus();
       if (r.status === 200 && r.data && r.data.ok) {
         setStatus("");
-        showAnswer(r.data);
+        var clarify = (r.data.elicitation &&
+          r.data.elicitation.active)
+          ? r.data.elicitation.question : null;
+        var spoken = addAssistantTurn({
+          answer: r.data.answer,
+          sources: r.data.sources,
+          unanswered: r.data.unanswered,
+          queued: r.data.queued,
+          queue_id: r.data.queue_id,
+          clarify: clarify,
+        });
+        pushHistory("assistant", spoken);
         applyAskFocus(r.data.focus);
+        /* Elicitation: keep the loop open with the state the
+           Worker returned (same queue id, criteria gathered so
+           far, rounds used), or close it. */
+        if (r.data.elicitation && r.data.elicitation.active) {
+          elicitation = {
+            queue_id: r.data.elicitation.queue_id,
+            original_question: r.data.elicitation.original_question,
+            missing_data: r.data.elicitation.missing_data,
+            rounds: r.data.elicitation.rounds,
+            last_question: r.data.elicitation.question,
+            criteria: r.data.elicitation.criteria || [],
+          };
+          setElicitationUI(true);
+        } else if (r.data.elicitation) {
+          elicitation = null;
+          setElicitationUI(false);
+        } else {
+          resetElicitation();
+        }
+        if (voiceMode) {
+          voiceState = "speaking";
+          setVoiceState("Speaking…");
+          talkBtn.disabled = true;
+          speakText(spoken).catch(function () {
+            /* Spoken answer failed; the text is already on
+               screen. Carry on listening. */
+          }).then(function () {
+            if (!voiceMode) return;
+            startListening();
+          });
+        }
       } else if (r.data && r.data.error === "ask_not_configured") {
         setStatus(r.data.message || "Ask the trail isn't set up yet.");
+        if (voiceMode) stopVoice();
       } else {
         setStatus((r.data && r.data.error) ||
           "Couldn't reach the answer service — try again.");
+        if (voiceMode) {
+          /* One failed turn ends the voice session rather than
+             looping on a dead service; typing still works. */
+          stopVoice();
+        }
       }
     }).catch(function () {
       submit.disabled = false;
       input.disabled = false;
       setStatus("Couldn't reach the answer service — try again.");
+      if (voiceMode) stopVoice();
     });
   }
+
+  /* ---- Voice conversation (turn-based, not full duplex) ----
+     Tap "Talk to the trail": the assistant greets you aloud, then
+     listens. Speak, tap "Done speaking" (or wait 30 seconds), the
+     turn is transcribed, answered, and spoken back — then it
+     listens again, so follow-ups just work. Typing stays available
+     alongside. Microphone access needs a user gesture and HTTPS;
+     a denied or missing microphone falls back to typing with a
+     plain message. */
+  function voiceSupported() {
+    return !!(navigator.mediaDevices &&
+      navigator.mediaDevices.getUserMedia && window.MediaRecorder);
+  }
+  function pickMime() {
+    var candidates = ["audio/webm;codecs=opus", "audio/webm",
+      "audio/mp4", "audio/ogg"];
+    for (var i = 0; i < candidates.length; i++) {
+      try {
+        if (MediaRecorder.isTypeSupported(candidates[i])) {
+          return candidates[i];
+        }
+      } catch (e) {}
+    }
+    return "";
+  }
+  function stopMic() {
+    if (listenTimer) { clearTimeout(listenTimer); listenTimer = null; }
+    if (recorder && recorder.state !== "inactive") {
+      try { recorder.stop(); } catch (e) {}
+    }
+    recorder = null;
+    if (micStream) {
+      micStream.getTracks().forEach(function (t) {
+        try { t.stop(); } catch (e) {}
+      });
+      micStream = null;
+    }
+  }
+  function stopVoice() {
+    voiceMode = false;
+    voiceState = "idle";
+    stopMic();
+    if (voiceAudio) {
+      try { voiceAudio.pause(); } catch (e) {}
+      voiceAudio = null;
+    }
+    talkBtn.disabled = false;
+    talkBtn.textContent = "Talk to the trail";
+    if (voiceStopBtn) voiceStopBtn.hidden = true;
+    setVoiceState("");
+  }
+  function startListening() {
+    if (!voiceMode) return;
+    if (!voiceSupported()) {
+      stopVoice();
+      setStatus("Microphone isn't available here — type your "
+        + "question instead.");
+      return;
+    }
+    voiceState = "listening";
+    setVoiceState("Listening… tap Done speaking when finished.");
+    talkBtn.disabled = false;
+    talkBtn.textContent = "Done speaking";
+    navigator.mediaDevices.getUserMedia({ audio: true }).then(
+      function (stream) {
+        if (!voiceMode) {
+          stream.getTracks().forEach(function (t) {
+            try { t.stop(); } catch (e) {}
+          });
+          return;
+        }
+        micStream = stream;
+        audioChunks = [];
+        recordMime = pickMime();
+        try {
+          recorder = recordMime
+            ? new MediaRecorder(stream, { mimeType: recordMime })
+            : new MediaRecorder(stream);
+        } catch (e) {
+          stopVoice();
+          setStatus("Microphone isn't available here — type your "
+            + "question instead.");
+          return;
+        }
+        recorder.ondataavailable = function (e) {
+          if (e.data && e.data.size) audioChunks.push(e.data);
+        };
+        recorder.onstop = function () {
+          finishListening();
+        };
+        recorder.start();
+        listenTimer = setTimeout(function () {
+          if (recorder && recorder.state !== "inactive") {
+            try { recorder.stop(); } catch (e) {}
+          }
+        }, 30000);
+      }).catch(function () {
+        /* Denied microphone (or no microphone): graceful fallback
+           to typing, never a dead end. */
+        stopVoice();
+        setStatus("Microphone isn't available — type your question "
+          + "instead.");
+      });
+  }
+  function finishListening() {
+    if (listenTimer) { clearTimeout(listenTimer); listenTimer = null; }
+    var chunks = audioChunks;
+    audioChunks = [];
+    if (micStream) {
+      micStream.getTracks().forEach(function (t) {
+        try { t.stop(); } catch (e) {}
+      });
+      micStream = null;
+    }
+    recorder = null;
+    if (!voiceMode) return;
+    if (!chunks.length) {
+      startListening();
+      return;
+    }
+    voiceState = "transcribing";
+    setVoiceState("Transcribing…");
+    talkBtn.disabled = true;
+    var blob = new Blob(chunks,
+      { type: recordMime || "audio/webm" });
+    var reader = new FileReader();
+    reader.onloadend = function () {
+      var dataUrl = String(reader.result || "");
+      var b64 = dataUrl.indexOf(",") !== -1
+        ? dataUrl.split(",")[1] : "";
+      if (!b64) {
+        startListening();
+        return;
+      }
+      fetch(ITM_SAVE_URL + "/transcribe", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          audio_b64: b64,
+          mime: blob.type || "audio/webm",
+        }),
+      }).then(function (res) {
+        return res.json().then(function (data) {
+          return { status: res.status, data: data };
+        });
+      }).then(function (r) {
+        if (r.status === 200 && r.data && r.data.ok &&
+            r.data.transcript) {
+          askQuestion(r.data.transcript);
+        } else if (r.data && r.data.error === "ask_not_configured") {
+          setStatus(r.data.message || "Ask the trail isn't set up yet.");
+          stopVoice();
+        } else {
+          /* Nothing heard, or transcription failed: say so and
+             listen again rather than dropping the conversation. */
+          voiceState = "speaking";
+          setVoiceState("Speaking…");
+          speakText("I didn't catch that — could you say it " +
+            "again?").catch(function () {}).then(function () {
+              if (voiceMode) startListening();
+            });
+        }
+      }).catch(function () {
+        if (voiceMode) startListening();
+      });
+    };
+    reader.readAsDataURL(blob);
+  }
+  function startVoice() {
+    if (!ITM_SAVE_URL) {
+      setStatus("Ask the trail isn't set up yet — the itm-save Worker "
+        + "is not deployed.");
+      return;
+    }
+    if (!voiceSupported()) {
+      setStatus("Microphone isn't available here — type your "
+        + "question instead.");
+      return;
+    }
+    voiceMode = true;
+    voiceState = "speaking";
+    setVoiceState("Speaking…");
+    talkBtn.disabled = true;
+    talkBtn.textContent = "Talk to the trail";
+    if (voiceStopBtn) voiceStopBtn.hidden = false;
+    /* Opening line, spoken: the identity, in Paul's words. If the
+       spoken greeting fails (service not set up), the written
+       greeting is already on screen — carry on to listening. */
+    speakText(GREETING).catch(function () {}).then(function () {
+      if (voiceMode) startListening();
+    });
+  }
+
   btn.addEventListener("click", function () {
     panel.hidden = !panel.hidden;
     if (!panel.hidden) input.focus();
+    if (panel.hidden && voiceMode) stopVoice();
   });
   if (closeBtn) closeBtn.addEventListener("click", function () {
     panel.hidden = true;
+    if (voiceMode) stopVoice();
   });
   submit.addEventListener("click", function () {
     askQuestion(input.value);
@@ -5990,8 +6348,35 @@ function applyAskFocus(focus) {
   if (suggestEl) suggestEl.addEventListener("click", function (e) {
     var t = e.target.closest("button[data-q]");
     if (!t) return;
+    /* A suggested question is a fresh question, not a reply to a
+       clarifying question. */
+    resetElicitation();
     input.value = t.getAttribute("data-q");
     askQuestion(input.value);
+  });
+  if (skipBtn) skipBtn.addEventListener("click", function () {
+    /* The asker has nothing more to add: close the loop locally.
+       The question was already queued on the first unanswerable
+       turn, with the criteria gathered so far. */
+    resetElicitation();
+    var close = "Thanks — that's a really good question. I'll get "
+      + "this to Paul now.";
+    addAssistantTurn({ answer: close, sources: [], unanswered: false });
+    pushHistory("assistant", close);
+  });
+  if (talkBtn) talkBtn.addEventListener("click", function () {
+    if (!voiceMode) {
+      startVoice();
+    } else if (voiceState === "listening") {
+      /* Done speaking: stop the recorder; onstop finishes the
+         turn (transcribe → ask → speak → listen again). */
+      if (recorder && recorder.state !== "inactive") {
+        try { recorder.stop(); } catch (e) {}
+      }
+    }
+  });
+  if (voiceStopBtn) voiceStopBtn.addEventListener("click", function () {
+    stopVoice();
   });
 })();
 

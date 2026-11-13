@@ -19,7 +19,11 @@
    pattern as /classify) and emails Paul, so the question reaches
    both Paul and Muse. The queue file is the product roadmap: each
    entry carries the work sizing (effort, data needed, whether the
-   data already exists, whose approval is needed).
+   data already exists, whose approval is needed) plus the design
+   criteria the asker gave when the Worker asked follow-up
+   questions. /transcribe (speech-to-text) and /speak (text-to-
+   speech) serve the panel's voice-conversation mode; both use the
+   same GEMINI_API_KEY, so voice needs no extra secret.
 
    Deploy: python3 worker/deploy.py worker/itm-save.js
    (PUTs this file as the `itm-save` Worker on the Pauljmorin@gmail.com
@@ -34,11 +38,18 @@
      GEMINI_API_KEY — Paul's Google AI Studio API key (the same key
        the legacy-gemini connector already holds as custom.gemini).
        /ask returns a clear "not configured" message until it is set.
+       The same key also serves /transcribe and /speak.
      RESEND_API_KEY — the Resend API key for the unanswered-question
        email to Paul. Optional: without it the queue file still
        records every question, but no email goes out.
    Env vars (plain, not secrets):
-     LLM_MODEL — default "gemini-2.5-flash".
+     LLM_MODEL — default "gemini-3.5-flash" (gemini-2.5-flash
+       returns 404 on these accounts).
+     TTS_MODEL — default "gemini-3.8-flash-tts" (the 2.5 preview
+       TTS models retire Nov 17, 2026).
+     TTS_VOICE — default "Sulafat" (Google's label: Warm — the
+       closest prebuilt voice in tone to a warm, friendly
+       assistant; no provider offers Muse's own voice).
      ASK_DIGEST_URL — override for the digest URL (default: the live
        Pages copy of site/data/trail-digest.json).
 */
@@ -55,7 +66,15 @@ var DEFAULT_DIGEST_URL =
   "/site/data/trail-digest.json";
 var DEFAULT_MODEL = "gemini-3.5-flash"; /* the legacy-gemini
   connector's default; gemini-2.5-flash 404s on these accounts. */
-var ASK_RATE_PER_HOUR = 20;
+var DEFAULT_TTS_MODEL = "gemini-3.8-flash-tts"; /* GA replacement
+  for the 2.5 preview TTS models, which retire Nov 17, 2026. */
+var DEFAULT_TTS_VOICE = "Sulafat"; /* Google's label: Warm. */
+var ASK_RATE_PER_HOUR = 60; /* shared by /ask, /transcribe and
+  /speak: one spoken turn is three calls (transcribe + ask +
+  speak), so the old 20/hour would throttle a short voice
+  conversation. Still abuse control for the paid key, not a
+  user-facing quota — a board meeting asks a handful of
+  questions. */
 var DIGEST_TTL_MS = 10 * 60 * 1000;
 var QUEUE_FILE_URL =
   "https://github.com/pauljmorin/itasca-moraine-trail-map" +
@@ -64,17 +83,59 @@ var QUEUE_FILE_URL =
 /* The model answers ONLY from the digest. The reply is JSON, so the
    Worker can validate the focus target and queue the unanswered
    ones. "answerable" is the model's own verdict — the Worker trusts
-   it, because the digest is the only evidence the model was given. */
+   it, because the digest is the only evidence the model was given.
+   Identity: the assistant IS the Itasca Moraine trail assistant,
+   and says so. Scope: the North Country Trail and the Itasca
+   Moraine chapter only — anything else gets a brief redirect and
+   is never queued, because it is not a data gap. An in-scope
+   question the digest cannot answer starts a short elicitation:
+   the model asks ONE clarifying question at a time (at most three
+   rounds) about what the asker actually needs — what "good" would
+   look like, which area or section, what form the answer should
+   take — and the criteria gathered go into the queue entry, so
+   Paul and Muse get an actionable to-do, not just a question. */
 var ASK_SYSTEM_PROMPT =
-  "You are 'Ask the trail', answering questions about the Itasca " +
-  "Moraine chapter of the North Country Trail in Minnesota, for the " +
-  "chapter board. You are given a TRAIL DIGEST: a compact summary " +
-  "of the chapter map's own data. Answer ONLY from the digest. " +
-  "Every factual claim in your answer must come from the digest; " +
-  "cite the digest section it came from in 'sources' (e.g. " +
-  "'trail.sections', 'assets.by_type', 'buildout_verified'). " +
-  "Never invent mileage, prices, counts, or figures. If a number " +
-  "is not in the digest, say so — do not estimate it.\n\n" +
+  "You are the Itasca Moraine trail assistant, answering questions " +
+  "about the North Country Trail and the Itasca Moraine chapter in " +
+  "Minnesota, for the chapter board. Introduce yourself as the " +
+  "Itasca Moraine trail assistant when asked who you are. You are " +
+  "given a TRAIL DIGEST: a compact summary of the chapter map's " +
+  "own data. Answer ONLY from the digest. Every factual claim in " +
+  "your answer must come from the digest; cite the digest section " +
+  "it came from in 'sources' (e.g. 'trail.sections', " +
+  "'assets.by_type', 'buildout_verified'). Never invent mileage, " +
+  "prices, counts, or figures. If a number is not in the digest, " +
+  "say so — do not estimate it.\n\n" +
+  "SCOPE: you answer ONLY about the North Country Trail and the " +
+  "Itasca Moraine chapter — the trail, the chapter's sections and " +
+  "assets, the gaps and build-out, volunteers, land and ownership, " +
+  "and the chapter's work. If a question is NOT about the North " +
+  "Country Trail or the Itasca Moraine chapter, set scope=\"out\" " +
+  "and answer with exactly this, nothing more: \"I only answer " +
+  "questions about the North Country Trail and the Itasca Moraine " +
+  "chapter.\" Do not answer it, do not guess at it, and do not " +
+  "treat it as a data gap. A question about the trail in general " +
+  "(the whole North Country Trail, other chapters, the national " +
+  "trail) is IN scope. A question about another trail, another " +
+  "place, the weather, or anything else is OUT of scope.\n\n" +
+  "FIELD INSTRUCTIONS: the digest carries a 'field_protocol' " +
+  "section — the chapter's volunteer data-collection protocol. " +
+  "Questions about how to do the field work are IN scope and are " +
+  "answered from that section, in plain step-by-step language: " +
+  "how to photograph a trail feature (regular Camera app; front, " +
+  "back if anything is on it, close-up of text, numbers, or " +
+  "damage), how to run Geo Tracker (start recording BEFORE " +
+  "walking, keep it running, export the GPX), how to upload " +
+  "(originals + GPX to your own initials subfolder in the " +
+  "chapter's photos-inbox, never by text, chat, or share button), " +
+  "and what happens next (the chapter classifies it and it gets a " +
+  "serial number). Cite 'field_protocol' in 'sources'. If a " +
+  "volunteer asks something the protocol does NOT cover, treat it " +
+  "as an unanswerable question: give the partial answer from what " +
+  "the protocol DOES say, size the work, and let elicitation " +
+  "gather what they would want — it goes to Paul and Muse through " +
+  "the queue like any other unanswerable question. Never invent " +
+  "protocol steps that are not in the digest.\n\n" +
   "Adopter display is INITIALS ONLY: report adopter initials as " +
   "given, never expand them to names, and never include phone " +
   "numbers or email addresses (none exist in the digest). Parcel " +
@@ -86,15 +147,21 @@ var ASK_SYSTEM_PROMPT =
   "Reporting a condition value already recorded in the digest " +
   "(e.g. 'ITM-BW-001 is recorded as fair') is fine — that is " +
   "reading data, not judging it.\n\n" +
-  "If the digest DOES answer the question, set answerable=true, " +
-  "give the answer with sources, and set focus when the question " +
-  "is about a specific section, gap, or asset: " +
+  "CONVERSATION: a CONVERSATION SO FAR block may precede the " +
+  "question. Use it to resolve follow-ups ('how many miles is " +
+  "that?', 'which section did you mean?') — 'that' refers to the " +
+  "previous answer. Keep answers short enough to speak aloud.\n\n" +
+  "If the digest DOES answer the question, set scope=\"in\", " +
+  "answerable=true, elicit=false, elicitation_done=false, give " +
+  "the answer with sources, and set focus when the question is " +
+  "about a specific section, gap, or asset: " +
   "focus={type:'section',name:'<section name>'} or " +
   "focus={type:'gap',name:'<gap id, e.g. GAP-W>'} or " +
   "focus={type:'asset',serial:'<serial>'} — only names, gap ids, " +
   "and serials that appear in the digest. Otherwise focus=null.\n\n" +
-  "If the digest does NOT answer the question, set answerable=false " +
-  "and write the answer in this shape, in plain language:\n" +
+  "If the digest does NOT answer an IN-SCOPE question, set " +
+  "scope=\"in\", answerable=false and write the answer in this " +
+  "shape, in plain language:\n" +
   "(1) Warm opening: 'That's a really good question.'\n" +
   "(2) The partial picture: what the digest DOES have on the " +
   "topic, with sources. Never a bare 'I don't know'.\n" +
@@ -109,10 +176,41 @@ var ASK_SYSTEM_PROMPT =
   "data_needed, data_exists ('yes' | 'no' | 'unknown'), " +
   "approval_needed (who must approve, or null), " +
   "suggested_next_step (the concrete next action).\n\n" +
+  "ELICITATION — before closing an unanswerable in-scope " +
+  "question, gently find out what the asker actually needs, so " +
+  "the to-do is actionable. Warm and curious, never an " +
+  "interrogation: ONE clarifying question at a time, at most " +
+  "three rounds, then stop. Ask about the design criteria — what " +
+  "they actually need, what 'good' would look like, which area " +
+  "or section they care about, what form the answer should take. " +
+  "On the FIRST unanswerable turn, set elicit=true and put your " +
+  "one clarifying question in clarify_question; the 'answer' " +
+  "field still carries the partial picture + sizing above, and " +
+  "criteria starts as [] (or what the question itself already " +
+  "reveals). On each FOLLOW-UP turn (an ELICITATION IN PROGRESS " +
+  "block precedes the question): read the user's reply, add what " +
+  "it reveals to 'criteria' — the design criteria IN THE USER'S " +
+  "OWN WORDS, as short phrases — and either ask the next single " +
+  "clarifying question (elicit=true, answer = a short warm " +
+  "acknowledgement plus the question) or close (elicit=false, " +
+  "elicitation_done=true, answer = the warm close: 'That's a " +
+  "really good question' + one line summing up what was gathered " +
+  "for the to-do + \"I'll get this to Paul now.\"). CLOSE as soon " +
+  "as the user has nothing more to add — 'that's all', 'no', " +
+  "'I don't know', a shrug, or a third round is done. If the " +
+  "user's message is a NEW question instead of a reply to the " +
+  "clarifying question, answer the new question normally (scope " +
+  "and answerable as usual) and set elicitation_done=true with " +
+  "the criteria gathered so far. If the question is already fully " +
+  "specified and no clarifying question could help, set " +
+  "elicit=false and elicitation_done=true on the first turn.\n\n" +
   "Respond with JSON only, no markdown fences, exactly this shape:\n" +
   "{\"answer\": \"...\", \"sources\": [\"...\"], \"focus\": null or " +
   "{\"type\": \"section|gap|asset\", \"name\"|\"serial\": \"...\"}, " +
-  "\"answerable\": true|false, \"missing_data\": \"...\"|null, " +
+  "\"scope\": \"in\"|\"out\", \"answerable\": true|false, " +
+  "\"elicit\": true|false, \"clarify_question\": \"...\"|null, " +
+  "\"criteria\": [\"...\"]|null, \"elicitation_done\": true|false, " +
+  "\"missing_data\": \"...\"|null, " +
   "\"work_estimate\": \"...\"|null, \"data_needed\": \"...\"|null, " +
   "\"data_exists\": \"yes|no|unknown\"|null, \"approval_needed\": " +
   "\"...\"|null, \"suggested_next_step\": \"...\"|null}\n" +
@@ -435,6 +533,13 @@ async function queueUnanswered(token, modelOut, question) {
         data_exists: modelOut.data_exists || null,
         approval_needed: modelOut.approval_needed || null,
         suggested_next_step: modelOut.suggested_next_step || null,
+        /* Design criteria the asker gave during elicitation, in
+           their own words — what they actually need, what "good"
+           would look like, which area, what form the answer should
+           take. Empty until elicitation gathers some. */
+        design_criteria: Array.isArray(modelOut.criteria)
+          ? modelOut.criteria : [],
+        elicitation_complete: modelOut.elicitation_done === true,
         sources: modelOut.sources || [],
         resolved_note: null,
       });
@@ -451,12 +556,93 @@ async function queueUnanswered(token, modelOut, question) {
   return null;
 }
 
+/* Update an already-queued entry by id (a later elicitation turn
+   adds the design criteria and marks elicitation complete). The
+   entry keeps its id and asked_at; last_asked_at is not bumped —
+   this is the same question, not a repeat. Returns the entry, or
+   null when it cannot be found or written. */
+async function queueUpdateEntry(token, queueId, patch) {
+  for (var attempt = 0; attempt < 2; attempt++) {
+    var read;
+    try {
+      read = await readRepoJson(token, QUEUE_PATH);
+    } catch (e) {
+      return null;
+    }
+    var queue = read.data;
+    if (!queue || !Array.isArray(queue.entries)) return null;
+    var entry = null;
+    for (var i = 0; i < queue.entries.length; i++) {
+      if (queue.entries[i].id === queueId) {
+        entry = queue.entries[i];
+        break;
+      }
+    }
+    if (!entry) return null;
+    var keys = Object.keys(patch);
+    for (var k = 0; k < keys.length; k++) {
+      entry[keys[k]] = patch[keys[k]];
+    }
+    try {
+      await writeRepoJson(token, QUEUE_PATH, read.sha, queue,
+        "Ask the trail: update queued question " + queueId);
+      return entry;
+    } catch (e) {
+      if (attempt === 0 && /409|sha/i.test(e.message)) continue;
+      return null;
+    }
+  }
+  return null;
+}
+
 /* Email Paul the unanswered question. Plain text, no emojis, full
    content in the body — the established alert channel (Resend to
    pauljmorin@gmail.com). Returns true when Resend accepted it. */
-async function emailUnanswered(key, entry) {
+async function emailUnanswered(key, entry, isUpdate) {
   var short_q = entry.question.length > 60
     ? entry.question.slice(0, 60) + "..." : entry.question;
+  if (isUpdate) {
+    /* Second mail, only when elicitation gathered criteria: Paul
+       already got the question on the first mail; this one carries
+       what the asker added, so he sees it without opening the
+       queue file. */
+    var criteriaLines = (entry.design_criteria || []).map(
+      function (c) { return "- " + c; });
+    var lines = [
+      "An update on a trail question you were already emailed about:",
+      "",
+      "Question: " + entry.question,
+      "Queue entry: " + entry.id + " (" + QUEUE_FILE_URL + ")",
+      "",
+      "What the asker said they would want (design criteria, in "
+        + "their words):",
+    ].concat(criteriaLines.length ? criteriaLines : ["(none given)"]).concat([
+      "",
+      "Work sizing, as before:",
+      "- Effort: " + (entry.work_estimate || "not estimated"),
+      "- Data needed: " + (entry.data_needed || "not stated"),
+      "- Data already exists: " + (entry.data_exists || "unknown"),
+      "- Approval needed from: " + (entry.approval_needed || "none stated"),
+      "",
+      "Suggested next step: " + (entry.suggested_next_step || "none stated"),
+    ]);
+    var res = await fetch("https://api.resend.com/emails", {
+      method: "POST",
+      headers: {
+        "Authorization": "Bearer " + key,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        from: "Muse <onboarding@resend.dev>",
+        to: ["pauljmorin@gmail.com"],
+        subject: "Update: trail question — design criteria gathered: " +
+          short_q,
+        text: lines.join("\n"),
+      }),
+      signal: AbortSignal.timeout(15000),
+    });
+    return res.ok;
+  }
   var lines = [
     "A board question came in that the trail map could not answer:",
     "",
@@ -476,6 +662,10 @@ async function emailUnanswered(key, entry) {
     "- Approval needed from: " + (entry.approval_needed || "none stated"),
     "",
     "Suggested next step: " + (entry.suggested_next_step || "none stated"),
+    "",
+    "The asker is being asked what they would want the answer to "
+      + "do; anything they add will update the queue entry, and a "
+      + "second email will follow if they give design criteria.",
     "",
     "To mark this done, edit data/ask-queue.json on GitHub: set "
       + "status to \"done\" and add a resolved_note.",
@@ -497,8 +687,13 @@ async function emailUnanswered(key, entry) {
   return res.ok;
 }
 
-/* POST /ask — {question}. Returns {ok, answer, sources, focus,
-   unanswered, queued, queue_id, email_sent}. */
+/* POST /ask — {question, history?, elicitation?}. history is the
+   conversation so far ([{role: "user"|"assistant", text}]) so
+   follow-ups resolve ("how many miles is that?"). elicitation is
+   the state of an in-progress unanswered question ({queue_id,
+   original_question, missing_data, rounds, last_question}).
+   Returns {ok, answer, sources, focus, scope, unanswered, queued,
+   queue_id, email_sent, elicitation}. */
 async function handleAsk(body, env, origin, ip) {
   if (!body || typeof body !== "object" ||
       typeof body.question !== "string" ||
@@ -507,6 +702,36 @@ async function handleAsk(body, env, origin, ip) {
       error: "question is required." }, origin);
   }
   var question = body.question.trim().slice(0, 500);
+  /* History: at most 8 turns (4 exchanges), each capped — the
+     digest is already ~5,000 tokens and every turn re-sends it. */
+  var history = [];
+  if (Array.isArray(body.history)) {
+    body.history.slice(-8).forEach(function (h) {
+      if (h && typeof h.text === "string" &&
+          (h.role === "user" || h.role === "assistant")) {
+        history.push({ role: h.role,
+          text: h.text.slice(0, 500) });
+      }
+    });
+  }
+  var elicitation = null;
+  if (body.elicitation && typeof body.elicitation === "object") {
+    elicitation = {
+      queue_id: body.elicitation.queue_id || null,
+      original_question:
+        String(body.elicitation.original_question || "").slice(0, 500),
+      missing_data:
+        String(body.elicitation.missing_data || "").slice(0, 500),
+      rounds: parseInt(body.elicitation.rounds, 10) || 0,
+      last_question:
+        String(body.elicitation.last_question || "").slice(0, 500),
+      criteria: Array.isArray(body.elicitation.criteria)
+        ? body.elicitation.criteria.filter(function (c) {
+            return typeof c === "string";
+          }).slice(0, 10).map(function (c) { return c.slice(0, 200); })
+        : [],
+    };
+  }
   if (!askRateOk(ip)) {
     return json(429, { ok: false, error: "Too many questions — " +
       "please wait a little and try again." }, origin);
@@ -531,6 +756,28 @@ async function handleAsk(body, env, origin, ip) {
     return json(502, { ok: false,
       error: "Trail digest is not valid JSON." }, origin);
   }
+  var userText = "TRAIL DIGEST:\n" + digestText;
+  if (history.length) {
+    userText += "\n\nCONVERSATION SO FAR (most recent last):\n" +
+      history.map(function (h) {
+        return (h.role === "user" ? "User: " : "Assistant: ") + h.text;
+      }).join("\n");
+  }
+  if (elicitation && elicitation.queue_id) {
+    userText += "\n\nELICITATION IN PROGRESS: the user asked '" +
+      elicitation.original_question + "' and the digest could not " +
+      "answer it (missing: " + (elicitation.missing_data ||
+      "not stated") + "). Design criteria gathered so far, in the " +
+      "user's words: " +
+      JSON.stringify(elicitation.criteria || []) + ". This is round " +
+      (elicitation.rounds + 1) +
+      " of 3. The user's message below is a reply to the " +
+      "clarifying question '" + elicitation.last_question + "' — " +
+      "unless it is a new question, in which case answer it " +
+      "normally and set elicitation_done=true with the criteria " +
+      "gathered so far.";
+  }
+  userText += "\n\nQUESTION:\n" + question;
   var model = env.LLM_MODEL || DEFAULT_MODEL;
   var genRes;
   try {
@@ -543,9 +790,7 @@ async function handleAsk(body, env, origin, ip) {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           system_instruction: { parts: [{ text: ASK_SYSTEM_PROMPT }] },
-          contents: [{ role: "user", parts: [{ text:
-            "TRAIL DIGEST:\n" + digestText +
-            "\n\nQUESTION:\n" + question }] }],
+          contents: [{ role: "user", parts: [{ text: userText }] }],
           generationConfig: {
             temperature: 0.2,
             /* 4000, not 1200: the longer unanswered replies (warm
@@ -588,51 +833,307 @@ async function handleAsk(body, env, origin, ip) {
     return json(502, { ok: false,
       error: "Model did not return a usable answer." }, origin);
   }
-  var focus = validFocus(modelOut.focus, digest);
+  var scope = modelOut.scope === "out" ? "out" : "in";
+  var focus = scope === "in" ? validFocus(modelOut.focus, digest) : null;
   var out = {
     ok: true,
     answer: modelOut.answer,
     sources: Array.isArray(modelOut.sources) ? modelOut.sources : [],
     focus: focus,
-    unanswered: modelOut.answerable === false,
+    scope: scope,
+    unanswered: scope === "in" && modelOut.answerable === false,
     queued: false,
     queue_id: null,
     email_sent: false,
+    elicitation: null,
   };
+  if (scope === "out") {
+    /* Out of scope is not a data gap: brief redirect, no queue,
+       no email. The panel shows the answer as-is. */
+    return json(200, out, origin);
+  }
+  /* An elicitation was already in progress: the model returns the
+     full criteria list each turn, so update the original entry
+     with whatever was gathered — whether this turn continues the
+     elicitation, closes it, or answers a new question instead. */
+  var criteria = Array.isArray(modelOut.criteria)
+    ? modelOut.criteria : null;
+  var done = modelOut.elicitation_done === true;
+  if (elicitation && elicitation.queue_id && env.GITHUB_TOKEN &&
+      (criteria !== null || done)) {
+    var patch = {};
+    if (criteria !== null) patch.design_criteria = criteria;
+    if (done) patch.elicitation_complete = true;
+    if (modelOut.work_estimate) {
+      patch.work_estimate = modelOut.work_estimate;
+    }
+    if (modelOut.data_needed) patch.data_needed = modelOut.data_needed;
+    if (modelOut.data_exists) patch.data_exists = modelOut.data_exists;
+    if (modelOut.approval_needed) {
+      patch.approval_needed = modelOut.approval_needed;
+    }
+    if (modelOut.suggested_next_step) {
+      patch.suggested_next_step = modelOut.suggested_next_step;
+    }
+    var updated = await queueUpdateEntry(env.GITHUB_TOKEN,
+      elicitation.queue_id, patch);
+    out.queued = !!updated;
+    out.queue_id = elicitation.queue_id;
+    /* Second email only when elicitation closed WITH criteria —
+       Paul already got the question on the first mail. */
+    if (updated && done && criteria && criteria.length > 0 &&
+        env.RESEND_API_KEY) {
+      try {
+        out.email_sent = await emailUnanswered(env.RESEND_API_KEY,
+          {
+            id: elicitation.queue_id,
+            question: elicitation.original_question,
+            asked_at: new Date().toISOString(),
+            design_criteria: criteria,
+            work_estimate: modelOut.work_estimate,
+            data_needed: modelOut.data_needed,
+            data_exists: modelOut.data_exists,
+            approval_needed: modelOut.approval_needed,
+            suggested_next_step: modelOut.suggested_next_step,
+          }, true);
+      } catch (e) {
+        out.email_sent = false;
+      }
+    }
+  }
   if (modelOut.answerable === false) {
     /* Route to BOTH Paul and Muse: the durable queue file in the
        repo is the coordinator's source (the weekly watch reads it),
        and Paul gets the email. Neither is a fallback for the other.
        A queue/email failure never blocks the asker's answer. */
-    var queueId = null;
-    if (env.GITHUB_TOKEN) {
-      queueId = await queueUnanswered(env.GITHUB_TOKEN, modelOut,
-        question);
-    }
-    var emailSent = false;
-    if (queueId && env.RESEND_API_KEY) {
-      try {
-        emailSent = await emailUnanswered(env.RESEND_API_KEY, {
-          id: queueId,
-          question: question,
-          asked_at: new Date().toISOString(),
-          missing_data: modelOut.missing_data,
-          partial_answer: modelOut.answer,
-          work_estimate: modelOut.work_estimate,
-          data_needed: modelOut.data_needed,
-          data_exists: modelOut.data_exists,
-          approval_needed: modelOut.approval_needed,
-          suggested_next_step: modelOut.suggested_next_step,
-        });
-      } catch (e) {
-        emailSent = false;
+    if (!elicitation || !elicitation.queue_id) {
+      /* First unanswerable turn: create the entry now, so the
+         question reaches Paul and Muse even if the asker walks
+         away mid-elicitation. Later turns update this entry. */
+      var queueId = null;
+      if (env.GITHUB_TOKEN) {
+        queueId = await queueUnanswered(env.GITHUB_TOKEN, modelOut,
+          question);
       }
+      var emailSent = false;
+      if (queueId && env.RESEND_API_KEY) {
+        try {
+          emailSent = await emailUnanswered(env.RESEND_API_KEY, {
+            id: queueId,
+            question: question,
+            asked_at: new Date().toISOString(),
+            missing_data: modelOut.missing_data,
+            partial_answer: modelOut.answer,
+            work_estimate: modelOut.work_estimate,
+            data_needed: modelOut.data_needed,
+            data_exists: modelOut.data_exists,
+            approval_needed: modelOut.approval_needed,
+            suggested_next_step: modelOut.suggested_next_step,
+          }, false);
+        } catch (e) {
+          emailSent = false;
+        }
+      }
+      out.queued = !!queueId;
+      out.queue_id = queueId;
+      out.email_sent = emailSent;
     }
-    out.queued = !!queueId;
-    out.queue_id = queueId;
-    out.email_sent = emailSent;
+    /* Elicitation state for the panel: keep asking one question
+       at a time, at most three rounds, then close. */
+    var rounds = elicitation ? elicitation.rounds : 0;
+    var keepGoing = modelOut.elicit === true && !done && rounds < 3 &&
+      typeof modelOut.clarify_question === "string" &&
+      modelOut.clarify_question.trim().length > 0;
+    out.elicitation = {
+      active: keepGoing,
+      question: keepGoing ? modelOut.clarify_question : null,
+      rounds: keepGoing ? rounds + 1 : rounds,
+      queue_id: out.queue_id,
+      original_question: elicitation ? elicitation.original_question
+        : question,
+      missing_data: modelOut.missing_data || (elicitation
+        ? elicitation.missing_data : null),
+      criteria: criteria || (elicitation ? elicitation.criteria : []),
+    };
+  } else if (elicitation && elicitation.queue_id) {
+    /* The user asked a new question mid-elicitation and it was
+       answered: the loop closes, the original entry keeps the
+       criteria gathered so far (updated above). */
+    out.elicitation = {
+      active: false,
+      question: null,
+      rounds: elicitation.rounds,
+      queue_id: elicitation.queue_id,
+      original_question: elicitation.original_question,
+      missing_data: elicitation.missing_data,
+      criteria: criteria || elicitation.criteria,
+    };
   }
   return json(200, out, origin);
+}
+
+/* ------------------------------------------------ Voice: talk to
+   the trail. The panel's voice mode is a turn-based pipeline, not
+   full duplex: the browser records one spoken turn (MediaRecorder),
+   /transcribe turns it into text with the same Gemini key, /ask
+   answers it with the same grounding and history, and /speak reads
+   the answer aloud with Gemini TTS (voice Sulafat — Warm). A full
+   duplex realtime session (Gemini Live, gemini-3.8-live, WebSocket)
+   is the named v2: it would need a Worker WebSocket proxy because
+   the key cannot live in the page, and it bills ~$0.005/min audio
+   in + $0.018/min audio out before history re-billing
+   (~$0.25–0.30/min in practice). The pipeline costs ~2 cents per
+   minute of conversation, almost all of it the spoken answer. */
+
+/* POST /transcribe — {audio_b64, mime}. The browser sends one
+   recorded turn (webm/opus from Chrome, mp4/aac from Safari — both
+   are accepted audio inputs). Returns {ok, transcript}. */
+async function handleTranscribe(body, env, origin, ip) {
+  if (!body || typeof body.audio_b64 !== "string" ||
+      body.audio_b64.length === 0 ||
+      body.audio_b64.length > 7000000 ||
+      typeof body.mime !== "string" ||
+      body.mime.indexOf("audio/") !== 0) {
+    return json(400, { ok: false,
+      error: "audio_b64 (base64 audio) and mime (audio/...) are "
+        + "required." }, origin);
+  }
+  if (!askRateOk(ip)) {
+    return json(429, { ok: false, error: "Too many questions — " +
+      "please wait a little and try again." }, origin);
+  }
+  if (!env.GEMINI_API_KEY) {
+    return json(503, { ok: false, error: "ask_not_configured",
+      message: "Ask the trail isn't set up yet — the chapter needs "
+        + "to add the GEMINI_API_KEY secret in the Cloudflare "
+        + "dashboard (Workers & Pages → itm-save → Settings → "
+        + "Variables)." }, origin);
+  }
+  var model = env.LLM_MODEL || DEFAULT_MODEL;
+  var genRes;
+  try {
+    genRes = await fetch(
+      "https://generativelanguage.googleapis.com/v1beta/models/" +
+      encodeURIComponent(model) + ":generateContent?key=" +
+      encodeURIComponent(env.GEMINI_API_KEY),
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          contents: [{ role: "user", parts: [
+            { text: "Transcribe this spoken question exactly, word "
+              + "for word. It is a question about a hiking trail. "
+              + "Return only the transcription, no other text." },
+            { inlineData: { mimeType: body.mime,
+              data: body.audio_b64 } },
+          ] }],
+          generationConfig: { temperature: 0, maxOutputTokens: 500 },
+        }),
+        signal: AbortSignal.timeout(30000),
+      });
+  } catch (e) {
+    return json(502, { ok: false,
+      error: "Transcription failed: " + e.message }, origin);
+  }
+  if (!genRes.ok) {
+    return json(502, { ok: false,
+      error: "Transcription failed (" + genRes.status + ")." }, origin);
+  }
+  var genBody;
+  try {
+    genBody = await genRes.json();
+  } catch (e) {
+    return json(502, { ok: false,
+      error: "Transcription returned unreadable output." }, origin);
+  }
+  var transcript = "";
+  try {
+    transcript = genBody.candidates[0].content.parts
+      .map(function (p) { return p.text || ""; }).join("").trim();
+  } catch (e) {}
+  return json(200, { ok: true, transcript: transcript }, origin);
+}
+
+/* POST /speak — {text}. Gemini TTS (Interactions API, the
+   documented surface for gemini-3.8-flash-tts) returns complete
+   WAV, so the panel can play it in a plain <audio> element.
+   Returns {ok, audio_b64, mime: "audio/wav", voice}. */
+async function handleSpeak(body, env, origin, ip) {
+  if (!body || typeof body.text !== "string" ||
+      body.text.trim().length === 0) {
+    return json(400, { ok: false, error: "text is required." }, origin);
+  }
+  var text = body.text.trim().slice(0, 2000);
+  if (!askRateOk(ip)) {
+    return json(429, { ok: false, error: "Too many questions — " +
+      "please wait a little and try again." }, origin);
+  }
+  if (!env.GEMINI_API_KEY) {
+    return json(503, { ok: false, error: "ask_not_configured",
+      message: "Ask the trail isn't set up yet — the chapter needs "
+        + "to add the GEMINI_API_KEY secret in the Cloudflare "
+        + "dashboard (Workers & Pages → itm-save → Settings → "
+        + "Variables)." }, origin);
+  }
+  var ttsModel = env.TTS_MODEL || DEFAULT_TTS_MODEL;
+  var voice = env.TTS_VOICE || DEFAULT_TTS_VOICE;
+  var ttsRes;
+  try {
+    ttsRes = await fetch(
+      "https://generativelanguage.googleapis.com/v1beta/interactions",
+      {
+        method: "POST",
+        headers: {
+          "x-goog-api-key": env.GEMINI_API_KEY,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          model: ttsModel,
+          input: [{ type: "user_input", content: [{ type: "text",
+            text: text,
+            annotations: [{ type: "speech_metadata",
+              style: "warm and friendly" }],
+          }] }],
+          response_format: { type: "audio" },
+          generation_config: { speech_config: [{ voice: voice }] },
+        }),
+        signal: AbortSignal.timeout(30000),
+      });
+  } catch (e) {
+    return json(502, { ok: false,
+      error: "Speech failed: " + e.message }, origin);
+  }
+  if (!ttsRes.ok) {
+    return json(502, { ok: false,
+      error: "Speech failed (" + ttsRes.status + ")." }, origin);
+  }
+  var ttsBody;
+  try {
+    ttsBody = await ttsRes.json();
+  } catch (e) {
+    return json(502, { ok: false,
+      error: "Speech returned unreadable output." }, origin);
+  }
+  var audioB64 = null;
+  try {
+    var steps = ttsBody.steps || [];
+    for (var i = steps.length - 1; i >= 0; i--) {
+      var content = steps[i].content || [];
+      for (var j = content.length - 1; j >= 0; j--) {
+        if (content[j].type === "audio" && content[j].data) {
+          audioB64 = content[j].data;
+          break;
+        }
+      }
+      if (audioB64) break;
+    }
+  } catch (e) {}
+  if (!audioB64) {
+    return json(502, { ok: false,
+      error: "Speech returned no audio." }, origin);
+  }
+  return json(200, { ok: true, audio_b64: audioB64,
+    mime: "audio/wav", voice: voice }, origin);
 }
 
 function notImplemented(name, origin) {
@@ -663,6 +1164,12 @@ export default {
     }
     if (url.pathname === "/ask") {
       return handleAsk(body, env, origin, ip);
+    }
+    if (url.pathname === "/transcribe") {
+      return handleTranscribe(body, env, origin, ip);
+    }
+    if (url.pathname === "/speak") {
+      return handleSpeak(body, env, origin, ip);
     }
     /* Stubs (Paul, Nov 12): same Worker, same GitHub login, one more
        endpoint each when the chapter is ready for them. */

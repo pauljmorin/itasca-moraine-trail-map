@@ -29,7 +29,12 @@
   <!-- Ask the trail (Paul, Nov 13, 2026): natural-language Q&A for
        the chapter board. Answers come only from the map's own data
        (site/data/trail-digest.json via the itm-save Worker); a
-       question the data cannot answer is queued for Paul. -->
+       question the data cannot answer is queued for Paul and Muse,
+       after the assistant asks what the asker would want it to do.
+       Voice mode ("Talk to the trail") is a turn-based conversation:
+       speak, hear the spoken answer, speak again. The assistant is
+       the Itasca Moraine trail assistant and answers only about the
+       North Country Trail and the Itasca Moraine chapter. -->
   <div id="ask-panel" hidden>
     <div class="ask-head">
       <h2>Ask the trail</h2>
@@ -45,6 +50,10 @@
         placeholder="Ask about the trail…">
       <button type="button" id="ask-submit" class="ask-submit">Ask</button>
     </div>
+    <p class="ask-scope">Ask about the North Country Trail and the
+      Itasca Moraine chapter.</p>
+    <button type="button" id="ask-skip" class="ask-skip" hidden>Skip —
+      that's all I have</button>
     <div class="ask-suggest" id="ask-suggest">
       <button type="button"
         data-q="Which parts of the trail have no adopter?">Which
@@ -58,12 +67,27 @@
       <button type="button"
         data-q="How many boardwalk pins are there, and what condition are they in?">Boardwalk
         pins and their condition?</button>
+      <button type="button"
+        data-q="How do I photograph a trail feature for the map?">How
+        do I photograph a trail feature?</button>
+      <button type="button"
+        data-q="How do I track my walk with Geo Tracker?">How do I
+        track my walk with Geo Tracker?</button>
+    </div>
+    <div class="ask-voice-row">
+      <button type="button" id="ask-talk" class="ask-talk">Talk to
+        the trail</button>
+      <button type="button" id="ask-voice-stop" class="ask-voice-stop"
+        hidden>Stop talking</button>
+      <span class="ask-voice-state" id="ask-voice-state"
+        role="status"></span>
     </div>
     <p class="ask-status" id="ask-status" role="status"></p>
-    <div class="ask-answer" id="ask-answer" hidden>
-      <p id="ask-answer-text"></p>
-      <p class="ask-sources" id="ask-sources"></p>
-      <p class="ask-queued" id="ask-queued" hidden></p>
+    <div class="ask-transcript" id="ask-transcript">
+      <div class="ask-turn ask-assistant">
+        <p>I am the Itasca Moraine trail assistant. Ask me about the
+          North Country Trail and the Itasca Moraine chapter.</p>
+      </div>
     </div>
   </div>
 
