@@ -22,40 +22,6 @@
       aria-label="Present — big screen">⛶</button>
   </div>
 
-  <!-- Ask the trail (Paul, Nov 13, 2026): one mic button and one
-       text box at the top of the panel, nothing else around them.
-       Tap the mic and speak, or type a question and press Enter;
-       answers are spoken, with the transcript kept below. Answers
-       come only from the map's own data
-       (site/data/trail-digest.json via the itm-save Worker); a
-       question the data cannot answer is queued for Paul and Muse,
-       after the assistant asks what the asker would want it to do.
-       The assistant is the Itasca Moraine trail assistant and
-       answers only about the North Country Trail and the Itasca
-       Moraine chapter. -->
-  <div class="ask-bar">
-    <button type="button" id="ask-mic" class="ask-mic"
-      title="Talk to the trail — tap, speak, tap when done"
-      aria-label="Talk to the trail">🎙</button>
-    <input id="ask-input" type="text" autocomplete="off"
-      placeholder="Ask about the trail…"
-      aria-label="Ask about the trail">
-  </div>
-  <div id="ask-panel" hidden>
-    <div class="ask-head">
-      <button type="button" id="ask-close" class="ask-close"
-        aria-label="Close">×</button>
-    </div>
-    <button type="button" id="ask-skip" class="ask-skip" hidden>Skip —
-      that's all I have</button>
-    <p class="ask-status" id="ask-status" role="status"></p>
-    <div class="ask-transcript" id="ask-transcript">
-      <div class="ask-turn ask-assistant">
-        <p>I am the Itasca Moraine trail assistant. Ask me about the
-          North Country Trail and the Itasca Moraine chapter.</p>
-      </div>
-    </div>
-  </div>
   <button type="button" id="copy-link-btn" class="copy-link-btn" title="Copy link">Copy link</button>
 
   <h2>Adoption</h2>
