@@ -4017,7 +4017,11 @@ function setTreeHeightOpacity(v) {
 /* Height lines (§7): smoothed 5 m contours. Normal mode shows
    all five levels thin; Present mode shows only 10/20/25 m,
    thicker — the 5 m interval is unreadable from the back of a
-   room. The layer only draws at z ≥ 12 (applyContoursGate). */
+   room. The layer only draws at z ≥ 12 (applyContoursGate).
+   REMOVED Nov 13, 2026 (Paul: the contours were "absolutely
+   useless") — the def below carries enabled: false; the
+   functions stay so the layer can be restored by deleting
+   that one line. */
 var contoursLayerRef = null;
 function contourStyle(f) {
   var level = (f.properties || {}).level;
@@ -5277,11 +5281,16 @@ var LAYERS = [
        z ≥ 12 (applyContoursGate). In Present mode only the
        10/20/25 m lines show, thicker (a room cannot read the
        5 m interval). 63k features, canvas-rendered, fetched
-       lazily like every heavy layer. */
+       lazily like every heavy layer.
+       Removed from the panel Nov 13, 2026 (Paul: the contours
+       were "absolutely useless"). The data file stays on disk
+       — delete the `enabled: false` line below to bring the
+       layer back. */
     id: "contours", label: "Height lines — every 5 m",
     title: "How steep is it?",
     file: "data/chm-contours.geojson", onByDefault: false,
     group: "The land", subgroup: "Management",
+    enabled: false,
     swatch: { kind: "line", color: "#8a6d1a" },
     gate: applyContoursGate,
     build: function (gj) {
@@ -5531,20 +5540,20 @@ var VIEW_PRESETS = {
   /* Work: the panel as redesigned — the adoption gap on,
      the assets and places on. Tree height stays OFF by
      default (Paul, Nov 12) — it is a toggle the reader turns
-     on; Height lines stay off (they are a close-zoom tool). */
+     on. */
   work: { on: ["gaps", "assets", "places",
                "chapterplaces"],
-          off: ["treeheight", "contours"] },
+          off: ["treeheight"] },
   /* Explore: the same map with the management toggles
      hidden and the trail + places + chapter places on.
      The assets (photos) stay on. */
   explore: { on: ["assets", "places", "chapterplaces"],
-             off: ["treeheight", "contours"] },
+             off: ["treeheight"] },
   /* Visit: the public face — the trail, the places, the
      photos; the land stays off, and the panel shows nothing
      beyond Find and the welcome line. */
   visit: { on: ["assets", "places", "chapterplaces"],
-           off: ["treeheight", "contours"] },
+           off: ["treeheight"] },
 };
 function setView(view) {
   if (!VIEW_PRESETS[view]) view = "explore";
@@ -6182,7 +6191,11 @@ function legendHtml() {
   add("<span class='swatch fill' style='background:#64af5a'></span>",
     "Tree height — how tall the trees are (overlay, over any " +
     "background; white is open ground)");
-  add(line("#8a6d1a"), "Height lines — every 5 m");
+  /* Height lines legend entry removed Nov 13, 2026 with the
+     layer (Paul: the contours were "absolutely useless").
+     Restore alongside the def's `enabled: false` line if the
+     layer comes back:
+       add(line("#8a6d1a"), "Height lines — every 5 m"); */
   add("<span class='swatch fill' style='background:#d97706'></span>",
     "Cass timber sale — year is the sale year (no expiry in the source)");
   add("<span class='swatch fill' style='background:#6b8e23'></span>",
