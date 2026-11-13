@@ -2040,7 +2040,6 @@ body.base-imagery.gap-chip .gap-label span {
 .panel-foot {
   margin-top: 16px;
   padding-top: 8px;
-  border-top: 1px solid var(--paper-line);
   font-size: 0.8rem;
   color: var(--ink-soft);
   display: flex;
