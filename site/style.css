@@ -290,31 +290,35 @@ html, body {
   border-top: 4px solid #888;
 }
 .tog-swatch-line.dashed { border-top-style: dashed; }
+/* Every swatch occupies the same 16px slot (glyph + side
+   margins), so the layer labels start on one vertical line.
+   The line swatch is 16px wide; the narrower glyphs are
+   centred in the slot by their margins. */
 .tog-swatch-bar {
   flex: 0 0 auto;
-  display: inline-block; width: 4px; height: 13px;
+  display: inline-block; width: 4px; height: 13px; margin: 0 6px;
 }
 .tog-swatch-pin {
   flex: 0 0 auto;
   display: inline-block; width: 10px; height: 10px; border-radius: 50%;
-  border: 2px solid #fff; box-shadow: 0 0 2px #333; margin: 0 3px;
+  border: 2px solid #fff; box-shadow: 0 0 2px #333; margin: 0 1px;
 }
 .tog-swatch-fill {
   flex: 0 0 auto;
   display: inline-block; width: 14px; height: 10px;
-  border: 1px solid #7a744f; margin: 0 1px;
+  border: 1px solid #7a744f; margin: 0;
 }
 .tog-swatch-alert {
   flex: 0 0 auto;
   display: inline-block; width: 9px; height: 9px;
   transform: rotate(45deg);
-  border: 1.5px solid #fff; box-shadow: 0 0 2px #333; margin: 0 3.5px;
+  border: 1.5px solid #fff; box-shadow: 0 0 2px #333; margin: 0 2px;
 }
 .tog-swatch-chapter {
   flex: 0 0 auto;
   display: inline-block; width: 11px; height: 11px;
   border-radius: 3px;
-  border: 1.5px solid #fff; box-shadow: 0 0 2px #333; margin: 0 2.5px;
+  border: 1.5px solid #fff; box-shadow: 0 0 2px #333; margin: 0 1px;
 }
 .tog-suffix { color: var(--ink-soft); font-size: 0.8rem; }
 .tog-error {
@@ -335,6 +339,10 @@ html, body {
 .winter-row input { accent-color: var(--trail); margin: 2px 0 0; }
 
 .status { font-size: 0.8rem; color: var(--ink-soft); min-height: 1em; }
+/* The load-status line is empty most of the time; hide it then
+   so it does not hold open a gap above the footer. It reappears
+   whenever a status message is set. */
+#load-status:empty { display: none; }
 
 /* ---------------------------------------------------------- Find */
 
@@ -1555,8 +1563,20 @@ body.base-imagery.gap-chip .gap-label span {
    flex row so the disclosure button rides at the right edge,
    like the layer-group pull-downs. The collapsed rule needs
    the ID — #background-choices' own display:grid outranks the
-   generic .sub-toggles.collapsed rule. */
-#basemap-head { display: flex; align-items: baseline; }
+   generic .sub-toggles.collapsed rule. The heading matches
+   the group headings (.tog-group: 11px, uppercase, grey) —
+   it is an h2, so #panel h2 still gives it the bottom rule,
+   which is the single line above the footer. The double-ID
+   selector is needed: #panel h2 outranks a lone ID. */
+#panel #basemap-head {
+  display: flex;
+  align-items: center;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--ink-soft);
+  margin: 10px 0 2px;
+}
 #background-choices.collapsed { display: none; }
 #background-choices {
   display: grid;
@@ -2038,7 +2058,7 @@ body.base-imagery.gap-chip .gap-label span {
 
 /* --- Panel footer (R7): Present, Hide panel, About. --- */
 .panel-foot {
-  margin-top: 16px;
+  margin-top: 8px;
   padding-top: 8px;
   font-size: 0.8rem;
   color: var(--ink-soft);
