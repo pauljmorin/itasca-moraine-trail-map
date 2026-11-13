@@ -5291,11 +5291,11 @@ var LAYERS = [
        visible at low zoom where 104 near-white sheets would just
        be a blanket. Overlay opacity 0.92 keeps the base faintly
        present at sheet seams. */
-    id: "nctasheets", label: "NCTA map sheets",
+    id: "nctasheets", label: "Matt's NCTA map sheets",
     title: "The North Country Trail Association's printed " +
       "Minnesota map sheets (MN-001 to MN-104), laid over the map",
     file: "data/ncta-sheets.geojson", onByDefault: false,
-    group: "Around the trail",
+    group: "The trail",
     swatch: { kind: "fill", color: "#fdf6d8", border: "#8a6d1a" },
     build: function (gj) {
       var group = L.layerGroup();
