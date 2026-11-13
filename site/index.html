@@ -59,11 +59,8 @@
 
   <div id="layer-toggles"><!-- checkboxes injected by app.js --></div>
 
-  <h2>Background</h2>
+  <h2>Basemap</h2>
   <div id="background-choices"><!-- base choices injected by app.js --></div>
-  <button type="button" id="bg-more-btn" class="bg-more">More
-    backgrounds…</button>
-  <div id="background-more" hidden><!-- extra bases injected by app.js --></div>
 
   <p id="load-status" class="status"></p>
 
@@ -147,10 +144,11 @@
           CC-BY-SA; map data © OpenStreetMap contributors, SRTM);
           USGS Topo 1:24k (USGS The National Map); National
           Geographic (Esri)</li>
-        <li>Base map — MN LiDAR Hillshade: Minnesota Geospatial
+        <li>Base map — LiDAR Shaded: Minnesota Geospatial
           Image Service (MnGeo / Minnesota DNR), derived from
-          1&nbsp;m LiDAR. The terrain view — the moraine itself;
-          recommended for reading the land.</li>
+          1&nbsp;m LiDAR, with OpenSnowMap's ski and snow-trail
+          lines over it. The shaded-relief view — the moraine
+          itself; recommended for reading the land.</li>
         <li>Tree height (overlay) — MN LiDAR canopy height and
           hillshade (LiDAR): built from the state's 2022
           second-generation LiDAR (MnGeo / Minnesota DNR) — a
@@ -162,17 +160,15 @@
           The overlay runs along the trail corridor only and
           ends at its edge; the two canopy bases it replaces
           were retired in November 2026.</li>
-        <li>Base maps — Aerial: Aerial (NAIP 2023/25) (USGS The
-          National Map); Esri World Imagery; Aerial + Topo
-          (NAIP 2023/25) (NAIP imagery with topo labels);
-          Aerial (2014) — Esri World Imagery
-          Wayback, the release of 30 December 2014: the aerial
-          view as it stood at the end of 2014</li>
+        <li>Base maps — Aerial photography by year: one menu,
+          newest first (2025 back to 1991) — Esri World Imagery
+          Wayback, MnGeo NAIP and FSA mosaics, and the 2013
+          spring leaf-off SAIP layer; plus Aerial (Esri) (Esri
+          World Imagery) and Aerial + Topo (NAIP 2023/25) (NAIP
+          imagery with topo labels)</li>
         <li>Base maps — Streets &amp; trails: Streets ©
           OpenStreetMap contributors; Trails by CyclOSM
-          (© OpenStreetMap contributors); Winter (snow trails) —
-          OpenSnowMap's ski and snow-trail lines over the MN
-          LiDAR Hillshade</li>
+          (© OpenStreetMap contributors)</li>
       </ul>
       <p class="privacy">Adopted sections show the adopters' initials
         (for example "JR") — the chapter's real adopter names are

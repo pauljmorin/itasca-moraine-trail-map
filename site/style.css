@@ -246,6 +246,8 @@ html, body {
 /* ---------------------------------------------------------- layers */
 
 .tog-group {
+  display: flex;
+  align-items: center;
   font-size: 11px;
   text-transform: uppercase;
   letter-spacing: 0.06em;
@@ -253,6 +255,23 @@ html, body {
   margin: 10px 0 2px;
 }
 .tog-group:first-child { margin-top: 2px; }
+/* Pull-down groups (Paul, Nov 13, 2026 — The trail, Land
+   ownership) and sub-groups (Timber sales under The land):
+   the heading carries a disclosure; the body hides until
+   opened. The sub-group heading is the same voice, smaller
+   and indented, so it reads as belonging to its group. */
+.tog-group-body.collapsed,
+.tog-subgroup-body.collapsed { display: none; }
+.tog-subgroup {
+  display: flex;
+  align-items: center;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--ink-soft);
+  margin: 8px 0 2px 12px;
+}
+.tog-subgroup-body label { padding-left: 12px; }
 #layer-toggles label {
   display: flex;
   align-items: center;
@@ -1506,9 +1525,10 @@ body.base-imagery.gap-chip .gap-label span {
     var(--gap) 0 4px, #ffffff 4px 6px, var(--gap) 6px 10px);
 }
 
-/* --- Background section (R2): four plain choices in the
-   panel, the rest behind a disclosure. --- */
-#background-choices, #background-more {
+/* --- Basemap section (R2): every base listed, none behind a
+   disclosure. A sub-choice (Streets, Trails under Topo) is
+   indented and narrower, so it reads as belonging to Topo. --- */
+#background-choices {
   display: flex;
   flex-wrap: wrap;
   gap: 4px;
@@ -1537,17 +1557,12 @@ body.base-imagery.gap-chip .gap-label span {
   font-weight: 400;
 }
 .bg-choice.on .bg-sub { color: #d8e4c8; }
-#bg-more-btn {
-  background: none;
-  border: none;
-  padding: 2px 0;
-  font: inherit;
-  font-size: 0.85rem;
-  color: var(--trail-deep);
-  cursor: pointer;
-  text-decoration: underline;
+.bg-sub-choice {
+  flex: 1 1 40%;
+  margin-left: 18px;
+  font-size: 0.83rem;
+  padding: 5px 8px;
 }
-#background-more { margin-top: 6px; }
 
 /* Aerial-by-year menu (Paul, Nov 13, 2026): one dropdown for all
    the year aerials instead of a button per year. Full-width card,
@@ -2038,8 +2053,6 @@ body.view-visit .adopt-line,
 body.view-visit #inspector,
 body.view-visit h2:has(+ #background-choices),
 body.view-visit #background-choices,
-body.view-visit #bg-more-btn,
-body.view-visit #background-more,
 body.view-visit .panel-foot { display: none; }
 
 /* --- Work view declutter (Paul, Nov 13, 2026): the Adoption bar,

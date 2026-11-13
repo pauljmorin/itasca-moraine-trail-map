@@ -270,8 +270,7 @@ var esriWayback2025 = L.tileLayer(
    whole corridor, unlike nw14, which is blank over most of it).
    fall12 is the 2012 fall Central layer. The fsa* layers are the
    per-vintage NAIP mosaics (summer leaf-on); fsa2023/fsa2025 are
-   NOT added — they duplicate the current Aerial (NAIP 2023/25)
-   base. usgs2006, fsa (2003) and doq (1991) are the older
+   NOT added — they duplicate the year menu's 2023/2025 aerials. usgs2006, fsa (2003) and doq (1991) are the older
    statewide layers. */
 var mnAerial2013Spring = L.tileLayer.wms(MN_WMS, {
   layers: "nc13hm", format: "image/jpeg", transparent: false,
@@ -340,18 +339,17 @@ var mnAerial1991 = L.tileLayer.wms(MN_WMS, {
   attribution: "Aerial imagery (1991, black-and-white): USGS / MnGeo",
 });
 
-/* Winter is a COMPOSED base: OpenSnowMap's pistes are a
+/* LiDAR Shaded is a COMPOSED base: OpenSnowMap's pistes are a
    transparent overlay tile set with no cartography of their own
    (OpenSnowMap's own base snow map stays unused -- its author
-   discourages outside use), so this radio entry stacks the
+   discourages outside use), so this entry stacks the
    pistes over the MN LiDAR Hillshade, the site's relief
-   register. The hillshade layer object is shared with the
-   Relief entry: Leaflet moves a layer between parents, never
-   duplicates it, so switching between the two entries behaves.
-   Verified over the chapter: OSM pistes (nordic ski trails)
-   are drawn around Itasca State Park and the Leech Lake shore;
-   much of the corridor has none mapped, and there the base
-   reads as plain hillshade. */
+   register. The hillshade layer object is shared: Leaflet moves
+   a layer between parents, never duplicates it. Verified over
+   the chapter: OSM pistes (nordic ski trails) are drawn around
+   Itasca State Park and the Leech Lake shore; much of the
+   corridor has none mapped, and there the base reads as plain
+   hillshade. */
 var snowPistes = L.tileLayer(
   "https://tiles.opensnowmap.org/pistes/{z}/{x}/{y}.png", {
     maxZoom: 18,
@@ -393,90 +391,101 @@ var mnCanopyHeight = L.tileLayer(
       "Minnesota DNR",
   });
 
-/* ------------------------------------------------------- Background
+/* ------------------------------------------------------- Basemap
    (design review R2): the base-map chooser lives in the panel,
-   not in a floating box over the map. Four plain choices —
-   Topo (the working map), Aerial (the photo), Terrain (the bare
-   ground, no trees), Winter (snow trails) — and the other bases
-   behind a "More backgrounds" disclosure for Paul. The two
-   canopy radios are retired (see the note above): once Tree
-   height exists as an overlay, a corridor-only base is a trap.
+   not in a floating box over the map. The working maps first —
+   Topo, with Streets and Trails as sub-choices under it — then
+   LiDAR Shaded (the merged Terrain/Winter hillshade), then the
+   aerials (one menu, by year), then USGS Topo and National
+   Geographic. Every base is listed (Paul, Nov 13, 2026): the
+   old "More backgrounds" disclosure is gone. The two canopy
+   radios are retired (see the note above): once Tree height
+   exists as an overlay, a corridor-only base is a trap.
    setBase() is the only way the base changes; it keeps the
    imagery label flip, the casing register, and the Winter
    snowmobile emphasis in step (the old Leaflet layers control
    and its baselayerchange handler are gone). */
 var BASES = [
   { name: "Topo (OpenTopoMap)", code: "topo", label: "Topo",
-    sub: "the working map", layer: topo, primary: true },
-  { name: "Aerial (NAIP 2023/25)", code: "aerial", label: "Aerial",
-    sub: "the photo", layer: usgsImagery, primary: true },
-  { name: "MN LiDAR Hillshade", code: "terrain", label: "Terrain",
-    sub: "the bare ground, no trees", layer: mnHillshade,
-    primary: true },
-  { name: "Winter (snow trails)", code: "winter", label: "Winter",
-    sub: "snow trails", layer: winterBase, primary: true,
+    sub: "the working map", layer: topo },
+  /* Streets and Trails sit under Topo (Paul, Nov 13, 2026):
+     they are the street-level working maps, so they read as
+     sub-choices of Topo (indented, subChoice) rather than
+     separate top-level bases. */
+  { name: "Streets (OSM)", code: "streets", label: "Streets",
+    sub: "OpenStreetMap", layer: osm, subChoice: true },
+  { name: "Trails (CyclOSM)", code: "trails", label: "Trails",
+    sub: "CyclOSM", layer: cyclosm, subChoice: true },
+  /* LiDAR Shaded (Paul, Nov 13, 2026): Terrain and Winter were
+     the same LiDAR hillshade — Winter was the hillshade plus the
+     snow pistes — so they are one button now. It uses winterBase
+     (hillshade + snow trails), so the snow trails are kept, and
+     winter: true keeps the snowmobile emphasis. The generic
+     Aerial (NAIP 2023/25) is gone the same day: the year menu
+     below carries recent aerial photography (2025 Dec newest),
+     so a separate undated Aerial was redundant. */
+  { name: "LiDAR Shaded", code: "lidar", label: "LiDAR Shaded",
+    sub: "shaded relief + snow trails", layer: winterBase,
     winter: true },
-  { name: "USGS Topo 1:24k", code: "usgs", label: "USGS Topo",
-    sub: "1:24k quadrangles", layer: usgsTopo },
-  { name: "National Geographic (Esri)", code: "natgeo", label: "National Geographic",
-    sub: "Esri", layer: esriNatGeo },
-  { name: "Aerial (Esri)", code: "esri-aerial", label: "Aerial (Esri)",
-    sub: "Esri World Imagery", layer: esriImagery },
-  { name: "Aerial + Topo (NAIP 2023/25)", code: "aerial-topo", label: "Aerial + Topo",
-    sub: "NAIP with topo labels", layer: usgsImageryTopo },
   /* Added Nov 13, 2026 (Paul: year-by-year aerials, labelled by
      year and season): newest first, Wayback above NAIP within a
      year. All verified live over the corridor — see the tile-layer
      definitions above and the research note in SOURCES.md. The
-     2014 entry sits in its chronological slot, not at the head. */
+     2014 entry sits in its chronological slot, not at the head.
+     Leaf state is labelled only where it is leaf-off (2013
+     spring); the rest carry no leaf label (Paul, Nov 13). */
   { name: "Aerial 2025 (Dec)", code: "aerial-2025", label: "Aerial 2025 (Dec)",
-    sub: "Esri Wayback · summer leaf-on", layer: esriWayback2025 },
+    sub: "Esri Wayback · summer", layer: esriWayback2025 },
   { name: "Aerial 2024 (Dec)", code: "aerial-2024", label: "Aerial 2024 (Dec)",
-    sub: "Esri Wayback · summer leaf-on", layer: esriWayback2024 },
+    sub: "Esri Wayback · summer", layer: esriWayback2024 },
   { name: "Aerial 2023 (Dec)", code: "aerial-2023", label: "Aerial 2023 (Dec)",
-    sub: "Esri Wayback · summer leaf-on", layer: esriWayback2023 },
+    sub: "Esri Wayback · summer", layer: esriWayback2023 },
   { name: "Aerial 2022 (Dec)", code: "aerial-2022", label: "Aerial 2022 (Dec)",
-    sub: "Esri Wayback · summer leaf-on", layer: esriWayback2022 },
+    sub: "Esri Wayback · summer", layer: esriWayback2022 },
   { name: "Aerial 2021 (Dec)", code: "aerial-2021", label: "Aerial 2021 (Dec)",
-    sub: "Esri Wayback · summer leaf-on", layer: esriWayback2021 },
+    sub: "Esri Wayback · summer", layer: esriWayback2021 },
   { name: "Aerial 2021 (summer)", code: "aerial-2021-naip", label: "Aerial 2021 (summer)",
-    sub: "NAIP · leaf-on", layer: mnAerial2021 },
+    sub: "NAIP", layer: mnAerial2021 },
   { name: "Aerial 2020 (Dec)", code: "aerial-2020", label: "Aerial 2020 (Dec)",
-    sub: "Esri Wayback · summer leaf-on", layer: esriWayback2020 },
+    sub: "Esri Wayback · summer", layer: esriWayback2020 },
   { name: "Aerial 2019 (Dec)", code: "aerial-2019", label: "Aerial 2019 (Dec)",
-    sub: "Esri Wayback · summer leaf-on", layer: esriWayback2019 },
+    sub: "Esri Wayback · summer", layer: esriWayback2019 },
   { name: "Aerial 2019 (summer)", code: "aerial-2019-naip", label: "Aerial 2019 (summer)",
-    sub: "NAIP · leaf-on", layer: mnAerial2019 },
+    sub: "NAIP", layer: mnAerial2019 },
   { name: "Aerial 2018 (Dec)", code: "aerial-2018", label: "Aerial 2018 (Dec)",
-    sub: "Esri Wayback · summer leaf-on", layer: esriWayback2018 },
+    sub: "Esri Wayback · summer", layer: esriWayback2018 },
   { name: "Aerial 2017 (summer)", code: "aerial-2017-naip", label: "Aerial 2017 (summer)",
-    sub: "NAIP · leaf-on", layer: mnAerial2017 },
+    sub: "NAIP", layer: mnAerial2017 },
   { name: "Aerial 2015 (summer)", code: "aerial-2015-naip", label: "Aerial 2015 (summer)",
-    sub: "NAIP · leaf-on", layer: mnAerial2015 },
+    sub: "NAIP", layer: mnAerial2015 },
   { name: "Aerial 2014 (Dec)", code: "aerial-2014", label: "Aerial 2014 (Dec)",
-    sub: "Esri Wayback · summer leaf-on", layer: esriWayback2014 },
+    sub: "Esri Wayback · summer", layer: esriWayback2014 },
   { name: "Aerial 2013 (spring, leaf-off)", code: "aerial-2013-spring", label: "Aerial 2013 (spring, leaf-off)",
     sub: "MnGeo NW 50 cm · SAIP", layer: mnAerial2013Spring },
   { name: "Aerial 2013 (summer)", code: "aerial-2013-naip", label: "Aerial 2013 (summer)",
-    sub: "NAIP · leaf-on", layer: mnAerial2013 },
+    sub: "NAIP", layer: mnAerial2013 },
   { name: "Aerial 2012 (fall)", code: "aerial-2012-fall", label: "Aerial 2012 (fall)",
     sub: "MnGeo Central", layer: mnAerial2012Fall },
   { name: "Aerial 2010 (summer)", code: "aerial-2010-naip", label: "Aerial 2010 (summer)",
-    sub: "NAIP · leaf-on", layer: mnAerial2010 },
+    sub: "NAIP", layer: mnAerial2010 },
   { name: "Aerial 2009 (summer)", code: "aerial-2009-naip", label: "Aerial 2009 (summer)",
-    sub: "NAIP · leaf-on", layer: mnAerial2009 },
+    sub: "NAIP", layer: mnAerial2009 },
   { name: "Aerial 2008 (summer)", code: "aerial-2008-naip", label: "Aerial 2008 (summer)",
-    sub: "NAIP · leaf-on", layer: mnAerial2008 },
+    sub: "NAIP", layer: mnAerial2008 },
   { name: "Aerial 2006 (summer/fall)", code: "aerial-2006", label: "Aerial 2006 (summer/fall)",
     sub: "USGS 40-county · 1 m", layer: mnAerial2006 },
   { name: "Aerial 2003 (summer)", code: "aerial-2003", label: "Aerial 2003 (summer)",
-    sub: "FSA · leaf-on", layer: mnAerial2003 },
+    sub: "FSA", layer: mnAerial2003 },
   { name: "Aerial 1991 (black-and-white)", code: "aerial-1991", label: "Aerial 1991 (black-and-white)",
     sub: "USGS DOQ · 1 m", layer: mnAerial1991 },
-  { name: "Streets (OSM)", code: "streets", label: "Streets",
-    sub: "OpenStreetMap", layer: osm },
-  { name: "Trails (CyclOSM)", code: "trails", label: "Trails",
-    sub: "CyclOSM", layer: cyclosm },
+  { name: "Aerial (Esri)", code: "esri-aerial", label: "Aerial (Esri)",
+    sub: "Esri World Imagery", layer: esriImagery },
+  { name: "Aerial + Topo (NAIP 2023/25)", code: "aerial-topo", label: "Aerial + Topo",
+    sub: "NAIP with topo labels", layer: usgsImageryTopo },
+  { name: "USGS Topo 1:24k", code: "usgs", label: "USGS Topo",
+    sub: "1:24k quadrangles", layer: usgsTopo },
+  { name: "National Geographic (Esri)", code: "natgeo", label: "National Geographic",
+    sub: "Esri", layer: esriNatGeo },
   /* Retired Nov 11, 2026 (design review §7): the two canopy
      bases are the Tree height overlay's source now, not
      choices. They stay defined above and are NOT listed here. */
@@ -514,8 +523,7 @@ function isAerialYear(def) {
   return /^Aerial \d{4}/.test(def.name);
 }
 function markActiveBase(name) {
-  document.querySelectorAll("#background-choices .bg-choice, " +
-    "#background-more .bg-choice").forEach(function (row) {
+  document.querySelectorAll("#background-choices .bg-choice").forEach(function (row) {
     var on = row.getAttribute("data-base") === name;
     row.classList.toggle("on", on);
     row.setAttribute("aria-pressed", on ? "true" : "false");
@@ -527,21 +535,36 @@ function markActiveBase(name) {
   }
 }
 /* Shareable view: look a base up by its short hash code. */
+function baseByName(name) {
+  for (var i = 0; i < BASES.length; i++) {
+    if (BASES[i].name === name) return BASES[i];
+  }
+  return null;
+}
 function baseByCode(code) {
   for (var i = 0; i < BASES.length; i++) {
     if (BASES[i].code === code) return BASES[i];
   }
+  /* Retired codes (Paul, Nov 13, 2026): Terrain + Winter merged
+     into LiDAR Shaded, and the generic Aerial is the year menu's
+     newest aerial now — old shared links keep working. */
+  if (code === "terrain" || code === "winter") {
+    return baseByName("LiDAR Shaded");
+  }
+  if (code === "aerial") return baseByName("Aerial 2025 (Dec)");
   return null;
 }
 (function buildBackground() {
   function rowFor(def) {
     /* A real button (aria-pressed + the "on" class), not a
-       label + radio — the Background section is a set of
+       label + radio — the Basemap section is a set of
        actions, and the radio's checked state drifted from
-       the "on" class markActiveBase maintains. */
+       the "on" class markActiveBase maintains. A subChoice
+       (Streets, Trails under Topo) is indented, not a
+       top-level button. */
     var btn = document.createElement("button");
     btn.type = "button";
-    btn.className = "bg-choice";
+    btn.className = "bg-choice" + (def.subChoice ? " bg-sub-choice" : "");
     btn.setAttribute("data-base", def.name);
     btn.setAttribute("aria-pressed",
       def === currentBase ? "true" : "false");
@@ -557,13 +580,13 @@ function baseByCode(code) {
     return btn;
   }
   var main = document.getElementById("background-choices");
-  var more = document.getElementById("background-more");
-  var moreBtn = document.getElementById("bg-more-btn");
-  if (!main || !more) return;
+  if (!main) return;
   /* The year aerials live in one menu, newest first (BASES
      order), instead of a button per year. The menu is inserted
-     where the first year aerial would have sat — after the
-     non-year aerials, before Streets. */
+     where the first year aerial would have sat — after LiDAR
+     Shaded, before Aerial (Esri). Every base is listed here now
+     (Paul, Nov 13, 2026): the "More backgrounds" disclosure is
+     gone, nothing hides behind it. */
   function yearMenu() {
     var wrap = document.createElement("div");
     wrap.className = "bg-year-wrap";
@@ -597,21 +620,13 @@ function baseByCode(code) {
   BASES.forEach(function (def) {
     if (isAerialYear(def)) {
       if (!menuInserted) {
-        more.appendChild(yearMenu());
+        main.appendChild(yearMenu());
         menuInserted = true;
       }
       return; /* year aerials live in the menu, not as buttons */
     }
-    (def.primary ? main : more).appendChild(rowFor(def));
+    main.appendChild(rowFor(def));
   });
-  if (moreBtn) {
-    moreBtn.addEventListener("click", function () {
-      var open = more.hidden;
-      more.hidden = !open;
-      moreBtn.textContent = open ? "Fewer backgrounds…"
-                                 : "More backgrounds…";
-    });
-  }
 })();
 L.control.scale({ imperial: true, metric: true }).addTo(map);
 
@@ -636,7 +651,6 @@ var CASING_BY_BASE = {
   "Topo (OpenTopoMap)": "paper",
   "Streets (OSM)": "paper",
   "Trails (CyclOSM)": "paper",
-  "Aerial (NAIP 2023/25)": "photo",
   "Aerial (Esri)": "photo",
   "Aerial + Topo (NAIP 2023/25)": "photo",
   "Aerial 2014 (Dec)": "photo",
@@ -663,8 +677,9 @@ var CASING_BY_BASE = {
   "Aerial 2006 (summer/fall)": "photo",
   "Aerial 2003 (summer)": "photo",
   "Aerial 1991 (black-and-white)": "photo",
-  "Winter (snow trails)": "relief",
-  "MN LiDAR Hillshade": "relief",
+  /* LiDAR Shaded (Paul, Nov 13, 2026) replaces Terrain + Winter:
+     one button, same relief register. */
+  "LiDAR Shaded": "relief",
   /* The two canopy bases are retired (design review §7): their
      tile sets are the Tree height overlay's source now, not
      bases, so they have no casing register entry. */
@@ -1909,12 +1924,18 @@ PLACES_KIND_TOGGLES.forEach(function (t) { placesKindOn[t[0]] = true; });
 var placesKindLayers = {};
 var placesKindBoxes = {};
 var campingBox = null; /* the Camping sub-toggle checkbox under NCTA Places */
+var alertsBox = null; /* the Trail alerts sub-toggle checkbox under NCTA Places */
 /* Keep the Camping sub-toggle in step with the chapterplaces
    layer: view presets and shared links set the layer's own
    checkbox directly, so this re-reads it after those run. */
 function syncCampingBox() {
   var def = layerById("chapterplaces");
   if (campingBox && def && def.box) campingBox.checked = def.box.checked;
+}
+/* Same, for the Trail alerts sub-toggle and the alerts layer. */
+function syncAlertsBox() {
+  var def = layerById("alerts");
+  if (alertsBox && def && def.box) alertsBox.checked = def.box.checked;
 }
 
 /* Expandable sub-toggles (Paul, Nov 13, 2026): a layer whose
@@ -4394,8 +4415,8 @@ var LAYERS = [
        fetches data/parcels.geojson until the box is first checked
        (ensureLayer is only called from the toggle handler or a
        #layers=parcels hash, never at startup). */
-    id: "parcels", label: "Public parcels",
-    file: "data/parcels.geojson", onByDefault: false, group: "Around the trail",
+    id: "parcels", label: "Parcels",
+    file: "data/parcels.geojson", onByDefault: false, group: "Land ownership",
     swatch: { kind: "fill", color: "#fdbb84", border: "#b35806" },
     build: function (gj) {
       var layer = L.geoJSON(gj, {
@@ -4429,7 +4450,7 @@ var LAYERS = [
     title: "Leech Lake Reservation boundary (Leech Lake Band " +
       "of Ojibwe) — Bureau of Indian Affairs, AIAN-LAR",
     file: "data/leech-lake-reservation.geojson",
-    onByDefault: false, group: "Around the trail",
+    onByDefault: false, group: "Land ownership",
     swatch: { kind: "fill", color: "#8e86c2", border: "#5e548e" },
     build: function (gj) {
       var group = L.layerGroup();
@@ -4470,6 +4491,7 @@ var LAYERS = [
        or status in the source, so the popup shows the year
        prominently. */
     id: "logcass", label: "Cass timber sales",
+    subgroup: "Timber sales",
     title: "Cass County timber sales, current — year is the sale year",
     file: "data/logging-cass-timber-sales.geojson",
     onByDefault: false, group: "The land",
@@ -4517,6 +4539,7 @@ var LAYERS = [
        project areas, not sale units — much larger than the
        Cass sale units — so they draw underneath them. */
     id: "logedw", label: "Chippewa NF timber sales",
+    subgroup: "Timber sales",
     title: "USFS timber sale project areas, Chippewa National Forest",
     file: "data/logging-edw-timber-sale.geojson",
     onByDefault: false, group: "The land",
@@ -4547,6 +4570,7 @@ var LAYERS = [
        against Becker's Year field). Recent sales (2024–2026)
        render amber via timberSaleStyle, like Cass. */
     id: "loghubbard", label: "Hubbard timber sales",
+    subgroup: "Timber sales",
     title: "Hubbard County timber sales — status is the past/future signal",
     file: "data/logging-hubbard-timber-sales.geojson",
     onByDefault: false, group: "The land",
@@ -4573,6 +4597,7 @@ var LAYERS = [
        where filled (Yes 37, No 1, null 50); 39 records carry no
        year. Recent sales render amber via timberSaleStyle. */
     id: "logbecker", label: "Becker timber sales",
+    subgroup: "Timber sales",
     title: "Becker County timber appraisals",
     file: "data/logging-becker-timber-sales.geojson",
     onByDefault: false, group: "The land",
@@ -4600,6 +4625,7 @@ var LAYERS = [
        PDFs on disk) — a PLSS-conversion build, not a service
        pull; that build is still owed. */
     id: "logclearwater", label: "Clearwater timber sales",
+    subgroup: "Timber sales",
     title: "Clearwater County timber appraisals — nearly empty service",
     file: "data/logging-clearwater-timber-sales.geojson",
     onByDefault: false, group: "The land",
@@ -4707,7 +4733,7 @@ var LAYERS = [
     id: "easements", label: "Conservation easements",
     title: "BWSR RIM conservation easements in the corridor",
     file: "data/easements.geojson",
-    onByDefault: false, group: "The land",
+    onByDefault: false, group: "Land ownership",
     swatch: { kind: "fill", color: "#0d9488", border: "#0f766e" },
     build: function (gj) {
       var layer = L.geoJSON(gj, {
@@ -4778,12 +4804,18 @@ var LAYERS = [
        the box is first checked. The marker is a red warning
        diamond in the gap red — deliberately unlike the Places
        letter discs and the orange asset pins. No zoom gate:
-       five markers should never hide. */
+       five markers should never hide. Nested under NCTA Places
+       (Paul, Nov 13, 2026) like Camping: it has no panel row of
+       its own (hiddenToggle) — the Trail alerts sub-toggle
+       under NCTA Places drives it. The separate "Trail alerts —
+       all Minnesota" layer is gone the same day (Paul: "we
+       don't need trail alerts MN"); its 22 points are NOT in
+       this file, which stays the chapter's 5 alerts. */
     id: "alerts", label: "Trail alerts",
     title: "Trail alerts from the North Country Trail Association" +
       " — closures, storm damage, reroutes",
     file: "data/trail-alerts.geojson", onByDefault: false,
-    group: "Around the trail",
+    group: "Around the trail", hiddenToggle: true,
     swatch: { kind: "alert", color: COLORS.gap },
     build: function (gj) {
       return L.geoJSON(gj, {
@@ -4803,49 +4835,16 @@ var LAYERS = [
     },
   },
   {
-    /* Trail alerts — all Minnesota (Paul, Nov 13, 2026): NCTA's
-       alert points for the rest of the state, pulled Nov 13 by
-       scripts/pull_minnesota_alerts.py (22 points, 2022–2026).
-       The chapter's own 5 alerts are NOT in this file — they
-       stay in the chapter layer — so both layers on shows every
-       Minnesota alert exactly once. Same red warning diamond as
-       the chapter alerts. OFF by default and LAZY, like the
-       chapter layer. A few points sit just across the border
-       (Fargo, Superior, and the Wisconsin NCT) — they are NCTA
-       alerts on this same trail, kept for the end-to-end hiker. */
-    id: "alerts-mn", label: "Trail alerts — all Minnesota",
-    title: "Trail alerts from the North Country Trail Association " +
-      "for the rest of Minnesota",
-    file: "data/trail-alerts-minnesota.geojson", onByDefault: false,
-    group: "Around the trail",
-    swatch: { kind: "alert", color: COLORS.gap },
-    build: function (gj) {
-      return L.geoJSON(gj, {
-        pointToLayer: function (f, latlng) {
-          return L.marker(latlng, {
-            keyboard: false,
-            icon: L.divIcon({
-              className: "alert-marker-wrap", iconSize: [18, 18],
-              iconAnchor: [9, 9],
-              html: "<span class='alert-marker'>" +
-                "<span class='alert-glyph'>!</span></span>",
-            }),
-          });
-        },
-        onEachFeature: function (f, l) { bindPop(l, alertPopup(f)); },
-      });
-    },
-  },
-  {
-    /* Trail reroutes — all Minnesota (Paul, Nov 13, 2026): the
+    /* NCT reroutes (Paul, Nov 13, 2026 — renamed from "Trail
+       reroutes — all Minnesota" and moved into The trail): the
        NCTA reroute LINES for the rest of the state (7 lines),
        pulled with the alerts above. The chapter extent has no
        reroute lines, so there is no chapter counterpart. OFF by
        default and LAZY. Drawn dashed red, above the trail line. */
-    id: "alerts-mn-lines", label: "Trail reroutes — all Minnesota",
+    id: "alerts-mn-lines", label: "NCT reroutes",
     title: "NCTA reroute lines for the rest of Minnesota",
     file: "data/trail-alert-lines-minnesota.geojson",
-    onByDefault: false, group: "Around the trail",
+    onByDefault: false, group: "The trail",
     swatch: { kind: "line", color: COLORS.gap },
     build: function (gj) {
       return L.geoJSON(gj, {
@@ -5038,6 +5037,30 @@ var LAYERS = [
         writeShareHash(); /* a Camping change is a new shareable view */
       });
       wrap.appendChild(clab);
+      /* Trail alerts (the chapter's 5 NCTA alerts) rides under
+         NCTA Places as a sixth item (Paul, Nov 13, 2026). Like
+         Camping it is a separate layer (alerts) with its own red
+         diamonds and no zoom gate, so it is not a Places kind —
+         this checkbox drives that layer's own toggle instead.
+         Count verified against data/trail-alerts.geojson (5). */
+      var adef = layerById("alerts");
+      var alab = document.createElement("label");
+      var abox = document.createElement("input");
+      abox.type = "checkbox";
+      abox.checked = !!(adef && adef.box && adef.box.checked);
+      alertsBox = abox; /* setView + applyHash re-sync it */
+      abox.setAttribute("aria-label", "Trail alerts");
+      alab.appendChild(abox);
+      alab.appendChild(document.createTextNode("Trail alerts (5)"));
+      abox.addEventListener("change", function () {
+        var def = layerById("alerts");
+        if (!def || !def.box) { writeShareHash(); return; }
+        def.box.checked = abox.checked;
+        if (abox.checked) ensureLayer(def, true);
+        else if (def.layer) map.removeLayer(def.layer);
+        writeShareHash(); /* an alerts change is a new shareable view */
+      });
+      wrap.appendChild(alab);
       label.parentNode.insertBefore(wrap, label.nextSibling);
       wireSubToggleExpand(label, wrap, "place kinds");
     },
@@ -5459,6 +5482,7 @@ function setView(view) {
      never clobbers an incoming link; applyHash turns the writer
      on once the link is applied. */
   syncCampingBox(); /* the preset may have switched Camping */
+  syncAlertsBox(); /* the preset may have switched Trail alerts */
   writeShareHash();
 }
 (function initView() {
@@ -5539,7 +5563,7 @@ function writeShareHash() {
    order; the PANEL order is this list, so a def's group decides
    where its toggle lands, not its position in the array. */
 var PANEL_GROUPS = ["The trail", "ITM inventory",
-                    "The land", "Around the trail"];
+                    "The land", "Land ownership", "Around the trail"];
 LAYERS.forEach(function (def) {
   def.layer = null;
   def.loading = false;
@@ -5601,10 +5625,19 @@ LAYERS.forEach(function (def) {
   if (box.checked) ensureLayer(def, false);
 });
 /* Phase 2: lay the toggles out in panel (task) order. */
+var GROUP_PULLDOWNS = ["The trail", "Land ownership"]; /* Paul,
+  Nov 13, 2026 — these groups are pull-downs: a disclosure on
+  the heading, the layers hidden until opened. The other groups
+  stay always open. A def with a `subgroup` (Timber sales under
+  The land) gets its own sub-heading + pull-down inside its
+  group, created on first use. Both start collapsed, like the
+  ITM Assets / NCTA Places sub-toggles. */
 PANEL_GROUPS.forEach(function (group) {
   var container = togglesEl;
   if (!container) return;
   var headed = false;
+  var groupBody = null;
+  var subGroups = {};
   LAYERS.forEach(function (def) {
     if (def.enabled === false || !def._label) return;
     if (def.group !== group || def.hiddenToggle) return;
@@ -5614,9 +5647,59 @@ PANEL_GROUPS.forEach(function (group) {
       gh.textContent = group;
       container.appendChild(gh);
       headed = true;
+      /* The group's layers live in a body div so a pull-down
+         group can hide them. */
+      groupBody = document.createElement("div");
+      groupBody.className = "tog-group-body";
+      container.appendChild(groupBody);
+      if (GROUP_PULLDOWNS.indexOf(group) >= 0) {
+        var gbtn = document.createElement("button");
+        gbtn.type = "button";
+        gbtn.className = "tog-expand";
+        gbtn.textContent = "▸";
+        gbtn.setAttribute("aria-expanded", "false");
+        gbtn.setAttribute("aria-label", "Show " + group);
+        gbtn.title = "Show " + group;
+        gh.appendChild(gbtn);
+        groupBody.classList.add("collapsed");
+        gbtn.addEventListener("click", function () {
+          var collapsed = groupBody.classList.toggle("collapsed");
+          gbtn.textContent = collapsed ? "▸" : "▾";
+          gbtn.setAttribute("aria-expanded", collapsed ? "false" : "true");
+          gbtn.title = (collapsed ? "Show " : "Hide ") + group;
+        });
+      }
     }
-    container.appendChild(def._label);
-    container.appendChild(def.errEl);
+    var target = groupBody;
+    if (def.subgroup) {
+      if (!subGroups[def.subgroup]) {
+        var sh = document.createElement("div");
+        sh.className = "tog-subgroup";
+        sh.textContent = def.subgroup;
+        var sbtn = document.createElement("button");
+        sbtn.type = "button";
+        sbtn.className = "tog-expand";
+        sbtn.textContent = "▸";
+        sbtn.setAttribute("aria-expanded", "false");
+        sbtn.setAttribute("aria-label", "Show " + def.subgroup);
+        sbtn.title = "Show " + def.subgroup;
+        sh.appendChild(sbtn);
+        var sbody = document.createElement("div");
+        sbody.className = "tog-subgroup-body collapsed";
+        groupBody.appendChild(sh);
+        groupBody.appendChild(sbody);
+        sbtn.addEventListener("click", function () {
+          var collapsed = sbody.classList.toggle("collapsed");
+          sbtn.textContent = collapsed ? "▸" : "▾";
+          sbtn.setAttribute("aria-expanded", collapsed ? "false" : "true");
+          sbtn.title = (collapsed ? "Show " : "Hide ") + def.subgroup;
+        });
+        subGroups[def.subgroup] = sbody;
+      }
+      target = subGroups[def.subgroup];
+    }
+    target.appendChild(def._label);
+    target.appendChild(def.errEl);
     if (def.panelExtra) def.panelExtra(def._label);
   });
 });
@@ -5807,6 +5890,7 @@ var requestedView = null;
      without clobbering it. Normalize the hash to the full
      canonical form so Copy link works before any interaction. */
   syncCampingBox(); /* the link may have switched Camping */
+  syncAlertsBox(); /* the link may have switched Trail alerts */
   shareHashReady = true;
   writeShareHash();
 })();
@@ -5918,10 +6002,9 @@ function assertDrawOrder() {
        uppermost. Nov 13, 2026: "trail-minnesota" sits directly
        under "trail" (the chapter line owns the corridor);
        "alerts-mn-lines" sits directly over it (reroutes read as
-       alternate routes); "alerts-mn" sits with "alerts". The
-       three Nov 13 land layers (foresthealth, invasives,
-       chippewa-plan) sit with the other "The land" fills, after
-       easements, before access. */
+       alternate routes). The three Nov 13 land layers
+       (foresthealth, invasives, chippewa-plan) sit with the
+       other "The land" fills, after easements, before access. */
     ["leechlake", "parcels", "logedw", "logfim", "logcass", "loghubbard",
      "logbecker", "logclearwater", "easements", "foresthealth",
      "invasives", "chippewa-plan", "access",
@@ -5929,7 +6012,7 @@ function assertDrawOrder() {
      "stretches", "gaps",
      "boundaries", "termini", "milemarkers", "chainage", "contours",
      "places",
-     "alerts", "alerts-mn", "chapterplaces", "assets"].forEach(function (id) {
+     "alerts", "chapterplaces", "assets"].forEach(function (id) {
       var d = layerById(id);
       if (!d || !d.layer || !map.hasLayer(d.layer)) return;
       if (d.layer.bringToFront) { d.layer.bringToFront(); return; }
@@ -6010,7 +6093,7 @@ function legendHtml() {
     var s = ROAD_CLASS_STYLES[cls];
     add(line(s.color), s.short);
   });
-  add("", "<strong>Public parcels</strong>");
+  add("", "<strong>Parcels</strong>");
   add("<span class='swatch fill' style='background:#fdbb84'></span>",
     "Parcel the trail crosses");
   add("<span class='swatch fill' style='background:#e7e1c3'></span>",
@@ -6019,9 +6102,9 @@ function legendHtml() {
   add("", "<strong>Trail alerts</strong>");
   add("<span class='swatch alert'></span>",
     "Trail alert — closure, storm damage, reroute (NCTA)");
-  add("", "<strong>Chapter places</strong>");
+  add("", "<strong>Camping</strong>");
   add("<span class='swatch chapterdisc'>C</span>",
-    "Chapter place — the chapter's own record (C camping, " +
+    "Camping — the chapter's own campsite record (C camping, " +
     "W water, P parking, S shelter)");
   add("<span class='swatch chapterdisc closed'>C</span>",
     "Chapter place — CLOSED");
