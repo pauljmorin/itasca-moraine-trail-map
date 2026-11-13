@@ -64,8 +64,9 @@
 
   <p id="load-status" class="status"></p>
 
-  <p class="panel-foot"><a href="#" id="about-link">About this
-    map</a> — sources, legend, and privacy. ·
+  <p class="panel-foot"><a href="data-sources.html" target="_blank"
+    rel="noopener" id="data-sources-link">Data sources</a> — every
+    dataset this map draws on, and where it comes from. ·
     <a href="#" id="hide-panel-link">Hide panel</a></p>
 
   <div id="legend-print" aria-hidden="true">
@@ -89,94 +90,6 @@
   <!-- Reference material (sources + legend) lives behind these
        corner buttons, toggled by app.js; both cards start closed. -->
   <div id="corner-ui">
-    <div id="sources-card" class="corner-card" hidden>
-      <h2>Data sources</h2>
-      <ul class="credits">
-        <li>Trail line: North Country Trail Association, on behalf of the
-          National Park Service (official public depiction)</li>
-        <li>Parcels: Minnesota Geospatial Commons (MnGeo) compiled county
-          parcels; Hubbard County open data (Hubbard is not in the state
-          compilation). The parcels layer is off when the map opens;
-          its data loads only when you switch it on.</li>
-        <li>Non-road access: Minnesota DNR — state park trails &amp;
-          roads, OHV trails, state trails, snowmobile trails, hunter
-          walking trails</li>
-        <li>Roads: Minnesota DNR / MnDOT road centerlines, plus
-          Minnesota DNR state forest roads</li>
-        <li>Roads and access lines are shown within a corridor of the
-          trail; faded ends continue beyond it.</li>
-        <li>Mile markers: North Country Trail Association Minnesota
-          half-mile points (the NCTA mileage index)</li>
-        <li>Mile markers show the NCTA reckoning; the chapter
-          tracker's mile figures differ by roughly 46–48 miles and
-          are labelled as tracker miles where shown.</li>
-        <li>Sections &amp; gaps: the chapter's adoption tracker and segment
-          boundary points, joined onto the official line</li>
-        <li>Waypoints (parking, camping, shelters, water, points of
-          interest) and the Find index: North Country Trail Association
-          public point data, plus the layers above</li>
-        <li>Trail alerts: North Country Trail Association trail
-          alerts service — alert points pulled Nov 11, 2026, shown
-          with their own dates and wording; the layer is off when
-          the map opens and loads only when you switch it on</li>
-        <li>Leech Lake Reservation: U.S. Census Bureau, TIGER/Line
-          American Indian Areas (BAS 2026 vintage; GEOID 1940R).
-          The layer is off when the map opens and loads only when
-          you switch it on. The boundary is the federal
-          reservation boundary as published — not a legal
-          survey. 2.28 mi of the depicted trail (Chip-12) lies
-          inside the reservation.</li>
-        <li>Map sheets: North Country Trail Association Minnesota
-          map series (edition of March 16, 2026) — sheets MN-023 to
-          MN-044 under the NCTA map sheets layer, and the official
-          sheet named on each section's card. The layer is off when
-          the map opens and loads only when you switch it on; sheet
-          images appear at closer zooms, with the sheet outlines and
-          numbers as a locator below that.</li>
-        <li>Chapter places: the Itasca Moraine Chapter's own
-          records, maintained by the chapter — seeded from North
-          Country Trail Association point data in November 2026
-          (the campsites) and confirmed or corrected by the
-          chapter since; where a chapter record exists it replaces
-          the NCTA point. The layer is off when the map opens and
-          loads only when you switch it on</li>
-        <li>Base maps — Topographic: OpenTopoMap (the default;
-          CC-BY-SA; map data © OpenStreetMap contributors, SRTM);
-          USGS Topo 1:24k (USGS The National Map); National
-          Geographic (Esri)</li>
-        <li>Base map — LiDAR Shaded: Minnesota Geospatial
-          Image Service (MnGeo / Minnesota DNR), derived from
-          1&nbsp;m LiDAR, with OpenSnowMap's ski and snow-trail
-          lines over it. The shaded-relief view — the moraine
-          itself; recommended for reading the land.</li>
-        <li>Tree height (overlay) — MN LiDAR canopy height and
-          hillshade (LiDAR): built from the state's 2022
-          second-generation LiDAR (MnGeo / Minnesota DNR) — a
-          shaded view of the treetops, and canopy height as
-          colour (white at ground level, deep green at full
-          height, so clearcuts show). White is open ground;
-          2&nbsp;m is head height; 20&nbsp;m is the old-growth
-          line (height is a guide, not proof of old growth).
-          The overlay runs along the trail corridor only and
-          ends at its edge; the two canopy bases it replaces
-          were retired in November 2026.</li>
-        <li>Base maps — Aerial photography by year: one menu,
-          newest first (2025 back to 1991) — Esri World Imagery
-          Wayback, MnGeo NAIP and FSA mosaics, and the 2013
-          spring leaf-off SAIP layer; plus Aerial (Esri) (Esri
-          World Imagery) and Aerial + Topo (NAIP 2023/25) (NAIP
-          imagery with topo labels)</li>
-        <li>Base maps — Streets &amp; trails: Streets ©
-          OpenStreetMap contributors; Trails by CyclOSM
-          (© OpenStreetMap contributors)</li>
-      </ul>
-      <p class="privacy">Adopted sections show the adopters' initials
-        (for example "JR") — the chapter's real adopter names are
-        kept in its working files and never appear on this map. Parcel
-        owner names and addresses, as published in the county parcel
-        records (public record), appear in parcel popups when the
-        parcels layer is switched on.</p>
-    </div>
     <div id="legend-card" class="corner-card" hidden>
       <h2>Legend</h2>
       <div id="legend"><!-- legend injected by app.js --></div>

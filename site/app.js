@@ -436,8 +436,7 @@ var BASES = [
      below carries recent aerial photography (2025 Dec newest),
      so a separate undated Aerial was redundant. */
   { name: "LiDAR Shaded", code: "lidar", label: "LiDAR Shaded",
-    sub: "shaded relief + snow trails", layer: winterBase,
-    winter: true },
+    layer: winterBase, winter: true },
   /* Added Nov 13, 2026 (Paul: year-by-year aerials, labelled by
      year and season): newest first, Wayback above NAIP within a
      year. All verified live over the corridor — see the tile-layer
@@ -575,8 +574,10 @@ function baseByCode(code) {
        label + radio — the Basemap section is a set of
        actions, and the radio's checked state drifted from
        the "on" class markActiveBase maintains. A subChoice
-       (Streets, Trails under Topo) is indented, not a
-       top-level button. */
+       (Streets, Trails under Topo) is a full-size button
+       like every other base (Paul, Nov 13, 2026); it sits
+       right after Topo in the order, which is what marks it
+       as belonging to Topo. */
     var btn = document.createElement("button");
     btn.type = "button";
     btn.className = "bg-choice" + (def.subChoice ? " bg-sub-choice" : "");
@@ -585,10 +586,12 @@ function baseByCode(code) {
       def === currentBase ? "true" : "false");
     if (def === currentBase) btn.classList.add("on");
     btn.textContent = def.label + " ";
-    var sub = document.createElement("span");
-    sub.className = "bg-sub";
-    sub.textContent = "— " + def.sub;
-    btn.appendChild(sub);
+    if (def.sub) {
+      var sub = document.createElement("span");
+      sub.className = "bg-sub";
+      sub.textContent = "— " + def.sub;
+      btn.appendChild(sub);
+    }
     btn.addEventListener("click", function () {
       setBase(def.name);
     });
@@ -597,11 +600,11 @@ function baseByCode(code) {
   var main = document.getElementById("background-choices");
   if (!main) return;
   /* The year aerials live in one menu, newest first (BASES
-     order), instead of a button per year. The menu is inserted
-     where the first year aerial would have sat — after LiDAR
-     Shaded, before Aerial (Esri). Every base is listed here now
-     (Paul, Nov 13, 2026): the "More backgrounds" disclosure is
-     gone, nothing hides behind it. */
+     order), instead of a button per year. The menu sits at the
+     BOTTOM of the Basemap section (Paul, Nov 13, 2026), after
+     every base button. Every base is listed here now: the
+     "More backgrounds" disclosure is gone, nothing hides
+     behind it. */
   function yearMenu() {
     var wrap = document.createElement("div");
     wrap.className = "bg-year-wrap";
@@ -631,17 +634,13 @@ function baseByCode(code) {
     yearSelect = sel;
     return wrap;
   }
-  var menuInserted = false;
   BASES.forEach(function (def) {
-    if (isAerialYear(def)) {
-      if (!menuInserted) {
-        main.appendChild(yearMenu());
-        menuInserted = true;
-      }
-      return; /* year aerials live in the menu, not as buttons */
-    }
+    if (isAerialYear(def)) return; /* year aerials live in the
+      menu, not as buttons */
     main.appendChild(rowFor(def));
   });
+  main.appendChild(yearMenu()); /* the year menu sits at the
+    bottom of the Basemap section (Paul, Nov 13, 2026) */
 })();
 L.control.scale({ imperial: true, metric: true }).addTo(map);
 
@@ -5758,17 +5757,6 @@ wireCanopyHover();
   if (showBtn) showBtn.addEventListener("click", function () {
     setPresent(false);
   });
-  /* R7: the footer About link opens the Sources card (the
-     card stays where it is, in the corner — the link just
-     reaches it, so nobody scrolls past 25 lines of provenance
-     to reach the layers). */
-  var about = document.getElementById("about-link");
-  if (about) about.addEventListener("click", function (e) {
-    e.preventDefault();
-    var card = document.getElementById("sources-card");
-    var btn = document.getElementById("btn-sources");
-    if (card && card.hidden && btn) btn.click();
-  });
   /* Copy link (Paul, Nov 12, 2026): copies the current URL with
      the up-to-date share hash, so the recipient opens exactly
      this view. Clipboard API where it exists (https / localhost),
@@ -6187,7 +6175,6 @@ function legendHtml() {
       });
     });
   }
-  wire("btn-sources", "sources-card");
   wire("btn-legend", "legend-card");
 })();
 

@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Data sources — Itasca Moraine Trail Map</title>
+<style>
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    line-height: 1.55;
+    color: #2b2b26;
+    background: #f7f5ee;
+    margin: 0;
+    padding: 0;
+  }
+  .page { max-width: 720px; margin: 0 auto; padding: 28px 20px 60px; }
+  a { color: #2f5233; }
+  h1 { font-size: 1.6rem; line-height: 1.25; margin: 0 0 4px; color: #2f5233; }
+  .subtitle { font-size: 1rem; color: #5c6657; margin: 0 0 20px; }
+  .back { display: inline-block; margin-bottom: 18px; font-size: 0.95rem; }
+  h2 {
+    font-size: 1.15rem; color: #2f5233;
+    border-bottom: 1px solid #b9cba5;
+    padding-bottom: 4px; margin: 30px 0 10px;
+  }
+  h3 { font-size: 1rem; margin: 18px 0 4px; color: #2b2b26; }
+  p { margin: 4px 0 10px; }
+  .src { font-size: 0.88rem; color: #5c6657; margin: 0 0 12px; }
+  .src a { color: #5c6657; word-break: break-all; }
+  .note {
+    background: #fff; border: 1px solid #b9cba5; border-radius: 6px;
+    padding: 10px 14px; margin: 16px 0;
+  }
+  .note p { margin: 4px 0; }
+  ul { margin: 4px 0 10px; padding-left: 22px; }
+  li { margin: 3px 0; }
+  .foot { margin-top: 36px; font-size: 0.88rem; color: #5c6657; border-top: 1px solid #b9cba5; padding-top: 12px; }
+</style>
+</head>
+<body>
+<div class="page">
+<a class="back" href="index.html">&larr; Back to the map</a>
+<h1>Data sources</h1>
+<p class="subtitle">Itasca Moraine Chapter of the North Country Trail Association &mdash; trail map</p>
+
+<p>Every dataset this map draws on, what it is, and where it comes from. The map shows the Itasca Moraine chapter&rsquo;s stretch of the North Country National Scenic Trail &mdash; about 100 miles across Hubbard, Cass, Becker and Clearwater counties in northern Minnesota &mdash; plus the wider Minnesota trail for context. Layers that are off when the map opens load only when you switch them on; nothing here is downloaded into the map except the chapter&rsquo;s own data.</p>
+
+<div class="note">
+<p><strong>A note on freshness.</strong> Most of these layers are snapshots, pulled on the dates given. A timber sale, a forest-health survey or a trail alert is a record of its year, not a live feed &mdash; the year on each layer is the freshness signal. Where a source updates on a schedule, the schedule is noted.</p>
+</div>
+
+<h2>The trail</h2>
+
+<h3>North Country Trail &mdash; chapter line</h3>
+<p>The official depiction of the North Country National Scenic Trail through the chapter&rsquo;s extent: route and centreline features with status, surface, ownership and chapter attributes. 84 features, clipped to the chapter&rsquo;s working extent.</p>
+<p class="src">Source: North Country Trail Association, on behalf of the National Park Service &mdash; <a href="https://services2.arcgis.com/UfGVyqUm4GHa2zrj/arcgis/rest/services/nct_public/FeatureServer">nct_public FeatureServer</a>, layer 2, &ldquo;North Country Trail &ndash; Public&rdquo;. Pulled November 10, 2026.</p>
+
+<h3>North Country Trail &mdash; all Minnesota</h3>
+<p>The same official line, kept for the whole state instead of the chapter extent: 348 features, 566.12 miles, from the North Dakota border at Fargo to the Border Route Trail junction at Grand Portage. Drawn as a thin context line under the chapter line. The often-quoted &ldquo;~800 miles&rdquo; for the NCT in Minnesota is not what the official service draws &mdash; the service&rsquo;s Minnesota features measure 566 miles.</p>
+<p class="src">Source: North Country Trail Association, on behalf of the National Park Service &mdash; same <a href="https://services2.arcgis.com/UfGVyqUm4GHa2zrj/arcgis/rest/services/nct_public/FeatureServer">nct_public FeatureServer</a>. Pulled November 13, 2026.</p>
+
+<h3>Trail alerts</h3>
+<p>NCTA&rsquo;s own current-awareness notices &mdash; closures, storm damage, reroutes &mdash; quoted verbatim, credited to NCTA, shown with their own dates and wording. Five alert points in the chapter extent.</p>
+<p class="src">Source: North Country Trail Association &mdash; <a href="https://services2.arcgis.com/UfGVyqUm4GHa2zrj/arcgis/rest/services/trail_alerts/FeatureServer">trail_alerts FeatureServer</a>, layer 1. Pulled November 10, 2026.</p>
+
+<h3>NCT reroutes</h3>
+<p>Reroute lines from the same NCTA alerts service: seven reroute lines across Minnesota, drawn with the chapter line. The reroutes are the service&rsquo;s &ldquo;new route&rdquo; features, not chapter guesses.</p>
+<p class="src">Source: North Country Trail Association &mdash; <a href="https://services2.arcgis.com/UfGVyqUm4GHa2zrj/arcgis/rest/services/trail_alerts/FeatureServer">trail_alerts FeatureServer</a>, layer 2. Pulled November 13, 2026.</p>
+
+<h3>Mile markers</h3>
+<p>A point every half mile along the Minnesota NCT, on the NCTA mileage reckoning &mdash; the state numbers (MN-123.5 to MN-239 in this extent). 239 points kept, snapped within 250 metres of the drawn lines. The state numbers differ from the chapter tracker&rsquo;s &ldquo;NCT Mile Virtual Markers&rdquo; by roughly 46&ndash;48 miles over the same ground; neither is converted into the other, and tracker figures are labelled as tracker miles wherever shown.</p>
+<p class="src">Source: North Country Trail Association &mdash; <a href="https://services2.arcgis.com/UfGVyqUm4GHa2zrj/arcgis/rest/services/mn_halfmile_points/FeatureServer">mn_halfmile_points FeatureServer</a>, layer 0. Pulled November 10, 2026.</p>
+
+<h3>Adopted sections, segment ends, chapter boundaries, adoption gap</h3>
+<p>The chapter&rsquo;s own adoption tracker, joined onto the official line: which stretches are adopted, by whom (initials only on this map), where each adopted section begins and ends, and the one unadopted stretch &mdash; a 2.92-mile gap at the west end, in Itasca State Park, with no road access. Section boundaries come from the chapter&rsquo;s own KMZ file.</p>
+<p class="src">Source: Itasca Moraine Chapter records. Chapter property; no external attribution.</p>
+
+<h2>Places</h2>
+
+<h3>NCTA Places</h3>
+<p>Parking, points of interest, water and shelters along the trail &mdash; 78 points in this extent. These are NCTA&rsquo;s public waypoints, the same point data the trail line comes from, shown with the chapter&rsquo;s own records where the chapter has one.</p>
+<p class="src">Source: North Country Trail Association &mdash; <a href="https://services2.arcgis.com/UfGVyqUm4GHa2zrj/arcgis/rest/services/nct_public/FeatureServer">nct_public FeatureServer</a>, layer 1, &ldquo;Point Data &ndash; Public&rdquo;. Pulled November 10, 2026.</p>
+
+<h3>Camping (chapter places)</h3>
+<p>The chapter&rsquo;s own campsites &mdash; 36 sites, seeded from NCTA point data in November 2026 and confirmed or corrected by the chapter since. Where a chapter record exists it replaces the NCTA point. One site, Rogstad, is closed (NCTA alert, April 12, 2026).</p>
+<p class="src">Source: Itasca Moraine Chapter records, maintained by the chapter.</p>
+
+<h2>Land ownership</h2>
+
+<h3>Parcels</h3>
+<p>Tax parcel boundaries with ownership, for the corridor around the trail &mdash; the parcels the trail crosses, plus the adjoining ring. Owner names are published on this map because they are published public records in the county data; taxpayer fields are not shown. The dataset itself notes the parcels are <strong>not suitable for accurate boundary determination</strong>. Hubbard County is not in the state compilation, so its parcels come from the county&rsquo;s own service. Parcel owners are refreshed about every six months.</p>
+<p class="src">Source: Minnesota Geospatial Information Office (MnGeo), compiled from opt-in counties &mdash; <a href="https://enterprise.gisdata.mn.gov/aghost/rest/services/us_mn_state_mngeo/plan_parcels_open/FeatureServer">plan_parcels_open FeatureServer</a> (Becker, Cass and Clearwater; compiled content dated August 6, 2026); Hubbard County open data &mdash; <a href="https://gis.co.hubbard.mn.us/arcgis/rest/services/OpenData/Hubbard_County_Tax_Parcels/FeatureServer">Hubbard County Tax Parcels FeatureServer</a>. Pulled November 10, 2026.</p>
+
+<h3>Leech Lake Reservation</h3>
+<p>The external boundary of the Leech Lake Reservation (Leech Lake Band of Ojibwe), 823,249 acres. 2.34 miles of the depicted trail &mdash; all of it on section Chip-12 &mdash; lies inside the reservation. This is the federal reservation boundary as published, not a legal survey.</p>
+<p class="src">Source: Bureau of Indian Affairs, American Indian and Alaska Native Land Area Representation (AIAN-LAR) &mdash; <a href="https://biamaps.geoplatform.gov/server/rest/services/DivLTR/BIA_AIAN_National_LAR/FeatureServer">BIA AIAN National LAR FeatureServer</a>, feature LAR0033 &ldquo;Leech Lake&rdquo;. Public federal data. Fetched November 11, 2026.</p>
+
+<h3>Conservation easements</h3>
+<p>State-funded conservation easements in the corridor &mdash; 40 easements, 3,370 acres. 38 are perpetual riparian easements; one, a 9.8-acre marginal-cropland easement recorded in 1987, expired in 1997 and is shown as expired, not as current protection. The service updates monthly.</p>
+<p class="src">Source: Minnesota Board of Water and Soil Resources (BWSR), Reinvest in Minnesota (RIM) Reserve easements &mdash; <a href="https://apps.bwsr.state.mn.us/arcgis/rest/services/RIM/RIM_Reserve_Easements/MapServer/0">RIM_Reserve_Easements MapServer</a>, layer 0. Pulled November 12, 2026.</p>
+
+<h2>The land</h2>
+
+<h3>Timber sales</h3>
+<p>Past timber sales in the corridor, by county and by the Chippewa National Forest. These are records of sales that happened &mdash; no expiry or status is shown or invented; the year is the freshness signal. Counts are the corridor clip (lon &minus;95.6 to &minus;93.9, lat 46.9 to 47.4), not county totals.</p>
+<ul>
+<li><strong>Cass County</strong> &mdash; 1,182 sales, 2007&ndash;2026. Cass County Forestry Web Map, layer 62, &ldquo;Timber Sales (Current)&rdquo; (<a href="https://cassweb.casscountymn.gov/arcgis/rest/services/Forestry_ForestPlan_Base/MapServer/62">Forestry_ForestPlan_Base MapServer</a>). Pulled November 12, 2026.</li>
+<li><strong>Hubbard County</strong> &mdash; 67 sales (65 sold, 2 upcoming), 2023&ndash;2026. Hubbard County sold-timber-sales service (<a href="https://services.arcgis.com/auNjCUvKlkSqV04X/ArcGIS/rest/services/Hubbard_County_Timber_Sales/FeatureServer">Hubbard_County_Timber_Sales FeatureServer</a>). Pulled November 13, 2026.</li>
+<li><strong>Becker County</strong> &mdash; 88 appraisals, 2023&ndash;2026. Becker County Forestry PreRX appraisals (<a href="https://gis-server.co.becker.mn.us/arcgis/rest/services/Forestry/PreRX_Appraisals/FeatureServer">PreRX_Appraisals FeatureServer</a>). Pulled November 13, 2026.</li>
+<li><strong>Clearwater County</strong> &mdash; 1 appraisal. The county&rsquo;s PreRX service holds only 3 appraisals county-wide (<a href="https://map.co.clearwater.mn.us/arcgis/rest/services/Forestry/PreRX_Appraisals/FeatureServer">PreRX_Appraisals FeatureServer</a>); Clearwater&rsquo;s real sales are published as auction packets (PDFs) on the county site, which carry township/range/section locations but no polygons. Pulled November 13, 2026.</li>
+<li><strong>Chippewa National Forest</strong> &mdash; 124 timber-sale project areas, 2011&ndash;2026. USDA Forest Service Enterprise Data Warehouse (<a href="https://apps.fs.usda.gov/arcx/rest/services/EDW/EDW_ActivityProjectAreas_01/MapServer/2">EDW_ActivityProjectAreas_01 MapServer</a>, layer 2). Pulled November 11, 2026.</li>
+</ul>
+
+<h3>Cass forest stands</h3>
+<p>Cass County&rsquo;s forest inventory stands &mdash; 6,472 stands in the corridor, with cover type, age, acres and volume per acre. Inventory, not a sale: these are the stands as the county manages them, and the map does not say which will be cut.</p>
+<p class="src">Source: Cass County Forestry Web Map, layer 63, &ldquo;FIM Stands (Current)&rdquo; (<a href="https://cassweb.casscountymn.gov/arcgis/rest/services/Forestry_ForestPlan_Base/MapServer/63">Forestry_ForestPlan_Base MapServer</a>). Pulled November 12, 2026.</p>
+
+<h3>Forest health + blowdown (2025)</h3>
+<p>Minnesota DNR forest-health survey polygons in the corridor &mdash; damage mapped in the survey year (2025), not current condition. 123 polygons, 10,084 acres: eastern larch beetle, wind and tornado, flooding, bark beetle, aspen and hardwood decline, larch casebearer, forest tent caterpillar. Re-pulled annually.</p>
+<p class="src">Source: Minnesota DNR, Division of Forestry, Forest Health program &mdash; <a href="https://enterprise.gisdata.mn.gov/aghost/rest/services/us_mn_state_dnr/env_forest_health_survey_2025/FeatureServer/0">env_forest_health_survey_2025 FeatureServer</a>. Pulled November 13, 2026.</p>
+
+<h3>Invasive species sightings</h3>
+<p>Reported sightings of invasive terrestrial species &mdash; 5,551 points, mostly spotted knapweed and common tansy, plus leafy spurge, buckthorn, garlic mustard and one emerald ash borer. These are observer reports, largely from iNaturalist, not a systematic survey: a species missing from this map is not proof it is absent on the ground.</p>
+<p class="src">Source: Minnesota DNR, invasive terrestrial observations &mdash; <a href="https://enterprise.gisdata.mn.gov/aghost/rest/services/us_mn_state_dnr/env_invasive_terrestrial_obs/FeatureServer">env_invasive_terrestrial_obs FeatureServer</a>, layers 1 (plants) and 3 (emerald ash borer). Pulled November 13, 2026.</p>
+
+<h3>Chippewa Forest Plan areas (2004)</h3>
+<p>Chippewa National Forest Land Management Plan management areas &mdash; 35 areas, 467,513 acres, plan year 2004. These are the plan&rsquo;s desired conditions for each area, not a harvest schedule.</p>
+<p class="src">Source: USDA Forest Service, Chippewa National Forest &mdash; <a href="https://apps.fs.usda.gov/arcx/rest/services/EDW/EDW_LandManagementPlanning_01/MapServer">EDW_LandManagementPlanning_01 MapServer</a>. Plan text: <a href="https://www.fs.usda.gov/r09/chippewa/planning">fs.usda.gov/r09/chippewa/planning</a>. Pulled November 13, 2026.</p>
+
+<h3>Tree height</h3>
+<p>How tall the trees are, over any background &mdash; a shaded view of the treetops with canopy height as colour (white at ground level, deep green at full height, so clearcuts show). White is open ground; 2 metres is head height; 20 metres is the old-growth line. Height is a guide, not proof of old growth. The overlay runs along the trail corridor only, about 100 metres either side, and ends at its edge. The 2022 collection was flown in spring, leaf-off: conifer heights read true, hardwood canopy heights read slightly low, and low brush is under-read.</p>
+<p class="src">Source: built by this project from the state&rsquo;s 2022 second-generation LiDAR &mdash; Minnesota DNR / MnGeo elevation collection (corridor blocks flown spring 2022), via USGS 3DEP point clouds. Ground from the MnGeo seamless 0.5&nbsp;m DEM; surface from first returns of the Becker County and Upper Mississippi 3DEP blocks; canopy height is surface minus ground. Built November 11, 2026.</p>
+
+<h3>Height lines &mdash; every 5 m</h3>
+<p>Contour lines every 5 metres, drawn from the project&rsquo;s LiDAR elevation model for the corridor, so the steepness of the moraine reads at a glance.</p>
+<p class="src">Source: derived from the same 2022 second-generation LiDAR as Tree height above (Minnesota DNR / MnGeo, via USGS 3DEP).</p>
+
+<h2>Around the trail</h2>
+
+<h3>Roads</h3>
+<p>Public road centerlines for the working extent, shown within a corridor of the trail. Road classes are derived from the source&rsquo;s route-system codes, verified against road names; the source carries no private-road identifier, so private lanes are not separately flagged.</p>
+<p class="src">Source: Minnesota Department of Transportation road data, served open by MnGeo &mdash; <a href="https://enterprise.gisdata.mn.gov/aghost/rest/services/us_mn_state_mngeo/trans_road_centerlines_open/FeatureServer">trans_road_centerlines_open FeatureServer</a>; plus Minnesota DNR state forest roads. Pulled November 10, 2026.</p>
+
+<h3>Non-road access</h3>
+<p>Forest roads and recreation trails near the trail: DNR state forest roads, OHV trails, snowmobile trails, hunter walking trails, state trails, and state park trails and roads (chiefly the Itasca State Park network). Shown within 800 metres of the trail; faded ends continue beyond it.</p>
+<p class="src">Source: Minnesota DNR, on the state enterprise host, under the Minnesota DNR General Geographic Data License Agreement. Pulled November 10, 2026.</p>
+
+<h3>NCTA map sheets</h3>
+<p>The North Country Trail Association&rsquo;s Minnesota map series &mdash; 104 sheets, MN-001 to MN-104, covering the trail from the North Dakota border to the Border Route Trail. Sheet images appear at closer zooms, with the sheet outlines and numbers as a locator below that. The edition shown is March 16, 2026.</p>
+<p class="src">Source: North Country Trail Association, Minnesota map series &mdash; <a href="https://northcountrytrail.org/maps/mn_map_series.pdf">northcountrytrail.org/maps/mn_map_series.pdf</a>. Downloaded November 11, 2026.</p>
+
+<h2>Basemaps</h2>
+<p>The backgrounds the map can be drawn on. All are live services, consumed directly by the site &mdash; nothing is downloaded into the project.</p>
+
+<h3>Topo (the default)</h3>
+<p>OpenStreetMap data rendered with SRTM contours and hillshading. A new visitor meets terrain first.</p>
+<p class="src">Source: OpenTopoMap (map data &copy; OpenStreetMap contributors, SRTM; map style &copy; OpenTopoMap, CC-BY-SA) &mdash; <a href="https://opentopomap.org/">opentopomap.org</a>.</p>
+
+<h3>Streets</h3>
+<p>The standard OpenStreetMap rendering.</p>
+<p class="src">Source: OpenStreetMap &mdash; <a href="https://www.openstreetmap.org/">openstreetmap.org</a>. &copy; OpenStreetMap contributors.</p>
+
+<h3>Trails</h3>
+<p>An OpenStreetMap-based rendering that emphasises trails and paths (CyclOSM).</p>
+<p class="src">Source: CyclOSM &mdash; <a href="https://www.cyclosm.org/">cyclosm.org</a>. &copy; OpenStreetMap contributors.</p>
+
+<h3>LiDAR Shaded</h3>
+<p>Shaded relief derived from 1-metre LiDAR (statewide elevation collection, 2008&ndash;2012), with OpenSnowMap&rsquo;s ski and snow-trail lines over it. The shaded-relief view &mdash; the moraine itself; recommended for reading the land. The snow trails are the nordic ski trails around Itasca State Park and the Leech Lake shore; most of the corridor has no mapped pistes, and there the base reads as plain hillshade.</p>
+<p class="src">Source: Minnesota Geospatial Image Service (MnGeo / Minnesota DNR), WMS layer <em>hillshd</em> &mdash; <a href="https://imageserver.gisdata.mn.gov/cgi-bin/wmswm?">imageserver.gisdata.mn.gov</a>; snow trails: OpenSnowMap &mdash; <a href="https://www.opensnowmap.org/">opensnowmap.org</a>.</p>
+
+<h3>Aerial (Esri)</h3>
+<p>Current aerial imagery.</p>
+<p class="src">Source: Esri World Imagery (Esri, Maxar, Earthstar Geographics) &mdash; <a href="https://www.arcgis.com/home/item.html?id=10df2279f9684e4a9f6a7f08febac23">Esri World Imagery</a>.</p>
+
+<h3>Aerial + Topo</h3>
+<p>NAIP aerial imagery with topo labels and contours.</p>
+<p class="src">Source: USGS, The National Map (NAIP) &mdash; <a href="https://www.usgs.gov/national-map">usgs.gov/national-map</a>.</p>
+
+<h3>USGS Topo &mdash; 1:24k quadrangles</h3>
+<p>The USGS topographic base built from the 1:24,000 quadrangle series.</p>
+<p class="src">Source: USGS, The National Map &mdash; <a href="https://www.usgs.gov/national-map">usgs.gov/national-map</a>.</p>
+
+<h3>National Geographic</h3>
+<p>Esri&rsquo;s National Geographic world map style.</p>
+<p class="src">Source: Esri &mdash; <a href="https://www.arcgis.com/home/item.html?id=30c0a34a2e6b446a2b01e9b35e5d2d2f">NatGeo World Map</a>.</p>
+
+<h3>Aerial photography by year</h3>
+<p>One menu, newest first &mdash; 24 entries, 2025 back to 1991. December entries are Esri World Imagery Wayback releases (the release closest to, and on or before, December 31 of each year); summer entries are MnGeo NAIP and FSA mosaics. The 2013 spring entry is the leaf-off layer (SAIP, 50&nbsp;cm); the 2012 fall entry is the MnGeo central mosaic; the 1991 entry is the USGS black-and-white digital orthophoto. The 2023 and 2025 summer entries were added November 13, 2026.</p>
+<p class="src">Source: Esri World Imagery Wayback &mdash; <a href="https://livingatlas.arcgis.com/wayback/">livingatlas.arcgis.com/wayback</a>; Minnesota Geospatial Image Service (MnGeo) &mdash; <a href="https://imageserver.gisdata.mn.gov/cgi-bin/wmswm?">imageserver.gisdata.mn.gov</a> (layers fsa2025, fsa2023, fsa2021, fsa2019, fsa2017, fsa2015, fsa2013, fsa2010, fsa2009, fsa2008, fsa2003, usgs2006, doq1991, nc13hm, fall12); USGS NAIP. All verified live over the corridor November 13, 2026.</p>
+
+<h2>Chapter data</h2>
+
+<h3>Trail assets</h3>
+<p>The chapter&rsquo;s own inventory of trail structures &mdash; crossings, signs, boardwalks, benches, bridges, campsites, lookouts, kiosks, posts, registers and more &mdash; 84 pins, each with a serial number, photographed by chapter volunteers. The chapter classifies each pin itself (type, condition, photographer, notes); the map does not judge them.</p>
+<p class="src">Source: Itasca Moraine Chapter volunteers&rsquo; photographs and records. Chapter property.</p>
+
+<h3>Chainage points</h3>
+<p>A point every 5 miles from the depicted chain&rsquo;s west end, interpolated along the section geometries. A relative measure (&ldquo;miles from the west end&rdquo;), in neither mileage reckoning above &mdash; computed by the site build from the chapter&rsquo;s own stretch chainages.</p>
+<p class="src">Source: computed by this project; not an external dataset.</p>
+
+<h2>Privacy</h2>
+<p>Adopted sections show the adopters&rsquo; initials (for example &ldquo;JR&rdquo;) &mdash; the chapter&rsquo;s real adopter names are kept in its working files and never appear on this map. Adopter phone numbers and email addresses never cross to the public site. Parcel owner names appear in parcel popups when the parcels layer is switched on, because they are published public records in the county data. The chapter&rsquo;s working files &mdash; the full adoption tracker, the photo originals and the volunteer contact details &mdash; stay in the chapter&rsquo;s private records, not on this site.</p>
+
+<p class="foot">Itasca Moraine Chapter of the North Country Trail Association. This page lists the sources as of November 13, 2026; the project&rsquo;s working source register is <em>SOURCES.md</em> in the map repository. <a href="index.html">Back to the map</a>.</p>
+</div>
+</body>
+</html>

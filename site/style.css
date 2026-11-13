@@ -1526,16 +1526,20 @@ body.base-imagery.gap-chip .gap-label span {
 }
 
 /* --- Basemap section (R2): every base listed, none behind a
-   disclosure. A sub-choice (Streets, Trails under Topo) is
-   indented and narrower, so it reads as belonging to Topo. --- */
+   disclosure. All the buttons are the same size (Paul, Nov 13,
+   2026): a two-column grid with equal rows, so a long label
+   cannot make its button taller or wider than the rest.
+   Streets and Trails sit right after Topo in the order — they
+   are its sub-choices — but they are full-size buttons like
+   every other base. --- */
 #background-choices {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 4px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-auto-rows: 1fr;
+  gap: 6px;
   margin: 4px 0 6px;
 }
 .bg-choice {
-  flex: 1 1 45%;
   padding: 6px 8px;
   font: inherit;
   font-size: 0.88rem;
@@ -1557,18 +1561,18 @@ body.base-imagery.gap-chip .gap-label span {
   font-weight: 400;
 }
 .bg-choice.on .bg-sub { color: #d8e4c8; }
-.bg-sub-choice {
-  flex: 1 1 40%;
-  margin-left: 18px;
-  font-size: 0.83rem;
-  padding: 5px 8px;
-}
+/* A sub-choice (Streets, Trails under Topo) is a full-size
+   button like every other base — same width, same height. The
+   class stays so the code can tell them apart; it changes
+   nothing visual. */
+.bg-sub-choice {}
 
 /* Aerial-by-year menu (Paul, Nov 13, 2026): one dropdown for all
-   the year aerials instead of a button per year. Full-width card,
-   same border and type as the base buttons. */
+   the year aerials instead of a button per year. Full-width card
+   (spans both grid columns), same border and type as the base
+   buttons, and it sits at the bottom of the Basemap section. */
 .bg-year-wrap {
-  flex: 1 1 100%;
+  grid-column: 1 / -1;
   display: flex;
   flex-direction: column;
   gap: 3px;
