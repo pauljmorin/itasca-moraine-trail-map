@@ -995,6 +995,24 @@ body.gap-chip .gap-label span {
   box-shadow: 0 1px 2px rgba(28, 42, 30, 0.35);
 }
 
+/* Street View markers: 19 px Google-blue discs with a white
+   camera — the photo was taken from here. Distinct from the
+   paper Places discs, the deep-green chapter discs and the
+   orange asset pins. */
+.sv-disc-wrap { background: none; border: none; }
+.sv-disc {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 19px;
+  height: 19px;
+  border-radius: 50%;
+  background: #4285f4;
+  border: 1.5px solid #fff;
+  box-shadow: 0 1px 3px rgba(28, 42, 30, 0.45);
+}
+.sv-disc svg { display: block; }
+
 /* Trail alert markers: a red warning diamond in the gap red —
    deliberately unlike the round Places letter discs and the
    orange asset pins. The glyph is counter-rotated upright. */

@@ -5370,6 +5370,57 @@ var LAYERS = [
       return group;
     },
   },
+  {
+    /* Street View (Paul, Nov 13, 2026): the 11 trailheads and
+       road crossings verified to have Google Street View imagery
+       (browser check Nov 13 — 11 of 19 spots; the other 8 have
+       none). One camera marker per spot at the panorama location
+       (where the photo was taken from), and the Street View link
+       opens aimed at the trail crossing / trailhead (heading in
+       the data). Off by default. Standalone group for now — Paul
+       will say which panel group it goes under. The east Hwy 113
+       spot is a user-contributed photosphere, not Google car
+       coverage, and its popup says so. */
+    id: "streetview", label: "Street View",
+    title: "Google Street View at the trailheads and road " +
+      "crossings that have it — opens aimed at the trail",
+    file: "data/streetview.geojson", onByDefault: false,
+    group: "Street View",
+    swatch: { kind: "pin", color: "#4285f4" },
+    build: function (gj) {
+      var camSvg = "<svg width='12' height='12' viewBox='0 0 16 16' " +
+        "aria-hidden='true'><path d='M1.5 6h2.6l1.2-1.6h5.4L11.9 6h2.6 " +
+        "A1.5 1.5 0 0 1 16 7.5v4A1.5 1.5 0 0 1 14.5 13h-13A1.5 1.5 0 0 1 " +
+        "0 11.5v-4A1.5 1.5 0 0 1 1.5 6z' fill='#fff'/>" +
+        "<circle cx='8' cy='9' r='2.8' fill='#4285f4'/>" +
+        "<circle cx='12.5' cy='7.4' r='0.8' fill='#4285f4'/></svg>";
+      return L.geoJSON(gj, {
+        pointToLayer: function (f, latlng) {
+          return L.marker(latlng, {
+            keyboard: false,
+            icon: L.divIcon({
+              className: "sv-disc-wrap", iconSize: [19, 19],
+              iconAnchor: [10, 10],
+              html: "<span class='sv-disc'>" + camSvg + "</span>",
+            }),
+          });
+        },
+        onEachFeature: function (f, l) {
+          var p = f.properties;
+          var html = "<strong>" + esc(p.name) + "</strong><br>" +
+            "Google Street View &mdash; imagery " + esc(p.imagery) +
+            "<br>View faces " + esc(p.faces) +
+            (p.photosphere
+              ? "<br><em>User-contributed photosphere, not " +
+                "Google car coverage.</em>"
+              : "") +
+            "<br><a href='" + p.url + "' target='_blank' " +
+            "rel='noopener'>Open Street View</a>";
+          bindPop(l, html);
+        },
+      });
+    },
+  },
 ];
 
 /* The site copy of the inventory lives at site/data/assets.geojson.
@@ -5587,7 +5638,8 @@ function writeShareHash() {
    order; the PANEL order is this list, so a def's group decides
    where its toggle lands, not its position in the array. */
 var PANEL_GROUPS = ["The trail", "ITM inventory",
-                    "The land", "Land ownership", "Around the trail"];
+                    "The land", "Land ownership", "Around the trail",
+                    "Street View"];
 LAYERS.forEach(function (def) {
   def.layer = null;
   def.loading = false;
