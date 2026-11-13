@@ -424,12 +424,11 @@ var BASES = [
     sub: "Esri World Imagery", layer: esriImagery },
   { name: "Aerial + Topo (NAIP 2023/25)", code: "aerial-topo", label: "Aerial + Topo",
     sub: "NAIP with topo labels", layer: usgsImageryTopo },
-  { name: "Aerial 2014 (Dec)", code: "aerial-2014", label: "Aerial 2014 (Dec)",
-    sub: "Esri Wayback · summer leaf-on", layer: esriWayback2014 },
   /* Added Nov 13, 2026 (Paul: year-by-year aerials, labelled by
      year and season): newest first, Wayback above NAIP within a
      year. All verified live over the corridor — see the tile-layer
-     definitions above and the research note in SOURCES.md. */
+     definitions above and the research note in SOURCES.md. The
+     2014 entry sits in its chronological slot, not at the head. */
   { name: "Aerial 2025 (Dec)", code: "aerial-2025", label: "Aerial 2025 (Dec)",
     sub: "Esri Wayback · summer leaf-on", layer: esriWayback2025 },
   { name: "Aerial 2024 (Dec)", code: "aerial-2024", label: "Aerial 2024 (Dec)",
@@ -454,6 +453,8 @@ var BASES = [
     sub: "NAIP · leaf-on", layer: mnAerial2017 },
   { name: "Aerial 2015 (summer)", code: "aerial-2015-naip", label: "Aerial 2015 (summer)",
     sub: "NAIP · leaf-on", layer: mnAerial2015 },
+  { name: "Aerial 2014 (Dec)", code: "aerial-2014", label: "Aerial 2014 (Dec)",
+    sub: "Esri Wayback · summer leaf-on", layer: esriWayback2014 },
   { name: "Aerial 2013 (spring, leaf-off)", code: "aerial-2013-spring", label: "Aerial 2013 (spring, leaf-off)",
     sub: "MnGeo NW 50 cm · SAIP", layer: mnAerial2013Spring },
   { name: "Aerial 2013 (summer)", code: "aerial-2013-naip", label: "Aerial 2013 (summer)",
@@ -505,6 +506,13 @@ function setBase(name) {
   markActiveBase(name);
   writeShareHash(); /* a base change is a new shareable view */
 }
+/* Aerial-by-year menu (Paul, Nov 13, 2026): the year aerials are
+   one dropdown, not a button per year. A base is a year aerial
+   when its name starts with "Aerial " + a 4-digit year. */
+var yearSelect = null;
+function isAerialYear(def) {
+  return /^Aerial \d{4}/.test(def.name);
+}
 function markActiveBase(name) {
   document.querySelectorAll("#background-choices .bg-choice, " +
     "#background-more .bg-choice").forEach(function (row) {
@@ -512,6 +520,11 @@ function markActiveBase(name) {
     row.classList.toggle("on", on);
     row.setAttribute("aria-pressed", on ? "true" : "false");
   });
+  /* Keep the year menu showing the current year aerial, or the
+     placeholder when the current base is not a year aerial. */
+  if (yearSelect) {
+    yearSelect.value = isAerialYear({ name: name }) ? name : "";
+  }
 }
 /* Shareable view: look a base up by its short hash code. */
 function baseByCode(code) {
@@ -547,7 +560,48 @@ function baseByCode(code) {
   var more = document.getElementById("background-more");
   var moreBtn = document.getElementById("bg-more-btn");
   if (!main || !more) return;
+  /* The year aerials live in one menu, newest first (BASES
+     order), instead of a button per year. The menu is inserted
+     where the first year aerial would have sat — after the
+     non-year aerials, before Streets. */
+  function yearMenu() {
+    var wrap = document.createElement("div");
+    wrap.className = "bg-year-wrap";
+    var label = document.createElement("label");
+    label.className = "bg-year-label";
+    label.setAttribute("for", "bg-year-select");
+    label.textContent = "Aerial photography by year";
+    var sel = document.createElement("select");
+    sel.id = "bg-year-select";
+    sel.className = "bg-year-select";
+    var ph = document.createElement("option");
+    ph.value = "";
+    ph.textContent = "Choose a year…";
+    sel.appendChild(ph);
+    BASES.forEach(function (def) {
+      if (!isAerialYear(def)) return;
+      var opt = document.createElement("option");
+      opt.value = def.name;
+      opt.textContent = def.label + " — " + def.sub;
+      sel.appendChild(opt);
+    });
+    sel.addEventListener("change", function () {
+      if (sel.value) setBase(sel.value);
+    });
+    wrap.appendChild(label);
+    wrap.appendChild(sel);
+    yearSelect = sel;
+    return wrap;
+  }
+  var menuInserted = false;
   BASES.forEach(function (def) {
+    if (isAerialYear(def)) {
+      if (!menuInserted) {
+        more.appendChild(yearMenu());
+        menuInserted = true;
+      }
+      return; /* year aerials live in the menu, not as buttons */
+    }
     (def.primary ? main : more).appendChild(rowFor(def));
   });
   if (moreBtn) {
