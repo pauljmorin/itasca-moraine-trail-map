@@ -437,6 +437,7 @@
   var btnP = document.getElementById('mode-planning');
   var note = document.getElementById('mode-note');
   var planningPanel = document.getElementById('planning-panel');
+  var motorizedToggles = document.getElementById('motorized-toggles');
   function setMode(mode) {
     var planning = mode === 'planning';
     btnB.classList.toggle('active', !planning);
@@ -444,6 +445,7 @@
     btnB.setAttribute('aria-selected', String(!planning));
     btnP.setAttribute('aria-selected', String(planning));
     planningPanel.hidden = !planning;
+    motorizedToggles.hidden = !planning;
     note.textContent = planning
       ? 'For chapter discussions: readiness, funding status, and the risks the chapters named.'
       : 'For the congressional delegation: the case on one screen.';
