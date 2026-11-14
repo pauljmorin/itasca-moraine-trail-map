@@ -13,10 +13,520 @@
   'use strict';
 
   var map = L.map('map', { zoomControl: true }).setView([47.1, -94.2], 7);
-  L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
-    maxZoom: 19,
-    attribution: '&copy; OpenStreetMap contributors'
+  /* Basemaps — ported from the main viewer (site/app.js) so the
+     build-out viewer offers the same basemaps, in the same order,
+     with the same labels and the same default (OpenTopoMap).
+     Layer definitions and the BASES list are copied verbatim;
+     only basemaps come over — no data layers (canopy height,
+     parcels, assets, alerts). */
+  var topo = L.tileLayer("https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png", {
+    maxZoom: 18, maxNativeZoom: 17,
+    attribution: "Map data: © OpenStreetMap contributors, SRTM | " +
+      "map style: © OpenTopoMap (CC-BY-SA)",
   }).addTo(map);
+
+  var osm = L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
+    maxZoom: 19,
+    attribution: "© OpenStreetMap contributors",
+  });
+
+  var MN_WMS = "https://imageserver.gisdata.mn.gov/cgi-bin/wmswm?";
+  var mnHillshade = L.tileLayer.wms(MN_WMS, {
+    layers: "hillshd", format: "image/jpeg", transparent: false,
+    version: "1.1.1",
+    attribution: "Shaded relief (LiDAR hillshade): MnGeo / Minnesota DNR",
+  });
+  var usgsTopo = L.tileLayer(
+    "https://basemap.nationalmap.gov/arcgis/rest/services/" +
+      "USGSTopo/MapServer/tile/{z}/{y}/{x}", {
+      maxZoom: 17, maxNativeZoom: 16,
+      attribution: "Topo: USGS, The National Map",
+    });
+  var usgsImagery = L.tileLayer(
+    "https://basemap.nationalmap.gov/arcgis/rest/services/" +
+      "USGSImageryOnly/MapServer/tile/{z}/{y}/{x}", {
+      maxZoom: 17, maxNativeZoom: 16,
+      attribution: "Aerial imagery: USGS, The National Map (NAIP)",
+    });
+  var esriImagery = L.tileLayer(
+    "https://server.arcgisonline.com/ArcGIS/rest/services/" +
+      "World_Imagery/MapServer/tile/{z}/{y}/{x}", {
+      maxZoom: 18,
+      attribution: "Aerial imagery: Esri, Maxar, Earthstar Geographics",
+    });
+
+  /* The rest of the nine surviving bases (Nov 11, 2026 prune):
+     Paul reviewed the sixteen candidates wired Nov 10 and cut seven
+     (Esri World Topo, Stamen Terrain, both CARTO bases,
+     Thunderforest Outdoors, Esri World Hillshade, OSM Humanitarian)
+     -- the two key-gated definitions and their placeholder keys went
+     with them; the map needs no API key for any base. The chooser
+     order below is task order, not vendor order: Topographic (the
+     working maps) / Relief / Aerial (ground truth) / Streets &
+     trails (orientation). See SOURCES.md. */
+  var usgsImageryTopo = L.tileLayer(
+    "https://basemap.nationalmap.gov/arcgis/rest/services/" +
+      "USGSImageryTopo/MapServer/tile/{z}/{y}/{x}", {
+      maxZoom: 17, maxNativeZoom: 16,
+      attribution: "Imagery + topo: USGS, The National Map (NAIP)",
+    });
+  var esriNatGeo = L.tileLayer(
+    "https://server.arcgisonline.com/ArcGIS/rest/services/" +
+      "NatGeo_World_Map/MapServer/tile/{z}/{y}/{x}", {
+      maxZoom: 17, maxNativeZoom: 16,
+      attribution: "National Geographic, Esri, DeLorme, HERE, " +
+        "UNEP-WCMC, USGS",
+    });
+  var cyclosm = L.tileLayer(
+    "https://{s}.tile-cyclosm.openstreetmap.fr/cyclosm/" +
+      "{z}/{x}/{y}.png", {
+      subdomains: "abc", maxZoom: 20,
+      attribution: "© OpenStreetMap contributors, CyclOSM",
+    });
+
+  /* Added Nov 11, 2026 (Paul approved the pair): two bases that
+     fill the chooser's real gaps -- a winter view and time depth.
+     Neither needs a key; both endpoints verified live over the
+     chapter the day they landed (see SOURCES.md). */
+  var esriWayback2014 = L.tileLayer(
+    "https://wayback.maptiles.arcgis.com/arcgis/rest/services/" +
+      "World_Imagery/WMTS/1.0.0/default028mm/MapServer/tile/5844/" +
+      "{z}/{y}/{x}", {
+      maxZoom: 18,
+      attribution: "Aerial imagery (2014): Esri World Imagery " +
+        "Wayback, release of 2014-12-30",
+    });
+
+  /* Added Nov 13, 2026 (Paul: year-by-year aerials, labelled by year
+     and season): Esri Wayback year-end releases 2018–2025. Same
+     rule as the 2014 entry — the release closest to (and on/before)
+     Dec 31 of each year, from the Wayback config (198 releases,
+     2014-02-20 → 2026-10-29, fetched 2026-11-13). Verified live
+     over the chapter: z12 tiles at 5 points, HTTP 200 JPEG, each
+     year byte-distinct. 2015–2017 are NOT added: at all 5 points
+     they 301-redirect to release 31144 (2014-06-11) and return
+     byte-identical tiles to the 2014 base. 2026 is NOT added: the
+     current Aerial (Esri) base already serves the newest imagery.
+     Tiles 301-redirect to the release that published that tile, so
+     a year entry shows imagery "of that year or earlier". RELABELLED
+     Nov 13, 2026 (Paul): the menu labels are the year the photo was
+     actually taken (capture year, from Esri's per-release metadata
+     SRC_DATE), not the release date — the release date is when Esri
+     published the snapshot, and the photos inside it are older.
+     Measured Nov 13 at 3 corridor points: 2025 release = 2024,
+     2023 = 2019, 2022 = 2021, 2021 = 2017–19, 2019 = 2017,
+     2014 = 1999. The 2018, 2020 and 2024 releases are UNMEASURED
+     (metadata service timed out) — their labels still show the
+     release year until they are measured. */
+  var esriWayback2018 = L.tileLayer(
+    "https://wayback.maptiles.arcgis.com/arcgis/rest/services/" +
+      "World_Imagery/WMTS/1.0.0/default028mm/MapServer/tile/23448/" +
+      "{z}/{y}/{x}", {
+      maxZoom: 18,
+      attribution: "Aerial imagery (2018): Esri World Imagery " +
+        "Wayback, release of 2018-12-14",
+    });
+  var esriWayback2019 = L.tileLayer(
+    "https://wayback.maptiles.arcgis.com/arcgis/rest/services/" +
+      "World_Imagery/WMTS/1.0.0/default028mm/MapServer/tile/4756/" +
+      "{z}/{y}/{x}", {
+      maxZoom: 18,
+      attribution: "Aerial imagery (2019): Esri World Imagery " +
+        "Wayback, release of 2019-12-12",
+    });
+  var esriWayback2020 = L.tileLayer(
+    "https://wayback.maptiles.arcgis.com/arcgis/rest/services/" +
+      "World_Imagery/WMTS/1.0.0/default028mm/MapServer/tile/29260/" +
+      "{z}/{y}/{x}", {
+      maxZoom: 18,
+      attribution: "Aerial imagery (2020): Esri World Imagery " +
+        "Wayback, release of 2020-12-16",
+    });
+  var esriWayback2021 = L.tileLayer(
+    "https://wayback.maptiles.arcgis.com/arcgis/rest/services/" +
+      "World_Imagery/WMTS/1.0.0/default028mm/MapServer/tile/26120/" +
+      "{z}/{y}/{x}", {
+      maxZoom: 18,
+      attribution: "Aerial imagery (2021): Esri World Imagery " +
+        "Wayback, release of 2021-12-21",
+    });
+  var esriWayback2022 = L.tileLayer(
+    "https://wayback.maptiles.arcgis.com/arcgis/rest/services/" +
+      "World_Imagery/WMTS/1.0.0/default028mm/MapServer/tile/45134/" +
+      "{z}/{y}/{x}", {
+      maxZoom: 18,
+      attribution: "Aerial imagery (2022): Esri World Imagery " +
+        "Wayback, release of 2022-12-14",
+    });
+  var esriWayback2023 = L.tileLayer(
+    "https://wayback.maptiles.arcgis.com/arcgis/rest/services/" +
+      "World_Imagery/WMTS/1.0.0/default028mm/MapServer/tile/56102/" +
+      "{z}/{y}/{x}", {
+      maxZoom: 18,
+      attribution: "Aerial imagery (2023): Esri World Imagery " +
+        "Wayback, release of 2023-12-07",
+    });
+  var esriWayback2024 = L.tileLayer(
+    "https://wayback.maptiles.arcgis.com/arcgis/rest/services/" +
+      "World_Imagery/WMTS/1.0.0/default028mm/MapServer/tile/16453/" +
+      "{z}/{y}/{x}", {
+      maxZoom: 18,
+      attribution: "Aerial imagery (2024): Esri World Imagery " +
+        "Wayback, release of 2024-12-12",
+    });
+  var esriWayback2025 = L.tileLayer(
+    "https://wayback.maptiles.arcgis.com/arcgis/rest/services/" +
+      "World_Imagery/WMTS/1.0.0/default028mm/MapServer/tile/13192/" +
+      "{z}/{y}/{x}", {
+      maxZoom: 18,
+      attribution: "Aerial imagery (2025): Esri World Imagery " +
+        "Wayback, release of 2025-12-18",
+    });
+
+  /* Added Nov 13, 2026 (Paul: year-by-year aerials): MnGeo
+     Geospatial Image Service layers, same WMS endpoint and pattern
+     as the hillshade (L.tileLayer.wms, MN_WMS). All verified live
+     over the chapter with GetMap requests (2 km box around lat
+     47.05, lon -95.0, 512x512 JPEG). nc13hm is the Spring Aerial
+     Imagery Program leaf-off layer (spring 2013, 50 cm; covers the
+     whole corridor, unlike nw14, which is blank over most of it).
+     fall12 is the 2012 fall Central layer. The fsa* layers are the
+     per-vintage NAIP mosaics (summer leaf-on); fsa2023/fsa2025 are
+     in the menu as the 2023/2025 summer entries, beside the Dec
+     Wayback entries for those years. usgs2006, fsa (2003) and doq (1991) are the older
+     statewide layers. */
+  var mnAerial2013Spring = L.tileLayer.wms(MN_WMS, {
+    layers: "nc13hm", format: "image/jpeg", transparent: false,
+    version: "1.1.1",
+    attribution: "Aerial imagery (2013, spring leaf-off): MnGeo / " +
+      "Minnesota DNR (Spring Aerial Imagery Program)",
+  });
+  var mnAerial2012Fall = L.tileLayer.wms(MN_WMS, {
+    layers: "fall12", format: "image/jpeg", transparent: false,
+    version: "1.1.1",
+    attribution: "Aerial imagery (2012, fall): MnGeo",
+  });
+  var mnAerial2025 = L.tileLayer.wms(MN_WMS, {
+    layers: "fsa2025", format: "image/jpeg", transparent: false,
+    version: "1.1.1",
+    attribution: "Aerial imagery (2025 NAIP): USDA / MnGeo",
+  });
+  var mnAerial2023 = L.tileLayer.wms(MN_WMS, {
+    layers: "fsa2023", format: "image/jpeg", transparent: false,
+    version: "1.1.1",
+    attribution: "Aerial imagery (2023 NAIP): USDA / MnGeo",
+  });
+  var mnAerial2021 = L.tileLayer.wms(MN_WMS, {
+    layers: "fsa2021", format: "image/jpeg", transparent: false,
+    version: "1.1.1",
+    attribution: "Aerial imagery (2021 NAIP): USDA / MnGeo",
+  });
+  var mnAerial2019 = L.tileLayer.wms(MN_WMS, {
+    layers: "fsa2019", format: "image/jpeg", transparent: false,
+    version: "1.1.1",
+    attribution: "Aerial imagery (2019 NAIP): USDA / MnGeo",
+  });
+  var mnAerial2017 = L.tileLayer.wms(MN_WMS, {
+    layers: "fsa2017", format: "image/jpeg", transparent: false,
+    version: "1.1.1",
+    attribution: "Aerial imagery (2017 NAIP): USDA / MnGeo",
+  });
+  var mnAerial2015 = L.tileLayer.wms(MN_WMS, {
+    layers: "fsa2015", format: "image/jpeg", transparent: false,
+    version: "1.1.1",
+    attribution: "Aerial imagery (2015 NAIP): USDA / MnGeo",
+  });
+  var mnAerial2013 = L.tileLayer.wms(MN_WMS, {
+    layers: "fsa2013", format: "image/jpeg", transparent: false,
+    version: "1.1.1",
+    attribution: "Aerial imagery (2013 NAIP): USDA / MnGeo",
+  });
+  var mnAerial2010 = L.tileLayer.wms(MN_WMS, {
+    layers: "fsa2010", format: "image/jpeg", transparent: false,
+    version: "1.1.1",
+    attribution: "Aerial imagery (2010 NAIP): USDA / MnGeo",
+  });
+  var mnAerial2009 = L.tileLayer.wms(MN_WMS, {
+    layers: "fsa2009", format: "image/jpeg", transparent: false,
+    version: "1.1.1",
+    attribution: "Aerial imagery (2009 NAIP): USDA / MnGeo",
+  });
+  var mnAerial2008 = L.tileLayer.wms(MN_WMS, {
+    layers: "fsa2008", format: "image/jpeg", transparent: false,
+    version: "1.1.1",
+    attribution: "Aerial imagery (2008 NAIP): USDA / MnGeo",
+  });
+  var mnAerial2006 = L.tileLayer.wms(MN_WMS, {
+    layers: "usgs2006", format: "image/jpeg", transparent: false,
+    version: "1.1.1",
+    attribution: "Aerial imagery (2006): USGS / MnGeo",
+  });
+  var mnAerial2003 = L.tileLayer.wms(MN_WMS, {
+    layers: "fsa", format: "image/jpeg", transparent: false,
+    version: "1.1.1",
+    attribution: "Aerial imagery (2003): USDA FSA / MnGeo",
+  });
+  var mnAerial1991 = L.tileLayer.wms(MN_WMS, {
+    layers: "doq", format: "image/jpeg", transparent: false,
+    version: "1.1.1",
+    attribution: "Aerial imagery (1991, black-and-white): USGS / MnGeo",
+  });
+
+  /* LiDAR Shaded is a COMPOSED base: OpenSnowMap's pistes are a
+     transparent overlay tile set with no cartography of their own
+     (OpenSnowMap's own base snow map stays unused -- its author
+     discourages outside use), so this entry stacks the
+     pistes over the MN LiDAR Hillshade, the site's relief
+     register. The hillshade layer object is shared: Leaflet moves
+     a layer between parents, never duplicates it. Verified over
+     the chapter: OSM pistes (nordic ski trails) are drawn around
+     Itasca State Park and the Leech Lake shore; much of the
+     corridor has none mapped, and there the base reads as plain
+     hillshade. */
+  var snowPistes = L.tileLayer(
+    "https://tiles.opensnowmap.org/pistes/{z}/{x}/{y}.png", {
+      maxZoom: 18,
+      attribution: "Snow trails: OpenSnowMap, " +
+        "© OpenStreetMap contributors",
+    });
+  var winterBase = L.layerGroup([mnHillshade, snowPistes]);
+
+  var BASES = [
+    { name: "Topo (OpenTopoMap)", code: "topo", label: "OpenTopoMap",
+      layer: topo },
+    /* Streets and Trails sit under Topo (Paul, Nov 13, 2026):
+       they are the street-level working maps, so they read as
+       sub-choices of Topo (indented, subChoice) rather than
+       separate top-level bases. */
+    { name: "Streets (OSM)", code: "streets", label: "OpenStreetMap",
+      layer: osm, subChoice: true },
+    { name: "Trails (CyclOSM)", code: "trails", label: "Trails",
+      sub: "CyclOSM", layer: cyclosm, subChoice: true },
+    /* LiDAR Shaded (Paul, Nov 13, 2026): Terrain and Winter were
+       the same LiDAR hillshade — Winter was the hillshade plus the
+       snow pistes — so they are one button now. It uses winterBase
+       (hillshade + snow trails), so the snow trails are kept, and
+       winter: true keeps the snowmobile emphasis. The generic
+       Aerial (NAIP 2023/25) is gone the same day: the year menu
+       below carries recent aerial photography (2025 Dec newest),
+       so a separate undated Aerial was redundant. */
+    { name: "LiDAR Shaded", code: "lidar", label: "Bare Earth MN LiDAR",
+      layer: winterBase, winter: true },
+    /* Added Nov 13, 2026 (Paul: year-by-year aerials, labelled by
+       year and season): newest first, Wayback above NAIP within a
+       year. All verified live over the corridor — see the tile-layer
+       definitions above and the research note in SOURCES.md. The
+       2014 entry sits in its chronological slot, not at the head.
+       Leaf state is labelled only where it is leaf-off (2013
+       spring); the rest carry no leaf label (Paul, Nov 13).
+       RELABELLED Nov 13, 2026 (Paul): the Wayback entries are
+       labelled by the year the photo was taken (capture year),
+       not the release date — see the Wayback comment above. The
+       2018, 2020 and 2024 releases are unmeasured, so those three
+       labels still show the release year. */
+    { name: "Aerial 2025 (Dec)", code: "aerial-2025", label: "Aerial 2024",
+      sub: "Esri Wayback snapshot", layer: esriWayback2025 },
+    { name: "Aerial 2025 (summer)", code: "aerial-2025-naip", label: "Aerial 2025 (summer)",
+      sub: "NAIP", layer: mnAerial2025 },
+    { name: "Aerial 2024 (Dec)", code: "aerial-2024", label: "Aerial 2024 (Dec)",
+      sub: "Esri Wayback snapshot", layer: esriWayback2024 },
+    { name: "Aerial 2023 (Dec)", code: "aerial-2023", label: "Aerial 2019",
+      sub: "Esri Wayback snapshot", layer: esriWayback2023 },
+    { name: "Aerial 2023 (summer)", code: "aerial-2023-naip", label: "Aerial 2023 (summer)",
+      sub: "NAIP", layer: mnAerial2023 },
+    { name: "Aerial 2022 (Dec)", code: "aerial-2022", label: "Aerial 2021",
+      sub: "Esri Wayback snapshot", layer: esriWayback2022 },
+    { name: "Aerial 2021 (Dec)", code: "aerial-2021", label: "Aerial 2017–19",
+      sub: "Esri Wayback snapshot", layer: esriWayback2021 },
+    { name: "Aerial 2021 (summer)", code: "aerial-2021-naip", label: "Aerial 2021 (summer)",
+      sub: "NAIP", layer: mnAerial2021 },
+    { name: "Aerial 2020 (Dec)", code: "aerial-2020", label: "Aerial 2020 (Dec)",
+      sub: "Esri Wayback snapshot", layer: esriWayback2020 },
+    { name: "Aerial 2019 (Dec)", code: "aerial-2019", label: "Aerial 2017",
+      sub: "Esri Wayback snapshot", layer: esriWayback2019 },
+    { name: "Aerial 2019 (summer)", code: "aerial-2019-naip", label: "Aerial 2019 (summer)",
+      sub: "NAIP", layer: mnAerial2019 },
+    { name: "Aerial 2018 (Dec)", code: "aerial-2018", label: "Aerial 2018 (Dec)",
+      sub: "Esri Wayback snapshot", layer: esriWayback2018 },
+    { name: "Aerial 2017 (summer)", code: "aerial-2017-naip", label: "Aerial 2017 (summer)",
+      sub: "NAIP", layer: mnAerial2017 },
+    { name: "Aerial 2015 (summer)", code: "aerial-2015-naip", label: "Aerial 2015 (summer)",
+      sub: "NAIP", layer: mnAerial2015 },
+    { name: "Aerial 2014 (Dec)", code: "aerial-2014", label: "Aerial 1999",
+      sub: "Esri Wayback snapshot", layer: esriWayback2014 },
+    { name: "Aerial 2013 (spring, leaf-off)", code: "aerial-2013-spring", label: "Aerial 2013 (spring, leaf-off)",
+      sub: "MnGeo NW 50 cm · SAIP", layer: mnAerial2013Spring },
+    { name: "Aerial 2013 (summer)", code: "aerial-2013-naip", label: "Aerial 2013 (summer)",
+      sub: "NAIP", layer: mnAerial2013 },
+    { name: "Aerial 2012 (fall)", code: "aerial-2012-fall", label: "Aerial 2012 (fall)",
+      sub: "MnGeo Central", layer: mnAerial2012Fall },
+    { name: "Aerial 2010 (summer)", code: "aerial-2010-naip", label: "Aerial 2010 (summer)",
+      sub: "NAIP", layer: mnAerial2010 },
+    { name: "Aerial 2009 (summer)", code: "aerial-2009-naip", label: "Aerial 2009 (summer)",
+      sub: "NAIP", layer: mnAerial2009 },
+    { name: "Aerial 2008 (summer)", code: "aerial-2008-naip", label: "Aerial 2008 (summer)",
+      sub: "NAIP", layer: mnAerial2008 },
+    { name: "Aerial 2006 (summer/fall)", code: "aerial-2006", label: "Aerial 2006 (summer/fall)",
+      sub: "USGS 40-county · 1 m", layer: mnAerial2006 },
+    { name: "Aerial 2003 (summer)", code: "aerial-2003", label: "Aerial 2003 (summer)",
+      sub: "FSA", layer: mnAerial2003 },
+    { name: "Aerial 1991 (black-and-white)", code: "aerial-1991", label: "Aerial 1991 (black-and-white)",
+      sub: "USGS DOQ · 1 m", layer: mnAerial1991 },
+    { name: "Aerial (Esri)", code: "esri-aerial", label: "ESRI World Imagery",
+      layer: esriImagery },
+    { name: "Aerial + Topo (NAIP 2023/25)", code: "aerial-topo", label: "Aerial + Topo",
+      sub: "NAIP with topo labels", layer: usgsImageryTopo },
+    { name: "USGS Topo 1:24k", code: "usgs", label: "USGS Topo",
+      sub: "1:24k quadrangles", layer: usgsTopo },
+    { name: "National Geographic (Esri)", code: "natgeo", label: "National Geographic",
+      layer: esriNatGeo },
+    /* Retired Nov 11, 2026 (design review §7): the two canopy
+       bases are the Tree height overlay's source now, not
+       choices. They stay defined above and are NOT listed here. */
+  ];
+
+  var currentBase = BASES[0];
+
+  /* setBase, simplified for the build-out viewer: the main viewer's
+     version also steps casing registers, the Winter snowmobile
+     emphasis, the access-layer style and the share hash — none of
+     those exist here (the build-out viewer has no casing registers,
+     no snowmobile emphasis styling and no share-link hash), so this
+     swaps the layer, marks the button and keeps the base-imagery
+     body class. The `winter: true` flag on LiDAR Shaded is kept in
+     BASES for fidelity; it has no effect here. */
+  function setBase(name) {
+    var def = null;
+    BASES.forEach(function (b) { if (b.name === name) def = b; });
+    if (!def || def === currentBase) return;
+    map.removeLayer(currentBase.layer);
+    map.addLayer(def.layer);
+    currentBase = def;
+    document.body.classList.toggle("base-imagery", /^Aerial/.test(name));
+    markActiveBase(name);
+  }
+
+  var yearSelect = null;
+  function isAerialYear(def) {
+    return /^Aerial \d{4}/.test(def.name);
+  }
+  function markActiveBase(name) {
+    document.querySelectorAll("#background-choices .bg-choice").forEach(function (row) {
+      var on = row.getAttribute("data-base") === name;
+      row.classList.toggle("on", on);
+      row.setAttribute("aria-pressed", on ? "true" : "false");
+    });
+    /* Keep the year menu showing the current year aerial, or the
+       placeholder when the current base is not a year aerial. */
+    if (yearSelect) {
+      yearSelect.value = isAerialYear({ name: name }) ? name : "";
+    }
+  }
+
+  function wireSubToggleExpand(label, wrap, openLabel) {
+    wrap.classList.add("sub-toggles", "collapsed");
+    var btn = document.createElement("button");
+    btn.type = "button";
+    btn.className = "tog-expand";
+    btn.textContent = "▸";
+    btn.setAttribute("aria-expanded", "false");
+    btn.setAttribute("aria-label", "Show " + openLabel);
+    btn.title = "Show " + openLabel;
+    btn.addEventListener("click", function () {
+      var collapsed = wrap.classList.toggle("collapsed");
+      btn.textContent = collapsed ? "▸" : "▾";
+      btn.setAttribute("aria-expanded", collapsed ? "false" : "true");
+      btn.setAttribute("aria-label",
+        (collapsed ? "Show " : "Hide ") + openLabel);
+      btn.title = (collapsed ? "Show " : "Hide ") + openLabel;
+    });
+    label.appendChild(btn);
+  }
+
+  (function buildBackground() {
+    function rowFor(def) {
+      /* A real button (aria-pressed + the "on" class), not a
+         label + radio — the Basemap section is a set of
+         actions, and the radio's checked state drifted from
+         the "on" class markActiveBase maintains. A subChoice
+         (Streets, Trails under Topo) is a full-size button
+         like every other base (Paul, Nov 13, 2026); it sits
+         right after Topo in the order, which is what marks it
+         as belonging to Topo. */
+      var btn = document.createElement("button");
+      btn.type = "button";
+      btn.className = "bg-choice" + (def.subChoice ? " bg-sub-choice" : "");
+      btn.setAttribute("data-base", def.name);
+      btn.setAttribute("aria-pressed",
+        def === currentBase ? "true" : "false");
+      if (def === currentBase) btn.classList.add("on");
+      btn.textContent = def.label + " ";
+      if (def.sub) {
+        var sub = document.createElement("span");
+        sub.className = "bg-sub";
+        sub.textContent = "— " + def.sub;
+        btn.appendChild(sub);
+      }
+      btn.addEventListener("click", function () {
+        setBase(def.name);
+      });
+      return btn;
+    }
+    var main = document.getElementById("background-choices");
+    if (!main) return;
+    /* The year aerials live in one menu, newest first (BASES
+       order), instead of a button per year. The menu sits at the
+       BOTTOM of the Basemap section (Paul, Nov 13, 2026), after
+       every base button. Every base is listed here now: the
+       "More backgrounds" disclosure is gone, nothing hides
+       behind it. */
+    function yearMenu() {
+      var wrap = document.createElement("div");
+      wrap.className = "bg-year-wrap";
+      var label = document.createElement("label");
+      label.className = "bg-year-label";
+      label.setAttribute("for", "bg-year-select");
+      label.textContent = "Aerial photography by year";
+      var note = document.createElement("div");
+      note.className = "bg-year-note";
+      note.textContent = "Wayback entries are labelled by the year the photo was taken; some span more than one year.";
+      var sel = document.createElement("select");
+      sel.id = "bg-year-select";
+      sel.className = "bg-year-select";
+      var ph = document.createElement("option");
+      ph.value = "";
+      ph.textContent = "Choose a year…";
+      sel.appendChild(ph);
+      BASES.forEach(function (def) {
+        if (!isAerialYear(def)) return;
+        var opt = document.createElement("option");
+        opt.value = def.name;
+        opt.textContent = def.label + " — " + def.sub;
+        sel.appendChild(opt);
+      });
+      sel.addEventListener("change", function () {
+        if (sel.value) setBase(sel.value);
+      });
+      wrap.appendChild(label);
+      wrap.appendChild(note);
+      wrap.appendChild(sel);
+      yearSelect = sel;
+      return wrap;
+    }
+    BASES.forEach(function (def) {
+      if (isAerialYear(def)) return; /* year aerials live in the
+        menu, not as buttons */
+      main.appendChild(rowFor(def));
+    });
+    main.appendChild(yearMenu()); /* the year menu sits at the
+      bottom of the Basemap section (Paul, Nov 13, 2026) */
+    /* Basemap is a pull-down (Paul, Nov 13, 2026): the buttons
+       start hidden behind a disclosure on the Basemap heading;
+       the button opens them. Same pattern as the layer
+       sub-toggles. */
+    var bgHead = document.getElementById("basemap-head");
+    if (bgHead) wireSubToggleExpand(bgHead, main, "basemap choices");
+  })();
 
   // Whole-Minnesota corridor: ND border to the Arrowhead, both gaps.
   map.fitBounds([[46.24, -96.73], [47.98, -91.37]], { padding: [20, 20] });
