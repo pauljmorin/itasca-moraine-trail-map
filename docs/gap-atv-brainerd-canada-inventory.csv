@@ -1,0 +1,72 @@
+name,miles,manager,county(ies),source_type,source_url,gis_available
+Crow Wing Southern Loop,60,Central Lakes ATV Club,Crow Wing,DNR,https://www.dnr.state.mn.us/ohv/az.html,yes-GeoPDF
+Fort Ripley Trail and Ripley Connection,31,Central Lakes ATV Club per DNR detail; Balsam Trail Blazers per DNR GeoPDF (maintainer disputed),Crow Wing,DNR,https://www.dnr.state.mn.us/ohv/az.html,yes-GeoPDF
+Miller-Black Bear,31,Cuyuna Iron Range Riders ATV Club,Crow Wing,DNR,https://www.dnr.state.mn.us/ohv/az.html,yes-GeoPDF
+Miller Hills (OHM only),14,Northern Lites Cycle Club,Crow Wing,DNR,https://www.dnr.state.mn.us/ohv/az.html,yes-GeoPDF
+Mississippi River Northwoods,11.5,Cuyuna Iron Range Riders ATV Club,Crow Wing,DNR,https://www.dnr.state.mn.us/ohv/az.html,yes-GeoPDF
+Pine Center Trails,23,Pine Center Sportsman's Club,Crow Wing,DNR,https://www.dnr.state.mn.us/ohv/az.html,yes-GeoPDF
+Emily–Blind Lake Trail,16,Over The Hills Gang ATV Club,"Aitkin; Crow Wing",DNR,https://www.dnr.state.mn.us/ohv/az.html,yes-GeoPDF
+Emily-Outing Trail,56,Over The Hills Gang ATV Club,Cass,DNR,https://www.dnr.state.mn.us/ohv/az.html,yes-GeoPDF
+Moose River Trail,29,not established,Cass,DNR,https://www.dnr.state.mn.us/ohv/az.html,yes-GeoPDF
+Soo Line North Trail (Cass County),52,Minnesota DNR,Cass,DNR,https://www.dnr.state.mn.us/ohv/az.html,yes-GeoPDF
+Spider Lake Trails,29,not established,Cass,DNR,https://www.dnr.state.mn.us/ohv/az.html,yes-GeoPDF
+Blind Lake Connector and Loop,33,Blind Lake ATV Club (attribution by name-match),Aitkin,DNR,https://www.dnr.state.mn.us/ohv/az.html,yes-GeoPDF
+Soo Line North Trail (Aitkin County),48,Minnesota DNR,Aitkin,DNR,https://www.dnr.state.mn.us/ohv/az.html,yes-GeoPDF
+Moose River Connector,7,not established,Aitkin,DNR,https://www.dnr.state.mn.us/ohv/az.html,yes-GeoPDF
+Axtell Technical Riding Area,1.5,not established,Aitkin,DNR,https://www.dnr.state.mn.us/ohv/az.html,yes-GeoPDF
+Alvwood–Squaw Lake ATV/OHM Trail,159,Alvwood Squaw Lake ATV Club,Itasca,DNR,https://www.dnr.state.mn.us/ohv/trail_detail.html?id=98,yes-FeatureServer; yes-GeoPDF
+Wilderness Trail,60,Wilderness Wheelers ATV Club,Itasca,DNR,https://www.dnr.state.mn.us/ohv/trail_detail.html?id=129,yes-FeatureServer; yes-GeoPDF
+Alborn–Pengilly Railroad ATV Trail,39,Range Riders ATV Club; NW 17 East Range Riders / SE 22 Alborn Dirt Devils per DNR GeoPDF 2025,"Itasca; St. Louis",DNR,https://www.dnr.state.mn.us/ohv/az.html,yes-GeoPDF
+Bigfork and Balsam Connection,32,not established,Itasca,DNR,https://www.dnr.state.mn.us/ohv/az.html,yes-GeoPDF
+Thistledew Trails,25,not established,Itasca,DNR,https://www.dnr.state.mn.us/ohv/az.html,yes-GeoPDF
+UPM Blandin Trail,21,Rapids Riders ATV Club,Itasca,DNR,https://www.dnr.state.mn.us/ohv/az.html,yes-GeoPDF
+Goodland ATV/OHM Trail,19,Itasca Trail Riders ATV Club,Itasca,DNR,https://www.dnr.state.mn.us/ohv/az.html,yes-GeoPDF
+Rabey Line and Hill City Connector,19,Northwoods Quads ATV Club,"Itasca; Aitkin",county,https://www.itascacountymn.gov/795/ATV-Trails-In-Itasca-County,PDF map only
+Little Moose Trail,18,Swampsiders Snowmobile & ATV Club,Itasca,DNR,https://www.dnr.state.mn.us/ohv/az.html,yes-GeoPDF
+Herb Brandstrom ATV/OHM Trail,14,Swampsiders Snowmobile & ATV Club,Itasca,DNR,https://www.dnr.state.mn.us/ohv/az.html,yes-GeoPDF
+Len Hardy Trail,9,Range Riders ATV Club Inc.,Itasca,DNR,https://www.dnr.state.mn.us/ohv/az.html,yes-GeoPDF
+Balsam Trail,5.5,Swampsiders Snowmobile & ATV Club,Itasca,DNR,https://www.dnr.state.mn.us/ohv/az.html,yes-GeoPDF
+B&B Connection (no DNR A-Z row found; EXCLUDED from corridor total),33,Wilderness Wheelers ATV Club,Itasca,county,https://www.itascacountymn.gov/795/ATV-Trails-In-Itasca-County,PDF map only
+Blue Ox Trail,74,"Koochiching County (provider); Northome Ridge Runners/Riders ATV Club; Timber Riders ATV; DNR Parks and Trails","Beltrami; Itasca; Koochiching",DNR,https://www.dnr.state.mn.us/ohv/trail_detail.html?id=5,yes-FeatureServer; yes-GeoPDF
+Voyageur Country ATV Trail,36,Voyageur Country ATV Club,"St. Louis; Koochiching",DNR,https://www.dnr.state.mn.us/ohv/az.html,yes-FeatureServer; yes-GeoPDF
+Blue Ox Connection ATV Trail (PROPOSED),4.6,Voyageur Country ATV Club,Koochiching,lobby,https://www.lccmr.mn.gov/proposals/2027/originals/Proposal_2027-552.pdf,no
+Voyageur Country ATV Trail Phase 2 (PROPOSED),125,Voyageur Country ATV Club,"Koochiching; St. Louis",DNR,https://files.dnr.state.mn.us/input/environmentalreview/voyageur-country-atv/phase-2/attachment-a-1-project-location-information.pdf,no
+Prospectors Trail (Prospector Loop),167,Prospector ATV Club Alliance / Minnesota DNR,"Lake; St. Louis",DNR,https://www.dnr.state.mn.us/ohv/az.html,yes-FeatureServer; yes-GeoPDF
+Quad Cities ATV Trail,35,Quad Cities ATV Club,St. Louis,DNR,https://www.dnr.state.mn.us/ohv/az.html,yes-GeoPDF
+David Dill/Taconite State Trail - Ely to Purvis Area,11,Minnesota DNR,St. Louis,DNR,https://www.dnr.state.mn.us/ohv/az.html,yes-FeatureServer
+Taconite State Trail - Big Aspen Connection,18,Minnesota DNR,St. Louis,DNR,https://www.dnr.state.mn.us/ohv/az.html,yes-GeoPDF
+Iron Range OHV State Recreation Area - West Unit,36,Minnesota DNR,St. Louis,DNR,https://www.dnr.state.mn.us/ohv/az.html,yes-FeatureServer
+Iron Range OHV State Recreation Area - East Unit,13,Minnesota DNR,St. Louis,DNR,https://www.dnr.state.mn.us/ohv/az.html,yes-FeatureServer
+Chisholm Trail,16,Minnesota DNR,St. Louis,DNR,https://www.dnr.state.mn.us/ohv/az.html,yes-GeoPDF
+East Range Multi-Use Trail,22,Minnesota DNR,St. Louis,DNR,https://www.dnr.state.mn.us/ohv/az.html,yes-GeoPDF
+Jackpot Trail,30,Minnesota DNR,St. Louis,DNR,https://www.dnr.state.mn.us/ohv/az.html,yes-GeoPDF
+Stony Spur II Trail,30,Minnesota DNR,St. Louis,DNR,https://www.dnr.state.mn.us/ohv/az.html,yes-GeoPDF
+Turkey Time Trail,16,Minnesota DNR,St. Louis,DNR,https://www.dnr.state.mn.us/ohv/az.html,yes-GeoPDF
+Hibbing to Alborn Trail,18,Minnesota DNR,St. Louis,DNR,https://www.dnr.state.mn.us/ohv/az.html,yes-GeoPDF
+Genoa Trail,3,Minnesota DNR,St. Louis,DNR,https://www.dnr.state.mn.us/ohv/az.html,yes-GeoPDF
+Mesabi Mountain Trail (ORV only),4,Minnesota DNR,St. Louis,DNR,https://www.dnr.state.mn.us/ohv/az.html,yes-GeoPDF
+Moose Trail (Biwabik-Skibo),23,Ranger Snowmobile/ATV Club,St. Louis,DNR,https://www.dnr.state.mn.us/ohv/az.html,yes-GeoPDF
+Seven Beaver ATV Trail (Skibo-Hwy 2),23,Ranger Snowmobile/ATV Club,St. Louis,DNR,https://www.dnr.state.mn.us/ohv/az.html,yes-GeoPDF
+Red Dot Trail,30,Minnesota DNR,Lake,DNR,https://www.dnr.state.mn.us/ohv/az.html,yes-GeoPDF
+Wild Country Trail,30,Wild Country ATV Club,Lake,DNR,https://www.dnr.state.mn.us/ohv/az.html,yes-GeoPDF
+Moose Walk Trail,22,Minnesota DNR,Lake,DNR,https://www.dnr.state.mn.us/ohv/az.html,yes-GeoPDF
+Moose Run Trail,12,Minnesota DNR,Lake,DNR,https://www.dnr.state.mn.us/ohv/az.html,yes-GeoPDF
+C.J. Ramstad / North Shore State Trail (ATV segment),7,Minnesota DNR,Lake,DNR,https://www.dnr.state.mn.us/ohv/az.html,yes-FeatureServer
+Alger Grade OHM Trail (OHM only),13,Minnesota DNR,Lake,DNR,https://www.dnr.state.mn.us/ohv/az.html,yes-GeoPDF
+Old Greenwood Trail,30,Minnesota DNR,Cook,DNR,https://www.dnr.state.mn.us/ohv/az.html,yes-GeoPDF
+Timber Frear Loop,20,Minnesota DNR,Cook,DNR,https://www.dnr.state.mn.us/ohv/az.html,yes-GeoPDF
+Hovland Woods Trail,16,Minnesota DNR,Cook,DNR,https://www.dnr.state.mn.us/ohv/az.html,yes-GeoPDF
+Rice Lake Pancore Loop,13,Minnesota DNR,Cook,DNR,https://www.dnr.state.mn.us/ohv/az.html,yes-GeoPDF
+Kelliher ATV Trail (adjacent),98,Minnesota DNR,Beltrami,DNR,https://www.dnr.state.mn.us/ohv/az.html,yes-GeoPDF
+Timber Trails (adjacent),114,Minnesota DNR,Beltrami,DNR,https://www.dnr.state.mn.us/ohv/az.html,yes-GeoPDF
+Wilton Trails Northwest (adjacent),37,Minnesota DNR,Beltrami,DNR,https://www.dnr.state.mn.us/ohv/az.html,yes-GeoPDF
+Fourtown-Grygla Trail (adjacent),171,Minnesota DNR,Beltrami,DNR,https://www.dnr.state.mn.us/ohv/az.html,yes-GeoPDF
+Consolidated Conservation Trails (adjacent),93,Minnesota DNR,"Beltrami; Marshall",DNR,https://www.dnr.state.mn.us/ohv/az.html,yes-GeoPDF
+Forest Riders Trail (adjacent),122,Forest Riders ATV Club,Hubbard,DNR,https://www.dnr.state.mn.us/ohv/az.html,yes-GeoPDF
+Round River Drive Trail (adjacent),113,Minnesota DNR,Hubbard,DNR,https://www.dnr.state.mn.us/ohv/az.html,yes-GeoPDF
+Martineau Recreational Trails (adjacent; OHM only),97,Minnesota DNR,Hubbard,DNR,https://www.dnr.state.mn.us/ohv/az.html,yes-GeoPDF
+Schoolcraft Trail (adjacent),29,Minnesota DNR,Hubbard,DNR,https://www.dnr.state.mn.us/ohv/az.html,yes-GeoPDF
+Lake of the Woods Connector Trail (adjacent),58,Minnesota DNR,Lake of the Woods,DNR,https://www.dnr.state.mn.us/ohv/az.html,yes-GeoPDF
+Warroad/Roseau Trails (adjacent),89,Minnesota DNR,Roseau,DNR,https://www.dnr.state.mn.us/ohv/az.html,yes-GeoPDF
+Bemis Hill Trails (adjacent),96,Minnesota DNR,Roseau,DNR,https://www.dnr.state.mn.us/ohv/az.html,yes-GeoPDF
+Soo Line North Trail (Carlton County) (adjacent),15,Minnesota DNR,Carlton,DNR,https://www.dnr.state.mn.us/ohv/az.html,yes-GeoPDF

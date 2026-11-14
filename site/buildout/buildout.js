@@ -324,6 +324,24 @@
     h += '<p class="drawn-note">Minnesota DNR OHV Trails, 2026 season, via the MnGeo FeatureServer. Lines within 2 mi of the proposed Arrowhead line / 2004 corridor.</p>';
     return h;
   }
+  // Brainerd-to-Canada layer popup: published (DNR A-Z / county GIA) miles
+  // and manager from the research inventory, not GIS-measured miles.
+  function atvBcPopup(p) {
+    var h = '<h3>ATV &mdash; ' + esc(p.name) + '</h3>';
+    if (p.pub_miles != null) h += '<p><strong>' + esc(p.pub_miles) + ' mi</strong> designated (DNR A-Z / county GIA, Nov 13, 2026)</p>';
+    if (p.manager) h += '<p><strong>Manager:</strong> ' + esc(p.manager) + '</p>';
+    if (p.county) h += '<p><strong>County:</strong> ' + esc(p.county) + '</p>';
+    if (p.segment) h += '<p>' + esc(p.segment) + '</p>';
+    if (p.classes) h += '<p><strong>Vehicles:</strong> ' + esc(p.classes) + '</p>';
+    if (p.surface) h += '<p><strong>Surface:</strong> ' + esc(p.surface) + '</p>';
+    if (p.funding) h += '<p><strong>Funding:</strong> ' + esc(p.funding) + '</p>';
+    if (/OHM only/i.test(p.name))
+      h += '<p class="warn"><strong>OHM only, not ATV</strong> — counted in the 1,630.5-mi corridor total per the DNR A-Z convention, excluded from the 1,599.5-mi ATV-only figure.</p>';
+    if (p.service_name) h += '<p class="drawn-note">DNR service name: ' + esc(p.service_name) + '.</p>';
+    if (p.source) h += '<p><a href="' + esc(p.source) + '" target="_blank" rel="noopener">Source</a></p>';
+    h += '<p class="drawn-note">Brainerd-to-Canada layer: the designated system drawn whole, from the Minnesota DNR OHV Trails service (2026 season). Published miles are the DNR A-Z / county figures — the service geometry measures differently for some systems; see the panel.</p>';
+    return h;
+  }
   var SNOW_SHARED = {
     'Taconite State Trail': 'ATV is allowed on 11 mi (Ely&ndash;Purvis, May 15&ndash;Oct 31) and the 18-mi Big Aspen Connection &mdash; this groomed spine is shared-use in places.',
     'C.J. Ramstad/North Shore State Trail': 'The only ATV miles on this trail are a 7-mi segment in Lake County; HF 274 (2025) proposes ATV use on the Cook and Lake County portions.'
@@ -355,8 +373,13 @@
       if (layers['gap-w']) layers['gap-w'].bringToFront();
       if (layers['prop-a']) layers['prop-a'].bringToFront();
       if (layers['prop-w']) layers['prop-w'].bringToFront();
-      var box = document.getElementById(id === 'atv' ? 'lyr-atv' : 'lyr-snow');
-      if (box && box.checked) layers[id].addTo(map);
+      var box = document.getElementById('lyr-' + id);
+      if (box && box.checked) {
+        layers[id].addTo(map);
+        // First load of the Brainerd-to-Canada layer: zoom to the corridor
+        // (Brainerd to the border), which runs past the default two-gap view.
+        if (id === 'atv-bc') map.fitBounds(layers[id].getBounds().pad(0.05));
+      }
     }).catch(function (err) {
       motorLoading[id] = false;
       if (window.console && console.error) console.error(id + ' load failed:', err);
@@ -377,6 +400,7 @@
     }
     applyMotorLayer('atv', 'lyr-atv', 'data/motorized-atv.geojson', ATV_COLOR, atvPopup, planning);
     applyMotorLayer('snow', 'lyr-snow', 'data/motorized-snow.geojson', SNOW_COLOR, snowPopup, planning);
+    applyMotorLayer('atv-bc', 'lyr-atv-bc', 'data/motorized-atv-bc.geojson', ATV_COLOR, atvBcPopup, planning);
   }
   function applyMotorLayer(id, checkboxId, path, color, popupFn, planning) {
     var on = document.getElementById(checkboxId).checked && planning;
@@ -405,6 +429,7 @@
   document.getElementById('lyr-soils').addEventListener('change', applyGroundLayers);
   document.getElementById('lyr-atv').addEventListener('change', applyGroundLayers);
   document.getElementById('lyr-snow').addEventListener('change', applyGroundLayers);
+  document.getElementById('lyr-atv-bc').addEventListener('change', applyGroundLayers);
 
   // Mode toggle: briefing (default) vs planning. Same map; planning adds the
   // readiness / funding / risks panel.

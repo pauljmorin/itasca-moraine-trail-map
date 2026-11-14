@@ -378,6 +378,16 @@ def main():
     for gj in (atv_gj, snow_gj):
         for feat in gj['features']:
             drawn_names.add(norm_name(feat['properties']['name']))
+    # The Brainerd-Canada layer (built by build-motorized-bc.py) carries the
+    # wider corridor's systems whole; its feature names ARE the CSV names.
+    # A system drawn there is "Drawn — Brainerd–Canada" in this table, not
+    # "List only". Missing file (BC build not run yet) degrades to empty.
+    bc_drawn_names = set()
+    bc_path = os.path.join(DATA, 'motorized-atv-bc.geojson')
+    if os.path.exists(bc_path):
+        with open(bc_path) as f:
+            for feat in json.load(f)['features']:
+                bc_drawn_names.add(norm_name(feat['properties']['name']))
 
     # CSV names and DNR service names differ in wording ("ATV" inserted
     # mid-name, "Bigfork" vs "Big Fork", Gilbert main unit = East Unit in
@@ -396,16 +406,18 @@ def main():
     }
 
     def drawn_for(csv_name):
+        """Which layer draws this system: 'arrowhead', 'bc', or False."""
         n = norm_name(csv_name)
-        if n in drawn_names:
-            return True
-        if ALIASES.get(n) in drawn_names:
-            return True
-        # the FS names are sometimes shorter/longer than the CSV names;
-        # accept a strong prefix/substring match either way
+        if n in drawn_names or ALIASES.get(n) in drawn_names:
+            return 'arrowhead'
         for d in drawn_names:
             if (len(n) > 8 and len(d) > 8) and (n in d or d in n):
-                return True
+                return 'arrowhead'
+        if n in bc_drawn_names:
+            return 'bc'
+        for d in bc_drawn_names:
+            if (len(n) > 8 and len(d) > 8) and (n in d or d in n):
+                return 'bc'
         return False
 
     # ---- system list from the CSV ----
@@ -419,7 +431,8 @@ def main():
     # short flags for the rows the research file marks as disputed/derived
     FLAGS = {
         'prospectors trail prospector loop': 'Mileage disputed: DNR 167 mi; club 216+ mi; consultant 250 mi.',
-        'voyageur country atv trail': 'County disputed: DNR A-Z says Lake; EAW and club place it in Koochiching / St. Louis. Phase 2 proposes +125 mi roadway + 76 mi natural-surface trail (EAW stage, not built).',
+        'voyageur country atv trail': 'County disputed: DNR A-Z says Lake; EAW and club place it in Koochiching / St. Louis. Phase 2 proposes up to 125 mi total (39 existing + 78 improved + 8 new), EAW stage, not built. The Dec 2022 draft EAW said 125 roadway + 76 natural-surface; the EAW document is the decider.',
+        'iron range ohv state recreation area east unit': 'Correction Nov 13, 2026: the prior inventory carried a duplicate "Gilbert (main unit) 36" row — DNR A-Z lists West Unit 36 and East Unit 13. Corrected St. Louis total 465, corrected core 1,059.5 mi.',
         'superior nf big aspen trail system': 'Excluded from the corridor total — overlap with the 18-mi Taconite–Big Aspen Connection unresolved.',
         'taconite state trail big aspen connection': 'Overlap with the 21-mi USFS Big Aspen system unresolved — do not add both.',
         'tomahawk trail': 'Included in the Ely Igloo 152-mi system total — do not add.',
@@ -463,7 +476,8 @@ def main():
         for r in rs:
             mi = (r['miles'] or '').strip() or '&mdash;'
             st = r['status']
-            dr = 'Drawn' if drawn_for(r['name']) else 'List only'
+            dr = {'arrowhead': 'Drawn (Arrowhead)',
+                  'bc': 'Drawn — Brainerd–Canada'}.get(drawn_for(r['name']), 'List only')
             flag = flag_for(r)
             name = r['name']
             if flag:
@@ -477,8 +491,8 @@ def main():
     sn_m = metrics['snow']
     section = []
     section.append('<h2>Planning &mdash; motorized competition (ATV &amp; snowmobile)</h2>')
-    section.append('<p><strong>About 1,083 miles of designated ATV trail</strong> in the four corridor counties '
-                   '(St. Louis 488, Itasca 401.5, Lake 114, Cook 79 &mdash; sums of published system mileages, '
+    section.append('<p><strong>About 1,059.5 miles of designated ATV trail</strong> in the four corridor counties '
+                   '(St. Louis 465, Itasca 401.5, Lake 114, Cook 79 &mdash; sums of published system mileages, '
                    'not a surveyed network length), against <strong>1.44 miles of off-road foot tread</strong> '
                    'in the Arrowhead gap. The ATV network is the dominant recreational trail system in the '
                    'corridor by mileage, it is still expanding, and it is backed by a dedicated funding '
@@ -530,20 +544,30 @@ def main():
                    'folder but was not verified against any meeting record; it is not asserted here as fact.</p>')
     section.append('<details><summary>Full system list &mdash; ATV and snowmobile (from the research inventory)</summary>')
     section.append(table_html('ATV systems &mdash; corridor core (St. Louis, Itasca, Lake, Cook)', atv_core,
-                              'Sums of published system mileages. Systems share tread in places, so the ~1,083-mi '
+                              'Sums of published system mileages. Systems share tread in places, so the 1,059.5-mi '
                               'total is an order-of-magnitude statement, not a precise network length.'))
-    section.append(table_html('ATV systems &mdash; adjacent (not in the corridor total)', atv_adj))
+    # The six systems the prior file listed as adjacent (Voyageur Country, Blue Ox,
+    # Emily-Outing, Soo Line North (Cass), Moose River, Spider Lake) are in-corridor
+    # in the wider Brainerd-to-Canada research and drawn on the Brainerd–Canada layer;
+    # they are listed there, not repeated here.
+    section.append('<p><strong>Formerly adjacent, now in-corridor:</strong> Voyageur Country (36 mi), '
+                   'Blue Ox (74 mi), Emily-Outing (56 mi), Soo Line North, Cass County (52 mi), Moose River '
+                   '(29 mi) and Spider Lake (29 mi) were listed as adjacent in the prior file. The wider '
+                   'Brainerd-to-Canada research (Nov 13, 2026) counts them in-corridor; they are drawn on '
+                   'the Brainerd–Canada ATV layer and listed in the section below, not repeated here.</p>')
     section.append(table_html('Shared-use segments (ATV on a snowmobile / state-trail spine)', shared_rows))
     section.append(table_html('Snowmobile named systems', snow_named,
                               'Named-system total 598 miles (165 + 135 + 146 + 152). System totals, not '
                               'corridor-clipped.'))
     section.append(table_html('Snowmobile county totals (context only &mdash; NOT additive)', snow_county))
-    section.append('<p class="drawn-note">&ldquo;Drawn&rdquo; means the system&rsquo;s geometry from the DNR '
-                   'service falls within 2 miles of the proposed line or the 2004 corridor and is drawn on the '
-                   'map. &ldquo;List only&rdquo; means no reliable geometry was sourced for that system in this '
-                   'pass (proposed, out of the drawn area, or no GIS found) &mdash; it is listed with its '
-                   'published mileage and status, never drawn from an invented line. Sources: '
-                   'docs/gap-atv-competition-research.md and docs/gap-atv-trails-inventory.csv, Nov 13, 2026.</p>')
+    section.append('<p class="drawn-note">&ldquo;Drawn (Arrowhead)&rdquo; means the system&rsquo;s geometry from '
+                   'the DNR service falls within 2 miles of the proposed line or the 2004 corridor and is drawn '
+                   'on the map. &ldquo;List only&rdquo; means no reliable geometry was sourced for that system in '
+                   'this pass (proposed, out of the drawn area, or no GIS found) &mdash; it is listed with its '
+                   'published mileage and status, never drawn from an invented line. Systems outside the '
+                   'Arrowhead clip are drawn on the Brainerd–Canada ATV layer instead — see the section '
+                   'below. Sources: docs/gap-atv-competition-research.md and '
+                   'docs/gap-atv-trails-inventory.csv, Nov 13, 2026.</p>')
     section.append('</details>')
     section_html = '\n'.join(section)
 
