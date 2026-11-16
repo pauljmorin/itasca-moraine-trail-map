@@ -1739,54 +1739,38 @@ function logFimPopup(f) {
    Planned is the watch list: flag a planned cut that would
    reach the trail. A DNR exam is not a sale — not every
    examined stand becomes one. */
-/* Timber seller colors + timing fills (Paul, Nov 16, 2026 —
-   "I need to be able to tell each seller and future/past
-   apart"): COLOR is the seller, FILL is the timing. Planned is
-   a solid fill in the seller's color (a near-term year
-   >= 2024 fills stronger, the existing recency rule); past is
-   the same seller color as a dashed outline with only a faint
-   fill, so timing reads without relying on color. The same
-   constants feed the panel key (logplanned panelExtra) and the
-   map legend — one source of truth, per the legend rule. */
-var TIMBER_SELLERS = [
-  { key: "MN DNR",         label: "MN DNR",        fill: "#0d9488", edge: "#0f766e" },
-  { key: "Cass County",    label: "Cass County",   fill: "#d97706", edge: "#92400e" },
-  { key: "Becker County",  label: "Becker County", fill: "#16a34a", edge: "#14532d" },
-  { key: "Hubbard County", label: "Hubbard County", fill: "#9333ea", edge: "#6b21a8" },
-  { key: "USFS Chippewa",  label: "USFS Chippewa", fill: "#2563eb", edge: "#1e40af" },
-  { key: "USFS Superior",  label: "USFS Superior", fill: "#db2777", edge: "#9d174d" },
-];
-/* Seller key: counties and the DNR come straight off manager;
-   USFS splits by forest — Chippewa vs Superior are different
-   sellers on this map. Anything unrecognised falls back to
-   slate so it still draws. */
-function timberSellerKey(p) {
+/* Timber timing fills (Paul, Nov 16, 2026 — "I don't need to
+   separate the colors of the sellers. I just need past/future."):
+   ONE amber for every seller; FILL is the timing. Planned is a
+   solid amber fill (a near-term year >= 2024 fills stronger, the
+   existing recency rule); past is the same amber as a dashed
+   outline with only a faint fill, so timing reads without relying
+   on color. The seller is named in the popup's first line, not by
+   color. */
+var TIMBER_FILL = "#d97706", TIMBER_EDGE = "#92400e";
+/* Seller label for the popup title: counties and the DNR come
+   straight off manager; USFS splits by forest — Chippewa vs
+   Superior are different sellers on this map. Name only, no
+   color. */
+function timberSellerLabel(p) {
   if ((p.manager || "") === "USFS") {
     return (p.forest || "").indexOf("Superior") >= 0
       ? "USFS Superior" : "USFS Chippewa";
   }
   return p.manager;
 }
-function timberSellerColor(p) {
-  var k = timberSellerKey(p), i;
-  for (i = 0; i < TIMBER_SELLERS.length; i++) {
-    if (TIMBER_SELLERS[i].key === k) return TIMBER_SELLERS[i];
-  }
-  return { key: k, label: k, fill: "#64748b", edge: "#475569" };
-}
-/* One style for both statewide toggles: the seller picks the
-   color, the timing picks the fill. */
+/* One style for both statewide toggles: amber throughout, the
+   timing picks the fill. */
 function timberStyle(f) {
   var p = f.properties || {};
-  var c = timberSellerColor(p);
   if (p.timing === "planned") {
     var y = p.year;
     var op = (typeof y === "number" && y >= 2024) ? 0.5 : 0.32;
-    return { color: c.edge, weight: 2,
-      fillColor: c.fill, fillOpacity: op };
+    return { color: TIMBER_EDGE, weight: 2,
+      fillColor: TIMBER_FILL, fillOpacity: op };
   }
-  return { color: c.edge, weight: 1.5, dashArray: "5 4",
-    fillColor: c.fill, fillOpacity: 0.10 };
+  return { color: TIMBER_EDGE, weight: 1.5, dashArray: "5 4",
+    fillColor: TIMBER_FILL, fillOpacity: 0.10 };
 }
 var STATEWIDE_PROGRAM_LABELS = {
   "dnr-stand-exam-10yr": "DNR 10-year stand exam",
@@ -1803,10 +1787,9 @@ function logStatewidePopup(f) {
   var p = f.properties;
   var planned = p.timing === "planned";
   /* First line names both dimensions at a glance: seller —
-     timing (Paul, Nov 16, 2026). The seller label is the same
-     key the map colors use; the manager row is dropped — the
-     title now carries it. */
-  var seller = timberSellerColor(p).label;
+     timing (Paul, Nov 16, 2026). The seller is named here, not
+     by color — the map shows timing only. */
+  var seller = timberSellerLabel(p);
   var rows = [
     ["Unit", p.name || (planned ? "Planned harvest" : "Timber sale")],
     ["Timing", planned ? "Planned — watch list" : "Past — sold / completed"],
@@ -5692,21 +5675,20 @@ var LAYERS = [
        stand-exam programs (10-yr 1,077 + annual 89) plus 24
        upcoming county sales / appraisals. ON by default: this is
        the watch list — planned harvests to track so a cut doesn't
-       reach the trail. Style is timberStyle: the seller picks
-       the color, planned is a solid fill (a near-term year
-       >= 2024 fills stronger). The toggle's swatch is a
-       six-segment strip of the seller colors — no single color
-       stands for the layer. Same file as the past toggle below;
+       reach the trail. Style is timberStyle: one amber for every
+       seller, planned is a solid fill (a near-term year
+       >= 2024 fills stronger). The toggle's swatch is that same
+       solid amber. Same file as the past toggle below;
        the second fetch of the same URL is served from the
        browser HTTP cache. */
     id: "logplanned", label: "Planned harvests — watch list",
     subgroup: "Timber sales",
-    title: "Planned timber harvests statewide along the trail — the watch list. Color = seller, solid fill = planned",
+    title: "Planned timber harvests statewide along the trail — the watch list. Solid amber fill = planned",
     file: "data/timber-sales-minnesota.geojson",
     onByDefault: true, group: "The land",
     swatch: { kind: "fill",
-      color: "linear-gradient(90deg,#0d9488 0 16.7%,#d97706 16.7% 33.3%,#16a34a 33.3% 50%,#9333ea 50% 66.7%,#2563eb 66.7% 83.3%,#db2777 83.3% 100%)",
-      border: "#374151" },
+      color: "#d97706",
+      border: "#92400e" },
     build: function (gj) {
       var planned = {
         type: "FeatureCollection",
@@ -5721,28 +5703,21 @@ var LAYERS = [
       });
       return layer;
     },
-    /* Panel key (Paul, Nov 16, 2026 — "tell each seller and
-       future/past apart"): the legend lives under this toggle,
-       inside the Timber sales subgroup, built from the same
-       TIMBER_SELLERS constants the map draws with. */
+    /* Panel key (Paul, Nov 16, 2026 — past / future only):
+       the legend lives under this toggle, inside the Timber
+       sales subgroup — two rows, the two fills. */
     panelExtra: function (label) {
       var key = document.createElement("div");
       key.className = "tog-timber-key";
       var html = "<div class='tog-timber-key-title'>" +
-        "Color = seller &middot; fill = timing</div>";
-      TIMBER_SELLERS.forEach(function (s) {
-        html += "<div class='tog-timber-key-row'>" +
-          "<span class='tog-swatch-fill' style='background:" +
-          s.fill + ";border-color:" + s.edge + "'></span>" +
-          s.label + "</div>";
-      });
+        "Fill = timing</div>";
       html += "<div class='tog-timber-key-row'>" +
-        "<span class='tog-swatch-fill' style='background:#0d9488;" +
-        "border-color:#0f766e'></span>" +
+        "<span class='tog-swatch-fill' style='background:#d97706;" +
+        "border-color:#92400e'></span>" +
         "Solid fill = planned (watch list)</div>";
       html += "<div class='tog-timber-key-row'>" +
         "<span class='tog-swatch-fill' style='background:" +
-        "rgba(13,148,136,0.10);border:1px dashed #0f766e'></span>" +
+        "rgba(217,119,6,0.10);border:1px dashed #92400e'></span>" +
         "Dashed faint outline = past (sold)</div>";
       key.innerHTML = html;
       label.parentNode.insertBefore(key, label.nextSibling);
@@ -5752,18 +5727,18 @@ var LAYERS = [
     /* Statewide timber, PAST (Paul, Nov 16, 2026): 361 sold /
        completed sales in the 2-mile corridor — county sales 317
        + USFS EDW 44. OFF by default and LAZY: historical
-       context. Style is timberStyle: the seller picks the color,
-       past is the same color as a dashed outline with only a
-       faint fill, so past reads as past at a glance. The
-       toggle's swatch is the six-seller strip, faded. */
+       context. Style is timberStyle: one amber for every seller,
+       past is a dashed outline with only a faint fill, so past
+       reads as past at a glance. The toggle's swatch is the
+       same amber, faded. */
     id: "logpast", label: "Past timber sales",
     subgroup: "Timber sales",
-    title: "Sold / completed timber sales statewide along the trail — historical context. Color = seller, dashed faint outline = past",
+    title: "Sold / completed timber sales statewide along the trail — historical context. Dashed faint outline = past",
     file: "data/timber-sales-minnesota.geojson",
     onByDefault: false, group: "The land",
     swatch: { kind: "fill",
-      color: "linear-gradient(90deg,#0d9488 0 16.7%,#d97706 16.7% 33.3%,#16a34a 33.3% 50%,#9333ea 50% 66.7%,#2563eb 66.7% 83.3%,#db2777 83.3% 100%)",
-      border: "#374151", opacity: 0.45 },
+      color: "#d97706",
+      border: "#92400e", opacity: 0.45 },
     build: function (gj) {
       var past = {
         type: "FeatureCollection",
@@ -7796,28 +7771,15 @@ function legendHtml() {
   add("<span class='swatch fill' style='background:#e7e1c3'></span>",
     "Driftless parcel (Iowa Co., WI — half-mile corridor)");
   add(pin(COLORS.assetPin), "Asset pin (photo inventory)");
-  /* Timber sales (Paul, Nov 16, 2026 — seller + timing at a
-     glance): the same TIMBER_SELLERS colors the map draws
-     with. Color is the seller; a solid fill is planned, a
-     dashed faint outline is past. */
+  /* Timber sales (Paul, Nov 16, 2026 — past / future only):
+     one amber for every seller; a solid fill is planned, a
+     dashed faint outline is past. The seller is named in each
+     popup's first line, not by color. */
   add("", "<strong>Timber sales</strong>");
-  add("", "Color = seller &middot; fill = timing");
-  add("<span class='swatch fill' style='background:#0d9488'></span>",
-    "MN DNR (planned stand exams)");
   add("<span class='swatch fill' style='background:#d97706'></span>",
-    "Cass County");
-  add("<span class='swatch fill' style='background:#16a34a'></span>",
-    "Becker County");
-  add("<span class='swatch fill' style='background:#9333ea'></span>",
-    "Hubbard County");
-  add("<span class='swatch fill' style='background:#2563eb'></span>",
-    "USFS — Chippewa National Forest");
-  add("<span class='swatch fill' style='background:#db2777'></span>",
-    "USFS — Superior National Forest");
-  add("<span class='swatch fill' style='background:#0d9488'></span>",
     "Solid fill = planned (watch list)");
   add("<span class='swatch fill' style='background:" +
-    "rgba(13,148,136,0.10);border:1px dashed #0f766e'></span>",
+    "rgba(217,119,6,0.10);border:1px dashed #92400e'></span>",
     "Dashed faint outline = past (sold)");
   add("", "<strong>Trail alerts</strong>");
   add("<span class='swatch alert'></span>",
