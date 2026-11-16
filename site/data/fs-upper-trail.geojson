@@ -11,31 +11,32 @@
     "source": "US Forest Service",
     "url": "https://www.fs.usda.gov/sites/nfs/files/r09/superior/publication/UpperTrailAreaFront_20250701.pdf",
     "date": "2025-07-01",
-    "viewport": "MVUM Road Trails Map"
+    "viewport": "MVUM Road Trails Map",
+    "trail_km": 85.36
    },
    "geometry": {
     "type": "Polygon",
     "coordinates": [
      [
       [
-       -91.51758,
-       47.78104
+       -91.51539,
+       47.78098
       ],
       [
-       -90.68721,
-       47.76725
+       -90.6894,
+       47.76732
       ],
       [
-       -90.66702,
-       48.31368
+       -90.66483,
+       48.31362
       ],
       [
-       -91.4974,
-       48.32747
+       -91.49959,
+       48.32754
       ],
       [
-       -91.51758,
-       47.78104
+       -91.51539,
+       47.78098
       ]
      ]
     ]

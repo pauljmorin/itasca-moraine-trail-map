@@ -1,0 +1,46 @@
+{
+ "type": "FeatureCollection",
+ "features": [
+  {
+   "type": "Feature",
+   "properties": {
+    "title": "Chippewa National Forest Motor Vehicle Use Map \u2014 South Back",
+    "short": "Chippewa South Back",
+    "note": "The SouthEast map; the SouthWest map is the front of this sheet.",
+    "image": "data/fs-geopdf/chippewa-south-back.jpg",
+    "source": "US Forest Service",
+    "url": "https://www.fs.usda.gov/sites/nfs/files/r09/chippewa/publication/MVUM_Chippewa_South_Back_26.pdf",
+    "date": "2026-01-06",
+    "viewport": "SouthEast",
+    "trail_km": 85.77
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -94.28042,
+       46.90987
+      ],
+      [
+       -93.60389,
+       46.91544
+      ],
+      [
+       -93.60958,
+       47.41459
+      ],
+      [
+       -94.29247,
+       47.40893
+      ],
+      [
+       -94.28042,
+       46.90987
+      ]
+     ]
+    ]
+   }
+  }
+ ]
+}

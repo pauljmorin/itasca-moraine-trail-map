@@ -11,31 +11,32 @@
     "source": "US Forest Service",
     "url": "https://www.fs.usda.gov/sites/nfs/files/r09/superior/publication/VirginiaAreaBack_20250707.pdf",
     "date": "2025-07-07",
-    "viewport": "MVUM Road Trails Map"
+    "viewport": "MVUM Road Trails Map",
+    "trail_km": 74.66
    },
    "geometry": {
     "type": "Polygon",
     "coordinates": [
      [
       [
-       -93.02473,
-       47.50945
+       -93.02242,
+       47.50944
       ],
       [
-       -92.14899,
-       47.50628
+       -92.1513,
+       47.5063
       ],
       [
-       -92.1446,
-       48.05683
+       -92.14229,
+       48.05682
       ],
       [
-       -93.02035,
-       48.06
+       -93.02266,
+       48.06002
       ],
       [
-       -93.02473,
-       47.50945
+       -93.02242,
+       47.50944
       ]
      ]
     ]

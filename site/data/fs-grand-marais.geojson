@@ -11,31 +11,32 @@
     "source": "US Forest Service",
     "url": "https://www.fs.usda.gov/sites/nfs/files/publication/GrandMaraisAreaBack_20250808_0.pdf",
     "date": "2025-08-08",
-    "viewport": "MVUM Road Trails Map"
+    "viewport": "MVUM Road Trails Map",
+    "trail_km": 97.53
    },
    "geometry": {
     "type": "Polygon",
     "coordinates": [
      [
       [
-       -90.80387,
-       47.58996
+       -90.80121,
+       47.58985
       ],
       [
-       -89.81123,
-       47.56654
+       -89.81389,
+       47.56665
       ],
       [
-       -89.78211,
-       48.1255
+       -89.77945,
+       48.12539
       ],
       [
-       -90.77475,
-       48.14893
+       -90.77741,
+       48.14904
       ],
       [
-       -90.80387,
-       47.58996
+       -90.80121,
+       47.58985
       ]
      ]
     ]

@@ -4570,16 +4570,20 @@ function buildDnrGeopdf(gj) {
    INVISIBLE CANVAS HIT-POLYGON carrying the popup (the round-2
    fix — binding the popup to the image overlay does not work in
    this viewer). One overlay layer per map, all OFF by default
-   and LAZY. The five sheets below are the MVUMs whose frames
+   and LAZY. The six panels below are the MVUMs whose frames
    contain Minnesota NCT tread (geometric test, UTM 15N, against
    site/data/trail-minnesota.geojson — docs/forest-service-
    geopdf-layers-2026-11-16.md). Group "Forest Service", a new
-   top-level group. The affine fit residual on these MVUMs is
-   ~2e-03 deg (~150-220 m), larger than the DNR sheets'
-   <= 9e-05 deg — the frames are large and the /Measure control
-   points sit on a small central rect, so the affine carries the
-   projection's second-order terms; GDAL reads the same /Measure
-   and fits the same affine, so this is as good as GDAL gives. */
+   top-level group. CORRECTION (Nov 16, 2026, second pass): the
+   first pass placed these sheets with a lon/lat affine, which
+   is the wrong model for a UTM map — it left a constant
+   ~2e-03 deg (~150-220 m) lon residual, meridian convergence
+   on a 0.9-deg-wide frame. The quads are now computed through
+   the map's own projection (NAD83 UTM 15N, per the /GCS): the
+   /Measure GPTS are the frame's four corners, so the affine is
+   fit in UTM and the corners inverse-projected to lon/lat —
+   fit residual 0.06-0.36 m, and the corners reproduce the PDF's
+   own stated corner coordinates exactly. */
 function buildFsGeopdf(gj) {
   var group = L.layerGroup();
   gj.features.forEach(function (f) {
@@ -4596,6 +4600,7 @@ function buildFsGeopdf(gj) {
     if (map.getZoom() >= 11) group.addLayer(img);
     var html = "<strong>" + esc(p.title) + "</strong><br>" +
       "US Forest Service GeoPDF &mdash; " + esc(p.date) + "<br>" +
+      (p.trail_km != null ? esc(p.trail_km) + " km of NCT tread inside this sheet<br>" : "") +
       "<a href='" + esc(p.url) + "' target='_blank' " +
       "rel='noopener'>Download the GeoPDF from the Forest Service</a>";
     if (p.note) html += "<br>" + esc(p.note);
@@ -6444,36 +6449,51 @@ var LAYERS = [
        image (site/data/fs-geopdf/<slug>.jpg) is the viewport's
        map frame rendered at 150 dpi and cropped to the frame,
        long side <= 2400 px. Placement is the same 3-corner
-       affine as the DNR sheets; the affine fit residual on these
-       MVUMs is ~2e-03 deg (~150-220 m) — see buildFsGeopdf and
-       docs/forest-service-geopdf-layers-2026-11-16.md. Sheet
+       affine as the DNR sheets, but the quad is computed through
+       the map's own projection (NAD83 UTM 15N, per the /GCS) —
+       CORRECTION Nov 16, 2026: the first pass fit a lon/lat
+       affine and placed every sheet ~150-220 m off; the UTM
+       route fits to 0.06-0.36 m and reproduces the PDF's own
+       stated corner coordinates exactly (see buildFsGeopdf and
+       docs/forest-service-geopdf-layers-2026-11-16.md). Sheet
        images ride the same zoom >= 11 gate as the NCTA and DNR
        sheets (sheetImages / applySheetImageGate above); the
        dashed outline + name label stay visible below that.
        Source GeoPDFs live in data/geopdf/ (repo, not site/).
        Group "Forest Service" (new top-level group, pull-down,
        collapsed by default) — NOT a subgroup of "The trail".
-       NOT wired: the Chippewa North Front (its frame holds no
-       trail — the NCT stays in the South sheet), the Superior
-       Toimi Area map (nearest trail 2.4 km), the Bally Creek and
-       Norpine/Cascade ski sheets (no trail in frame), and the
-       three Superior sheets whose files could not be found at
-       any probed URL (Border Area front, Vermilion River Area
-       front, Isabella Area back — the Border front almost
-       certainly holds trail; see the note). Excluded by scope:
+       NOT wired: the Chippewa North Front and North Back
+       (neither frame holds trail — the NCT stays in the South
+       sheet), the Superior Toimi Area map (nearest trail 2.4 km),
+       the Bally Creek and Norpine/Cascade ski sheets (no trail
+       in frame), and the three Superior sheets whose files could
+       not be found at any probed URL (Border Area front,
+       Vermilion River Area front, Isabella Area back — whatever
+       trail those frames hold is already inside the six wired
+       frames, which cover the full Superior trail extent, so no
+       NCT tread is missing from the viewer; see the note).
+       Excluded by scope:
        the Forest Visitor Maps (Avenza-only, $4.99, not files)
        and the FSTopo 1:24k quads (dozens of tiles duplicating
        the USGS Topo basemap). */
-    id: "fs-chippewa-south", label: "FS — Chippewa South",
-    title: "Chippewa National Forest Motor Vehicle Use Map, South Front — US Forest Service GeoPDF, 2026-01-06, 80.7 km of trail inside the frame, placed by the map's own georeferencing",
-    file: "data/fs-chippewa-south.geojson", onByDefault: false,
+    id: "fs-chippewa-south-front", label: "FS — Chippewa South Front",
+    title: "Chippewa National Forest Motor Vehicle Use Map, South Front — US Forest Service GeoPDF, 2026-01-06, 80.6 km of trail inside the frame, placed by the map's own georeferencing",
+    file: "data/fs-chippewa-south-front.geojson", onByDefault: false,
+    group: "Forest Service",
+    swatch: { kind: "fill", color: "#dcfce7", border: "#166534" },
+    build: buildFsGeopdf,
+  },
+  {
+    id: "fs-chippewa-south-back", label: "FS — Chippewa South Back",
+    title: "Chippewa National Forest Motor Vehicle Use Map, South Back — US Forest Service GeoPDF, 2026-01-06, 85.8 km of trail inside the frame, placed by the map's own georeferencing",
+    file: "data/fs-chippewa-south-back.geojson", onByDefault: false,
     group: "Forest Service",
     swatch: { kind: "fill", color: "#dcfce7", border: "#166534" },
     build: buildFsGeopdf,
   },
   {
     id: "fs-ely", label: "FS — Ely",
-    title: "Ely Area Motor Vehicle Use Map, Superior National Forest — US Forest Service GeoPDF, 2025-07-07, 92.2 km of trail inside the frame, placed by the map's own georeferencing",
+    title: "Ely Area Motor Vehicle Use Map, Superior National Forest — US Forest Service GeoPDF, 2025-07-07, 92.1 km of trail inside the frame, placed by the map's own georeferencing",
     file: "data/fs-ely.geojson", onByDefault: false,
     group: "Forest Service",
     swatch: { kind: "fill", color: "#dcfce7", border: "#166534" },
@@ -6481,7 +6501,7 @@ var LAYERS = [
   },
   {
     id: "fs-virginia", label: "FS — Virginia",
-    title: "Virginia Area Motor Vehicle Use Map, Superior National Forest — US Forest Service GeoPDF, 2025-07-07, 74.6 km of trail inside the frame, placed by the map's own georeferencing",
+    title: "Virginia Area Motor Vehicle Use Map, Superior National Forest — US Forest Service GeoPDF, 2025-07-07, 74.7 km of trail inside the frame, placed by the map's own georeferencing",
     file: "data/fs-virginia.geojson", onByDefault: false,
     group: "Forest Service",
     swatch: { kind: "fill", color: "#dcfce7", border: "#166534" },
@@ -6497,7 +6517,7 @@ var LAYERS = [
   },
   {
     id: "fs-grand-marais", label: "FS — Grand Marais",
-    title: "Superior National Forest Motor Vehicle Use Map for the Grand Marais Area — US Forest Service GeoPDF, 2025-08-08, 96.7 km of trail inside the frame, placed by the map's own georeferencing",
+    title: "Superior National Forest Motor Vehicle Use Map for the Grand Marais Area — US Forest Service GeoPDF, 2025-08-08, 97.5 km of trail inside the frame, placed by the map's own georeferencing",
     file: "data/fs-grand-marais.geojson", onByDefault: false,
     group: "Forest Service",
     swatch: { kind: "fill", color: "#dcfce7", border: "#166534" },
@@ -7199,7 +7219,7 @@ function assertDrawOrder() {
        it, in the land-ownership fills. The
        ten DNR GeoPDF sheets (Nov 16, 2026) sit directly after
        "nctasheets" and before "atv", with the NCTA sheets. The
-       five Forest Service MVUM sheets sit directly after the
+       six Forest Service MVUM panels sit directly after the
        DNR sheets, before "atv".
        The three Nov 13
        land layers
@@ -7213,7 +7233,8 @@ function assertDrawOrder() {
      "dnr-remer", "dnr-white-earth", "dnr-itasca-summer",
      "dnr-maplewood-summer", "dnr-maplewood-winter",
      "dnr-david-dill-taconite", "dnr-lake-vermilion-soudan",
-     "fs-chippewa-south", "fs-ely", "fs-virginia",
+     "fs-chippewa-south-front", "fs-chippewa-south-back",
+     "fs-ely", "fs-virginia",
      "fs-upper-trail", "fs-grand-marais",
      "atv", "ohm", "snow", "sht", "brt", "driftless",
      "near-brt-sht", "bwca-portages",
