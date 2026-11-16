@@ -1,0 +1,46 @@
+{
+ "type": "FeatureCollection",
+ "features": [
+  {
+   "type": "Feature",
+   "properties": {
+    "title": "Tamarac National Wildlife Refuge \u2014 Land Status, refuge-wide index sheet",
+    "short": "Tamarac index",
+    "note": "Refuge-wide land-status sheet, 1:55,000; the three 1:24,000 tiles below cover the same ground in detail.",
+    "image": "data/tamarac-geopdf/tamarac-index.jpg",
+    "source": "US Fish & Wildlife Service",
+    "url": "https://iris.fws.gov/APPS/ServCat/DownloadFile/134761?Reference=89301",
+    "date": "2017-12-11",
+    "viewport": "MainMap12",
+    "trail_km": 68.43
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -95.77263,
+       46.84789
+      ],
+      [
+       -95.40651,
+       46.85618
+      ],
+      [
+       -95.4219,
+       47.1975
+      ],
+      [
+       -95.79036,
+       47.18911
+      ],
+      [
+       -95.77263,
+       46.84789
+      ]
+     ]
+    ]
+   }
+  }
+ ]
+}

@@ -1,0 +1,46 @@
+{
+ "type": "FeatureCollection",
+ "features": [
+  {
+   "type": "Feature",
+   "properties": {
+    "title": "Tamarac National Wildlife Refuge \u2014 Land Status, Sheet 2 of 3",
+    "short": "Tamarac 2 of 3",
+    "note": "Central tile, 1:24,000; land status current to August 31, 2017.",
+    "image": "data/tamarac-geopdf/tamarac-2of3.jpg",
+    "source": "US Fish & Wildlife Service",
+    "url": "https://iris.fws.gov/APPS/ServCat/DownloadFile/134763?Reference=89303",
+    "date": "2017-11-13",
+    "viewport": "Main Map11",
+    "trail_km": 17.64
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -95.73646,
+       46.94461
+      ],
+      [
+       -95.48039,
+       46.95045
+      ],
+      [
+       -95.48432,
+       47.03539
+      ],
+      [
+       -95.7408,
+       47.02954
+      ],
+      [
+       -95.73646,
+       46.94461
+      ]
+     ]
+    ]
+   }
+  }
+ ]
+}

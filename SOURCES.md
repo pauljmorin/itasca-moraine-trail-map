@@ -304,11 +304,15 @@ neither mileage reckoning above.
   it on **Chip-12** (2.34 of its 3.98 mi); GAP-W and every
   other section are outside. Census re-measures 2.27 mi by
   the same method, so the switch adds 0.07 mi. The official
-  line gives 2.28 mi. **White Earth check:** the White
-  Earth Reservation (GEOID 4595R) touches the map extent's
-  western margin but no depicted trail mileage falls inside
-  it (0.00 mi; closest trail point 9.7 km from its boundary)
-  — the obvious next polygon, not built here.
+  line gives 2.28 mi. **White Earth check (CORRECTED 2026-11-16):**
+  the White Earth Reservation touches the map extent's western
+  margin and no *depicted chapter* trail mileage falls inside
+  it (0.00 mi on the chapter line) — but the statewide NCT line
+  and the chapter line both put **19.15 mi inside White Earth,
+  all LLC chapter** (geodesic and UTM 15N agreeing), and the
+  reservation survey independently measured the same 19.15 mi.
+  The boundary layer is now built — see the White Earth section
+  below.
 - **Use here:** Full unclipped geometry, pulled by
   `scripts/pull_leech_lake_reservation.py` into
   `data/native-nations/leech-lake-reservation.geojson` (working)
@@ -318,6 +322,52 @@ neither mileage reckoning above.
   a legal survey.* Tribal management/forestry data is NOT in
   scope here — that stays relationship-only, per the
   project's standing line.
+
+
+## White Earth Reservation — boundary polygon (added 2026-11-16)
+
+- **What:** The external boundary of the White Earth Reservation
+  (White Earth Nation), drawn as a separate toggleable context
+  layer ("White Earth Reservation", off by default, lazy like
+  parcels) — the second crossing reservation after Leech Lake.
+  The trail crosses White Earth, ~19 mi, and it was the only
+  crossing reservation without a boundary layer in the viewer.
+- **URL:** https://biamaps.geoplatform.gov/server/rest/services/DivLTR/BIA_AIAN_National_LAR/FeatureServer
+  (layer 0, "BIA AIAN National LAR", queried
+  `LARID = 'LAR0051'`, outSR 4326, GeoJSON)
+- **Owner / publisher:** Bureau of Indian Affairs, American
+  Indian and Alaska Native Land Area Representation (AIAN-LAR).
+  Public federal data; no licence restriction.
+- **Vintage:** AIAN-LAR national dataset, feature LAR0051
+  "White Earth", fetched 2026-11-16. MultiPolygon, 39 polygons,
+  1,337 vertices: one large main body (745,723 ac) plus 38 small
+  trust parcels inside/near it; geometry-measured area 748,098 ac
+  (UTM 15N). BIA's own GISACRES attribute (1,621,000.16) contradicts
+  its own geometry by the same ~2.17x ratio as Leech Lake's
+  (1,794,106 vs 823,249 measured) and is NOT used.
+- **Why this source:** the same source and pull pattern as the
+  Leech Lake layer — the authoritative published federal boundary.
+  No per-reservation tribal map product exists (see
+  docs/reservation-maps-survey-2026-11-16.md): no public
+  georeferenced tribal map was found for White Earth (or Leech
+  Lake), so the boundary is the layer, not a map sheet.
+- **Trail overlap (measured 2026-11-16, geodesic + UTM 15N
+  agreeing, against both the statewide NCT line and the chapter
+  line):** 19.15 mi inside the reservation, all of it LLC chapter
+  (Connector, Foot Path). The reservation survey independently
+  measured the same 19.15 mi. The largest single feature is
+  9.75 mi of a 9.96-mi feature. The chapter's stretches file does
+  not cover the LLC chapter, so no stretch name is recorded.
+- **Use here:** Full unclipped geometry, pulled by
+  `scripts/pull_white_earth_reservation.py` into
+  `data/native-nations/white-earth-reservation.geojson` (working)
+  and `site/data/white-earth-reservation.geojson` (site copy,
+  lazy); the raw BIA fetch is kept at
+  `data/native-nations/bia-white-earth-lar0051.geojson`. The popup
+  and the Sources card carry the line: *the federal reservation
+  boundary as published — not a legal survey.* Tribal
+  management/forestry data is NOT in scope here — that stays
+  relationship-only, per the project's standing line.
 
 
 ## Forest health + blowdown — DNR survey 2025 (added 2026-11-13)

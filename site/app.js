@@ -6843,13 +6843,17 @@ var LAYERS = [
        NOT wired: the Chippewa North Front and North Back
        (neither frame holds trail — the NCT stays in the South
        sheet), the Superior Toimi Area map (nearest trail 2.4 km),
-       the Bally Creek and Norpine/Cascade ski sheets (no trail
-       in frame), and the three Superior sheets whose files could
-       not be found at any probed URL (Border Area front,
-       Vermilion River Area front, Isabella Area back — whatever
-       trail those frames hold is already inside the six wired
-       frames, which cover the full Superior trail extent, so no
-       NCT tread is missing from the viewer; see the note).
+       and the Bally Creek and Norpine/Cascade ski sheets (no trail
+       in frame). CORRECTION (Nov 16, 2026, second pass): the
+       three Superior sheets once listed here as unfound (Border
+       Area front, Vermilion River Area front, Isabella Area back)
+       WERE found — direct PDF URLs via the forest's MVUM
+       publications page — and each tested at 0.00 km of NCT
+       tread (nearest tread 12.9 km Border, 19.7 km Vermilion
+       River, 10.9 km Isabella). The MVUM set is now provably
+       complete: Superior 8/8, Chippewa 4/4 — six wired, six
+       tested at 0 km — so no NCT tread is missing from the
+       viewer. See docs/forest-service-map-survey-2026-11-16.md.
        Excluded by scope:
        the Forest Visitor Maps (Avenza-only, $4.99, not files)
        and the FSTopo 1:24k quads (dozens of tiles duplicating
@@ -6900,6 +6904,56 @@ var LAYERS = [
     group: "Agency Maps", subgroup: "Forest Service maps",
     swatch: { kind: "fill", color: "#dcfce7", border: "#166534" },
     build: buildFsGeopdf,
+  },
+  {
+    /* Tamarac National Wildlife Refuge land-status maps (Nov 16,
+       2026; Paul: "add what you can that makes sense" from the
+       map research). US Fish & Wildlife Service ServCat GeoPDFs,
+       Dec 2017 (land status current to Aug 31, 2017): a
+       refuge-wide index sheet (1:55,000) and three 1:24,000
+       tiles covering the refuge in Becker County, where the NCT
+       runs through. The NCT is NOT printed on these sheets —
+       they show refuge land status (numbered ownership tracts
+       over a grayscale topo base, refuge boundary in yellow).
+       Quads through the map's own projection (NAD83 UTM 15N),
+       fit residual 0.08-0.20 m (docs/tamarac-geopdf-layers-
+       2026-11-16.md). The index sheet contains the three tiles'
+       ground, so the four overlap heavily and their trail figures
+       do NOT sum. Group "Agency Maps", subgroup "Fish & Wildlife
+       maps" — beside the Minnesota DNR maps and the Forest
+       Service maps. Federal public domain. The refuge's
+       hunting-regulations map was NOT built: it has no /Measure
+       viewport (not georeferenced). */
+    id: "fws-tamarac-index", label: "FWS — Tamarac index",
+    title: "Tamarac National Wildlife Refuge Land Status, refuge-wide index sheet — US Fish & Wildlife Service GeoPDF, 2017-12-11, 68.4 km of trail inside the frame, placed by the map's own georeferencing",
+    file: "data/tamarac-index.geojson", onByDefault: false,
+    group: "Agency Maps", subgroup: "Fish & Wildlife maps",
+    swatch: { kind: "fill", color: "#fef3c7", border: "#92400e" },
+    build: buildFwsGeopdf,
+  },
+  {
+    id: "fws-tamarac-1of3", label: "FWS — Tamarac 1 of 3",
+    title: "Tamarac National Wildlife Refuge Land Status, Sheet 1 of 3 (northern tile) — US Fish & Wildlife Service GeoPDF, 2017-12-01, 5.6 km of trail inside the frame, placed by the map's own georeferencing",
+    file: "data/tamarac-1of3.geojson", onByDefault: false,
+    group: "Agency Maps", subgroup: "Fish & Wildlife maps",
+    swatch: { kind: "fill", color: "#fef3c7", border: "#92400e" },
+    build: buildFwsGeopdf,
+  },
+  {
+    id: "fws-tamarac-2of3", label: "FWS — Tamarac 2 of 3",
+    title: "Tamarac National Wildlife Refuge Land Status, Sheet 2 of 3 (central tile) — US Fish & Wildlife Service GeoPDF, 2017-11-13, 17.6 km of trail inside the frame, placed by the map's own georeferencing",
+    file: "data/tamarac-2of3.geojson", onByDefault: false,
+    group: "Agency Maps", subgroup: "Fish & Wildlife maps",
+    swatch: { kind: "fill", color: "#fef3c7", border: "#92400e" },
+    build: buildFwsGeopdf,
+  },
+  {
+    id: "fws-tamarac-3of3", label: "FWS — Tamarac 3 of 3",
+    title: "Tamarac National Wildlife Refuge Land Status, Sheet 3 of 3 (southern tile) — US Fish & Wildlife Service GeoPDF, 2017-12-01, 31.5 km of trail inside the frame, placed by the map's own georeferencing",
+    file: "data/tamarac-3of3.geojson", onByDefault: false,
+    group: "Agency Maps", subgroup: "Fish & Wildlife maps",
+    swatch: { kind: "fill", color: "#fef3c7", border: "#92400e" },
+    build: buildFwsGeopdf,
   },
   {
     /* Street View (Paul, Nov 13, 2026): the 11 trailheads and
@@ -7613,12 +7667,15 @@ function assertDrawOrder() {
        35 DNR GeoPDF sheets (Nov 16, 2026) sit directly after
        "nctasheets" and before "atv", with the NCTA sheets. The
        six Forest Service MVUM panels sit directly after the
-       DNR sheets, before "atv".
-       The three Nov 13
+       DNR sheets, before "atv". The four Tamarac land-status
+       sheets sit directly after the Forest Service panels,
+       before "atv". "whiteearth" sits with "leechlake" at the
+       back, the two reservation fills under everything. The
+       three Nov 13
        land layers
        (foresthealth, invasives, chippewa-plan) sit with the
        other "The land" fills, after easements, before access. */
-    ["leechlake", "parcels", "parcels-driftless", "logedw", "logfim", "logcass", "loghubbard",
+    ["leechlake", "whiteearth", "parcels", "parcels-driftless", "logedw", "logfim", "logcass", "loghubbard",
      "logbecker", "logclearwater", "easements", "foresthealth",
      "invasives", "chippewa-plan", "access",
      "roads", "nctasheets",
@@ -7630,6 +7687,8 @@ function assertDrawOrder() {
      "fs-chippewa-south-front", "fs-chippewa-south-back",
      "fs-ely", "fs-virginia",
      "fs-upper-trail", "fs-grand-marais",
+     "fws-tamarac-index", "fws-tamarac-1of3",
+     "fws-tamarac-2of3", "fws-tamarac-3of3",
      "atv", "ohm", "snow", "sht", "brt", "driftless",
      "near-brt-sht", "bwca-portages",
      "trail-minnesota", "trail", "alerts-mn-lines",
