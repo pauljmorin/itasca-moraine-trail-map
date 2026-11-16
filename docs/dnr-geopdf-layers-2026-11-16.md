@@ -234,3 +234,18 @@ are JPEGs only, same as the NCTA pattern (which keeps only JPGs in
    dump; the PBF was deleted and all work moved to
    `working/dnr-geopdf/` (repo, persistent). The OSM PBF cross-check
    was dropped as unnecessary once the stateland survey completed.
+
+## Popup fix, round 2 (Nov 16, after click-through #4)
+
+The first fix (bind the popup to the interactive image overlay as
+well as the outline) did NOT work in the live deploy: click-through
+#4 put seven interior clicks into two sheets (Itasca Summer ×5,
+Waboose ×2) and got no popup, while loop and parcel popups opened
+normally in the same session. The rotated overlay's interactive
+target never receives the event in this viewer. The popup now rides
+on an invisible hit-polygon instead — the sheet's own closed ring,
+transparent fill (`fillOpacity: 0`), canvas-rendered like the
+parcels, whose popups provably open. The image keeps its own
+binding too, in case the overlay path ever starts receiving clicks.
+The NCTA sheets still have the outline-only behaviour (unchanged —
+fixing them the same way was not asked for).

@@ -4492,7 +4492,13 @@ function boldLine(gj, color, popupFn) {
    visible below zoom 11. The popup names the map, its date, and
    links the DNR GeoPDF it came from; a per-map note (inset panel
    shown as printed, or which panel of a multi-panel sheet this
-   is) is appended when the feature carries one. */
+   is) is appended when the feature carries one. The popup rides on
+   an invisible hit-polygon (below), NOT on the image overlay:
+   click-through #4 (Nov 16) put seven interior clicks into two
+   sheets with the popup bound to the (interactive) image and got
+   nothing — the rotated overlay's interactive target never
+   receives the event in this viewer. The hit-polygon is
+   canvas-rendered like the parcels, whose popups provably open. */
 function buildDnrGeopdf(gj) {
   var group = L.layerGroup();
   gj.features.forEach(function (f) {
@@ -4520,6 +4526,19 @@ function buildDnrGeopdf(gj) {
       onEachFeature: function (feat, l) { bindPop(l, html); },
     });
     group.addLayer(outline);
+    /* Invisible hit-polygon: the sheet's own closed ring,
+       transparent fill, canvas-rendered (same mechanism as the
+       parcels). Clicking anywhere inside the sheet opens the
+       popup; the image overlay keeps its own binding too, in
+       case the overlay path ever starts receiving clicks. */
+    var hit = L.geoJSON(f, {
+      renderer: canvasFor(),
+      interactive: true,
+      style: { color: "#000", weight: 0, fill: true,
+               fillColor: "#fff", fillOpacity: 0 },
+      onEachFeature: function (feat, l) { bindPop(l, html); },
+    });
+    group.addLayer(hit);
     var ring = f.geometry.coordinates[0];
     var clat = (ring[0][1] + ring[2][1]) / 2;
     var clon = (ring[0][0] + ring[2][0]) / 2;
