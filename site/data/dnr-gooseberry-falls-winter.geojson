@@ -1,0 +1,45 @@
+{
+ "type": "FeatureCollection",
+ "features": [
+  {
+   "type": "Feature",
+   "properties": {
+    "title": "Gooseberry Falls Winter GEO",
+    "short": "Gooseberry Falls Winter",
+    "note": "Gateway Plaza (Inset A) and Campground (Inset B) insets show as printed.",
+    "image": "data/dnr-geopdf/gooseberry-falls-winter.jpg",
+    "source": "Minnesota DNR",
+    "url": "https://mobile-maps-files.dnr.state.mn.us/file/State_Parks/Gooseberry%20Falls%20Winter%20GEO.pdf",
+    "date": "2025-11-17",
+    "viewport": "Gooseberry SP"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -91.49551,
+       47.13108
+      ],
+      [
+       -91.43746,
+       47.13117
+      ],
+      [
+       -91.43754,
+       47.15642
+      ],
+      [
+       -91.49559,
+       47.15634
+      ],
+      [
+       -91.49551,
+       47.13108
+      ]
+     ]
+    ]
+   }
+  }
+ ]
+}

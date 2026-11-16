@@ -1,0 +1,45 @@
+{
+ "type": "FeatureCollection",
+ "features": [
+  {
+   "type": "Feature",
+   "properties": {
+    "title": "Paul Bunyan State Forest - Gulch Lake Campground",
+    "short": "Paul Bunyan\u2013Gulch Lake Cg",
+    "note": "",
+    "image": "data/dnr-geopdf/paul-bunyan-gulch-lake.jpg",
+    "source": "Minnesota DNR",
+    "url": "https://mobile-maps-files.dnr.state.mn.us/file/State_Forests/Paul_Bunyan-Gulch_Lake_Campground_GEO.pdf",
+    "date": "2017-03-13",
+    "viewport": "Gulch Lake Campground"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -94.85339,
+       47.15096
+      ],
+      [
+       -94.82238,
+       47.15146
+      ],
+      [
+       -94.82286,
+       47.16532
+      ],
+      [
+       -94.85387,
+       47.16482
+      ],
+      [
+       -94.85339,
+       47.15096
+      ]
+     ]
+    ]
+   }
+  }
+ ]
+}

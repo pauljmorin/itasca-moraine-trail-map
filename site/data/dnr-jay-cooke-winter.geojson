@@ -1,0 +1,45 @@
+{
+ "type": "FeatureCollection",
+ "features": [
+  {
+   "type": "Feature",
+   "properties": {
+    "title": "Jay Cooke Winter GEO",
+    "short": "Jay Cooke Winter",
+    "note": "River Inn Visitor Center and Campground Area inset shows as printed.",
+    "image": "data/dnr-geopdf/jay-cooke-winter.jpg",
+    "source": "Minnesota DNR",
+    "url": "https://mobile-maps-files.dnr.state.mn.us/file/State_Parks/Jay%20Cooke%20Winter%20GEO.pdf",
+    "date": "2025-10-27",
+    "viewport": "Main Map"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -92.42744,
+       46.61694
+      ],
+      [
+       -92.28201,
+       46.61612
+      ],
+      [
+       -92.28125,
+       46.6799
+      ],
+      [
+       -92.42669,
+       46.68072
+      ],
+      [
+       -92.42744,
+       46.61694
+      ]
+     ]
+    ]
+   }
+  }
+ ]
+}

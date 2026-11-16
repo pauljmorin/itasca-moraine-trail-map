@@ -1,0 +1,45 @@
+{
+ "type": "FeatureCollection",
+ "features": [
+  {
+   "type": "Feature",
+   "properties": {
+    "title": "Pat Bayle State Forest Public GeoPDF Recreation Map",
+    "short": "Pat Bayle SF",
+    "note": "",
+    "image": "data/dnr-geopdf/pat-bayle-sf.jpg",
+    "source": "Minnesota DNR",
+    "url": "https://files.dnr.state.mn.us/maps/state_forests/sft00037_geo.pdf",
+    "date": "2021-05-19",
+    "viewport": "MainMap"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -90.99999,
+       47.70229
+      ],
+      [
+       -90.16919,
+       47.68474
+      ],
+      [
+       -90.15231,
+       48.04641
+      ],
+      [
+       -90.98312,
+       48.06396
+      ],
+      [
+       -90.99999,
+       47.70229
+      ]
+     ]
+    ]
+   }
+  }
+ ]
+}

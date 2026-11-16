@@ -1,0 +1,45 @@
+{
+ "type": "FeatureCollection",
+ "features": [
+  {
+   "type": "Feature",
+   "properties": {
+    "title": "CJ Ramstad_North Shore-Sawbill Trails to Grand Marais GEO",
+    "short": "C.J. Ramstad\u2013Sawbill Tr to Grand Marais",
+    "note": "C.J. Ramstad North Shore State Trail, segment 4 of 4.",
+    "image": "data/dnr-geopdf/cj-ramstad-sawbill-grand-marais.jpg",
+    "source": "Minnesota DNR",
+    "url": "https://mobile-maps-files.dnr.state.mn.us/file/State_Trails/CJ%20Ramstad_North%20Shore-Sawbill%20Trail%20to%20Grand%20Marais%20GEO.pdf",
+    "date": "2023-04-11",
+    "viewport": "Bound2"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -90.88565,
+       47.61196
+      ],
+      [
+       -90.23984,
+       47.75532
+      ],
+      [
+       -90.29286,
+       47.86402
+      ],
+      [
+       -90.93867,
+       47.72066
+      ],
+      [
+       -90.88565,
+       47.61196
+      ]
+     ]
+    ]
+   }
+  }
+ ]
+}

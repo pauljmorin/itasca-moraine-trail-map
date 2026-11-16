@@ -1,0 +1,45 @@
+{
+ "type": "FeatureCollection",
+ "features": [
+  {
+   "type": "Feature",
+   "properties": {
+    "title": "Central Lakes GEO",
+    "short": "Central Lakes",
+    "note": "",
+    "image": "data/dnr-geopdf/central-lakes.jpg",
+    "source": "Minnesota DNR",
+    "url": "https://mobile-maps-files.dnr.state.mn.us/file/State_Trails/Central%20Lakes%20GEO.pdf",
+    "date": "2025-10-01",
+    "viewport": "MAP View 1"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -96.10475,
+       45.81796
+      ],
+      [
+       -95.02082,
+       45.8424
+      ],
+      [
+       -95.04322,
+       46.32375
+      ],
+      [
+       -96.12715,
+       46.29931
+      ],
+      [
+       -96.10475,
+       45.81796
+      ]
+     ]
+    ]
+   }
+  }
+ ]
+}

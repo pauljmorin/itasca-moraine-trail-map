@@ -1,0 +1,45 @@
+{
+ "type": "FeatureCollection",
+ "features": [
+  {
+   "type": "Feature",
+   "properties": {
+    "title": "Tettegouche GEo",
+    "short": "Tettegouche",
+    "note": "Tettegouche Camp (Inset A) and Baptism River Campground (Inset B) insets and the area zoom below the main map show as printed.",
+    "image": "data/dnr-geopdf/tettegouche.jpg",
+    "source": "Minnesota DNR",
+    "url": "https://mobile-maps-files.dnr.state.mn.us/file/State_Parks/Tettegouche%20GEO.pdf",
+    "date": "2026-07-27",
+    "viewport": "AA Main"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -91.31994,
+       47.23833
+      ],
+      [
+       -91.17856,
+       47.23616
+      ],
+      [
+       -91.17349,
+       47.38928
+      ],
+      [
+       -91.31488,
+       47.39144
+      ],
+      [
+       -91.31994,
+       47.23833
+      ]
+     ]
+    ]
+   }
+  }
+ ]
+}

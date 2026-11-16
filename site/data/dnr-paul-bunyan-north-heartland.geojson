@@ -1,0 +1,45 @@
+{
+ "type": "FeatureCollection",
+ "features": [
+  {
+   "type": "Feature",
+   "properties": {
+    "title": "Paul Bunyan North_Heartland GEO",
+    "short": "Paul Bunyan North\u2013Heartland",
+    "note": "Bemidji Detail and Heartland Extension insets show as printed.",
+    "image": "data/dnr-geopdf/paul-bunyan-north-heartland.jpg",
+    "source": "Minnesota DNR",
+    "url": "https://mobile-maps-files.dnr.state.mn.us/file/State_Trails/Paul%20Bunyan%20North_Heartland%20GEO.pdf",
+    "date": "2026-07-09",
+    "viewport": "bound"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -95.08426,
+       46.86909
+      ],
+      [
+       -94.44858,
+       46.87896
+      ],
+      [
+       -94.47147,
+       47.56339
+      ],
+      [
+       -95.10715,
+       47.55352
+      ],
+      [
+       -95.08426,
+       46.86909
+      ]
+     ]
+    ]
+   }
+  }
+ ]
+}

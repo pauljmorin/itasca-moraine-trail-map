@@ -1,0 +1,45 @@
+{
+ "type": "FeatureCollection",
+ "features": [
+  {
+   "type": "Feature",
+   "properties": {
+    "title": "Munger_Alex Laveau GEO",
+    "short": "Munger\u2013Alex Laveau",
+    "note": "",
+    "image": "data/dnr-geopdf/munger-alex-laveau.jpg",
+    "source": "Minnesota DNR",
+    "url": "https://mobile-maps-files.dnr.state.mn.us/file/State_Trails/Munger_Alex%20Laveau%20GEO.pdf",
+    "date": "2026-09-30",
+    "viewport": "bound"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -92.98456,
+       45.91088
+      ],
+      [
+       -92.17769,
+       45.9079
+      ],
+      [
+       -92.17044,
+       46.84934
+      ],
+      [
+       -92.97731,
+       46.85232
+      ],
+      [
+       -92.98456,
+       45.91088
+      ]
+     ]
+    ]
+   }
+  }
+ ]
+}

@@ -1,0 +1,45 @@
+{
+ "type": "FeatureCollection",
+ "features": [
+  {
+   "type": "Feature",
+   "properties": {
+    "title": "Temperance River GEO",
+    "short": "Temperance River",
+    "note": "Campground Area inset shows as printed.",
+    "image": "data/dnr-geopdf/temperance-river.jpg",
+    "source": "Minnesota DNR",
+    "url": "https://mobile-maps-files.dnr.state.mn.us/file/State_Parks/Temperance%20River%20GEO.pdf",
+    "date": "2026-06-09",
+    "viewport": "Temperance River State Park"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -90.93967,
+       47.54223
+      ],
+      [
+       -90.831,
+       47.54183
+      ],
+      [
+       -90.83062,
+       47.58859
+      ],
+      [
+       -90.93929,
+       47.58899
+      ],
+      [
+       -90.93967,
+       47.54223
+      ]
+     ]
+    ]
+   }
+  }
+ ]
+}

@@ -1,0 +1,45 @@
+{
+ "type": "FeatureCollection",
+ "features": [
+  {
+   "type": "Feature",
+   "properties": {
+    "title": "George Crosby Manitou GEO",
+    "short": "George Crosby Manitou",
+    "note": "Entrance/Benson Lake Area inset, legend and vicinity map show as printed.",
+    "image": "data/dnr-geopdf/george-crosby-manitou.jpg",
+    "source": "Minnesota DNR",
+    "url": "https://mobile-maps-files.dnr.state.mn.us/file/State_Parks/George%20Crosby%20Manitou%20GEO.pdf",
+    "date": "2024-08-05",
+    "viewport": "Main Large"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -91.14559,
+       47.41563
+      ],
+      [
+       -91.04958,
+       47.41404
+      ],
+      [
+       -91.0459,
+       47.51599
+      ],
+      [
+       -91.14191,
+       47.51759
+      ],
+      [
+       -91.14559,
+       47.41563
+      ]
+     ]
+    ]
+   }
+  }
+ ]
+}

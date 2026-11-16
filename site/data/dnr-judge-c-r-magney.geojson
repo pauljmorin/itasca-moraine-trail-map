@@ -1,0 +1,45 @@
+{
+ "type": "FeatureCollection",
+ "features": [
+  {
+   "type": "Feature",
+   "properties": {
+    "title": "Judge C.R. Magney GEO",
+    "short": "Judge C.R. Magney",
+    "note": "Area Inset shows as printed.",
+    "image": "data/dnr-geopdf/judge-c-r-magney.jpg",
+    "source": "Minnesota DNR",
+    "url": "https://mobile-maps-files.dnr.state.mn.us/file/State_Parks/Judge%20C.R.%20Magney%20GEO.pdf",
+    "date": "2026-06-09",
+    "viewport": "A - Main"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -90.11964,
+       47.79771
+      ],
+      [
+       -90.03546,
+       47.79556
+      ],
+      [
+       -90.03007,
+       47.89122
+      ],
+      [
+       -90.11426,
+       47.89337
+      ],
+      [
+       -90.11964,
+       47.79771
+      ]
+     ]
+    ]
+   }
+  }
+ ]
+}

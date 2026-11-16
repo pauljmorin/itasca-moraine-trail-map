@@ -1,0 +1,45 @@
+{
+ "type": "FeatureCollection",
+ "features": [
+  {
+   "type": "Feature",
+   "properties": {
+    "title": "Bowstring, Battleground, and Welsh Lake State Forests Geo Referenced Public Recreation Map",
+    "short": "Bowstring\u2013Battleground\u2013Welsh Lake",
+    "note": "",
+    "image": "data/dnr-geopdf/bowstring-battleground-welsh-lake.jpg",
+    "source": "Minnesota DNR",
+    "url": "https://mobile-maps-files.dnr.state.mn.us/file/State_Forests/Bowstring-Battleground-Welsh_Lake_GEO.pdf",
+    "date": "2019-02-22",
+    "viewport": "MainMap"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -94.69085,
+       47.12205
+      ],
+      [
+       -93.53471,
+       47.13333
+      ],
+      [
+       -93.54538,
+       47.63755
+      ],
+      [
+       -94.70152,
+       47.62626
+      ],
+      [
+       -94.69085,
+       47.12205
+      ]
+     ]
+    ]
+   }
+  }
+ ]
+}

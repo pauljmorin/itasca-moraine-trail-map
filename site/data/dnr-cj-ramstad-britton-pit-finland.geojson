@@ -1,0 +1,45 @@
+{
+ "type": "FeatureCollection",
+ "features": [
+  {
+   "type": "Feature",
+   "properties": {
+    "title": "CJ Ramstad_North Shore-Britton Pit to Finland State Forest GEO",
+    "short": "C.J. Ramstad\u2013Britton Pit to Finland SF",
+    "note": "C.J. Ramstad North Shore State Trail, segment 2 of 4.",
+    "image": "data/dnr-geopdf/cj-ramstad-britton-pit-finland.jpg",
+    "source": "Minnesota DNR",
+    "url": "https://mobile-maps-files.dnr.state.mn.us/file/State_Trails/CJ%20Ramstad_North%20Shore-Britton%20Pit%20to%20Finland%20State%20Forest%20GEO.pdf",
+    "date": "2023-04-11",
+    "viewport": "bound2"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -91.71025,
+       47.08523
+      ],
+      [
+       -91.27987,
+       47.32198
+      ],
+      [
+       -91.37979,
+       47.40621
+      ],
+      [
+       -91.81017,
+       47.16946
+      ],
+      [
+       -91.71025,
+       47.08523
+      ]
+     ]
+    ]
+   }
+  }
+ ]
+}

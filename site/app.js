@@ -4480,7 +4480,7 @@ function boldLine(gj, color, popupFn) {
   return L.layerGroup([casing, core, hit]);
 }
 
-/* DNR GeoPDF map build (Nov 16, 2026): shared by the ten DNR map
+/* DNR GeoPDF map build (Nov 16, 2026): shared by the 35 DNR map
    defs below. Mirrors the NCTA-sheets build exactly — one feature
    per map, the frame's true lat/lon quad in the geometry (ring
    order BL, BR, TR, TL in [lon, lat]), the image placed by its
@@ -6343,7 +6343,7 @@ var LAYERS = [
        is on the long side instead. Placement is the same
        3-corner affine (L.imageOverlay.rotated, TL/TR/BL);
        the affine fit residual on each GeoPDF's own control
-       points is <= 9e-05 deg, and the Waboose corners reproduce
+       points is <= 1.5e-04 deg, and the Waboose corners reproduce
        GDAL's to ~0.002 deg (docs/dnr-geopdf-layers-2026-11-16.md).
        Sheet images ride the same zoom >= 11 gate as the NCTA
        sheets (sheetImages / applySheetImageGate above); the
@@ -6353,8 +6353,13 @@ var LAYERS = [
        sheets, under one collapsible sub-heading. NOT wired:
        Itasca Winter (no GeoPDF exists anywhere — only the 2019
        print PDF, not georeferenced; placing it by hand would be
-       ~0.5 km off, so it is left out, see the note) and the
-       Paul Bunyan North / Heartland sheet (same situation). */
+       ~0.5 km off, so it is left out, see the note). The Paul
+       Bunyan North / Heartland sheet was in the same situation
+       in the first pass — the comprehensive Nov 16 survey found
+       the real GeoPDF and it is wired below. Full survey
+       (807 index entries, both lines):
+       docs/dnr-geopdf-survey-2026-11-16.md; first-pass note:
+       docs/dnr-geopdf-layers-2026-11-16.md. */
     id: "dnr-waboose", label: "DNR — Waboose (Paul Bunyan & Badoura)",
     title: "Paul Bunyan and Badoura State Forests Map — Minnesota DNR GeoPDF, 2017-06-14, placed by the map's own georeferencing",
     file: "data/dnr-waboose.geojson", onByDefault: false,
@@ -6430,6 +6435,206 @@ var LAYERS = [
     id: "dnr-lake-vermilion-soudan", label: "DNR — Lake Vermilion–Soudan",
     title: "Lake Vermilion-Soudan Underground Mine GEO — Minnesota DNR GeoPDF, 2026-06-24, placed by the map's own georeferencing",
     file: "data/dnr-lake-vermilion-soudan.geojson", onByDefault: false,
+    group: "The trail", subgroup: "DNR maps",
+    swatch: { kind: "fill", color: "#dbeafe", border: "#1d4ed8" },
+    build: buildDnrGeopdf,
+  },
+  {
+    id: "dnr-finland-sf", label: "DNR — Finland SF",
+    title: "Finland State Forest Public Recreation Map — Minnesota DNR GeoPDF, 2021-06-23, placed by the map's own georeferencing",
+    file: "data/dnr-finland-sf.geojson", onByDefault: false,
+    group: "The trail", subgroup: "DNR maps",
+    swatch: { kind: "fill", color: "#dbeafe", border: "#1d4ed8" },
+    build: buildDnrGeopdf,
+  },
+  {
+    id: "dnr-pat-bayle-sf", label: "DNR — Pat Bayle SF",
+    title: "Pat Bayle State Forest Public GeoPDF Recreation Map — Minnesota DNR GeoPDF, 2021-05-19, placed by the map's own georeferencing",
+    file: "data/dnr-pat-bayle-sf.geojson", onByDefault: false,
+    group: "The trail", subgroup: "DNR maps",
+    swatch: { kind: "fill", color: "#dbeafe", border: "#1d4ed8" },
+    build: buildDnrGeopdf,
+  },
+  {
+    id: "dnr-bowstring-battleground-welsh-lake", label: "DNR — Bowstring–Battleground–Welsh Lake",
+    title: "Bowstring, Battleground, and Welsh Lake State Forests Geo Referenced Public Recreation Map — Minnesota DNR GeoPDF, 2019-02-22, placed by the map's own georeferencing",
+    file: "data/dnr-bowstring-battleground-welsh-lake.geojson", onByDefault: false,
+    group: "The trail", subgroup: "DNR maps",
+    swatch: { kind: "fill", color: "#dbeafe", border: "#1d4ed8" },
+    build: buildDnrGeopdf,
+  },
+  {
+    id: "dnr-paul-bunyan-gulch-lake", label: "DNR — Paul Bunyan–Gulch Lake Cg",
+    title: "Paul Bunyan State Forest - Gulch Lake Campground — Minnesota DNR GeoPDF, 2017-03-13, placed by the map's own georeferencing",
+    file: "data/dnr-paul-bunyan-gulch-lake.geojson", onByDefault: false,
+    group: "The trail", subgroup: "DNR maps",
+    swatch: { kind: "fill", color: "#dbeafe", border: "#1d4ed8" },
+    build: buildDnrGeopdf,
+  },
+  {
+    id: "dnr-tettegouche", label: "DNR — Tettegouche",
+    title: "Tettegouche GEo — Minnesota DNR GeoPDF, 2026-07-27, placed by the map's own georeferencing",
+    file: "data/dnr-tettegouche.geojson", onByDefault: false,
+    group: "The trail", subgroup: "DNR maps",
+    swatch: { kind: "fill", color: "#dbeafe", border: "#1d4ed8" },
+    build: buildDnrGeopdf,
+  },
+  {
+    id: "dnr-split-rock-summer", label: "DNR — Split Rock Summer",
+    title: "Split Rock Lighthouse Summer GEO — Minnesota DNR GeoPDF, 2026-10-28, placed by the map's own georeferencing",
+    file: "data/dnr-split-rock-summer.geojson", onByDefault: false,
+    group: "The trail", subgroup: "DNR maps",
+    swatch: { kind: "fill", color: "#dbeafe", border: "#1d4ed8" },
+    build: buildDnrGeopdf,
+  },
+  {
+    id: "dnr-split-rock-winter", label: "DNR — Split Rock Winter",
+    title: "Split Rock Lighthouse Winter GEO — Minnesota DNR GeoPDF, 2026-10-28, placed by the map's own georeferencing",
+    file: "data/dnr-split-rock-winter.geojson", onByDefault: false,
+    group: "The trail", subgroup: "DNR maps",
+    swatch: { kind: "fill", color: "#dbeafe", border: "#1d4ed8" },
+    build: buildDnrGeopdf,
+  },
+  {
+    id: "dnr-judge-c-r-magney", label: "DNR — Judge C.R. Magney",
+    title: "Judge C.R. Magney GEO — Minnesota DNR GeoPDF, 2026-06-09, placed by the map's own georeferencing",
+    file: "data/dnr-judge-c-r-magney.geojson", onByDefault: false,
+    group: "The trail", subgroup: "DNR maps",
+    swatch: { kind: "fill", color: "#dbeafe", border: "#1d4ed8" },
+    build: buildDnrGeopdf,
+  },
+  {
+    id: "dnr-temperance-river", label: "DNR — Temperance River",
+    title: "Temperance River GEO — Minnesota DNR GeoPDF, 2026-06-09, placed by the map's own georeferencing",
+    file: "data/dnr-temperance-river.geojson", onByDefault: false,
+    group: "The trail", subgroup: "DNR maps",
+    swatch: { kind: "fill", color: "#dbeafe", border: "#1d4ed8" },
+    build: buildDnrGeopdf,
+  },
+  {
+    id: "dnr-cascade-river", label: "DNR — Cascade River",
+    title: "Cascade River GEO — Minnesota DNR GeoPDF, 2021-12-23, placed by the map's own georeferencing",
+    file: "data/dnr-cascade-river.geojson", onByDefault: false,
+    group: "The trail", subgroup: "DNR maps",
+    swatch: { kind: "fill", color: "#dbeafe", border: "#1d4ed8" },
+    build: buildDnrGeopdf,
+  },
+  {
+    id: "dnr-george-crosby-manitou", label: "DNR — George Crosby Manitou",
+    title: "George Crosby Manitou GEO — Minnesota DNR GeoPDF, 2024-08-05, placed by the map's own georeferencing",
+    file: "data/dnr-george-crosby-manitou.geojson", onByDefault: false,
+    group: "The trail", subgroup: "DNR maps",
+    swatch: { kind: "fill", color: "#dbeafe", border: "#1d4ed8" },
+    build: buildDnrGeopdf,
+  },
+  {
+    id: "dnr-gooseberry-falls-summer", label: "DNR — Gooseberry Falls Summer",
+    title: "Gooseberry Falls Summer GEO — Minnesota DNR GeoPDF, 2026-05-22, placed by the map's own georeferencing",
+    file: "data/dnr-gooseberry-falls-summer.geojson", onByDefault: false,
+    group: "The trail", subgroup: "DNR maps",
+    swatch: { kind: "fill", color: "#dbeafe", border: "#1d4ed8" },
+    build: buildDnrGeopdf,
+  },
+  {
+    id: "dnr-gooseberry-falls-winter", label: "DNR — Gooseberry Falls Winter",
+    title: "Gooseberry Falls Winter GEO — Minnesota DNR GeoPDF, 2025-11-17, placed by the map's own georeferencing",
+    file: "data/dnr-gooseberry-falls-winter.geojson", onByDefault: false,
+    group: "The trail", subgroup: "DNR maps",
+    swatch: { kind: "fill", color: "#dbeafe", border: "#1d4ed8" },
+    build: buildDnrGeopdf,
+  },
+  {
+    id: "dnr-jay-cooke-summer", label: "DNR — Jay Cooke Summer",
+    title: "Jay Cooke Summer GEO — Minnesota DNR GeoPDF, 2025-07-02, placed by the map's own georeferencing",
+    file: "data/dnr-jay-cooke-summer.geojson", onByDefault: false,
+    group: "The trail", subgroup: "DNR maps",
+    swatch: { kind: "fill", color: "#dbeafe", border: "#1d4ed8" },
+    build: buildDnrGeopdf,
+  },
+  {
+    id: "dnr-jay-cooke-winter", label: "DNR — Jay Cooke Winter",
+    title: "Jay Cooke Winter GEO — Minnesota DNR GeoPDF, 2025-10-27, placed by the map's own georeferencing",
+    file: "data/dnr-jay-cooke-winter.geojson", onByDefault: false,
+    group: "The trail", subgroup: "DNR maps",
+    swatch: { kind: "fill", color: "#dbeafe", border: "#1d4ed8" },
+    build: buildDnrGeopdf,
+  },
+  {
+    id: "dnr-paul-bunyan-north-heartland", label: "DNR — Paul Bunyan North–Heartland",
+    title: "Paul Bunyan North_Heartland GEO — Minnesota DNR GeoPDF, 2026-07-09, placed by the map's own georeferencing",
+    file: "data/dnr-paul-bunyan-north-heartland.geojson", onByDefault: false,
+    group: "The trail", subgroup: "DNR maps",
+    swatch: { kind: "fill", color: "#dbeafe", border: "#1d4ed8" },
+    build: buildDnrGeopdf,
+  },
+  {
+    id: "dnr-munger-alex-laveau", label: "DNR — Munger–Alex Laveau",
+    title: "Munger_Alex Laveau GEO — Minnesota DNR GeoPDF, 2026-09-30, placed by the map's own georeferencing",
+    file: "data/dnr-munger-alex-laveau.geojson", onByDefault: false,
+    group: "The trail", subgroup: "DNR maps",
+    swatch: { kind: "fill", color: "#dbeafe", border: "#1d4ed8" },
+    build: buildDnrGeopdf,
+  },
+  {
+    id: "dnr-central-lakes", label: "DNR — Central Lakes",
+    title: "Central Lakes GEO — Minnesota DNR GeoPDF, 2025-10-01, placed by the map's own georeferencing",
+    file: "data/dnr-central-lakes.geojson", onByDefault: false,
+    group: "The trail", subgroup: "DNR maps",
+    swatch: { kind: "fill", color: "#dbeafe", border: "#1d4ed8" },
+    build: buildDnrGeopdf,
+  },
+  {
+    id: "dnr-taconite", label: "DNR — Taconite",
+    title: "Taconite GEO — Minnesota DNR GeoPDF, 2023-04-12, placed by the map's own georeferencing",
+    file: "data/dnr-taconite.geojson", onByDefault: false,
+    group: "The trail", subgroup: "DNR maps",
+    swatch: { kind: "fill", color: "#dbeafe", border: "#1d4ed8" },
+    build: buildDnrGeopdf,
+  },
+  {
+    id: "dnr-gitchi-gami", label: "DNR — Gitchi-Gami",
+    title: "Gitchi-Gami Gooseberry GEO — Minnesota DNR GeoPDF, 2026-06-16, placed by the map's own georeferencing",
+    file: "data/dnr-gitchi-gami.geojson", onByDefault: false,
+    group: "The trail", subgroup: "DNR maps",
+    swatch: { kind: "fill", color: "#dbeafe", border: "#1d4ed8" },
+    build: buildDnrGeopdf,
+  },
+  {
+    id: "dnr-cj-ramstad-duluth-britton-pit", label: "DNR — C.J. Ramstad–Duluth to Britton Pit",
+    title: "CJ Ramstad_North Shore-Duluth to Britton Pit GEO — Minnesota DNR GeoPDF, 2023-04-11, placed by the map's own georeferencing",
+    file: "data/dnr-cj-ramstad-duluth-britton-pit.geojson", onByDefault: false,
+    group: "The trail", subgroup: "DNR maps",
+    swatch: { kind: "fill", color: "#dbeafe", border: "#1d4ed8" },
+    build: buildDnrGeopdf,
+  },
+  {
+    id: "dnr-cj-ramstad-britton-pit-finland", label: "DNR — C.J. Ramstad–Britton Pit to Finland SF",
+    title: "CJ Ramstad_North Shore-Britton Pit to Finland State Forest GEO — Minnesota DNR GeoPDF, 2023-04-11, placed by the map's own georeferencing",
+    file: "data/dnr-cj-ramstad-britton-pit-finland.geojson", onByDefault: false,
+    group: "The trail", subgroup: "DNR maps",
+    swatch: { kind: "fill", color: "#dbeafe", border: "#1d4ed8" },
+    build: buildDnrGeopdf,
+  },
+  {
+    id: "dnr-cj-ramstad-finland-sawbill", label: "DNR — C.J. Ramstad–Finland SF to Sawbill Tr",
+    title: "CJ Ramstad_North Shore-Finland State Forest to Sawbill Trail GEO — Minnesota DNR GeoPDF, 2023-04-11, placed by the map's own georeferencing",
+    file: "data/dnr-cj-ramstad-finland-sawbill.geojson", onByDefault: false,
+    group: "The trail", subgroup: "DNR maps",
+    swatch: { kind: "fill", color: "#dbeafe", border: "#1d4ed8" },
+    build: buildDnrGeopdf,
+  },
+  {
+    id: "dnr-cj-ramstad-sawbill-grand-marais", label: "DNR — C.J. Ramstad–Sawbill Tr to Grand Marais",
+    title: "CJ Ramstad_North Shore-Sawbill Trails to Grand Marais GEO — Minnesota DNR GeoPDF, 2023-04-11, placed by the map's own georeferencing",
+    file: "data/dnr-cj-ramstad-sawbill-grand-marais.geojson", onByDefault: false,
+    group: "The trail", subgroup: "DNR maps",
+    swatch: { kind: "fill", color: "#dbeafe", border: "#1d4ed8" },
+    build: buildDnrGeopdf,
+  },
+  {
+    id: "dnr-gitchi-gami-schroeder-lutsen", label: "DNR — Gitchi-Gami–Schroeder to Lutsen",
+    title: "Gitchi-Gami Schroeder — Minnesota DNR GeoPDF, 2025-11-17, placed by the map's own georeferencing",
+    file: "data/dnr-gitchi-gami-schroeder-lutsen.geojson", onByDefault: false,
     group: "The trail", subgroup: "DNR maps",
     swatch: { kind: "fill", color: "#dbeafe", border: "#1d4ed8" },
     build: buildDnrGeopdf,
@@ -7217,7 +7422,7 @@ function assertDrawOrder() {
        outlines and the Minnesota line, under the NCT tread.
        "parcels-driftless" sits with "parcels", directly after
        it, in the land-ownership fills. The
-       ten DNR GeoPDF sheets (Nov 16, 2026) sit directly after
+       35 DNR GeoPDF sheets (Nov 16, 2026) sit directly after
        "nctasheets" and before "atv", with the NCTA sheets. The
        six Forest Service MVUM panels sit directly after the
        DNR sheets, before "atv".
@@ -7233,6 +7438,7 @@ function assertDrawOrder() {
      "dnr-remer", "dnr-white-earth", "dnr-itasca-summer",
      "dnr-maplewood-summer", "dnr-maplewood-winter",
      "dnr-david-dill-taconite", "dnr-lake-vermilion-soudan",
+     "dnr-finland-sf", "dnr-pat-bayle-sf", "dnr-bowstring-battleground-welsh-lake", "dnr-paul-bunyan-gulch-lake", "dnr-tettegouche", "dnr-split-rock-summer", "dnr-split-rock-winter", "dnr-judge-c-r-magney", "dnr-temperance-river", "dnr-cascade-river", "dnr-george-crosby-manitou", "dnr-gooseberry-falls-summer", "dnr-gooseberry-falls-winter", "dnr-jay-cooke-summer", "dnr-jay-cooke-winter", "dnr-paul-bunyan-north-heartland", "dnr-munger-alex-laveau", "dnr-central-lakes", "dnr-taconite", "dnr-gitchi-gami", "dnr-gitchi-gami-schroeder-lutsen", "dnr-cj-ramstad-duluth-britton-pit", "dnr-cj-ramstad-britton-pit-finland", "dnr-cj-ramstad-finland-sawbill", "dnr-cj-ramstad-sawbill-grand-marais",
      "fs-chippewa-south-front", "fs-chippewa-south-back",
      "fs-ely", "fs-virginia",
      "fs-upper-trail", "fs-grand-marais",
@@ -7375,6 +7581,56 @@ function legendHtml() {
     "DNR map sheet — David Dill–Taconite");
   add("<span class='swatch fill' style='background:#dbeafe;border:1px solid #1d4ed8'></span>",
     "DNR map sheet — Lake Vermilion–Soudan");
+  add("<span class='swatch fill' style='background:#dbeafe;border:1px solid #1d4ed8'></span>",
+    "DNR map sheet — Finland State Forest");
+  add("<span class='swatch fill' style='background:#dbeafe;border:1px solid #1d4ed8'></span>",
+    "DNR map sheet — Pat Bayle State Forest");
+  add("<span class='swatch fill' style='background:#dbeafe;border:1px solid #1d4ed8'></span>",
+    "DNR map sheet — Bowstring–Battleground–Welsh Lake");
+  add("<span class='swatch fill' style='background:#dbeafe;border:1px solid #1d4ed8'></span>",
+    "DNR map sheet — Paul Bunyan–Gulch Lake Campground");
+  add("<span class='swatch fill' style='background:#dbeafe;border:1px solid #1d4ed8'></span>",
+    "DNR map sheet — Tettegouche");
+  add("<span class='swatch fill' style='background:#dbeafe;border:1px solid #1d4ed8'></span>",
+    "DNR map sheet — Split Rock Summer");
+  add("<span class='swatch fill' style='background:#dbeafe;border:1px solid #1d4ed8'></span>",
+    "DNR map sheet — Split Rock Winter");
+  add("<span class='swatch fill' style='background:#dbeafe;border:1px solid #1d4ed8'></span>",
+    "DNR map sheet — Judge C.R. Magney");
+  add("<span class='swatch fill' style='background:#dbeafe;border:1px solid #1d4ed8'></span>",
+    "DNR map sheet — Temperance River");
+  add("<span class='swatch fill' style='background:#dbeafe;border:1px solid #1d4ed8'></span>",
+    "DNR map sheet — Cascade River");
+  add("<span class='swatch fill' style='background:#dbeafe;border:1px solid #1d4ed8'></span>",
+    "DNR map sheet — George Crosby Manitou");
+  add("<span class='swatch fill' style='background:#dbeafe;border:1px solid #1d4ed8'></span>",
+    "DNR map sheet — Gooseberry Falls Summer");
+  add("<span class='swatch fill' style='background:#dbeafe;border:1px solid #1d4ed8'></span>",
+    "DNR map sheet — Gooseberry Falls Winter");
+  add("<span class='swatch fill' style='background:#dbeafe;border:1px solid #1d4ed8'></span>",
+    "DNR map sheet — Jay Cooke Summer");
+  add("<span class='swatch fill' style='background:#dbeafe;border:1px solid #1d4ed8'></span>",
+    "DNR map sheet — Jay Cooke Winter");
+  add("<span class='swatch fill' style='background:#dbeafe;border:1px solid #1d4ed8'></span>",
+    "DNR map sheet — Paul Bunyan North–Heartland");
+  add("<span class='swatch fill' style='background:#dbeafe;border:1px solid #1d4ed8'></span>",
+    "DNR map sheet — Munger–Alex Laveau");
+  add("<span class='swatch fill' style='background:#dbeafe;border:1px solid #1d4ed8'></span>",
+    "DNR map sheet — Central Lakes");
+  add("<span class='swatch fill' style='background:#dbeafe;border:1px solid #1d4ed8'></span>",
+    "DNR map sheet — Taconite");
+  add("<span class='swatch fill' style='background:#dbeafe;border:1px solid #1d4ed8'></span>",
+    "DNR map sheet — Gitchi-Gami");
+  add("<span class='swatch fill' style='background:#dbeafe;border:1px solid #1d4ed8'></span>",
+    "DNR map sheet — Gitchi-Gami–Schroeder to Lutsen");
+  add("<span class='swatch fill' style='background:#dbeafe;border:1px solid #1d4ed8'></span>",
+    "DNR map sheet — C.J. Ramstad–Duluth to Britton Pit");
+  add("<span class='swatch fill' style='background:#dbeafe;border:1px solid #1d4ed8'></span>",
+    "DNR map sheet — C.J. Ramstad–Britton Pit to Finland SF");
+  add("<span class='swatch fill' style='background:#dbeafe;border:1px solid #1d4ed8'></span>",
+    "DNR map sheet — C.J. Ramstad–Finland SF to Sawbill Tr");
+  add("<span class='swatch fill' style='background:#dbeafe;border:1px solid #1d4ed8'></span>",
+    "DNR map sheet — C.J. Ramstad–Sawbill Tr to Grand Marais");
   add("", "<strong>The land</strong>");
   add("", "<strong>Tree height</strong> — six flat 5 m bands " +
     "(overlay, over any background)");

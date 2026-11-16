@@ -1,0 +1,45 @@
+{
+ "type": "FeatureCollection",
+ "features": [
+  {
+   "type": "Feature",
+   "properties": {
+    "title": "Gitchi-Gami Gooseberry GEO",
+    "short": "Gitchi-Gami",
+    "note": "Gooseberry Falls to Silver Bay panel of the six-panel sheet; the Trail Overview, Two Harbors, Silver Creek Cliff, Schroeder to Lutsen and Cut Face Creek to Grand Marais panels are not shown. Maps 1, 3, 4 and 5 are the same sheet \u2014 the Schroeder to Lutsen panel is wired separately from Map 3.",
+    "image": "data/dnr-geopdf/gitchi-gami.jpg",
+    "source": "Minnesota DNR",
+    "url": "https://mobile-maps-files.dnr.state.mn.us/file/State_Trails/Gitchi-Gami%20State%20Trail%20Map%202%20-%20Gooseberry%20Falls%20to%20Split%20Rock%20GEO.pdf",
+    "date": "2026-06-16",
+    "viewport": "bound_GOOSEBERRY"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -91.46821,
+       47.10868
+      ],
+      [
+       -91.20124,
+       47.2831
+      ],
+      [
+       -91.25571,
+       47.32181
+      ],
+      [
+       -91.52268,
+       47.14738
+      ],
+      [
+       -91.46821,
+       47.10868
+      ]
+     ]
+    ]
+   }
+  }
+ ]
+}

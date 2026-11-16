@@ -1,0 +1,45 @@
+{
+ "type": "FeatureCollection",
+ "features": [
+  {
+   "type": "Feature",
+   "properties": {
+    "title": "Cascade River GEO",
+    "short": "Cascade River",
+    "note": "Park Overview and Campground insets show as printed.",
+    "image": "data/dnr-geopdf/cascade-river.jpg",
+    "source": "Minnesota DNR",
+    "url": "https://mobile-maps-files.dnr.state.mn.us/file/State_Parks/Cascade%20River%20GEO.pdf",
+    "date": "2021-12-23",
+    "viewport": "Main Map"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -90.56016,
+       47.69763
+      ],
+      [
+       -90.49304,
+       47.69618
+      ],
+      [
+       -90.49139,
+       47.73103
+      ],
+      [
+       -90.55851,
+       47.73248
+      ],
+      [
+       -90.56016,
+       47.69763
+      ]
+     ]
+    ]
+   }
+  }
+ ]
+}

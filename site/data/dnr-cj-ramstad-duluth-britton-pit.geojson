@@ -1,0 +1,45 @@
+{
+ "type": "FeatureCollection",
+ "features": [
+  {
+   "type": "Feature",
+   "properties": {
+    "title": "CJ Ramstad_North Shore-Duluth to Britton Pit GEO",
+    "short": "C.J. Ramstad\u2013Duluth to Britton Pit",
+    "note": "C.J. Ramstad North Shore State Trail, segment 1 of 4.",
+    "image": "data/dnr-geopdf/cj-ramstad-duluth-britton-pit.jpg",
+    "source": "Minnesota DNR",
+    "url": "https://mobile-maps-files.dnr.state.mn.us/file/State_Trails/CJ%20Ramstad_North%20Shore-Duluth%20to%20Britton%20Pit%20GEO.pdf",
+    "date": "2023-04-11",
+    "viewport": "bound1"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -92.07288,
+       46.83565
+      ],
+      [
+       -91.64609,
+       47.07382
+      ],
+      [
+       -91.74632,
+       47.1579
+      ],
+      [
+       -92.17311,
+       46.91973
+      ],
+      [
+       -92.07288,
+       46.83565
+      ]
+     ]
+    ]
+   }
+  }
+ ]
+}

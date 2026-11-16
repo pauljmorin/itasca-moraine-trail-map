@@ -1,0 +1,45 @@
+{
+ "type": "FeatureCollection",
+ "features": [
+  {
+   "type": "Feature",
+   "properties": {
+    "title": "Gitchi-Gami Schroeder",
+    "short": "Gitchi-Gami\u2013Schroeder to Lutsen",
+    "note": "Schroeder to Lutsen panel of the six-panel sheet (this file georeferences only that panel); the Gooseberry Falls to Silver Bay panel is wired separately from Map 2.",
+    "image": "data/dnr-geopdf/gitchi-gami-schroeder-lutsen.jpg",
+    "source": "Minnesota DNR",
+    "url": "https://mobile-maps-files.dnr.state.mn.us/file/State_Trails/Gitchi-Gami%20State%20Trail%20Map%203%20-%20Schroeder%20to%20Lutsen%20GEO.pdf",
+    "date": "2025-11-17",
+    "viewport": "Schroeder"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -90.87759,
+       47.52278
+      ],
+      [
+       -90.65068,
+       47.64426
+      ],
+      [
+       -90.68856,
+       47.67663
+      ],
+      [
+       -90.91547,
+       47.55515
+      ],
+      [
+       -90.87759,
+       47.52278
+      ]
+     ]
+    ]
+   }
+  }
+ ]
+}

@@ -1,0 +1,45 @@
+{
+ "type": "FeatureCollection",
+ "features": [
+  {
+   "type": "Feature",
+   "properties": {
+    "title": "CJ Ramstad_North Shore-Finland State Forest to Sawbill Trail GEO",
+    "short": "C.J. Ramstad\u2013Finland SF to Sawbill Tr",
+    "note": "C.J. Ramstad North Shore State Trail, segment 3 of 4.",
+    "image": "data/dnr-geopdf/cj-ramstad-finland-sawbill.jpg",
+    "source": "Minnesota DNR",
+    "url": "https://mobile-maps-files.dnr.state.mn.us/file/State_Trails/CJ%20Ramstad_North%20Shore-Finland%20State%20Forest%20to%20Sawbill%20Trail%20GEO.pdf",
+    "date": "2023-04-11",
+    "viewport": "bound1"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -91.30453,
+       47.31045
+      ],
+      [
+       -90.77491,
+       47.59691
+      ],
+      [
+       -90.8878,
+       47.69276
+      ],
+      [
+       -91.41742,
+       47.40629
+      ],
+      [
+       -91.30453,
+       47.31045
+      ]
+     ]
+    ]
+   }
+  }
+ ]
+}

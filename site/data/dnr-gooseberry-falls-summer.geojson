@@ -1,0 +1,45 @@
+{
+ "type": "FeatureCollection",
+ "features": [
+  {
+   "type": "Feature",
+   "properties": {
+    "title": "Gooseberry Falls Summer GEO",
+    "short": "Gooseberry Falls Summer",
+    "note": "Gateway Plaza (Inset A) and Campground (Inset B) insets show as printed.",
+    "image": "data/dnr-geopdf/gooseberry-falls-summer.jpg",
+    "source": "Minnesota DNR",
+    "url": "https://mobile-maps-files.dnr.state.mn.us/file/State_Parks/Gooseberry%20Falls%20Summer%20GEO.pdf",
+    "date": "2026-05-22",
+    "viewport": "Gooseberry SP"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -91.49551,
+       47.13108
+      ],
+      [
+       -91.43746,
+       47.13117
+      ],
+      [
+       -91.43754,
+       47.15642
+      ],
+      [
+       -91.49559,
+       47.15634
+      ],
+      [
+       -91.49551,
+       47.13108
+      ]
+     ]
+    ]
+   }
+  }
+ ]
+}

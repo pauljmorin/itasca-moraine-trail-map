@@ -1,0 +1,45 @@
+{
+ "type": "FeatureCollection",
+ "features": [
+  {
+   "type": "Feature",
+   "properties": {
+    "title": "Split Rock Lighthouse Winter GEO",
+    "short": "Split Rock Winter",
+    "note": "Campground insets show as printed.",
+    "image": "data/dnr-geopdf/split-rock-winter.jpg",
+    "source": "Minnesota DNR",
+    "url": "https://mobile-maps-files.dnr.state.mn.us/file/State_Parks/Split%20Rock%20Lighthouse%20Winter%20GEO.pdf",
+    "date": "2026-10-28",
+    "viewport": "AASplit Rock Lighthouse State Park"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -91.43916,
+       47.17641
+      ],
+      [
+       -91.32612,
+       47.17481
+      ],
+      [
+       -91.32469,
+       47.22187
+      ],
+      [
+       -91.43773,
+       47.22346
+      ],
+      [
+       -91.43916,
+       47.17641
+      ]
+     ]
+    ]
+   }
+  }
+ ]
+}

@@ -1,0 +1,45 @@
+{
+ "type": "FeatureCollection",
+ "features": [
+  {
+   "type": "Feature",
+   "properties": {
+    "title": "Finland State Forest Public Recreation Map",
+    "short": "Finland SF",
+    "note": "",
+    "image": "data/dnr-geopdf/finland-sf.jpg",
+    "source": "Minnesota DNR",
+    "url": "https://files.dnr.state.mn.us/maps/state_forests/sft00017_geo.pdf",
+    "date": "2021-06-23",
+    "viewport": "MainMap"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -91.94479,
+       47.2126
+      ],
+      [
+       -90.82213,
+       47.19669
+      ],
+      [
+       -90.80696,
+       47.68942
+      ],
+      [
+       -91.92962,
+       47.70533
+      ],
+      [
+       -91.94479,
+       47.2126
+      ]
+     ]
+    ]
+   }
+  }
+ ]
+}

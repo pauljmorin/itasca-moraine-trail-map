@@ -1,0 +1,45 @@
+{
+ "type": "FeatureCollection",
+ "features": [
+  {
+   "type": "Feature",
+   "properties": {
+    "title": "Taconite GEO",
+    "short": "Taconite",
+    "note": "The full Taconite State Trail corridor \u2014 a larger frame than the David Dill\u2013Taconite sheet, which covers only its eastern segment.",
+    "image": "data/dnr-geopdf/taconite.jpg",
+    "source": "Minnesota DNR",
+    "url": "https://mobile-maps-files.dnr.state.mn.us/file/State_Trails/Taconite%20GEO.pdf",
+    "date": "2023-04-12",
+    "viewport": "Taconite Main"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -93.65724,
+       47.21404
+      ],
+      [
+       -92.29236,
+       47.21374
+      ],
+      [
+       -92.29208,
+       47.80331
+      ],
+      [
+       -93.65696,
+       47.80361
+      ],
+      [
+       -93.65724,
+       47.21404
+      ]
+     ]
+    ]
+   }
+  }
+ ]
+}
