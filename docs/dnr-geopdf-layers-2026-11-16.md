@@ -247,5 +247,37 @@ on an invisible hit-polygon instead — the sheet's own closed ring,
 transparent fill (`fillOpacity: 0`), canvas-rendered like the
 parcels, whose popups provably open. The image keeps its own
 binding too, in case the overlay path ever starts receiving clicks.
-The NCTA sheets still have the outline-only behaviour (unchanged —
-fixing them the same way was not asked for).
+Re-tested live Nov 16 (click-through #4b): PASS — 3 interior clicks
+on Itasca Summer and 1 on Waboose all opened the sheet popup with
+the DNR download link; no visible fill from the hit-polygon (the
+blue dashed frame the tester noted is the pre-existing outline,
+not the hit-polygon). The NCTA sheets still have the outline-only
+behaviour (unchanged — fixing them the same way was not asked for).
+
+## Itasca Summer crop (Nov 16, Paul)
+
+Paul: the Itasca sheet "has a bunch of legend and a random chunk of
+map on the right. Can you crop that out." The rendered sheet
+(2266×1573) is main map + a legend column (SUMMER TRAILS /
+FACILITIES, x≈1490–1930) + the Main Park Drive Area Detail inset
+(x≈1940–2266). Ink analysis found the map's east edge ends at
+x≈1460 with a pure-white gutter at x 1470–1480, so the cut is
+x=1470 — the whole legend column and the inset go, the main map
+(title banner, Trail Distances table, scale bar, East/South
+Entrances, NCT line) is untouched.
+
+Implemented in `working/dnr-geopdf/build_dnr_geopdf.py` as a
+post-BBox `CROPS` fraction (`itasca-summer: 1470/2266`); the east
+quad corners interpolate along the edges (the affine is linear),
+so the new quad is BL [-95.30404, 47.12946] (unchanged),
+BR [-95.13326, 47.13270], TR [-95.13836, 47.25728],
+TL [-95.30914, 47.25404] (unchanged). The MAPS note for
+itasca-summer was cleared (the inset is gone, so the popup no
+longer says it "shows as printed"). Re-running the build script
+reproduced the other nine sheets byte-identical — only the Itasca
+image (now 1470×1573, 393 KB) and its GeoJSON changed. The script
+needs its venv (`working/dnr-geopdf/.venv`, pypdf + numpy +
+Pillow); system pip is PEP-668-blocked. The 26.4 km trail-in-frame
+figure stands: it was measured on the main map, which is unchanged.
+Maplewood Summer's Campgrounds inset and Soudan's mine-area inset
+still show as printed; their legend columns were not cropped.

@@ -6,7 +6,7 @@
    "properties": {
     "title": "Itasca Summer GEO",
     "short": "Itasca Summer",
-    "note": "Sheet\u2019s Main Park Drive Area Detail inset shows as printed.",
+    "note": "",
     "image": "data/dnr-geopdf/itasca-summer.jpg",
     "source": "Minnesota DNR",
     "url": "https://mobile-maps-files.dnr.state.mn.us/file/State_Parks/Itasca%20Summer%20GEO.pdf",
@@ -22,12 +22,12 @@
        47.12946
       ],
       [
-       -95.04079,
-       47.13446
+       -95.13326,
+       47.1327
       ],
       [
-       -95.04588,
-       47.25904
+       -95.13836,
+       47.25728
       ],
       [
        -95.30914,
