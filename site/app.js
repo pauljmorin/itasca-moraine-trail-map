@@ -4163,12 +4163,14 @@ function applyContoursGate() {
    file when atv_class_1 or atv_class_2 is 'X', and to the OHM
    file when off_highway_motorcycle is 'X' — a trail allowing
    both appears in both files, which is the honest reading of
-   the DNR data. One deliberate label change: the snow service's
-   `miles` field is the trail's published figure, not the drawn
-   (clipped) segment's length — verified Nov 16 (e.g. a 0.3 mi
-   drawn piece carries 49.8) — so the snow popup says
-   "Published miles", while the ATV and OHM popups keep "This
-   segment" (there the field matches the geometry). No
+   the DNR data. CORRECTION (Nov 16, statewide pull): the snow
+   service's `miles` field IS the drawn segment's length — the
+   earlier "published figure" reading was a clip artifact of the
+   2-mi corridor pull (a clipped piece kept its whole-feature
+   value). Statewide the field sums 23,152.50 mi against
+   23,151.35 mi drawn, worst per-feature deviation 0.43 mi — so
+   the snow popup now says "This segment", like the ATV and OHM
+   popups. No
    Prospectors / Taconite / Ramstad systems fall inside the
    chapter extent, so the buildout's shared-use notes have
    nothing to attach to and are omitted — but Prospectors and
@@ -4200,8 +4202,8 @@ function atvPopup(f) {
       "\" target=\"_blank\" rel=\"noopener\">DNR trail page</a></p>";
   }
   h += "<p class='pop-note'>Minnesota DNR OHV Trails, 2026 season, " +
-    "via the MnGeo FeatureServer. Within 2 miles of the Minnesota " +
-    "NCT line.</p>";
+    "via the MnGeo FeatureServer. Full state — every DNR ATV " +
+    "trail in Minnesota, not just the ones near the NCT.</p>";
   return h;
 }
 function ohmPopup(f) {
@@ -4222,8 +4224,9 @@ function ohmPopup(f) {
   }
   h += "<p class='pop-note'>Minnesota DNR OHV Trails (dirt bike / " +
     "off-highway motorcycle), 2026 season, via the MnGeo " +
-    "FeatureServer. Within 2 miles of the Minnesota NCT line. " +
-    "A trail that also allows ATVs appears on the ATV layer too.</p>";
+    "FeatureServer. Full state — every DNR dirt-bike trail in " +
+    "Minnesota. A trail that also allows ATVs appears on the " +
+    "ATV layer too.</p>";
   return h;
 }
 function snowPopup(f) {
@@ -4236,14 +4239,13 @@ function snowPopup(f) {
     ["Owner", p.owner_type],
     ["Trail no.", p.trail_num != null ? String(p.trail_num) : null],
     ["Stud restriction", p.stud_restr],
-    ["Published miles", p.miles != null
+    ["This segment", p.miles != null
       ? p.miles + " mi (DNR service)" : null],
   ]);
-  h += "<p class='pop-note'>Drawn line is the portion within 2 " +
-    "miles of the Minnesota NCT line. Minnesota DNR Snowmobile " +
-    "Trails, via the MnGeo FeatureServer. Groomed corridors run " +
-    "20&ndash;26 ft wide (32&ndash;36 ft at crossings), groomers up " +
-    "to 17,000 lb.</p>";
+  h += "<p class='pop-note'>Minnesota DNR Snowmobile Trails, " +
+    "full state, via the MnGeo FeatureServer. Groomed corridors " +
+    "run 20&ndash;26 ft wide (32&ndash;36 ft at crossings), " +
+    "groomers up to 17,000 lb.</p>";
   return h;
 }
 function shtPopup(f) {
@@ -4260,6 +4262,160 @@ function shtPopup(f) {
     "Country Trail only at its northern terminus, at the " +
     "270&deg; Overlook near Grand Portage.</p>";
   return h;
+}
+/* TrailNFS names arrive ALL-CAPS ("CARIBOU ROCK", "BRT-SOCK LAKE
+   CAMPSITE"). Display them title-cased, keeping the acronyms BRT
+   and ATV uppercase. */
+function trailName(raw) {
+  if (!raw) return "Trail";
+  var keep = { "BRT": 1, "ATV": 1 };
+  return raw.split(/([ \/\\-])/).map(function (part) {
+    if (/^[ \/\\-]$/.test(part)) return part;
+    var up = part.toUpperCase();
+    if (keep[up]) return up;
+    return part.charAt(0).toUpperCase() + part.slice(1).toLowerCase();
+  }).join("");
+}
+function brtPopup(f) {
+  var p = f.properties;
+  var h = "<h3>Border Route Trail</h3>";
+  h += kvTable([
+    ["This segment", p.gis_miles != null
+      ? p.gis_miles + " mi (USFS service)" : null],
+    ["Trail no.", p.trail_no != null ? String(p.trail_no) : null],
+    ["Trail class", p.trail_class != null
+      ? String(p.trail_class) : null],
+    ["Surface", p.trail_surface],
+  ]);
+  h += "<p class='pop-note'>The Border Route Trail shares tread " +
+    "with the North Country Trail along the Minnesota–Ontario " +
+    "border, from the Gunflint Trail area to the Pigeon River — " +
+    "it is drawn here as its own line from the USDA Forest " +
+    "Service trail data. The USFS line and the NCT line are two " +
+    "surveys of the same tread and sit up to ~350 m apart in " +
+    "places. USDA Forest Service, National Forest System " +
+    "Trails (public domain).</p>";
+  return h;
+}
+/* Type + meeting-point tables for the near-BRT/SHT layer (Nov 16,
+   2026, from the intersecting-trails inventory + the measured
+   distances to the BRT line). */
+var NEAR_BRT_TOUCH = { "BRIDAL VEIL FALLS": 1, "CARIBOU ROCK": 1,
+  "GUNFLINT LAKE G CONNECT": 1, "MAGNETIC ROCK": 1,
+  "SOUTH FOWL SNOWMOBILE": 1, "UPPER GUNFLINT ASPEN RABBIT": 1,
+  "UPPER GUNFLINT CUT ACROSS": 1, "UPPER GUNFLINT LONELY LAKE": 1,
+  "UPPER GUNFLINT OVERLOOK": 1, "UPPER GUNFLINT POWER LINE": 1,
+  "UPPER GUNFLINT SHORT CUT": 1, "UPPER GUNFLINT SOUTH RIM": 1,
+  "UPPER GUNFLINT WEST END": 1 };
+var NEAR_BRT_NEAR = { "BRYCE BREON": 1, "UPPER GUNFLINT WARRENS ROAD": 1,
+  "SOUTH FOWL ATV": 1 };
+function nearType(name) {
+  if (!name) return "Trail";
+  if (name.indexOf("UPPER GUNFLINT") === 0 ||
+      name === "GUNFLINT LAKE G CONNECT") return "Cross-country ski";
+  if (name.indexOf("WINTER") >= 0) return "Winter trail (ski / snowmobile)";
+  if (name.indexOf("ATV") >= 0) return "ATV";
+  if (name.indexOf("SNOWMOBILE") >= 0) return "Snowmobile";
+  if (name.indexOf("LOOP") >= 0) return "Hiking loop";
+  if (name.indexOf("SPUR") >= 0 || name.indexOf("CONNECTOR") >= 0 ||
+      name === "KEKEKABIC TO MAGNETIC ROCK" ||
+      name === "BRIDAL VEIL FALLS" ||
+      name === "GUNFLINT LOOKOUT" ||
+      name === "HIDDEN VALLEY TREZONA" || name === "TREZONA")
+    return "Hiking spur";
+  return "Hiking";
+}
+function nearMeets(name) {
+  if (NEAR_BRT_TOUCH[name]) return "Meets the Border Route Trail tread";
+  if (NEAR_BRT_NEAR[name])
+    return "Meets the NCT within ~700 m of the Border Route Trail";
+  if (name === "CENTENNIAL" || name === "KEKEKABIC" ||
+      name === "KEKEKABIC TO MAGNETIC ROCK" ||
+      name === "GUNFLINT LOOKOUT")
+    return "Meets the NCT just west of the Border Route Trail " +
+      "(within ~4 km of its western end)";
+  return "Meets the NCT in the Arrowhead (Ely / BWCAW)";
+}
+function nearPopup(f) {
+  var p = f.properties;
+  var name = p.trail_name || "";
+  var h = "<h3>" + esc(trailName(name)) + "</h3>";
+  h += kvTable([
+    ["Type", nearType(name)],
+    ["This segment", p.gis_miles != null
+      ? p.gis_miles + " mi (USFS service)" : null],
+    ["Trail no.", p.trail_no != null ? String(p.trail_no) : null],
+    ["Surface", p.trail_surface],
+  ]);
+  h += "<p class='pop-note'>" + nearMeets(name) + ". Named trail " +
+    "near the Border Route Trail and Superior Hiking Trail, " +
+    "Superior National Forest. USDA Forest Service, National " +
+    "Forest System Trails (public domain).</p>";
+  return h;
+}
+function portagePopup(f) {
+  var p = f.properties;
+  var h = "<h3>" + esc(trailName(p.trail_name)) + "</h3>";
+  h += kvTable([
+    ["This portage", p.gis_miles != null
+      ? p.gis_miles + " mi (USFS service)" : null],
+    ["Trail no.", p.trail_no != null ? String(p.trail_no) : null],
+  ]);
+  h += "<p class='pop-note'>BWCAW lake-to-lake portage or " +
+    "campsite spur along the Border Route tread. USDA Forest " +
+    "Service, National Forest System Trails (public domain).</p>";
+  return h;
+}
+
+/* Line popups don't open on click (found Nov 16, 2026, live
+   click-through): the canvas renderer gives a weight-3 line a
+   ~±1.5 px hit target, too thin to click reliably — ATV lines
+   never opened a popup in 5–6 tries at zooms 10–13, and a
+   Waboose loop line only opened via its marker. Every clickable
+   line layer therefore draws an invisible hit-line over the
+   visible line: same geometry, weight 12, opacity 0,
+   interactive, carrying the popup. The visible line is
+   non-interactive; no visible style changes. */
+function hitLine(gj, style, popupFn) {
+  var visible = L.geoJSON(gj, {
+    renderer: canvasFor(),
+    interactive: false,
+    style: style,
+  });
+  var hit = L.geoJSON(gj, {
+    renderer: canvasFor(),
+    style: { color: "#000000", weight: 12, opacity: 0,
+      lineCap: "round" },
+    onEachFeature: function (f, l) { bindPop(l, popupFn(f)); },
+  });
+  return L.layerGroup([visible, hit]);
+}
+/* Partner Trails (BRT + SHT, Paul, Nov 16, 2026): the two
+   long-distance partner trails must be visibly bolder than the
+   other trails — weight 5, opacity 1.0, on a white casing
+   (weight 8) so they read at state zoom. The casing and the
+   core are non-interactive; the invisible hit-line (weight 12)
+   carries the popup — same fix as hitLine above. */
+function boldLine(gj, color, popupFn) {
+  var casing = L.geoJSON(gj, {
+    renderer: canvasFor(),
+    interactive: false,
+    style: { color: "#ffffff", weight: 8, opacity: 0.9,
+      lineCap: "round" },
+  });
+  var core = L.geoJSON(gj, {
+    renderer: canvasFor(),
+    interactive: false,
+    style: { color: color, weight: 5, opacity: 1.0,
+      lineCap: "round" },
+  });
+  var hit = L.geoJSON(gj, {
+    renderer: canvasFor(),
+    style: { color: "#000000", weight: 12, opacity: 0,
+      lineCap: "round" },
+    onEachFeature: function (f, l) { bindPop(l, popupFn(f)); },
+  });
+  return L.layerGroup([casing, core, hit]);
 }
 
 var LAYERS = [
@@ -4446,107 +4602,93 @@ var LAYERS = [
     onByDefault: true, group: "The trail",
     swatch: { kind: "line", color: "#0f766e" },
     build: function (gj) {
-      return L.geoJSON(gj, {
-        renderer: canvasFor(),
-        style: {
-          color: "#0f766e", weight: 3, opacity: 0.9,
-          lineCap: "round",
-        },
-        onEachFeature: function (f, l) {
-          var p = f.properties;
-          bindPop(l, "<h3>" + esc(p.name) + "</h3>" +
-            kvTable([
-              ["Length", p.length_mi != null
-                ? p.length_mi + " mi" : null],
-              ["Source", p.source],
-            ]) + "<p class='pop-note'>" + esc(p.gap_note || "") +
-            "</p>");
-        },
+      return hitLine(gj, {
+        color: "#0f766e", weight: 3, opacity: 0.9,
+        lineCap: "round",
+      }, function (f) {
+        var p = f.properties;
+        return "<h3>" + esc(p.name) + "</h3>" +
+          kvTable([
+            ["Length", p.length_mi != null
+              ? p.length_mi + " mi" : null],
+            ["Source", p.source],
+          ]) + "<p class='pop-note'>" + esc(p.gap_note || "") +
+          "</p>";
       });
     },
   },
   {
     /* ATV trails (Paul, Nov 16, 2026): Minnesota DNR OHV Trails,
-       2026 season, inside a 2-mile corridor around the full
-       Minnesota NCT line — 769 segments, 184 GIS miles, 16
-       systems (Forest Riders, Round River Drive, Schoolcraft,
-       Soo Line North: Cass, Soo Line South: Carlton, Chisholm,
-       Prospectors, East Range, Quad Cities, David Dill –
-       Taconite, Iron Range OHV, Hibbing to Alborn, Len Hardy,
-       Genoa, Alborn-Pengilly). Purple #762a83, the buildout
-       viewer's ATV color, distinct from foot-tread green. OFF by
-       default and LAZY. Popups mirror the buildout atvPopup
-       rows. */
+       2026 season, FULL STATE — 6,968 segments, 3,357 GIS
+       miles, 102 systems. Full state supersedes the 2-mile NCT
+       corridor (769 segments, 184 mi) and the 5-mile clip idea,
+       both Nov 16. Every feature is whole now, so the DNR
+       miles field and the drawn length agree to 0.005 mi per
+       feature — the corridor-boundary caveat is gone. Purple
+       #762a83, the buildout viewer's ATV color, distinct from
+       foot-tread green. OFF by default and LAZY. Popups mirror
+       the buildout atvPopup rows. */
     id: "atv", label: "ATV trails",
-    title: "Minnesota DNR OHV trails, 2026 season — 16 systems, " +
-      "184 GIS miles within 2 miles of the Minnesota NCT",
+    title: "Minnesota DNR OHV trails, 2026 season — 102 " +
+      "systems, 3,357 GIS miles, full state",
     file: "data/motorized-atv.geojson",
     onByDefault: false, group: "Other trails",
     swatch: { kind: "line", color: "#762a83" },
     build: function (gj) {
-      return L.geoJSON(gj, {
-        renderer: canvasFor(),
-        style: {
-          color: "#762a83", weight: 3, opacity: 0.85,
-          lineCap: "round",
-        },
-        onEachFeature: function (f, l) { bindPop(l, atvPopup(f)); },
-      });
+      return hitLine(gj, {
+        color: "#762a83", weight: 3, opacity: 0.85,
+        lineCap: "round",
+      }, atvPopup);
     },
   },
   {
     /* Dirt bike trails (Paul, Nov 16, 2026): Minnesota DNR OHV
        Trails, off-highway motorcycle (OHM) use, 2026 season,
-       inside the same 2-mile corridor around the full Minnesota
-       NCT line — 802 segments, 190 GIS miles, 14 systems. The
-       OHV service carries ATV and OHM on the same features; a
-       trail allowing both appears here and on the ATV layer.
-       Magenta #c51b8a, near the ATV purple but clearly distinct
-       at a glance. OFF by default and LAZY. Popup mirrors the
-       ATV popup rows. */
+       FULL STATE — 5,732 segments, 2,551 GIS miles, 78
+       systems (supersedes the 2-mile corridor: 802 segments,
+       190 mi). The OHV service carries ATV and OHM on the
+       same features; a trail allowing both appears here and
+       on the ATV layer. Magenta #c51b8a, near the ATV purple
+       but clearly distinct at a glance. OFF by default and
+       LAZY. Popup mirrors the ATV popup rows. */
     id: "ohm", label: "Dirt bike trails",
     title: "Minnesota DNR OHV dirt-bike (OHM) trails, 2026 " +
-      "season — 14 systems, 190 GIS miles within 2 miles of " +
-      "the Minnesota NCT",
+      "season — 78 systems, 2,551 GIS miles, full state",
     file: "data/motorized-ohm.geojson",
     onByDefault: false, group: "Other trails",
     swatch: { kind: "line", color: "#c51b8a" },
     build: function (gj) {
-      return L.geoJSON(gj, {
-        renderer: canvasFor(),
-        style: {
-          color: "#c51b8a", weight: 3, opacity: 0.85,
-          lineCap: "round",
-        },
-        onEachFeature: function (f, l) { bindPop(l, ohmPopup(f)); },
-      });
+      return hitLine(gj, {
+        color: "#c51b8a", weight: 3, opacity: 0.85,
+        lineCap: "round",
+      }, ohmPopup);
     },
   },
   {
     /* Snowmobile trails (Paul, Nov 16, 2026): Minnesota DNR
-       snowmobile trails inside a 2-mile corridor around the
-       full Minnesota NCT line — 36 features, 588 GIS miles, 29
-       systems. Icy blue #67a9cf, the buildout viewer's snow
-       color. OFF by default and LAZY. Popups mirror the buildout
-       snowPopup rows; the miles row says "Published miles"
-       because the service's figure is the trail's published
-       length, not the drawn (clipped) segment's — see
-       snowPopup. */
+       snowmobile trails, FULL STATE — 276 features, 23,151 GIS
+       miles, 191 systems (supersedes the 2-mile corridor: 36
+       features, 588 mi). Icy blue #67a9cf, the buildout
+       viewer's snow color. OFF by default and LAZY. Popups
+       mirror the buildout snowPopup rows; the miles row says
+       "Published miles" because the service's figure is the
+       trail's published length. Statewide the drawn line is
+       the whole feature, so the published figure matches the
+       drawn length within 0.43 mi worst case — the old
+       "system total vs drawn" gap (3,254 field vs 588 drawn)
+       was a corridor-clip artifact, not a property of the
+       field. */
     id: "snow", label: "Snowmobile trails",
-    title: "Minnesota DNR snowmobile trails — 29 systems, 588 " +
-      "GIS miles within 2 miles of the Minnesota NCT",
+    title: "Minnesota DNR snowmobile trails — 191 systems, " +
+      "23,151 GIS miles, full state",
     file: "data/motorized-snow.geojson",
     onByDefault: false, group: "Other trails",
     swatch: { kind: "line", color: "#67a9cf" },
     build: function (gj) {
-      return L.geoJSON(gj, {
-        renderer: canvasFor(),
-        style: {
-          color: "#67a9cf", weight: 3, opacity: 0.85,
-          lineCap: "round",
-        },
-        onEachFeature: function (f, l) { bindPop(l, snowPopup(f)); },
-      });
+      return hitLine(gj, {
+        color: "#67a9cf", weight: 3, opacity: 0.85,
+        lineCap: "round",
+      }, snowPopup);
     },
   },
   {
@@ -4570,25 +4712,98 @@ var LAYERS = [
        icy blue, the ATV purple and the OHM magenta. OFF by
        default and LAZY. Popup carries the coverage caveat in
        full; the DNR service's use/surface fields are blank, so
-       the popup shows only the segment length. No Border Route
-       Trail layer: the BRT shares tread with the NCT and is
-       already drawn as the NCT itself. */
+       the popup shows only the segment length. The Border Route
+       Trail is now its own layer (id "brt") in the same
+       "Partner Trails" subgroup below — the "no separate BRT
+       layer" line from the morning is superseded. */
     id: "sht", label: "Superior Hiking Trail",
     title: "Superior Hiking Trail — 208 mi in Minnesota state " +
       "parks (DNR service; ~310 mi published). Meets the NCT " +
       "only at its northern terminus, Grand Portage",
     file: "data/superior-hiking-trail.geojson",
     onByDefault: false, group: "Other trails",
+    subgroup: "Partner Trails",
     swatch: { kind: "line", color: "#2563eb" },
     build: function (gj) {
-      return L.geoJSON(gj, {
-        renderer: canvasFor(),
-        style: {
-          color: "#2563eb", weight: 3, opacity: 0.85,
-          lineCap: "round",
-        },
-        onEachFeature: function (f, l) { bindPop(l, shtPopup(f)); },
-      });
+      return boldLine(gj, "#2563eb", shtPopup);
+    },
+  },
+  {
+    /* Border Route Trail (Paul, Nov 16, 2026): the BRT as its
+       own layer — it shares tread with the NCT along the
+       border, but Paul wants it listed with the other trails.
+       USFS TrailNFS, trail no. 21007, Superior NF, class 2:
+       24 features, 46.07 GIS miles measured in UTM 15N
+       (gis_miles field 45.22; published ~65 mi). 80% of its
+       vertices sit within 50 m of the map's Minnesota NCT
+       line, none more than 350 m away — same tread, two
+       surveys. Western end (-90.78325, 48.09088), eastern end
+       at the Pigeon River (-89.95014, 47.99830), where the
+       SHT's northern terminus also sits. Partner Trails
+       subgroup with the SHT; bold line (weight 5, opacity
+       1.0, white casing) like the SHT. Red #b91c1c, distinct
+       from the SHT blue, ATV purple, OHM magenta, snow icy
+       blue and loops teal. OFF by default and LAZY. */
+    id: "brt", label: "Border Route Trail",
+    title: "Border Route Trail — 46 mi (USFS service; ~65 mi " +
+      "published). Shares tread with the NCT along the border",
+    file: "data/border-route-trail.geojson",
+    onByDefault: false, group: "Other trails",
+    subgroup: "Partner Trails",
+    swatch: { kind: "line", color: "#b91c1c" },
+    build: function (gj) {
+      return boldLine(gj, "#b91c1c", brtPopup);
+    },
+  },
+  {
+    /* Trails near the Border Route & SHT (Paul, Nov 16, 2026):
+       the 28 named Superior NF / BWCAW trails from the
+       intersecting-trails inventory (sections A + F) that meet
+       the NCT in the Arrowhead — 53 features, 113.69 GIS
+       miles measured (field ~112.4). 13 touch the BRT tread
+       (0 m); 3 meet the NCT within ~700 m of it; 4 meet the
+       NCT just west of the BRT's western end (within ~4 km,
+       including the Kekekabic, the BRT's western connector);
+       8 meet the NCT further west on the Arrowhead approach
+       (Ely / BWCAW, 38–60+ km from the BRT line). Nearest any
+       comes to the SHT line is 7.2 km (South Fowl ATV) — no
+       inventory trail meets the SHT itself. Amber #d97706,
+       distinct from every other trail colour. OFF by default
+       and LAZY. Popup carries the type + what each trail
+       meets. */
+    id: "near-brt-sht", label: "Trails near the Border Route & SHT",
+    title: "Named trails near the Border Route Trail and " +
+      "Superior Hiking Trail — 28 trails, 114 GIS miles (USFS)",
+    file: "data/near-brt-sht.geojson",
+    onByDefault: false, group: "Other trails",
+    swatch: { kind: "line", color: "#d97706" },
+    build: function (gj) {
+      return hitLine(gj, {
+        color: "#d97706", weight: 3, opacity: 0.85,
+        lineCap: "round",
+      }, nearPopup);
+    },
+  },
+  {
+    /* BWCAW portages & connectors (Paul, Nov 16, 2026): the 26
+       named lake-to-lake portages and campsite spurs from the
+       intersecting-trails inventory (section G) — 39 features,
+       20.50 GIS miles measured (field 20.62). Each meets the
+       NCT at 0–44.7 m along the Border Route / BWCAW tread.
+       Portages, not hiking trails: their own light layer, OFF
+       by default and LAZY — thin stone dashed line so they
+       read as portages and do not clutter the hiking trails. */
+    id: "bwca-portages", label: "BWCAW portages & connectors",
+    title: "BWCAW portages & connectors — 26 named, 21 GIS " +
+      "miles (USFS)",
+    file: "data/bwca-portages.geojson",
+    onByDefault: false, group: "Other trails",
+    swatch: { kind: "line", color: "#a8a29e" },
+    build: function (gj) {
+      return hitLine(gj, {
+        color: "#a8a29e", weight: 2, opacity: 0.7,
+        dashArray: "4 4", lineCap: "round",
+      }, portagePopup);
     },
   },
   {
@@ -6144,7 +6359,7 @@ LAYERS.forEach(function (def) {
   if (box.checked) ensureLayer(def, false);
 });
 /* Phase 2: lay the toggles out in panel (task) order. */
-var GROUP_PULLDOWNS = ["The trail", "ITM inventory", "The land",
+var GROUP_PULLDOWNS = ["The trail", "Other trails", "ITM inventory", "The land",
   "Land ownership"]; /* Paul, Nov 13, 2026 — these groups are
   pull-downs: a disclosure on the heading, the layers hidden
   until opened. (The trail + Land ownership first; ITM inventory
@@ -6501,8 +6716,9 @@ function assertDrawOrder() {
        "alerts-mn-lines" sits directly over it (reroutes read as
        alternate routes). Nov 16, 2026: "loops" sits directly over
        the adopted sections, so a loop reads whole where it shares
-       NCT tread; "atv", "ohm", "snow" and "sht" sit between the
-       sheet outlines and the Minnesota line, under the NCT tread.
+       NCT tread; "atv", "ohm", "snow", "sht", "brt",
+       "near-brt-sht" and "bwca-portages" sit between the sheet
+       outlines and the Minnesota line, under the NCT tread.
        The three Nov 13
        land layers
        (foresthealth, invasives, chippewa-plan) sit with the
@@ -6510,7 +6726,8 @@ function assertDrawOrder() {
     ["leechlake", "parcels", "logedw", "logfim", "logcass", "loghubbard",
      "logbecker", "logclearwater", "easements", "foresthealth",
      "invasives", "chippewa-plan", "access",
-     "roads", "nctasheets", "atv", "ohm", "snow", "sht",
+     "roads", "nctasheets", "atv", "ohm", "snow", "sht", "brt",
+     "near-brt-sht", "bwca-portages",
      "trail-minnesota", "trail", "alerts-mn-lines",
      "stretches", "loops", "gaps",
      "boundaries", "termini", "milemarkers", "chainage", "contours",
@@ -6553,9 +6770,10 @@ function legendHtml() {
   function add(swatch, text) {
     rows.push("<div class='row'>" + swatch + "<span>" + text + "</span></div>");
   }
-  function line(color, dashed) {
+  function line(color, dashed, bold) {
     return "<span class='swatch" + (dashed ? " dashed" : "") +
-      "' style='border-top-color:" + color + "'></span>";
+      "' style='border-top-color:" + color +
+      (bold ? ";border-top-width:5px" : "") + "'></span>";
   }
   function bar(color, wide) {
     return "<span class='swatch bar" + (wide ? " wide" : "") +
@@ -6611,10 +6829,16 @@ function legendHtml() {
   add("<span class='swatch chapterdisc closed'>C</span>",
     "Chapter place — CLOSED");
   add("", "<strong>Other trails</strong>");
-  add(line("#762a83"), "ATV trail (DNR)");
-  add(line("#c51b8a"), "Dirt bike trail (DNR)");
-  add(line("#67a9cf"), "Snowmobile trail (DNR)");
-  add(line("#2563eb"), "Superior Hiking Trail (DNR, state-park portions)");
+  add("", "<strong>Partner Trails</strong>");
+  add(line("#b91c1c", false, true),
+    "Border Route Trail (USFS — shares tread with the NCT)");
+  add(line("#2563eb", false, true),
+    "Superior Hiking Trail (DNR, state-park portions)");
+  add(line("#762a83"), "ATV trail (DNR, statewide)");
+  add(line("#c51b8a"), "Dirt bike trail (DNR, statewide)");
+  add(line("#67a9cf"), "Snowmobile trail (DNR, statewide)");
+  add(line("#d97706"), "Trail near the Border Route & SHT (USFS)");
+  add(line("#a8a29e", true), "BWCAW portage / connector (USFS)");
   add("", "<strong>The land</strong>");
   add("", "<strong>Tree height</strong> — six flat 5 m bands " +
     "(overlay, over any background)");
