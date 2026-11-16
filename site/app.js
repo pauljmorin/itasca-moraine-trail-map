@@ -679,7 +679,7 @@ function baseByCode(code) {
     if (def.sub) {
       var sub = document.createElement("span");
       sub.className = "bg-sub";
-      sub.textContent = "— " + def.sub;
+      sub.textContent = def.sub;
       btn.appendChild(sub);
     }
     btn.addEventListener("click", function () {
@@ -716,7 +716,7 @@ function baseByCode(code) {
       if (!isAerialYear(def)) return;
       var opt = document.createElement("option");
       opt.value = def.name;
-      opt.textContent = def.label + " — " + def.sub;
+      opt.textContent = def.label + " " + def.sub;
       sel.appendChild(opt);
     });
     sel.addEventListener("change", function () {
@@ -1621,6 +1621,29 @@ function leechLakePopup(f) {
       (p.trail_sections_inside || []).join(", ") + ")"
     : null;
   return "<h3>Leech Lake Reservation</h3>" + kvTable([
+    ["Nation", p.band],
+    ["Boundary", p.source],
+    ["Vintage", p.vintage],
+    ["Area", p.area_acres != null
+      ? Number(p.area_acres).toLocaleString("en-US") + " acres" : null],
+    ["Trail inside", trail],
+  ]) + "<p class='pop-note'>" + esc(p.note) + "</p>";
+}
+/* White Earth Reservation: the same shape as leechLakePopup
+   above — name the nation and the source, give the trail fact
+   that makes the layer worth switching on, and carry the honest
+   line (published boundary, not a legal survey). 19.15 mi of
+   trail inside, all LLC chapter; pulled from the same BIA
+   AIAN-LAR source (LAR0051) by
+   scripts/pull_white_earth_reservation.py. */
+function whiteEarthPopup(f) {
+  var p = f.properties;
+  var trail = (p.trail_miles_inside != null)
+    ? p.trail_miles_inside + " mi of the depicted trail lies " +
+      "inside the reservation (" +
+      (p.trail_sections_inside || []).join(", ") + ")"
+    : null;
+  return "<h3>White Earth Reservation</h3>" + kvTable([
     ["Nation", p.band],
     ["Boundary", p.source],
     ["Vintage", p.vintage],
@@ -4645,6 +4668,94 @@ function buildFsGeopdf(gj) {
   return group;
 }
 
+/* Fish & Wildlife GeoPDF maps — Tamarac National Wildlife Refuge
+   (Nov 16, 2026; Paul: "add what you can that makes sense" from
+   the map research). A line-for-line mirror of buildFsGeopdf
+   above, with the Fish & Wildlife wording and an amber outline/
+   swatch instead of the Forest Service green or the DNR blue, so
+   the three sheet families read apart in the panel and on the
+   map. Same mechanism throughout: 3-corner affine
+   (L.imageOverlay.rotated, TL/TR/BL), opacity 0.92, dashed
+   outline + name label below zoom 11, images in the shared
+   sheetImages array under the same zoom >= 11 gate, and the
+   INVISIBLE CANVAS HIT-POLYGON carrying the popup (binding the
+   popup to the image overlay does not work in this viewer).
+   One overlay layer per sheet, all OFF by default and LAZY.
+   The four sheets are the refuge's land-status maps (US Fish &
+   Wildlife Service ServCat, Dec 2017; land status current to
+   Aug 31, 2017): a refuge-wide index sheet (1:55,000) and three
+   1:24,000 tiles. The NCT is NOT printed on these sheets — they
+   show refuge land status (numbered ownership tracts over a
+   grayscale topo base) with the refuge boundary in yellow — so
+   the popup says so. Quads computed through the map's own
+   projection (NAD83 UTM 15N, per the /GCS) — fit residual
+   0.08-0.20 m; the corners reproduce the GeoJSON rings exactly
+   (docs/tamarac-geopdf-layers-2026-11-16.md). The index sheet
+   contains the three tiles' ground, so the four overlap heavily
+   and their trail figures do not sum: index 68.43 km, tiles
+   5.60 + 17.64 + 31.54 km. Group "Agency Maps", subgroup
+   "Fish & Wildlife maps". Federal public domain — no
+   re-hosting fence on these. */
+function buildFwsGeopdf(gj) {
+  var group = L.layerGroup();
+  gj.features.forEach(function (f) {
+    var p = f.properties;
+    var quad = f.geometry.coordinates[0];
+    var img = L.imageOverlay.rotated(p.image,
+      L.latLng(quad[3][1], quad[3][0]),
+      L.latLng(quad[2][1], quad[2][0]),
+      L.latLng(quad[0][1], quad[0][0]), {
+        opacity: 0.92, interactive: true,
+      });
+    img._sheetGroup = group;
+    sheetImages.push(img);
+    if (map.getZoom() >= 11) group.addLayer(img);
+    var html = "<strong>" + esc(p.title) + "</strong><br>" +
+      "US Fish &amp; Wildlife Service GeoPDF &mdash; " + esc(p.date) + "<br>" +
+      (p.trail_km != null ? esc(p.trail_km) + " km of NCT tread inside this sheet<br>" : "") +
+      "The trail is not printed on this sheet — it shows refuge land status.<br>" +
+      "<a href='" + esc(p.url) + "' target='_blank' " +
+      "rel='noopener'>Download the GeoPDF from the Fish &amp; Wildlife Service</a>";
+    if (p.note) html += "<br>" + esc(p.note);
+    bindPop(img, html);
+    var outline = L.geoJSON(f, {
+      interactive: true,
+      style: { color: "#92400e", weight: 1.5, dashArray: "6 4",
+               fill: false },
+      onEachFeature: function (feat, l) { bindPop(l, html); },
+    });
+    group.addLayer(outline);
+    /* Invisible hit-polygon: the sheet's own closed ring,
+       transparent fill, canvas-rendered (same mechanism as the
+       parcels and the DNR/FS sheets). Clicking anywhere inside
+       the sheet opens the popup; the image overlay keeps its own
+       binding too, in case the overlay path ever starts
+       receiving clicks. */
+    var hit = L.geoJSON(f, {
+      renderer: canvasFor(),
+      interactive: true,
+      style: { color: "#000", weight: 0, fill: true,
+               fillColor: "#fff", fillOpacity: 0 },
+      onEachFeature: function (feat, l) { bindPop(l, html); },
+    });
+    group.addLayer(hit);
+    var ring = f.geometry.coordinates[0];
+    var clat = (ring[0][1] + ring[2][1]) / 2;
+    var clon = (ring[0][0] + ring[2][0]) / 2;
+    var lab = L.marker(L.latLng(clat, clon), {
+      keyboard: false, interactive: false,
+      icon: L.divIcon({
+        className: "sheet-label-wrap", iconSize: [64, 18],
+        iconAnchor: [32, 9],
+        html: "<span class='sheet-label'>" + esc(p.short) +
+          "</span>",
+      }),
+    });
+    group.addLayer(lab);
+  });
+  return group;
+}
+
 var LAYERS = [
   {
     /* NCT — all Minnesota (Paul, Nov 13, 2026 — "get the trail in
@@ -5429,6 +5540,65 @@ var LAYERS = [
               iconSize: [170, 18], iconAnchor: [85, 9],
               html: "<span class='reservation-label'>" +
                 "Leech Lake Reservation</span>",
+            }),
+          }));
+      });
+      return group;
+    },
+  },
+  {
+    /* White Earth Reservation (Nov 16, 2026 — the trail crosses
+       White Earth, ~19 mi, and it was the only crossing
+       reservation without a boundary layer; Leech Lake already
+       had one): the federal reservation boundary as published by
+       the Bureau of Indian Affairs (AIAN Land Area Representation,
+       LAR0051 "White Earth"), pulled by
+       scripts/pull_white_earth_reservation.py — the same source
+       and the same pull pattern as Leech Lake. MultiPolygon, 39
+       polygons, 1,337 vertices: one large main body (745,723 ac)
+       plus 38 small trust parcels inside/near it. BIA's GISACRES
+       attribute (1,621,000 ac) contradicts its own geometry by
+       the same ~2.17x ratio as Leech Lake's and is NOT used; the
+       area is geometry-measured (748,098 ac, UTM 15N). OFF by
+       default and LAZY like Leech Lake and parcels — nothing
+       fetches data/white-earth-reservation.geojson until the box
+       is first checked. A quiet purple fill + outline, under the
+       trail: a context layer, not a claim. The popup carries the
+       source + vintage and the honest line (published boundary,
+       not a legal survey). 19.15 mi of the depicted trail lies
+       inside, all LLC chapter (measured against both the
+       statewide NCT line and the chapter line, geodesic and UTM
+       agreeing; the reservation survey independently measured
+       the same 19.15 mi). */
+    id: "whiteearth", label: "White Earth Reservation",
+    title: "White Earth Reservation boundary (White Earth Nation) — Bureau of Indian Affairs, AIAN-LAR",
+    file: "data/white-earth-reservation.geojson",
+    onByDefault: false, group: "Land ownership",
+    swatch: { kind: "fill", color: "#c084fc", border: "#7e22ce" },
+    build: function (gj) {
+      var group = L.layerGroup();
+      var poly = L.geoJSON(gj, {
+        renderer: canvasFor(),
+        style: {
+          color: "#7e22ce", weight: 2,
+          fillColor: "#c084fc", fillOpacity: 0.13,
+        },
+        onEachFeature: function (f, l) {
+          bindPop(l, whiteEarthPopup(f));
+        },
+      });
+      group.addLayer(poly);
+      gj.features.forEach(function (f) {
+        var p = f.properties;
+        if (p.label_lat == null || p.label_lon == null) return;
+        group.addLayer(L.marker(
+          L.latLng(p.label_lat, p.label_lon), {
+            keyboard: false, interactive: false,
+            icon: L.divIcon({
+              className: "reservation-label-wrap",
+              iconSize: [170, 18], iconAnchor: [85, 9],
+              html: "<span class='reservation-label'>" +
+                "White Earth Reservation</span>",
             }),
           }));
       });
@@ -7007,7 +7177,7 @@ function writeShareHash() {
    task, not by data source. The LAYERS array order is the build
    order; the PANEL order is this list, so a def's group decides
    where its toggle lands, not its position in the array. */
-var PANEL_GROUPS = ["The trail", "Agency Maps", "Other trails", "ITM inventory",
+var PANEL_GROUPS = ["The trail", "ITM inventory", "Agency Maps", "Other trails",
                     "The land", "Land ownership", "Around the trail"];
 LAYERS.forEach(function (def) {
   def.layer = null;
@@ -7070,11 +7240,12 @@ LAYERS.forEach(function (def) {
   if (box.checked) ensureLayer(def, false);
 });
 /* Phase 2: lay the toggles out in panel (task) order. */
-var GROUP_PULLDOWNS = ["The trail", "Agency Maps", "Other trails", "ITM inventory", "The land",
-  "Land ownership"]; /* Paul, Nov 13, 2026 — these groups are
+var GROUP_PULLDOWNS = ["The trail", "ITM inventory", "Agency Maps", "Other trails", "The land",
+  "Land ownership", "Around the trail"]; /* Paul, Nov 13, 2026 — these groups are
   pull-downs: a disclosure on the heading, the layers hidden
   until opened. (The trail + Land ownership first; ITM inventory
-  + The land added the same day.) A def with a `subgroup`
+  + The land added the same day; Around the trail added Nov 16,
+  2026.) A def with a `subgroup`
   (Timber sales and Management under The land) gets its own
   sub-heading + pull-down inside its group, created on first
   use. Both start collapsed, like the
