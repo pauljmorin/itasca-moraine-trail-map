@@ -4418,6 +4418,62 @@ function boldLine(gj, color, popupFn) {
   return L.layerGroup([casing, core, hit]);
 }
 
+/* DNR GeoPDF map build (Nov 16, 2026): shared by the ten DNR map
+   defs below. Mirrors the NCTA-sheets build exactly — one feature
+   per map, the frame's true lat/lon quad in the geometry (ring
+   order BL, BR, TR, TL in [lon, lat]), the image placed by its
+   real TL/TR/BL corners with the 3-corner affine
+   (L.imageOverlay.rotated), opacity 0.92, and the image registered
+   in sheetImages so the zoom >= 11 gate (applySheetImageGate)
+   covers DNR sheets the same way it covers NCTA sheets. The
+   dashed outline + name label ride the same toggle and stay
+   visible below zoom 11. The popup names the map, its date, and
+   links the DNR GeoPDF it came from; a per-map note (inset panel
+   shown as printed, or which panel of a multi-panel sheet this
+   is) is appended when the feature carries one. */
+function buildDnrGeopdf(gj) {
+  var group = L.layerGroup();
+  gj.features.forEach(function (f) {
+    var p = f.properties;
+    var quad = f.geometry.coordinates[0];
+    var img = L.imageOverlay.rotated(p.image,
+      L.latLng(quad[3][1], quad[3][0]),
+      L.latLng(quad[2][1], quad[2][0]),
+      L.latLng(quad[0][1], quad[0][0]), {
+        opacity: 0.92, interactive: false,
+      });
+    img._sheetGroup = group;
+    sheetImages.push(img);
+    if (map.getZoom() >= 11) group.addLayer(img);
+    var html = "<strong>" + esc(p.title) + "</strong><br>" +
+      "Minnesota DNR GeoPDF &mdash; " + esc(p.date) + "<br>" +
+      "<a href='" + esc(p.url) + "' target='_blank' " +
+      "rel='noopener'>Download the GeoPDF from the DNR</a>";
+    if (p.note) html += "<br>" + esc(p.note);
+    var outline = L.geoJSON(f, {
+      interactive: true,
+      style: { color: "#1d4ed8", weight: 1.5, dashArray: "6 4",
+               fill: false },
+      onEachFeature: function (feat, l) { bindPop(l, html); },
+    });
+    group.addLayer(outline);
+    var ring = f.geometry.coordinates[0];
+    var clat = (ring[0][1] + ring[2][1]) / 2;
+    var clon = (ring[0][0] + ring[2][0]) / 2;
+    var lab = L.marker(L.latLng(clat, clon), {
+      keyboard: false, interactive: false,
+      icon: L.divIcon({
+        className: "sheet-label-wrap", iconSize: [64, 18],
+        iconAnchor: [32, 9],
+        html: "<span class='sheet-label'>" + esc(p.short) +
+          "</span>",
+      }),
+    });
+    group.addLayer(lab);
+  });
+  return group;
+}
+
 var LAYERS = [
   {
     /* NCT — all Minnesota (Paul, Nov 13, 2026 — "get the trail in
@@ -6028,6 +6084,115 @@ var LAYERS = [
     },
   },
   {
+    /* DNR GeoPDF maps (Nov 16, 2026 — Paul: "grab [the DNR
+       GeoPDFs] and make them layers so that we can place them,
+       the same way that we did for the NCTA map"). One overlay
+       layer per map, all OFF by default and LAZY like the NCTA
+       sheets — nothing fetches until the box is first checked.
+       Each map's GeoJSON (site/data/dnr-<slug>.geojson) carries
+       one feature: the map frame's true lat/lon quad (ring order
+       BL, BR, TR, TL, [lon, lat]) read from the GeoPDF's own
+       /Measure viewport, plus the title, date and DNR download
+       URL. The image (site/data/dnr-geopdf/<slug>.jpg) is the
+       viewport's map frame rendered at 150 dpi and cropped to
+       the frame, long side <= 2400 px — the same treatment as
+       the NCTA sheets, except the NCTA cap is <= 1600 px wide
+       and these sheets are twice the physical size, so the cap
+       is on the long side instead. Placement is the same
+       3-corner affine (L.imageOverlay.rotated, TL/TR/BL);
+       the affine fit residual on each GeoPDF's own control
+       points is <= 9e-05 deg, and the Waboose corners reproduce
+       GDAL's to ~0.002 deg (docs/dnr-geopdf-layers-2026-11-16.md).
+       Sheet images ride the same zoom >= 11 gate as the NCTA
+       sheets (sheetImages / applySheetImageGate above); the
+       dashed outline + name label stay visible below that.
+       Source GeoPDFs live in data/geopdf/ (repo, not site/).
+       Group "The trail", subgroup "DNR maps" — beside the NCTA
+       sheets, under one collapsible sub-heading. NOT wired:
+       Itasca Winter (no GeoPDF exists anywhere — only the 2019
+       print PDF, not georeferenced; placing it by hand would be
+       ~0.5 km off, so it is left out, see the note) and the
+       Paul Bunyan North / Heartland sheet (same situation). */
+    id: "dnr-waboose", label: "DNR — Waboose (Paul Bunyan & Badoura)",
+    title: "Paul Bunyan and Badoura State Forests Map — Minnesota DNR GeoPDF, 2017-06-14, placed by the map's own georeferencing",
+    file: "data/dnr-waboose.geojson", onByDefault: false,
+    group: "The trail", subgroup: "DNR maps",
+    swatch: { kind: "fill", color: "#dbeafe", border: "#1d4ed8" },
+    build: buildDnrGeopdf,
+  },
+  {
+    id: "dnr-burntside-bear-island", label: "DNR — Burntside & Bear Island",
+    title: "Burntside and Bear Island State Forests Public Recreation Map — Minnesota DNR GeoPDF, 2019-07-02, placed by the map's own georeferencing",
+    file: "data/dnr-burntside-bear-island.geojson", onByDefault: false,
+    group: "The trail", subgroup: "DNR maps",
+    swatch: { kind: "fill", color: "#dbeafe", border: "#1d4ed8" },
+    build: buildDnrGeopdf,
+  },
+  {
+    id: "dnr-grand-portage-sf", label: "DNR — Grand Portage SF",
+    title: "Grand Portage State Forest Public Geo PDF Recreation Map — Minnesota DNR GeoPDF, 2020-11-20, placed by the map's own georeferencing",
+    file: "data/dnr-grand-portage-sf.geojson", onByDefault: false,
+    group: "The trail", subgroup: "DNR maps",
+    swatch: { kind: "fill", color: "#dbeafe", border: "#1d4ed8" },
+    build: buildDnrGeopdf,
+  },
+  {
+    id: "dnr-remer", label: "DNR — Remer",
+    title: "Golden Anniversary and Remer State Forests Geo Referenced Public Recreation Map (Remer panel) — Minnesota DNR GeoPDF, 2019-03-21, placed by the map's own georeferencing",
+    file: "data/dnr-remer.geojson", onByDefault: false,
+    group: "The trail", subgroup: "DNR maps",
+    swatch: { kind: "fill", color: "#dbeafe", border: "#1d4ed8" },
+    build: buildDnrGeopdf,
+  },
+  {
+    id: "dnr-white-earth", label: "DNR — White Earth",
+    title: "White Earth State Forest Geo Reference Recreation Map — Minnesota DNR GeoPDF, 2019-03-21, placed by the map's own georeferencing",
+    file: "data/dnr-white-earth.geojson", onByDefault: false,
+    group: "The trail", subgroup: "DNR maps",
+    swatch: { kind: "fill", color: "#dbeafe", border: "#1d4ed8" },
+    build: buildDnrGeopdf,
+  },
+  {
+    id: "dnr-itasca-summer", label: "DNR — Itasca Summer",
+    title: "Itasca Summer GEO — Minnesota DNR GeoPDF, 2026-06-23, placed by the map's own georeferencing",
+    file: "data/dnr-itasca-summer.geojson", onByDefault: false,
+    group: "The trail", subgroup: "DNR maps",
+    swatch: { kind: "fill", color: "#dbeafe", border: "#1d4ed8" },
+    build: buildDnrGeopdf,
+  },
+  {
+    id: "dnr-maplewood-summer", label: "DNR — Maplewood Summer",
+    title: "Maplewood Summer GEO — Minnesota DNR GeoPDF, 2025-08-11, placed by the map's own georeferencing",
+    file: "data/dnr-maplewood-summer.geojson", onByDefault: false,
+    group: "The trail", subgroup: "DNR maps",
+    swatch: { kind: "fill", color: "#dbeafe", border: "#1d4ed8" },
+    build: buildDnrGeopdf,
+  },
+  {
+    id: "dnr-maplewood-winter", label: "DNR — Maplewood Winter",
+    title: "Maplewood Winter GEO — Minnesota DNR GeoPDF, 2025-11-24, placed by the map's own georeferencing",
+    file: "data/dnr-maplewood-winter.geojson", onByDefault: false,
+    group: "The trail", subgroup: "DNR maps",
+    swatch: { kind: "fill", color: "#dbeafe", border: "#1d4ed8" },
+    build: buildDnrGeopdf,
+  },
+  {
+    id: "dnr-david-dill-taconite", label: "DNR — David Dill–Taconite",
+    title: "David Dill Taconite GEO — Minnesota DNR GeoPDF, 2023-04-11, placed by the map's own georeferencing",
+    file: "data/dnr-david-dill-taconite.geojson", onByDefault: false,
+    group: "The trail", subgroup: "DNR maps",
+    swatch: { kind: "fill", color: "#dbeafe", border: "#1d4ed8" },
+    build: buildDnrGeopdf,
+  },
+  {
+    id: "dnr-lake-vermilion-soudan", label: "DNR — Lake Vermilion–Soudan",
+    title: "Lake Vermilion-Soudan Underground Mine GEO — Minnesota DNR GeoPDF, 2026-06-24, placed by the map's own georeferencing",
+    file: "data/dnr-lake-vermilion-soudan.geojson", onByDefault: false,
+    group: "The trail", subgroup: "DNR maps",
+    swatch: { kind: "fill", color: "#dbeafe", border: "#1d4ed8" },
+    build: buildDnrGeopdf,
+  },
+  {
     /* Street View (Paul, Nov 13, 2026): the 11 trailheads and
        road crossings verified to have Google Street View imagery
        (browser check Nov 13 — 11 of 19 spots; the other 8 have
@@ -6718,7 +6883,9 @@ function assertDrawOrder() {
        the adopted sections, so a loop reads whole where it shares
        NCT tread; "atv", "ohm", "snow", "sht", "brt",
        "near-brt-sht" and "bwca-portages" sit between the sheet
-       outlines and the Minnesota line, under the NCT tread.
+       outlines and the Minnesota line, under the NCT tread. The
+       ten DNR GeoPDF sheets (Nov 16, 2026) sit directly after
+       "nctasheets" and before "atv", with the NCTA sheets.
        The three Nov 13
        land layers
        (foresthealth, invasives, chippewa-plan) sit with the
@@ -6726,7 +6893,12 @@ function assertDrawOrder() {
     ["leechlake", "parcels", "logedw", "logfim", "logcass", "loghubbard",
      "logbecker", "logclearwater", "easements", "foresthealth",
      "invasives", "chippewa-plan", "access",
-     "roads", "nctasheets", "atv", "ohm", "snow", "sht", "brt",
+     "roads", "nctasheets",
+     "dnr-waboose", "dnr-burntside-bear-island", "dnr-grand-portage-sf",
+     "dnr-remer", "dnr-white-earth", "dnr-itasca-summer",
+     "dnr-maplewood-summer", "dnr-maplewood-winter",
+     "dnr-david-dill-taconite", "dnr-lake-vermilion-soudan",
+     "atv", "ohm", "snow", "sht", "brt",
      "near-brt-sht", "bwca-portages",
      "trail-minnesota", "trail", "alerts-mn-lines",
      "stretches", "loops", "gaps",
@@ -6839,6 +7011,27 @@ function legendHtml() {
   add(line("#67a9cf"), "Snowmobile trail (DNR, statewide)");
   add(line("#d97706"), "Trail near the Border Route & SHT (USFS)");
   add(line("#a8a29e", true), "BWCAW portage / connector (USFS)");
+  add("", "<strong>DNR maps</strong>");
+  add("<span class='swatch fill' style='background:#dbeafe;border:1px solid #1d4ed8'></span>",
+    "DNR map sheet — Waboose (Paul Bunyan &amp; Badoura)");
+  add("<span class='swatch fill' style='background:#dbeafe;border:1px solid #1d4ed8'></span>",
+    "DNR map sheet — Burntside &amp; Bear Island");
+  add("<span class='swatch fill' style='background:#dbeafe;border:1px solid #1d4ed8'></span>",
+    "DNR map sheet — Grand Portage State Forest");
+  add("<span class='swatch fill' style='background:#dbeafe;border:1px solid #1d4ed8'></span>",
+    "DNR map sheet — Remer");
+  add("<span class='swatch fill' style='background:#dbeafe;border:1px solid #1d4ed8'></span>",
+    "DNR map sheet — White Earth");
+  add("<span class='swatch fill' style='background:#dbeafe;border:1px solid #1d4ed8'></span>",
+    "DNR map sheet — Itasca Summer");
+  add("<span class='swatch fill' style='background:#dbeafe;border:1px solid #1d4ed8'></span>",
+    "DNR map sheet — Maplewood Summer");
+  add("<span class='swatch fill' style='background:#dbeafe;border:1px solid #1d4ed8'></span>",
+    "DNR map sheet — Maplewood Winter");
+  add("<span class='swatch fill' style='background:#dbeafe;border:1px solid #1d4ed8'></span>",
+    "DNR map sheet — David Dill–Taconite");
+  add("<span class='swatch fill' style='background:#dbeafe;border:1px solid #1d4ed8'></span>",
+    "DNR map sheet — Lake Vermilion–Soudan");
   add("", "<strong>The land</strong>");
   add("", "<strong>Tree height</strong> — six flat 5 m bands " +
     "(overlay, over any background)");

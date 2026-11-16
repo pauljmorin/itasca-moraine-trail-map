@@ -1,0 +1,45 @@
+{
+ "type": "FeatureCollection",
+ "features": [
+  {
+   "type": "Feature",
+   "properties": {
+    "title": "Burntside and Bear Island State Forests Public Recreation Map",
+    "short": "Burntside & Bear Island",
+    "note": "",
+    "image": "data/dnr-geopdf/burntside-bear-island.jpg",
+    "source": "Minnesota DNR",
+    "url": "https://files.dnr.state.mn.us/maps/state_forests/sft00004_geo.pdf",
+    "date": "2019-07-02",
+    "viewport": "MainMap"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -92.32831,
+       47.68474
+      ],
+      [
+       -91.28849,
+       47.6739
+      ],
+      [
+       -91.27806,
+       48.1263
+      ],
+      [
+       -92.31788,
+       48.13714
+      ],
+      [
+       -92.32831,
+       47.68474
+      ]
+     ]
+    ]
+   }
+  }
+ ]
+}

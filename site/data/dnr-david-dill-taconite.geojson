@@ -1,0 +1,45 @@
+{
+ "type": "FeatureCollection",
+ "features": [
+  {
+   "type": "Feature",
+   "properties": {
+    "title": "David Dill Taconite GEO",
+    "short": "David Dill\u2013Taconite",
+    "note": "",
+    "image": "data/dnr-geopdf/david-dill-taconite.jpg",
+    "source": "Minnesota DNR",
+    "url": "https://mobile-maps-files.dnr.state.mn.us/file/State_Trails/David%20Dill%20Taconite%20GEO.pdf",
+    "date": "2023-04-11",
+    "viewport": "MAP View 1"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -92.43136,
+       47.67527
+      ],
+      [
+       -91.81543,
+       47.67056
+      ],
+      [
+       -91.81097,
+       47.93519
+      ],
+      [
+       -92.4269,
+       47.9399
+      ],
+      [
+       -92.43136,
+       47.67527
+      ]
+     ]
+    ]
+   }
+  }
+ ]
+}

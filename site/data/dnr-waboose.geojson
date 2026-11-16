@@ -1,0 +1,45 @@
+{
+ "type": "FeatureCollection",
+ "features": [
+  {
+   "type": "Feature",
+   "properties": {
+    "title": "Paul Bunyan and Badoura State Forests Map",
+    "short": "Waboose (Paul Bunyan & Badoura)",
+    "note": "",
+    "image": "data/dnr-geopdf/waboose.jpg",
+    "source": "Minnesota DNR",
+    "url": "https://files.dnr.state.mn.us/maps/state_forests/sft00002_geo.pdf",
+    "date": "2017-06-14",
+    "viewport": "Layers"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -95.21293,
+       46.77986
+      ],
+      [
+       -94.60102,
+       46.79012
+      ],
+      [
+       -94.62423,
+       47.43577
+      ],
+      [
+       -95.23614,
+       47.42551
+      ],
+      [
+       -95.21293,
+       46.77986
+      ]
+     ]
+    ]
+   }
+  }
+ ]
+}

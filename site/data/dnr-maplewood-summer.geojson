@@ -1,0 +1,45 @@
+{
+ "type": "FeatureCollection",
+ "features": [
+  {
+   "type": "Feature",
+   "properties": {
+    "title": "Maplewood Summer GEO",
+    "short": "Maplewood Summer",
+    "note": "Sheet\u2019s Campgrounds inset shows as printed.",
+    "image": "data/dnr-geopdf/maplewood-summer.jpg",
+    "source": "Minnesota DNR",
+    "url": "https://mobile-maps-files.dnr.state.mn.us/file/State_Parks/Maplewood%20Summer%20GEO.pdf",
+    "date": "2025-08-11",
+    "viewport": "bound_park"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -95.99471,
+       46.44834
+      ],
+      [
+       -95.89515,
+       46.45091
+      ],
+      [
+       -95.90094,
+       46.558
+      ],
+      [
+       -96.00051,
+       46.55544
+      ],
+      [
+       -95.99471,
+       46.44834
+      ]
+     ]
+    ]
+   }
+  }
+ ]
+}

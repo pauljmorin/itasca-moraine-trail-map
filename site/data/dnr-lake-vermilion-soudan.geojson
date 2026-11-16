@@ -1,0 +1,45 @@
+{
+ "type": "FeatureCollection",
+ "features": [
+  {
+   "type": "Feature",
+   "properties": {
+    "title": "Lake Vermilion-Soudan Underground Mine GEO",
+    "short": "Lake Vermilion\u2013Soudan",
+    "note": "Sheet\u2019s mine-area inset shows as printed.",
+    "image": "data/dnr-geopdf/lake-vermilion-soudan.jpg",
+    "source": "Minnesota DNR",
+    "url": "https://mobile-maps-files.dnr.state.mn.us/file/State_Parks/Lake%20Vermilion-Soudan%20Underground%20Mine%20GEO.pdf",
+    "date": "2026-06-24",
+    "viewport": "AAMAP View"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -92.27861,
+       47.80882
+      ],
+      [
+       -92.16323,
+       47.80804
+      ],
+      [
+       -92.16249,
+       47.85722
+      ],
+      [
+       -92.27788,
+       47.85801
+      ],
+      [
+       -92.27861,
+       47.80882
+      ]
+     ]
+    ]
+   }
+  }
+ ]
+}

@@ -1,0 +1,45 @@
+{
+ "type": "FeatureCollection",
+ "features": [
+  {
+   "type": "Feature",
+   "properties": {
+    "title": "White Earth State Forest Geo Reference Recreation Map",
+    "short": "White Earth",
+    "note": "",
+    "image": "data/dnr-geopdf/white-earth.jpg",
+    "source": "Minnesota DNR",
+    "url": "https://files.dnr.state.mn.us/maps/state_forests/sft00054_geo.pdf",
+    "date": "2019-03-21",
+    "viewport": "MainMap"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -96.0096,
+       47.02899
+      ],
+      [
+       -95.21564,
+       47.04717
+      ],
+      [
+       -95.23614,
+       47.46222
+      ],
+      [
+       -96.0301,
+       47.44404
+      ],
+      [
+       -96.0096,
+       47.02899
+      ]
+     ]
+    ]
+   }
+  }
+ ]
+}

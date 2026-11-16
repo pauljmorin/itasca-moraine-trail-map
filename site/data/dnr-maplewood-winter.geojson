@@ -1,0 +1,45 @@
+{
+ "type": "FeatureCollection",
+ "features": [
+  {
+   "type": "Feature",
+   "properties": {
+    "title": "Maplewood Winter GEO",
+    "short": "Maplewood Winter",
+    "note": "",
+    "image": "data/dnr-geopdf/maplewood-winter.jpg",
+    "source": "Minnesota DNR",
+    "url": "https://mobile-maps-files.dnr.state.mn.us/file/State_Parks/Maplewood%20Winter%20GEO.pdf",
+    "date": "2025-11-24",
+    "viewport": "bound_park"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -95.99471,
+       46.44754
+      ],
+      [
+       -95.89511,
+       46.4501
+      ],
+      [
+       -95.90087,
+       46.55661
+      ],
+      [
+       -96.00047,
+       46.55404
+      ],
+      [
+       -95.99471,
+       46.44754
+      ]
+     ]
+    ]
+   }
+  }
+ ]
+}

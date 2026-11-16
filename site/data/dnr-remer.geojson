@@ -1,0 +1,45 @@
+{
+ "type": "FeatureCollection",
+ "features": [
+  {
+   "type": "Feature",
+   "properties": {
+    "title": "Golden Anniversary and Remer State Forests Geo Referenced Public Recreation Map (Remer panel)",
+    "short": "Remer",
+    "note": "Remer panel of the sheet; the Overview and Golden Anniversary panels are not shown.",
+    "image": "data/dnr-geopdf/remer.jpg",
+    "source": "Minnesota DNR",
+    "url": "https://files.dnr.state.mn.us/maps/state_forests/sft00042_geo.pdf",
+    "date": "2019-03-21",
+    "viewport": "Remer"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -93.91098,
+       47.05232
+      ],
+      [
+       -93.76373,
+       47.0534
+      ],
+      [
+       -93.76519,
+       47.14623
+      ],
+      [
+       -93.91244,
+       47.14515
+      ],
+      [
+       -93.91098,
+       47.05232
+      ]
+     ]
+    ]
+   }
+  }
+ ]
+}

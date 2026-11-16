@@ -1,0 +1,45 @@
+{
+ "type": "FeatureCollection",
+ "features": [
+  {
+   "type": "Feature",
+   "properties": {
+    "title": "Grand Portage State Forest Public Geo PDF Recreation Map",
+    "short": "Grand Portage SF",
+    "note": "",
+    "image": "data/dnr-geopdf/grand-portage-sf.jpg",
+    "source": "Minnesota DNR",
+    "url": "https://files.dnr.state.mn.us/maps/state_forests/sft00023_geo.pdf",
+    "date": "2020-11-20",
+    "viewport": "MainMap"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -90.18981,
+       47.7278
+      ],
+      [
+       -89.83147,
+       47.71843
+      ],
+      [
+       -89.80993,
+       48.09077
+      ],
+      [
+       -90.16827,
+       48.10014
+      ],
+      [
+       -90.18981,
+       47.7278
+      ]
+     ]
+    ]
+   }
+  }
+ ]
+}
