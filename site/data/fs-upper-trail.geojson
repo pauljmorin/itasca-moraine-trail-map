@@ -1,0 +1,45 @@
+{
+ "type": "FeatureCollection",
+ "features": [
+  {
+   "type": "Feature",
+   "properties": {
+    "title": "Upper Trail Area Motor Vehicle Use Map \u2014 Superior National Forest",
+    "short": "Upper Trail",
+    "note": "",
+    "image": "data/fs-geopdf/upper-trail.jpg",
+    "source": "US Forest Service",
+    "url": "https://www.fs.usda.gov/sites/nfs/files/r09/superior/publication/UpperTrailAreaFront_20250701.pdf",
+    "date": "2025-07-01",
+    "viewport": "MVUM Road Trails Map"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -91.51758,
+       47.78104
+      ],
+      [
+       -90.68721,
+       47.76725
+      ],
+      [
+       -90.66702,
+       48.31368
+      ],
+      [
+       -91.4974,
+       48.32747
+      ],
+      [
+       -91.51758,
+       47.78104
+      ]
+     ]
+    ]
+   }
+  }
+ ]
+}

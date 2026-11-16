@@ -1,0 +1,45 @@
+{
+ "type": "FeatureCollection",
+ "features": [
+  {
+   "type": "Feature",
+   "properties": {
+    "title": "Virginia Area Motor Vehicle Use Map \u2014 Superior National Forest",
+    "short": "Virginia",
+    "note": "Back side of the Vermilion River Area sheet; the Vermilion River Area front is the other side of this sheet.",
+    "image": "data/fs-geopdf/virginia.jpg",
+    "source": "US Forest Service",
+    "url": "https://www.fs.usda.gov/sites/nfs/files/r09/superior/publication/VirginiaAreaBack_20250707.pdf",
+    "date": "2025-07-07",
+    "viewport": "MVUM Road Trails Map"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -93.02473,
+       47.50945
+      ],
+      [
+       -92.14899,
+       47.50628
+      ],
+      [
+       -92.1446,
+       48.05683
+      ],
+      [
+       -93.02035,
+       48.06
+      ],
+      [
+       -93.02473,
+       47.50945
+      ]
+     ]
+    ]
+   }
+  }
+ ]
+}

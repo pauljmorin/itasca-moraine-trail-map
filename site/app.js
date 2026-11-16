@@ -4556,6 +4556,88 @@ function buildDnrGeopdf(gj) {
   return group;
 }
 
+/* Forest Service GeoPDF maps (Nov 16, 2026 — Paul: "put the
+   geopdfs that are publicly available into this just like the
+   DNR maps. name the group Forest Service. only do this for the
+   maps that intersect the trail."). A line-for-line mirror of
+   buildDnrGeopdf above, with the Forest Service wording and a
+   green outline/swatch instead of the DNR blue, so the two sheet
+   families read apart in the panel and on the map. Same
+   mechanism throughout: 3-corner affine
+   (L.imageOverlay.rotated, TL/TR/BL), opacity 0.92, dashed
+   outline + name label below zoom 11, images in the shared
+   sheetImages array under the same zoom >= 11 gate, and the
+   INVISIBLE CANVAS HIT-POLYGON carrying the popup (the round-2
+   fix — binding the popup to the image overlay does not work in
+   this viewer). One overlay layer per map, all OFF by default
+   and LAZY. The five sheets below are the MVUMs whose frames
+   contain Minnesota NCT tread (geometric test, UTM 15N, against
+   site/data/trail-minnesota.geojson — docs/forest-service-
+   geopdf-layers-2026-11-16.md). Group "Forest Service", a new
+   top-level group. The affine fit residual on these MVUMs is
+   ~2e-03 deg (~150-220 m), larger than the DNR sheets'
+   <= 9e-05 deg — the frames are large and the /Measure control
+   points sit on a small central rect, so the affine carries the
+   projection's second-order terms; GDAL reads the same /Measure
+   and fits the same affine, so this is as good as GDAL gives. */
+function buildFsGeopdf(gj) {
+  var group = L.layerGroup();
+  gj.features.forEach(function (f) {
+    var p = f.properties;
+    var quad = f.geometry.coordinates[0];
+    var img = L.imageOverlay.rotated(p.image,
+      L.latLng(quad[3][1], quad[3][0]),
+      L.latLng(quad[2][1], quad[2][0]),
+      L.latLng(quad[0][1], quad[0][0]), {
+        opacity: 0.92, interactive: true,
+      });
+    img._sheetGroup = group;
+    sheetImages.push(img);
+    if (map.getZoom() >= 11) group.addLayer(img);
+    var html = "<strong>" + esc(p.title) + "</strong><br>" +
+      "US Forest Service GeoPDF &mdash; " + esc(p.date) + "<br>" +
+      "<a href='" + esc(p.url) + "' target='_blank' " +
+      "rel='noopener'>Download the GeoPDF from the Forest Service</a>";
+    if (p.note) html += "<br>" + esc(p.note);
+    bindPop(img, html);
+    var outline = L.geoJSON(f, {
+      interactive: true,
+      style: { color: "#166534", weight: 1.5, dashArray: "6 4",
+               fill: false },
+      onEachFeature: function (feat, l) { bindPop(l, html); },
+    });
+    group.addLayer(outline);
+    /* Invisible hit-polygon: the sheet's own closed ring,
+       transparent fill, canvas-rendered (same mechanism as the
+       parcels and the DNR sheets). Clicking anywhere inside the
+       sheet opens the popup; the image overlay keeps its own
+       binding too, in case the overlay path ever starts
+       receiving clicks. */
+    var hit = L.geoJSON(f, {
+      renderer: canvasFor(),
+      interactive: true,
+      style: { color: "#000", weight: 0, fill: true,
+               fillColor: "#fff", fillOpacity: 0 },
+      onEachFeature: function (feat, l) { bindPop(l, html); },
+    });
+    group.addLayer(hit);
+    var ring = f.geometry.coordinates[0];
+    var clat = (ring[0][1] + ring[2][1]) / 2;
+    var clon = (ring[0][0] + ring[2][0]) / 2;
+    var lab = L.marker(L.latLng(clat, clon), {
+      keyboard: false, interactive: false,
+      icon: L.divIcon({
+        className: "sheet-label-wrap", iconSize: [64, 18],
+        iconAnchor: [32, 9],
+        html: "<span class='sheet-label'>" + esc(p.short) +
+          "</span>",
+      }),
+    });
+    group.addLayer(lab);
+  });
+  return group;
+}
+
 var LAYERS = [
   {
     /* NCT — all Minnesota (Paul, Nov 13, 2026 — "get the trail in
@@ -6348,6 +6430,80 @@ var LAYERS = [
     build: buildDnrGeopdf,
   },
   {
+    /* Forest Service GeoPDF maps (Nov 16, 2026 — Paul: "put the
+       geopdfs that are publicly available into this just like
+       the DNR maps. name the group Forest Service. only do this
+       for the maps that intersect the trail."). Motor Vehicle Use
+       Maps (MVUMs) for the Chippewa and Superior National
+       Forests — one overlay layer per sheet, all OFF by default
+       and LAZY like the DNR sheets. Each map's GeoJSON
+       (site/data/fs-<slug>.geojson) carries one feature: the map
+       frame's true lat/lon quad (ring order BL, BR, TR, TL,
+       [lon, lat]) read from the GeoPDF's own /Measure viewport,
+       plus the title, date and Forest Service download URL. The
+       image (site/data/fs-geopdf/<slug>.jpg) is the viewport's
+       map frame rendered at 150 dpi and cropped to the frame,
+       long side <= 2400 px. Placement is the same 3-corner
+       affine as the DNR sheets; the affine fit residual on these
+       MVUMs is ~2e-03 deg (~150-220 m) — see buildFsGeopdf and
+       docs/forest-service-geopdf-layers-2026-11-16.md. Sheet
+       images ride the same zoom >= 11 gate as the NCTA and DNR
+       sheets (sheetImages / applySheetImageGate above); the
+       dashed outline + name label stay visible below that.
+       Source GeoPDFs live in data/geopdf/ (repo, not site/).
+       Group "Forest Service" (new top-level group, pull-down,
+       collapsed by default) — NOT a subgroup of "The trail".
+       NOT wired: the Chippewa North Front (its frame holds no
+       trail — the NCT stays in the South sheet), the Superior
+       Toimi Area map (nearest trail 2.4 km), the Bally Creek and
+       Norpine/Cascade ski sheets (no trail in frame), and the
+       three Superior sheets whose files could not be found at
+       any probed URL (Border Area front, Vermilion River Area
+       front, Isabella Area back — the Border front almost
+       certainly holds trail; see the note). Excluded by scope:
+       the Forest Visitor Maps (Avenza-only, $4.99, not files)
+       and the FSTopo 1:24k quads (dozens of tiles duplicating
+       the USGS Topo basemap). */
+    id: "fs-chippewa-south", label: "FS — Chippewa South",
+    title: "Chippewa National Forest Motor Vehicle Use Map, South Front — US Forest Service GeoPDF, 2026-01-06, 80.7 km of trail inside the frame, placed by the map's own georeferencing",
+    file: "data/fs-chippewa-south.geojson", onByDefault: false,
+    group: "Forest Service",
+    swatch: { kind: "fill", color: "#dcfce7", border: "#166534" },
+    build: buildFsGeopdf,
+  },
+  {
+    id: "fs-ely", label: "FS — Ely",
+    title: "Ely Area Motor Vehicle Use Map, Superior National Forest — US Forest Service GeoPDF, 2025-07-07, 92.2 km of trail inside the frame, placed by the map's own georeferencing",
+    file: "data/fs-ely.geojson", onByDefault: false,
+    group: "Forest Service",
+    swatch: { kind: "fill", color: "#dcfce7", border: "#166534" },
+    build: buildFsGeopdf,
+  },
+  {
+    id: "fs-virginia", label: "FS — Virginia",
+    title: "Virginia Area Motor Vehicle Use Map, Superior National Forest — US Forest Service GeoPDF, 2025-07-07, 74.6 km of trail inside the frame, placed by the map's own georeferencing",
+    file: "data/fs-virginia.geojson", onByDefault: false,
+    group: "Forest Service",
+    swatch: { kind: "fill", color: "#dcfce7", border: "#166534" },
+    build: buildFsGeopdf,
+  },
+  {
+    id: "fs-upper-trail", label: "FS — Upper Trail",
+    title: "Upper Trail Area Motor Vehicle Use Map, Superior National Forest — US Forest Service GeoPDF, 2025-07-01, 85.4 km of trail inside the frame, placed by the map's own georeferencing",
+    file: "data/fs-upper-trail.geojson", onByDefault: false,
+    group: "Forest Service",
+    swatch: { kind: "fill", color: "#dcfce7", border: "#166534" },
+    build: buildFsGeopdf,
+  },
+  {
+    id: "fs-grand-marais", label: "FS — Grand Marais",
+    title: "Superior National Forest Motor Vehicle Use Map for the Grand Marais Area — US Forest Service GeoPDF, 2025-08-08, 96.7 km of trail inside the frame, placed by the map's own georeferencing",
+    file: "data/fs-grand-marais.geojson", onByDefault: false,
+    group: "Forest Service",
+    swatch: { kind: "fill", color: "#dcfce7", border: "#166534" },
+    build: buildFsGeopdf,
+  },
+  {
     /* Street View (Paul, Nov 13, 2026): the 11 trailheads and
        road crossings verified to have Google Street View imagery
        (browser check Nov 13 — 11 of 19 spots; the other 8 have
@@ -6616,7 +6772,7 @@ function writeShareHash() {
    task, not by data source. The LAYERS array order is the build
    order; the PANEL order is this list, so a def's group decides
    where its toggle lands, not its position in the array. */
-var PANEL_GROUPS = ["The trail", "Other trails", "ITM inventory",
+var PANEL_GROUPS = ["The trail", "Forest Service", "Other trails", "ITM inventory",
                     "The land", "Land ownership", "Around the trail"];
 LAYERS.forEach(function (def) {
   def.layer = null;
@@ -6679,7 +6835,7 @@ LAYERS.forEach(function (def) {
   if (box.checked) ensureLayer(def, false);
 });
 /* Phase 2: lay the toggles out in panel (task) order. */
-var GROUP_PULLDOWNS = ["The trail", "Other trails", "ITM inventory", "The land",
+var GROUP_PULLDOWNS = ["The trail", "Forest Service", "Other trails", "ITM inventory", "The land",
   "Land ownership"]; /* Paul, Nov 13, 2026 — these groups are
   pull-downs: a disclosure on the heading, the layers hidden
   until opened. (The trail + Land ownership first; ITM inventory
@@ -7042,7 +7198,9 @@ function assertDrawOrder() {
        "parcels-driftless" sits with "parcels", directly after
        it, in the land-ownership fills. The
        ten DNR GeoPDF sheets (Nov 16, 2026) sit directly after
-       "nctasheets" and before "atv", with the NCTA sheets.
+       "nctasheets" and before "atv", with the NCTA sheets. The
+       five Forest Service MVUM sheets sit directly after the
+       DNR sheets, before "atv".
        The three Nov 13
        land layers
        (foresthealth, invasives, chippewa-plan) sit with the
@@ -7055,6 +7213,8 @@ function assertDrawOrder() {
      "dnr-remer", "dnr-white-earth", "dnr-itasca-summer",
      "dnr-maplewood-summer", "dnr-maplewood-winter",
      "dnr-david-dill-taconite", "dnr-lake-vermilion-soudan",
+     "fs-chippewa-south", "fs-ely", "fs-virginia",
+     "fs-upper-trail", "fs-grand-marais",
      "atv", "ohm", "snow", "sht", "brt", "driftless",
      "near-brt-sht", "bwca-portages",
      "trail-minnesota", "trail", "alerts-mn-lines",

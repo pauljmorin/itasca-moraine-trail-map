@@ -1,0 +1,45 @@
+{
+ "type": "FeatureCollection",
+ "features": [
+  {
+   "type": "Feature",
+   "properties": {
+    "title": "Superior National Forest Motor Vehicle Use Map for the Grand Marais Area",
+    "short": "Grand Marais",
+    "note": "",
+    "image": "data/fs-geopdf/grand-marais.jpg",
+    "source": "US Forest Service",
+    "url": "https://www.fs.usda.gov/sites/nfs/files/publication/GrandMaraisAreaBack_20250808_0.pdf",
+    "date": "2025-08-08",
+    "viewport": "MVUM Road Trails Map"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -90.80387,
+       47.58996
+      ],
+      [
+       -89.81123,
+       47.56654
+      ],
+      [
+       -89.78211,
+       48.1255
+      ],
+      [
+       -90.77475,
+       48.14893
+      ],
+      [
+       -90.80387,
+       47.58996
+      ]
+     ]
+    ]
+   }
+  }
+ ]
+}

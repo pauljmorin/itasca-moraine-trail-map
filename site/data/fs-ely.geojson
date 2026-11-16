@@ -1,0 +1,45 @@
+{
+ "type": "FeatureCollection",
+ "features": [
+  {
+   "type": "Feature",
+   "properties": {
+    "title": "Ely Area Motor Vehicle Use Map \u2014 Superior National Forest",
+    "short": "Ely",
+    "note": "Back side of the Border Area sheet; the Border Area front is the other side of this sheet.",
+    "image": "data/fs-geopdf/ely.jpg",
+    "source": "US Forest Service",
+    "url": "https://www.fs.usda.gov/sites/nfs/files/r09/superior/publication/ElyAreaBack_20250707.pdf",
+    "date": "2025-07-07",
+    "viewport": "MVUM Road Trails Map"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -92.31021,
+       47.70176
+      ],
+      [
+       -91.42736,
+       47.69302
+      ],
+      [
+       -91.41527,
+       48.24345
+      ],
+      [
+       -92.29813,
+       48.2522
+      ],
+      [
+       -92.31021,
+       47.70176
+      ]
+     ]
+    ]
+   }
+  }
+ ]
+}

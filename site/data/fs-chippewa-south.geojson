@@ -1,0 +1,45 @@
+{
+ "type": "FeatureCollection",
+ "features": [
+  {
+   "type": "Feature",
+   "properties": {
+    "title": "Chippewa National Forest Motor Vehicle Use Map \u2014 South Front",
+    "short": "Chippewa South",
+    "note": "",
+    "image": "data/fs-geopdf/chippewa-south.jpg",
+    "source": "US Forest Service",
+    "url": "https://www.fs.usda.gov/sites/nfs/files/r09/chippewa/publication/MVUM_Chippewa_South_Front_26.pdf",
+    "date": "2026-01-06",
+    "viewport": "SouthWest"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -94.75851,
+       46.90215
+      ],
+      [
+       -94.07622,
+       46.91063
+      ],
+      [
+       -94.08955,
+       47.40942
+      ],
+      [
+       -94.77184,
+       47.40094
+      ],
+      [
+       -94.75851,
+       46.90215
+      ]
+     ]
+    ]
+   }
+  }
+ ]
+}
