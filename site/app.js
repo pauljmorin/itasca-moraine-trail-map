@@ -1585,6 +1585,30 @@ function parcelPopup(f) {
   ]);
 }
 
+/* Driftless parcels (Paul, Nov 16, 2026): Iowa County (WI)
+   parcels within a half mile of the built Driftless Trail,
+   from the Wisconsin Statewide Parcel Map Database V12 (2026).
+   Same fence as the Minnesota parcels — published county
+   records only; the service's value/tax fields and the
+   owner's mailing address are never pulled. The buffer crosses
+   the Wisconsin River county line, so a few parcels are Sauk
+   County; the popup names the parcel's own county. */
+function driftlessParcelPopup(f) {
+  var p = f.properties;
+  var owner = [p.OWNERNME1, p.OWNERNME2].filter(function (x) {
+    return x;
+  }).join(" / ");
+  return "<h3>Parcel " + (esc(p.PARCELID) || "—") + "</h3>" + kvTable([
+    ["County", p.county],
+    ["Acres", p.GISACRES],
+    ["Owner", owner || null],
+    ["Site address", p.SITEADRESS],
+    ["Parcel ID", p.TAXPARCELID],
+    ["Source", "Wisconsin Statewide Parcel Map Database V12 " +
+      "(2026) — public record"],
+  ]);
+}
+
 /* Leech Lake Reservation: name the nation and the source, give the
    trail fact that makes the layer worth switching on, and carry
    the honest line — the federal boundary as published, not a
@@ -4297,6 +4321,44 @@ function brtPopup(f) {
     "Trails (public domain).</p>";
   return h;
 }
+/* Driftless Hiking Trail (Paul, Nov 16, 2026): the built pieces
+   only, assembled from OpenStreetMap — Phoebe Point, Welsh
+   Hills (inner route) and Knobs Road — plus the Welsh Hills
+   outer loop (Ridge Section) traced from the conservancy's
+   trifold map, because OSM carries only the inner chord there.
+   The Weaver Road segment is on the ground but in neither OSM
+   nor any published map, so it is not drawn. No planned-route
+   line: no published GIS geometry for the planned ~100-mile
+   loop exists, and the corridor is not definable as a line
+   from the published descriptions. Green #15803d, distinct
+   from the BRT red, SHT blue, ATV purple, OHM magenta, snow
+   icy blue, loops teal and near-BRT amber. OFF by default
+   and LAZY. */
+function driftlessPopup(f) {
+  var p = f.properties;
+  var h = "<h3>Driftless Hiking Trail</h3>";
+  h += kvTable([
+    ["Segment", p.name],
+    ["This segment", p.length_mi != null ? p.length_mi + " mi" : null],
+    ["Source", p.source],
+  ]);
+  if (p.accuracy === "approximate") {
+    h += "<p class='pop-note'>This segment is the Welsh Hills outer " +
+      "loop (Ridge Section), traced from the Driftless Area Land " +
+      "Conservancy's Welsh Hills trifold map — an approximate " +
+      "line, not surveyed tread. OpenStreetMap carries only the " +
+      "inner route here.</p>";
+  }
+  h += "<p class='pop-note'>Built pieces only, assembled from " +
+    "OpenStreetMap — NOT the full planned trail. The planned " +
+    "~100-mile loop (Governor Dodge to Blue Mound, by way of " +
+    "the Lower Wisconsin River) has no published GIS geometry, " +
+    "so no planned line is drawn. The Weaver Road segment is " +
+    "built but is in neither OpenStreetMap nor any published " +
+    "map, so it is not drawn either. &copy; OpenStreetMap " +
+    "contributors (ODbL), pull date Nov 16, 2026.</p>";
+  return h;
+}
 /* Type + meeting-point tables for the near-BRT/SHT layer (Nov 16,
    2026, from the intersecting-trails inventory + the measured
    distances to the BRT line). */
@@ -4440,7 +4502,7 @@ function buildDnrGeopdf(gj) {
       L.latLng(quad[3][1], quad[3][0]),
       L.latLng(quad[2][1], quad[2][0]),
       L.latLng(quad[0][1], quad[0][0]), {
-        opacity: 0.92, interactive: false,
+        opacity: 0.92, interactive: true,
       });
     img._sheetGroup = group;
     sheetImages.push(img);
@@ -4450,6 +4512,7 @@ function buildDnrGeopdf(gj) {
       "<a href='" + esc(p.url) + "' target='_blank' " +
       "rel='noopener'>Download the GeoPDF from the DNR</a>";
     if (p.note) html += "<br>" + esc(p.note);
+    bindPop(img, html);  /* click the sheet itself, not just its thin outline */
     var outline = L.geoJSON(f, {
       interactive: true,
       style: { color: "#1d4ed8", weight: 1.5, dashArray: "6 4",
@@ -4647,8 +4710,9 @@ var LAYERS = [
        the NCT green and the adopted-section amber; solid, unlike
        the dashed-red NCT reroutes. All lines have a small gap at
        the trailhead / parking area where the mapped tread ends —
-       left open on purpose, no tread invented. Lines, so no
-       spiderfy wiring. */
+       left open on purpose, no tread invented. Lines, so no spiderfy wiring. Each loop links to its
+       AllTrails page (Paul, Nov 16, 2026 — Public Lands Program
+       member; popups carry a "View on AllTrails" link). */
     id: "loops", label: "Chapter loops",
     title: "Three chapter-managed loops off the NCT: Waboose " +
       "Lake (Paul Bunyan State Forest), Lake Erin (Chippewa " +
@@ -4663,13 +4727,17 @@ var LAYERS = [
         lineCap: "round",
       }, function (f) {
         var p = f.properties;
-        return "<h3>" + esc(p.name) + "</h3>" +
+        var h = "<h3>" + esc(p.name) + "</h3>" +
           kvTable([
             ["Length", p.length_mi != null
               ? p.length_mi + " mi" : null],
             ["Source", p.source],
           ]) + "<p class='pop-note'>" + esc(p.gap_note || "") +
           "</p>";
+        if (p.alltrails) h += "<p class='pop-note'><a href='" +
+          esc(p.alltrails) + "' target='_blank' rel='noopener'>" +
+          "View on AllTrails</a> &mdash; reviews, photos, directions</p>";
+        return h;
       });
     },
   },
@@ -4809,6 +4877,43 @@ var LAYERS = [
     swatch: { kind: "line", color: "#b91c1c" },
     build: function (gj) {
       return boldLine(gj, "#b91c1c", brtPopup);
+    },
+  },
+  {
+    /* Driftless Hiking Trail (Paul, Nov 16, 2026): the built
+       pieces only, assembled from OpenStreetMap by
+       scripts/pull-driftless.py — Phoebe Point Trail (OSM way
+       1248941083, 0.685 mi), Welsh Hills Trail inner route
+       (OSM way 1248943005, 1.113 mi) and Knobs Road Trail
+       (OSM way 1248953013, 2.457 mi) — plus the Welsh Hills
+       outer loop (Ridge Section) traced from the conservancy's
+       Welsh Hills trifold map (2.085 mi, approximate; OSM
+       carries only the inner chord). 4 features, 6.34 GIS mi
+       total. The Weaver Road segment is built (~1.1–1.5 mi)
+       but is in neither OSM nor any published map, so it is
+       not drawn. All four built segments are in Iowa County,
+       WI (not Sauk County — the brief's county label was
+       wrong; Spring Green village is Sauk County, the trail
+       segments sit south of the river in Iowa County). No
+       planned-route layer: no published GIS geometry for the
+       planned ~100-mile loop exists, and the corridor is not
+       definable as a line from the published descriptions —
+       see docs/driftless-trail-2026-11-16.md. Partner Trails
+       subgroup with the BRT + SHT; bold line (weight 5,
+       opacity 1.0, white casing) like the other Partner
+       Trails. Green #15803d, distinct from the BRT red, SHT
+       blue, ATV purple, OHM magenta, snow icy blue, loops
+       teal and near-BRT amber. OFF by default and LAZY. */
+    id: "driftless", label: "Driftless Hiking Trail",
+    title: "Driftless Hiking Trail — 6.3 mi built (OpenStreetMap; " +
+      "Welsh outer loop traced from the conservancy map). " +
+      "Built pieces only, NOT the full planned trail",
+    file: "data/driftless-trail.geojson",
+    onByDefault: false, group: "Other trails",
+    subgroup: "Partner Trails",
+    swatch: { kind: "line", color: "#15803d" },
+    build: function (gj) {
+      return boldLine(gj, "#15803d", driftlessPopup);
     },
   },
   {
@@ -5135,6 +5240,37 @@ var LAYERS = [
       });
       parcelsLayerRef = layer;
       return layer;
+    },
+  },
+  {
+    /* Parcels — Driftless area (Paul, Nov 16, 2026): Iowa
+       County (WI) parcels within a half mile of the built
+       Driftless Trail, pulled by scripts/pull-driftless-
+       parcels.py from the Wisconsin Statewide Parcel Map
+       Database V12 (2026) — 261 parcels (253 Iowa County,
+       8 Sauk County; the half-mile buffer crosses the
+       Wisconsin River county line). Same fence as the
+       Minnesota parcels: published county records only —
+       owner name, parcel id, acres and site address as
+       published; the value/tax fields and the owner's mailing
+       address are never pulled. No planned-corridor parcels:
+       the planned route has no published geometry, so no
+       planned corridor is definable. OFF by default and LAZY.
+       The parcels all render as the corridor-ring style
+       (parcelStyle's "adjoining" treatment — none is tagged
+       "crossed"). */
+    id: "parcels-driftless", label: "Parcels — Driftless area (Iowa Co., WI)",
+    file: "data/parcels-driftless.geojson",
+    onByDefault: false, group: "Land ownership",
+    swatch: { kind: "fill", color: "#e7e1c3", border: "#a89a5b" },
+    build: function (gj) {
+      return L.geoJSON(gj, {
+        renderer: canvasFor(),
+        style: parcelStyle,
+        onEachFeature: function (f, l) {
+          bindPop(l, driftlessParcelPopup(f));
+        },
+      });
     },
   },
   {
@@ -6881,16 +7017,18 @@ function assertDrawOrder() {
        "alerts-mn-lines" sits directly over it (reroutes read as
        alternate routes). Nov 16, 2026: "loops" sits directly over
        the adopted sections, so a loop reads whole where it shares
-       NCT tread; "atv", "ohm", "snow", "sht", "brt",
+       NCT tread; "atv", "ohm", "snow", "sht", "brt", "driftless",
        "near-brt-sht" and "bwca-portages" sit between the sheet
-       outlines and the Minnesota line, under the NCT tread. The
+       outlines and the Minnesota line, under the NCT tread.
+       "parcels-driftless" sits with "parcels", directly after
+       it, in the land-ownership fills. The
        ten DNR GeoPDF sheets (Nov 16, 2026) sit directly after
        "nctasheets" and before "atv", with the NCTA sheets.
        The three Nov 13
        land layers
        (foresthealth, invasives, chippewa-plan) sit with the
        other "The land" fills, after easements, before access. */
-    ["leechlake", "parcels", "logedw", "logfim", "logcass", "loghubbard",
+    ["leechlake", "parcels", "parcels-driftless", "logedw", "logfim", "logcass", "loghubbard",
      "logbecker", "logclearwater", "easements", "foresthealth",
      "invasives", "chippewa-plan", "access",
      "roads", "nctasheets",
@@ -6898,7 +7036,7 @@ function assertDrawOrder() {
      "dnr-remer", "dnr-white-earth", "dnr-itasca-summer",
      "dnr-maplewood-summer", "dnr-maplewood-winter",
      "dnr-david-dill-taconite", "dnr-lake-vermilion-soudan",
-     "atv", "ohm", "snow", "sht", "brt",
+     "atv", "ohm", "snow", "sht", "brt", "driftless",
      "near-brt-sht", "bwca-portages",
      "trail-minnesota", "trail", "alerts-mn-lines",
      "stretches", "loops", "gaps",
@@ -6990,6 +7128,8 @@ function legendHtml() {
     "Parcel the trail crosses");
   add("<span class='swatch fill' style='background:#e7e1c3'></span>",
     "Adjoining parcel (corridor ring)");
+  add("<span class='swatch fill' style='background:#e7e1c3'></span>",
+    "Driftless parcel (Iowa Co., WI — half-mile corridor)");
   add(pin(COLORS.assetPin), "Asset pin (photo inventory)");
   add("", "<strong>Trail alerts</strong>");
   add("<span class='swatch alert'></span>",
@@ -7006,6 +7146,9 @@ function legendHtml() {
     "Border Route Trail (USFS — shares tread with the NCT)");
   add(line("#2563eb", false, true),
     "Superior Hiking Trail (DNR, state-park portions)");
+  add(line("#15803d", false, true),
+    "Driftless Hiking Trail (OpenStreetMap — built pieces " +
+    "only, not the full planned trail)");
   add(line("#762a83"), "ATV trail (DNR, statewide)");
   add(line("#c51b8a"), "Dirt bike trail (DNR, statewide)");
   add(line("#67a9cf"), "Snowmobile trail (DNR, statewide)");

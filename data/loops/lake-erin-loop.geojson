@@ -13,7 +13,8 @@
     "trail_no": "34914",
     "gis_miles": 0.619,
     "trail_class": "3",
-    "surface": "NATIVE MATERIAL"
+    "surface": "NATIVE MATERIAL",
+    "alltrails": "https://www.alltrails.com/trail/us/minnesota/lake-erin-loop"
    },
    "geometry": {
     "type": "LineString",

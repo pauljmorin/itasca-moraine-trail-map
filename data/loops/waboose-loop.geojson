@@ -11,7 +11,8 @@
     "name": "Waboose Lake Loop",
     "part": "west + north (OSM way 846251459)",
     "source": "OpenStreetMap",
-    "source_note": "highway=footway, name=Waboose Lake Loop; fetched 2026-11-16 via api.openstreetmap.org"
+    "source_note": "highway=footway, name=Waboose Lake Loop; fetched 2026-11-16 via api.openstreetmap.org",
+    "alltrails": "https://www.alltrails.com/trail/us/minnesota/waboose-lake-loop"
    },
    "geometry": {
     "type": "LineString",
@@ -261,7 +262,8 @@
     "name": "Waboose Lake Loop",
     "part": "south + west (OSM way 846251460)",
     "source": "OpenStreetMap",
-    "source_note": "highway=footway, name=Waboose Lake Loop; fetched 2026-11-16 via api.openstreetmap.org"
+    "source_note": "highway=footway, name=Waboose Lake Loop; fetched 2026-11-16 via api.openstreetmap.org",
+    "alltrails": "https://www.alltrails.com/trail/us/minnesota/waboose-lake-loop"
    },
    "geometry": {
     "type": "LineString",
@@ -791,7 +793,8 @@
     "name": "Waboose Lake Loop",
     "part": "east side, shared NCT tread (OSM way 846251458, North Country Trail)",
     "source": "OpenStreetMap",
-    "source_note": "Sub-path of the NCT way between the two loop junctions; this tread is already drawn on the map as the NCT"
+    "source_note": "Sub-path of the NCT way between the two loop junctions; this tread is already drawn on the map as the NCT",
+    "alltrails": "https://www.alltrails.com/trail/us/minnesota/waboose-lake-loop"
    },
    "geometry": {
     "type": "LineString",
@@ -873,7 +876,8 @@
     "name": "Waboose Lake Loop",
     "part": "full loop, joined (for map use)",
     "source": "OpenStreetMap (assembled 2026-11-16)",
-    "length_mi": 3.64
+    "length_mi": 3.64,
+    "alltrails": "https://www.alltrails.com/trail/us/minnesota/waboose-lake-loop"
    },
    "geometry": {
     "type": "LineString",

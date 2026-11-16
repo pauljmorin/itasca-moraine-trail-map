@@ -1,0 +1,126 @@
+{
+ "type": "FeatureCollection",
+ "features": [
+  {
+   "type": "Feature",
+   "properties": {
+    "name": "Welsh Hills Trail",
+    "detail": "Outer loop (Ridge Section) \u2014 traced from DALC trifold map",
+    "source": "Traced from Driftless Area Land Conservancy Welsh Hills trifold map (2026), georeferenced; approximate, +/-~100 m",
+    "source_url": "https://driftlessconservancy.org/wp-content/uploads/2026/04/DT-Trifold-Welsh-Hills-Segment-11-x-8.5-in.pdf",
+    "length_mi": 2.085,
+    "segment": "welsh-hills-outer-loop",
+    "accuracy": "approximate"
+   },
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      -90.064721,
+      43.138368
+     ],
+     [
+      -90.064643,
+      43.139502
+     ],
+     [
+      -90.064394,
+      43.14004
+     ],
+     [
+      -90.062475,
+      43.14181
+     ],
+     [
+      -90.06158,
+      43.142249
+     ],
+     [
+      -90.06073,
+      43.141551
+     ],
+     [
+      -90.060329,
+      43.142214
+     ],
+     [
+      -90.05829,
+      43.142825
+     ],
+     [
+      -90.057518,
+      43.141622
+     ],
+     [
+      -90.058901,
+      43.139084
+     ],
+     [
+      -90.057322,
+      43.138226
+     ],
+     [
+      -90.057227,
+      43.138035
+     ],
+     [
+      -90.057778,
+      43.137189
+     ],
+     [
+      -90.057833,
+      43.136757
+     ],
+     [
+      -90.055925,
+      43.134989
+     ],
+     [
+      -90.055709,
+      43.134093
+     ],
+     [
+      -90.05629,
+      43.133211
+     ],
+     [
+      -90.057074,
+      43.13287
+     ],
+     [
+      -90.058263,
+      43.132829
+     ],
+     [
+      -90.060678,
+      43.133187
+     ],
+     [
+      -90.062505,
+      43.133303
+     ],
+     [
+      -90.064505,
+      43.133762
+     ],
+     [
+      -90.064744,
+      43.134012
+     ],
+     [
+      -90.064422,
+      43.135118
+     ],
+     [
+      -90.064735,
+      43.135461
+     ],
+     [
+      -90.064721,
+      43.138368
+     ]
+    ]
+   }
+  }
+ ]
+}
