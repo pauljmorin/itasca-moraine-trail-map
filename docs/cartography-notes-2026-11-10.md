@@ -546,6 +546,14 @@ the count in the build report). Output
 `site/data/milemarkers.geojson` via the site build (points are
 only rounded, never simplified — same treatment as access points).
 
+Update 2026-11-16 (Paul — mile markers are statewide): the pull
+now takes `--statewide` (full service, no extent clip — 1,119
+points, MN-0.5 through MN-558.5, plus the MN-Start/MN-End
+terminus points) and the site build snaps against the statewide
+line (`site/data/trail-minnesota.geojson`) plus the chapter line,
+so all 1,119 points are retained. The default (no flag) still
+clips to the working extent for a chapter-only pull.
+
 ### M2. Display
 
 Own layer, Chapter group, toggle label **"Mile markers (state)"**,

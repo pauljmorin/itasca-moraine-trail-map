@@ -225,9 +225,11 @@ private lanes are not separately flagged.
 - **Use here:** Pulled 2026-11-10 by
   `scripts/pull_mile_markers.py` into
   `data/points/mile-markers.geojson` (244 points in the working
-  extent, state miles 120.5–242). The site build keeps only
-  points snapping within 250 m of the drawn lines (239 retained,
-  5 excluded) as `site/data/milemarkers.geojson`, layer "Mile
+  extent, state miles 120.5–242). Re-pulled statewide 2026-11-16
+  (`--statewide`, no clip — Paul: mile markers are statewide):
+  1,119 points, state miles 0.5–558.5. The site build keeps only
+  points snapping within 250 m of the drawn lines (1,119 retained,
+  0 excluded) as `site/data/milemarkers.geojson`, layer "Mile
   markers (state)", default off.
 - **⚠ Corrupt attribute columns:** the service's `lat` / `long`
   ATTRIBUTE columns are wrong (the longitude attribute duplicates

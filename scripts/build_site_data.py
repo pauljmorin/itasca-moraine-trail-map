@@ -122,8 +122,9 @@ road_class (see derive_road_class — cartoclass is null everywhere
 in the source; codes verified against source names).
 
 MILE MARKERS (site/data/milemarkers.geojson): the state half-mile
-points pulled by scripts/pull_mile_markers.py, snapped to the
-drawn lines (≤250 m) by build_milemarkers(); off-line points follow
+points pulled by scripts/pull_mile_markers.py --statewide (1,119
+points, no clip), snapped to the statewide + chapter drawn lines
+(≤250 m) by build_milemarkers(); off-line points follow
 an authorised route the map does not draw and are excluded with
 the count printed. CHAINAGE (site/data/chainage.geojson): the S1
 measured spine — points every 5 chapter miles from the west end,
@@ -1089,10 +1090,17 @@ def build_corridor_layers():
     return results, trail_index
 
 
-def build_milemarkers(trail_index):
+def build_milemarkers():
     """Snap the pulled state mile points to the drawn lines (M2):
     retain only points within 250 m of a depicted line — the rest
-    follow an authorised route the map does not draw."""
+    follow an authorised route the map does not draw. The snap
+    index is built from the STATEWIDE line
+    (site/data/trail-minnesota.geojson, 348 features) plus the
+    chapter line (site/data/trail.geojson), so chapter-drawn
+    deviations from the service line do not drop points. Paul,
+    Nov 16, 2026 — mile markers are statewide; the index must
+    NOT be the chapter line alone (that clipped the markers to
+    the corridor)."""
     src = os.path.join(ROOT, "data/points/mile-markers.geojson")
     dst = os.path.join(ROOT, "site/data/milemarkers.geojson")
     if not os.path.exists(src):
@@ -1101,6 +1109,14 @@ def build_milemarkers(trail_index):
         return None
     with open(src) as f:
         data = json.load(f)
+    parts = []
+    for rel in ("site/data/trail-minnesota.geojson",
+                "site/data/trail.geojson"):
+        with open(os.path.join(ROOT, rel)) as f:
+            fc = json.load(f)
+        for feat in fc["features"]:
+            parts.extend(_geometry_parts_xy(feat["geometry"]))
+    trail_index = LineIndex(parts)
     kept, excluded = [], 0
     for feat in data["features"]:
         lon, lat = feat["geometry"]["coordinates"]
@@ -1315,7 +1331,7 @@ def main():
         results.append(build_one(*args))
     corridor_results, trail_index = build_corridor_layers()
     results.extend(corridor_results)
-    build_milemarkers(trail_index)
+    build_milemarkers()
     build_chainage()
     b = build_boundaries()
     print(f"{b['dst']}: {b['features_out']} boundary points "

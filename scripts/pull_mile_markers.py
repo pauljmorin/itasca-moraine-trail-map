@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
 """Pull the NCTA Minnesota half-mile points (state mile markers) from
-the NCTA ArcGIS organisation and clip them to the chapter working
-extent.
+the NCTA ArcGIS organisation. By default they are clipped to the
+chapter working extent; --statewide pulls the full service with no
+clip (Paul, Nov 16, 2026 — mile markers are statewide).
 
 Data source (see SOURCES.md): the service "mn_halfmile_points" on the
 same ArcGIS organisation as the official line (NCTA), layer 0
@@ -34,10 +35,13 @@ chapter tracker's "NCT Mile Virtual Markers" run ~46-48 miles higher
 over the same ground. The two reckonings are never merged or
 converted — see docs/cartography-notes-2026-11-10.md, Part 3 (M3).
 
-Usage:  python3 scripts/pull_mile_markers.py
+Usage:  python3 scripts/pull_mile_markers.py [--statewide]
+  --statewide pulls the full service with no chapter clip (the
+  default clips to the chapter working extent in config/chapter.json).
 No credentials required; the service is public.
 """
 
+import argparse
 import json
 import sys
 import time
@@ -71,7 +75,10 @@ def get_json(url, params=None, retries=3):
 
 def fetch_chunk(layer_url, oid_field, ids):
     """Fetch features for one chunk of object ids; verify the count
-    and split the chunk if the server returns fewer than asked."""
+    and split the chunk if the server returns fewer than asked.
+    POST (not GET): a 500-id IN-list makes a GET URL long enough
+    for the ArcGIS host to reject it (observed 404 on the
+    statewide pull)."""
     where = f"{oid_field} IN ({','.join(str(i) for i in ids)})"
     params = {
         "where": where,
@@ -80,7 +87,20 @@ def fetch_chunk(layer_url, oid_field, ids):
         "f": "geojson",
         "returnGeometry": "true",
     }
-    data = get_json(f"{layer_url}/query", params=params)
+    last_err = None
+    for attempt in range(3):
+        try:
+            r = requests.post(f"{layer_url}/query", data=params,
+                              timeout=180)
+            r.raise_for_status()
+            data = r.json()
+            break
+        except Exception as e:  # noqa: BLE001
+            last_err = e
+            time.sleep(2 * (attempt + 1))
+    else:
+        raise RuntimeError(
+            f"POST {layer_url}/query failed after 3 tries: {last_err}")
     feats = data.get("features", [])
     if len(feats) != len(ids):
         if len(ids) == 1:
@@ -92,17 +112,21 @@ def fetch_chunk(layer_url, oid_field, ids):
     return feats
 
 
-def page_layer(layer_url, envelope):
-    """Fetch all features intersecting the envelope, by object id."""
+def page_layer(layer_url, envelope=None):
+    """Fetch all features intersecting the envelope, by object id.
+    With envelope=None the whole service is fetched (no clip)."""
     params = {
         "where": "1=1",
-        "geometry": json.dumps({**envelope,
-                                "spatialReference": {"wkid": 4326}}),
-        "geometryType": "esriGeometryEnvelope",
-        "spatialRel": "esriSpatialRelIntersects",
         "returnIdsOnly": "true",
         "f": "json",
     }
+    if envelope is not None:
+        params.update({
+            "geometry": json.dumps({**envelope,
+                                    "spatialReference": {"wkid": 4326}}),
+            "geometryType": "esriGeometryEnvelope",
+            "spatialRel": "esriSpatialRelIntersects",
+        })
     data = get_json(f"{layer_url}/query", params=params)
     ids = sorted(data.get("objectIds") or [])
     oid_field = data.get("objectIdFieldName", "objectid")
@@ -159,12 +183,21 @@ def clean_feature(f):
 
 
 def main():
-    config = json.loads(CONFIG_PATH.read_text())
-    ext = config["working_extent_wgs84"]
-    envelope = {
-        "xmin": ext["min_lon"], "ymin": ext["min_lat"],
-        "xmax": ext["max_lon"], "ymax": ext["max_lat"],
-    }
+    ap = argparse.ArgumentParser(
+        description="Pull NCTA Minnesota half-mile points.")
+    ap.add_argument("--statewide", action="store_true",
+                    help="pull the full service with no chapter clip")
+    args = ap.parse_args()
+    if args.statewide:
+        ext = None
+        envelope = None
+    else:
+        config = json.loads(CONFIG_PATH.read_text())
+        ext = config["working_extent_wgs84"]
+        envelope = {
+            "xmin": ext["min_lon"], "ymin": ext["min_lat"],
+            "xmax": ext["max_lon"], "ymax": ext["max_lat"],
+        }
     layer_url = f"{SERVICE_ROOT}/{LAYER_ID}"
     meta = get_json(SERVICE_ROOT, params={"f": "pjson"})
     layer_meta = next((l for l in meta.get("layers", [])
@@ -196,22 +229,35 @@ def main():
     if miles:
         print(f"State-mile range    : {min(miles)} .. {max(miles)}")
 
+    lons = [f["geometry"]["coordinates"][0] for f in features]
+    lats = [f["geometry"]["coordinates"][1] for f in features]
+    pulled_extent = {
+        "min_lon": round(min(lons), 6), "max_lon": round(max(lons), 6),
+        "min_lat": round(min(lats), 6), "max_lat": round(max(lats), 6),
+    } if features else None
     out_fc = {
         "type": "FeatureCollection",
         "metadata": {
-            "dataset": "NCTA Minnesota half-mile points (state mile "
-                       "markers), clipped to the chapter working extent",
+            "dataset": ("NCTA Minnesota half-mile points (state mile "
+                        "markers), statewide — no clip"
+                        if args.statewide else
+                        "NCTA Minnesota half-mile points (state mile "
+                        "markers), clipped to the chapter working extent"),
             "source_service": SERVICE_ROOT,
             "source_layer_id": LAYER_ID,
             "source_layer_name": layer_meta.get("name"),
             "pulled_utc_date": time.strftime("%Y-%m-%d", time.gmtime()),
-            "extent_wgs84": {
+            "extent_wgs84": pulled_extent if args.statewide else {
                 "min_lon": ext["min_lon"], "max_lon": ext["max_lon"],
                 "min_lat": ext["min_lat"], "max_lat": ext["max_lat"],
             },
-            "clip_method": "Envelope selection (object-id fetch, "
-                           "chunk-verified); positions from GeoJSON "
-                           "geometry requested with outSR=4326",
+            "clip_method": ("No clip — full service, object-id fetch, "
+                            "chunk-verified; positions from GeoJSON "
+                            "geometry requested with outSR=4326"
+                            if args.statewide else
+                            "Envelope selection (object-id fetch, "
+                            "chunk-verified); positions from GeoJSON "
+                            "geometry requested with outSR=4326"),
             "corrupt_columns_warning": "The service's lat/long "
                            "ATTRIBUTE columns are corrupt (longitude "
                            "duplicates latitude) and were never read; "
