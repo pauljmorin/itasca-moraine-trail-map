@@ -150,7 +150,10 @@ var esriImagery = L.tileLayer(
    with them; the map needs no API key for any base. The chooser
    order below is task order, not vendor order: Topographic (the
    working maps) / Relief / Aerial (ground truth) / Streets &
-   trails (orientation). See SOURCES.md. */
+   trails (orientation). See SOURCES.md. Nov 16, 2026 (Paul):
+   the no-key rule is lifted for Mapbox Outdoors — see the
+   Mapbox note below; MapTiler Outdoor + Stadia Outdoors are
+   the same idea, wired when their keys arrive. */
 var usgsImageryTopo = L.tileLayer(
   "https://basemap.nationalmap.gov/arcgis/rest/services/" +
     "USGSImageryTopo/MapServer/tile/{z}/{y}/{x}", {
@@ -169,6 +172,71 @@ var cyclosm = L.tileLayer(
     "{z}/{x}/{y}.png", {
     subdomains: "abc", maxZoom: 20,
     attribution: "© OpenStreetMap contributors, CyclOSM",
+  });
+
+/* Added Nov 16, 2026 (Paul: the AllTrails look — "it is really
+   good"): Mapbox Outdoors, the style AllTrails builds on. Needs
+   the chapter's Mapbox public token (pk.*) below — a public key
+   by design, visible in the page source; free tier 50,000 map
+   loads/month. The token was verified live over the chapter
+   Nov 16 (HTTP 200, 512 px PNG). Mapbox serves 512 px tiles,
+   hence tileSize 512 + zoomOffset -1. Mapbox asked for a
+   payment method at signup; Paul added one. The Nov 11
+   "no API key for any base" rule is superseded for this base
+   by Paul's Nov 16 choice. Stadia Outdoors is the same idea
+   from another vendor — wired when its key arrives. */
+var MAPBOX_TOKEN = "pk.eyJ1IjoicGF1bGptb3JpbiIsImEiOiJjbXdqYzg2djEwMXF5MnhxMTA2YTQ3Nm1kIn0.eH8KH7srHEdkoALWHYVvVQ";
+var mapboxOutdoors = L.tileLayer(
+  "https://api.mapbox.com/styles/v1/mapbox/outdoors-v12/tiles/" +
+    "{z}/{x}/{y}?access_token=" + MAPBOX_TOKEN, {
+    tileSize: 512, zoomOffset: -1, maxZoom: 22, maxNativeZoom: 22,
+    attribution: "© Mapbox, © OpenStreetMap contributors",
+  });
+
+/* Added Nov 16, 2026 (Paul): MapTiler Outdoor — the same
+   AllTrails-style outdoors base from MapTiler. Key verified live
+   Nov 16 (HTTP 200 tile with the site's Origin; 403 without it —
+   the key is origin-restricted to pauljmorin.github.io, which is
+   exactly right: only the map site can use it). Free plan,
+   100,000 map loads/mo, stops rather than bills. Raster tiles are
+   512 px like Mapbox's. */
+var MAPTILER_KEY = "guMWwDin1DDGgTJSmAvP";
+var maptilerOutdoor = L.tileLayer(
+  "https://api.maptiler.com/maps/outdoor/{z}/{x}/{y}.png?key=" +
+    MAPTILER_KEY, {
+    tileSize: 512, zoomOffset: -1, maxZoom: 22, maxNativeZoom: 20,
+    attribution: "© MapTiler, © OpenStreetMap contributors",
+  });
+
+/* Added Nov 16, 2026 (Paul): Stadia Outdoors — the same
+   AllTrails-style outdoors base from Stadia Maps. Key verified live
+   Nov 16 (HTTP 200 tile). Quirk worth knowing: a bare curl with no
+   Referer got 401, and with the site's Referer it works — the
+   property uses domain auth, and the browser sends a Referer from
+   the live site, so the map page is fine. Free plan, 200,000
+   credits/month, no card, non-commercial. Raster tiles are 256 px. */
+var STADIA_KEY = "3835d885-64ac-4e35-a98c-c401e23ed7a7";
+var stadiaOutdoors = L.tileLayer(
+  "https://tiles.stadiamaps.com/tiles/outdoors/{z}/{x}/{y}.png" +
+    "?api_key=" + STADIA_KEY, {
+    maxZoom: 20, maxNativeZoom: 20,
+    attribution: "© Stadia Maps, © OpenMapTiles, © OpenStreetMap " +
+      "contributors",
+  });
+
+/* Added Nov 16, 2026 (Paul): Waymarked Trails hiking routes.
+   This is an OVERLAY, not a base — transparent tiles carrying
+   only the waymarked hiking routes (osmc:symbol), drawn over
+   any base. Keyless, free, no API key; community infrastructure
+   with a fair-use policy. Tiles are empty (near-blank) where
+   no waymarked route crosses — that is correct behaviour, not
+   a missing tile. Verified live Nov 16: z10/z12 tiles over the
+   chapter return HTTP 200 (blank where no route crosses). */
+var waymarkedHiking = L.tileLayer(
+  "https://tile.waymarkedtrails.org/hiking/{z}/{x}/{y}.png", {
+    maxZoom: 18, opacity: 0.75,
+    attribution: "Hiking routes: © Waymarked Trails (Sarah " +
+      "Hoffmann), © OpenStreetMap contributors",
   });
 
 /* Added Nov 11, 2026 (Paul approved the pair): two bases that
@@ -438,6 +506,12 @@ var BASES = [
     layer: osm, subChoice: true },
   { name: "Trails (CyclOSM)", code: "trails", label: "Trails",
     sub: "CyclOSM", layer: cyclosm, subChoice: true },
+  { name: "Outdoors (Mapbox)", code: "mapbox", label: "Mapbox Outdoors",
+    sub: "Mapbox", layer: mapboxOutdoors, subChoice: true },
+  { name: "Outdoors (MapTiler)", code: "maptiler", label: "MapTiler Outdoor",
+    sub: "MapTiler", layer: maptilerOutdoor, subChoice: true },
+  { name: "Outdoors (Stadia)", code: "stadia", label: "Stadia Outdoors",
+    sub: "Stadia", layer: stadiaOutdoors, subChoice: true },
   /* LiDAR Shaded (Paul, Nov 13, 2026): Terrain and Winter were
      the same LiDAR hillshade — Winter was the hillshade plus the
      snow pistes — so they are one button now. It uses winterBase
@@ -1441,9 +1515,9 @@ document.addEventListener("click", function (e) {
          a reload: properties, then the icon (glyph + ring), then
          the popup re-rendered from the updated feature. */
       var entry = null;
-      for (var i = 0; i < assetPins.length; i++) {
-        if ((assetPins[i].feature.properties || {}).serial === serial) {
-          entry = assetPins[i];
+      for (var i = 0; i < spiderfyPins.length; i++) {
+        if (((spiderfyPins[i].feature || {}).properties || {}).serial === serial) {
+          entry = spiderfyPins[i];
           break;
         }
       }
@@ -2360,14 +2434,34 @@ function assetMarker(f, latlng) {
    a stack fans its pins out on a circle (~36 px) with a thin
    leg from the anchor to each fanned pin; a second click on a
    fanned pin opens its popup. Plain Leaflet, no plugin — the
-   pins are L.marker (divIcon), so setLatLng moves the whole
-   icon. State lives here and is fully cleared on unspiderfy.
-   The stack test is screen-pixel based (~20 px at the current
-   zoom), so it works at any zoom; at the zooms where pins are
-   read (Z3/Z4) 20 px is roughly the 1–10 m the stacks span. */
+   pins are L.marker (divIcon) or L.circleMarker, so setLatLng
+   moves the whole icon. State lives here and is fully cleared
+   on unspiderfy. The stack test is screen-pixel based (~20 px
+   at the current zoom), so it works at any zoom; at the zooms
+   where pins are read (Z3/Z4) 20 px is roughly the 1–10 m the
+   stacks span.
+   Generalized Nov 16, 2026 (Paul: dots on top of each other
+   are hard to click even zoomed all the way in): the registry
+   below holds EVERY clickable point marker — assets, alerts,
+   chapter places, NCTA Places, invasives, street view — and
+   the stack test is cross-layer, so a campsite sitting on an
+   asset pin fans out with it. A marker counts only while it
+   is on the map (map.hasLayer covers the layer toggle, the
+   per-type/per-kind sub-toggles, and the Places Z13 gate).
+   Labels (chainage, termini, gap, sheet, reservation) are
+   interactive: false and carry no popup; mile markers carry
+   no popup; polygons (timber sales, parcels, easements) are
+   not points — none of those register. The maintenance work
+   list is not a viewer layer at all (removed Nov 12), and the
+   gazetteer search marker is one ephemeral pin — both stay
+   out. */
 var SPIDERFY_PX = 20;
 var SPIDERFY_RADIUS = 36;
-var assetPins = [];        /* {layer, feature, latlng} — every asset pin */
+/* {layer, layerId, latlng} — every clickable point marker.
+   latlng is a COPY of the marker's home position:
+   L.latLng(an existing LatLng) returns the same object, so
+   copy by coordinates or unspiderfy would chase its own tail. */
+var spiderfyPins = [];
 var assetTypeBoxes = {};   /* type code -> its panel checkbox */
 var spiderfyState = null;  /* {pins, legs, anchor} while fanned */
 var spiderfyPinClick = false; /* a pin handled this click; the map
@@ -2375,19 +2469,15 @@ var spiderfyPinClick = false; /* a pin handled this click; the map
 
 function spiderfyStackFor(layer) {
   var origin = null, i;
-  for (i = 0; i < assetPins.length; i++) {
-    if (assetPins[i].layer === layer) { origin = assetPins[i]; break; }
+  for (i = 0; i < spiderfyPins.length; i++) {
+    if (spiderfyPins[i].layer === layer) { origin = spiderfyPins[i]; break; }
   }
   if (!origin) return [];
-  var def = layerById("assets");
-  var group = def && def.layer;
-  if (!group) return [origin];
   var centre = map.latLngToContainerPoint(origin.latlng);
   var stack = [];
-  for (i = 0; i < assetPins.length; i++) {
-    var p = assetPins[i];
-    var sub = assetsTypeLayers[assetTypeCode(p.feature)];
-    if (!sub || !group.hasLayer(sub)) continue; /* type toggled off */
+  for (i = 0; i < spiderfyPins.length; i++) {
+    var p = spiderfyPins[i];
+    if (!map.hasLayer(p.layer)) continue; /* toggled off / gated out */
     var pt = map.latLngToContainerPoint(p.latlng);
     var dx = pt.x - centre.x, dy = pt.y - centre.y;
     if (Math.sqrt(dx * dx + dy * dy) <= SPIDERFY_PX) stack.push(p);
@@ -2428,7 +2518,29 @@ function unspiderfy() {
   spiderfyState = null;
 }
 
-function onAssetPinClick(l, f) {
+/* Register one clickable point marker for spiderfy, and route
+   its click through the shared handler. The default auto-open
+   is detached first: it would fire before the handler and open
+   the popup on the first (fan-out) click. Keypress opening is
+   untouched. Call after bindPop, in the layer's build. */
+function registerSpiderfyPin(layerId, l, f) {
+  var ll = l.getLatLng();
+  spiderfyPins.push({ layer: l, layerId: layerId, feature: f || null,
+    latlng: L.latLng(ll.lat, ll.lng) });
+  l.off("click", l._openPopup, l);
+  l.on("click", function () { onPointClick(l); });
+}
+
+/* Drop one layer's entries before a rebuild. Builds run once
+   per page load (ensureLayer caches def.layer), so this is
+   defensive — the old assetPins.length = 0 reset, per layer. */
+function clearSpiderfyPins(layerId) {
+  spiderfyPins = spiderfyPins.filter(function (p) {
+    return p.layerId !== layerId;
+  });
+}
+
+function onPointClick(l) {
   spiderfyPinClick = true;
   window.setTimeout(function () { spiderfyPinClick = false; }, 0);
   if (spiderfyState) {
@@ -3047,13 +3159,19 @@ map.on("click", function () {
   if (selection) clearSelection();
 });
 /* Spiderfy teardown: the fan is pixel-derived, so a zoom makes
-   it stale; closing the popup ends the fan's job; removing the
-   assets layer must not strand its legs on the map. */
+   it stale; closing the popup ends the fan's job; removing any
+   layer (or a type/kind sublayer, or the Places Z13 gate) that
+   strands a fanned pin collapses the fan — a pin left off the
+   map must not leave its legs behind. */
 map.on("zoomstart", unspiderfy);
 map.on("popupclose", function () { unspiderfy(); });
-map.on("layerremove", function (e) {
-  var def = layerById("assets");
-  if (def && def.layer && e.layer === def.layer) unspiderfy();
+map.on("layerremove", function () {
+  if (!spiderfyState) return;
+  var stranded = false;
+  spiderfyState.pins.forEach(function (p) {
+    if (!map.hasLayer(p.layer)) stranded = true;
+  });
+  if (stranded) unspiderfy();
 });
 /* Shareable view: every pan or zoom writes the new view into the
    hash, so the address bar always matches what is on screen. */
@@ -4029,6 +4147,121 @@ function applyContoursGate() {
   }
 }
 
+/* Motorized trails (Paul, Nov 16, 2026): DNR OHV + snowmobile
+   lines inside a 2-mile corridor around the FULL Minnesota NCT
+   line, in the new "Other trails" group — so they cover the
+   whole statewide trail west to the North Dakota border, not
+   just the chapter working extent (the Nov 16 chapter-extent
+   files stopped at lon -95.6, just east of Frazee). ATV 769
+   segments / 184 GIS miles / 16 systems; dirt bike (OHM) 802 /
+   190 miles / 14 systems; snowmobile 36 / 588 miles / 29
+   systems. Popups mirror the buildout viewer's atvPopup /
+   snowPopup rows, read off the raw DNR fields (the buildout
+   normalizes these at build time; here they are read as stored).
+   Vehicles wording is the buildout's: ATV-I, ATV-II, OHM, ORV.
+   The OHV file is split by vehicle: a feature goes to the ATV
+   file when atv_class_1 or atv_class_2 is 'X', and to the OHM
+   file when off_highway_motorcycle is 'X' — a trail allowing
+   both appears in both files, which is the honest reading of
+   the DNR data. One deliberate label change: the snow service's
+   `miles` field is the trail's published figure, not the drawn
+   (clipped) segment's length — verified Nov 16 (e.g. a 0.3 mi
+   drawn piece carries 49.8) — so the snow popup says
+   "Published miles", while the ATV and OHM popups keep "This
+   segment" (there the field matches the geometry). No
+   Prospectors / Taconite / Ramstad systems fall inside the
+   chapter extent, so the buildout's shared-use notes have
+   nothing to attach to and are omitted — but Prospectors and
+   the David Dill – Taconite State Trail DO appear in the
+   statewide corridor files, and their popups carry no
+   shared-use note either; that is a known gap, not an
+   oversight. */
+function atvVehicles(p) {
+  var v = [];
+  if (p.atv_class_1 === "X") v.push("ATV-I");
+  if (p.atv_class_2 === "X") v.push("ATV-II");
+  if (p.off_highway_motorcycle === "X") v.push("OHM");
+  if (p.off_road_vehicle === "X") v.push("ORV");
+  return v.length ? v.join(" ") : null;
+}
+function atvPopup(f) {
+  var p = f.properties;
+  var h = "<h3>ATV &mdash; " + esc(p.trail_name || "Trail") + "</h3>";
+  h += kvTable([
+    ["Segment", p.segment_name],
+    ["Vehicles", atvVehicles(p)],
+    ["Surface", p.surface_type],
+    ["Funding", p.funding_type],
+    ["This segment", p.miles != null
+      ? p.miles + " mi (DNR service)" : null],
+  ]);
+  if (p.web_site) {
+    h += "<p><a href=\"" + esc(p.web_site) +
+      "\" target=\"_blank\" rel=\"noopener\">DNR trail page</a></p>";
+  }
+  h += "<p class='pop-note'>Minnesota DNR OHV Trails, 2026 season, " +
+    "via the MnGeo FeatureServer. Within 2 miles of the Minnesota " +
+    "NCT line.</p>";
+  return h;
+}
+function ohmPopup(f) {
+  var p = f.properties;
+  var h = "<h3>Dirt bike &mdash; " + esc(p.trail_name || "Trail") +
+    "</h3>";
+  h += kvTable([
+    ["Segment", p.segment_name],
+    ["Vehicles", atvVehicles(p)],
+    ["Surface", p.surface_type],
+    ["Funding", p.funding_type],
+    ["This segment", p.miles != null
+      ? p.miles + " mi (DNR service)" : null],
+  ]);
+  if (p.web_site) {
+    h += "<p><a href=\"" + esc(p.web_site) +
+      "\" target=\"_blank\" rel=\"noopener\">DNR trail page</a></p>";
+  }
+  h += "<p class='pop-note'>Minnesota DNR OHV Trails (dirt bike / " +
+    "off-highway motorcycle), 2026 season, via the MnGeo " +
+    "FeatureServer. Within 2 miles of the Minnesota NCT line. " +
+    "A trail that also allows ATVs appears on the ATV layer too.</p>";
+  return h;
+}
+function snowPopup(f) {
+  var p = f.properties;
+  var h = "<h3>Snowmobile &mdash; " + esc(p.trail_name || "Trail") +
+    "</h3>";
+  h += kvTable([
+    ["Segment", p.segment_name],
+    ["Maintained by", p.maint_by],
+    ["Owner", p.owner_type],
+    ["Trail no.", p.trail_num != null ? String(p.trail_num) : null],
+    ["Stud restriction", p.stud_restr],
+    ["Published miles", p.miles != null
+      ? p.miles + " mi (DNR service)" : null],
+  ]);
+  h += "<p class='pop-note'>Drawn line is the portion within 2 " +
+    "miles of the Minnesota NCT line. Minnesota DNR Snowmobile " +
+    "Trails, via the MnGeo FeatureServer. Groomed corridors run " +
+    "20&ndash;26 ft wide (32&ndash;36 ft at crossings), groomers up " +
+    "to 17,000 lb.</p>";
+  return h;
+}
+function shtPopup(f) {
+  var p = f.properties;
+  var h = "<h3>Superior Hiking Trail</h3>";
+  h += kvTable([
+    ["This segment", p.lengthmile != null
+      ? p.lengthmile + " mi (DNR service)" : null],
+  ]);
+  h += "<p class='pop-note'>This layer shows the 208 miles of the " +
+    "~310-mile trail that lie inside Minnesota state parks, as " +
+    "carried in the DNR state park trails service — the rest of " +
+    "the trail is not in that service. It meets the North " +
+    "Country Trail only at its northern terminus, at the " +
+    "270&deg; Overlook near Grand Portage.</p>";
+  return h;
+}
+
 var LAYERS = [
   {
     /* NCT — all Minnesota (Paul, Nov 13, 2026 — "get the trail in
@@ -4187,6 +4420,175 @@ var LAYERS = [
         window.setTimeout(layoutAnnotations, 60);
       });
       return group;
+    },
+  },
+  {
+    /* Chapter loops (Paul, Nov 16, 2026): the loops the chapter
+       manages that branch off the NCT — Waboose Lake (Paul
+       Bunyan State Forest, 3.64 mi assembled from OSM), Lake
+       Erin (Chippewa National Forest, 0.62 mi from the Forest
+       Service's own TrailNFS data), and Nelson Lake (Paul
+       Bunyan State Forest, 1.25 mi from OSM, at the West-9 /
+       West-10 segment boundary) plus the Lake Twentyone Trail
+       connector (1.01 mi, OSM). ON by default: they are chapter
+       tread, not an optional overlay. Teal, to read apart from
+       the NCT green and the adopted-section amber; solid, unlike
+       the dashed-red NCT reroutes. All lines have a small gap at
+       the trailhead / parking area where the mapped tread ends —
+       left open on purpose, no tread invented. Lines, so no
+       spiderfy wiring. */
+    id: "loops", label: "Chapter loops",
+    title: "Three chapter-managed loops off the NCT: Waboose " +
+      "Lake (Paul Bunyan State Forest), Lake Erin (Chippewa " +
+      "National Forest) and Nelson Lake (Paul Bunyan State " +
+      "Forest, West-9 / West-10 boundary)",
+    file: "data/chapter-loops.geojson",
+    onByDefault: true, group: "The trail",
+    swatch: { kind: "line", color: "#0f766e" },
+    build: function (gj) {
+      return L.geoJSON(gj, {
+        renderer: canvasFor(),
+        style: {
+          color: "#0f766e", weight: 3, opacity: 0.9,
+          lineCap: "round",
+        },
+        onEachFeature: function (f, l) {
+          var p = f.properties;
+          bindPop(l, "<h3>" + esc(p.name) + "</h3>" +
+            kvTable([
+              ["Length", p.length_mi != null
+                ? p.length_mi + " mi" : null],
+              ["Source", p.source],
+            ]) + "<p class='pop-note'>" + esc(p.gap_note || "") +
+            "</p>");
+        },
+      });
+    },
+  },
+  {
+    /* ATV trails (Paul, Nov 16, 2026): Minnesota DNR OHV Trails,
+       2026 season, inside a 2-mile corridor around the full
+       Minnesota NCT line — 769 segments, 184 GIS miles, 16
+       systems (Forest Riders, Round River Drive, Schoolcraft,
+       Soo Line North: Cass, Soo Line South: Carlton, Chisholm,
+       Prospectors, East Range, Quad Cities, David Dill –
+       Taconite, Iron Range OHV, Hibbing to Alborn, Len Hardy,
+       Genoa, Alborn-Pengilly). Purple #762a83, the buildout
+       viewer's ATV color, distinct from foot-tread green. OFF by
+       default and LAZY. Popups mirror the buildout atvPopup
+       rows. */
+    id: "atv", label: "ATV trails",
+    title: "Minnesota DNR OHV trails, 2026 season — 16 systems, " +
+      "184 GIS miles within 2 miles of the Minnesota NCT",
+    file: "data/motorized-atv.geojson",
+    onByDefault: false, group: "Other trails",
+    swatch: { kind: "line", color: "#762a83" },
+    build: function (gj) {
+      return L.geoJSON(gj, {
+        renderer: canvasFor(),
+        style: {
+          color: "#762a83", weight: 3, opacity: 0.85,
+          lineCap: "round",
+        },
+        onEachFeature: function (f, l) { bindPop(l, atvPopup(f)); },
+      });
+    },
+  },
+  {
+    /* Dirt bike trails (Paul, Nov 16, 2026): Minnesota DNR OHV
+       Trails, off-highway motorcycle (OHM) use, 2026 season,
+       inside the same 2-mile corridor around the full Minnesota
+       NCT line — 802 segments, 190 GIS miles, 14 systems. The
+       OHV service carries ATV and OHM on the same features; a
+       trail allowing both appears here and on the ATV layer.
+       Magenta #c51b8a, near the ATV purple but clearly distinct
+       at a glance. OFF by default and LAZY. Popup mirrors the
+       ATV popup rows. */
+    id: "ohm", label: "Dirt bike trails",
+    title: "Minnesota DNR OHV dirt-bike (OHM) trails, 2026 " +
+      "season — 14 systems, 190 GIS miles within 2 miles of " +
+      "the Minnesota NCT",
+    file: "data/motorized-ohm.geojson",
+    onByDefault: false, group: "Other trails",
+    swatch: { kind: "line", color: "#c51b8a" },
+    build: function (gj) {
+      return L.geoJSON(gj, {
+        renderer: canvasFor(),
+        style: {
+          color: "#c51b8a", weight: 3, opacity: 0.85,
+          lineCap: "round",
+        },
+        onEachFeature: function (f, l) { bindPop(l, ohmPopup(f)); },
+      });
+    },
+  },
+  {
+    /* Snowmobile trails (Paul, Nov 16, 2026): Minnesota DNR
+       snowmobile trails inside a 2-mile corridor around the
+       full Minnesota NCT line — 36 features, 588 GIS miles, 29
+       systems. Icy blue #67a9cf, the buildout viewer's snow
+       color. OFF by default and LAZY. Popups mirror the buildout
+       snowPopup rows; the miles row says "Published miles"
+       because the service's figure is the trail's published
+       length, not the drawn (clipped) segment's — see
+       snowPopup. */
+    id: "snow", label: "Snowmobile trails",
+    title: "Minnesota DNR snowmobile trails — 29 systems, 588 " +
+      "GIS miles within 2 miles of the Minnesota NCT",
+    file: "data/motorized-snow.geojson",
+    onByDefault: false, group: "Other trails",
+    swatch: { kind: "line", color: "#67a9cf" },
+    build: function (gj) {
+      return L.geoJSON(gj, {
+        renderer: canvasFor(),
+        style: {
+          color: "#67a9cf", weight: 3, opacity: 0.85,
+          lineCap: "round",
+        },
+        onEachFeature: function (f, l) { bindPop(l, snowPopup(f)); },
+      });
+    },
+  },
+  {
+    /* Superior Hiking Trail (Paul, Nov 16, 2026): the SHT as
+       carried in the Minnesota DNR state park trails service —
+       553 features, 207.56 GIS miles (live pull Nov 16, 2026 —
+       the service was down at wiring time, the first file came
+       from the intersecting-trails inventory's raw pull and the
+       live re-run superseded it: all 287 earlier features
+       contained, no duplicates, measured 207.29 mi), the
+       portions inside Minnesota state parks, about 67% of the
+       ~310 mi published trail. The service does NOT carry the
+       rest of the trail:
+       the southern terminus approach (Jay Cooke) is missing,
+       and the file's southernmost point sits 7,548 m from the
+       NCT while the trail's true southern terminus is 936 m
+       away. The line DOES touch the NCT at the northern
+       terminus — 0 m at (-89.93524, 47.98833), the 270-degree
+       Overlook near Grand Portage — and that is the only place
+       the two trails meet. Blue #2563eb, distinct from the snow
+       icy blue, the ATV purple and the OHM magenta. OFF by
+       default and LAZY. Popup carries the coverage caveat in
+       full; the DNR service's use/surface fields are blank, so
+       the popup shows only the segment length. No Border Route
+       Trail layer: the BRT shares tread with the NCT and is
+       already drawn as the NCT itself. */
+    id: "sht", label: "Superior Hiking Trail",
+    title: "Superior Hiking Trail — 208 mi in Minnesota state " +
+      "parks (DNR service; ~310 mi published). Meets the NCT " +
+      "only at its northern terminus, Grand Portage",
+    file: "data/superior-hiking-trail.geojson",
+    onByDefault: false, group: "Other trails",
+    swatch: { kind: "line", color: "#2563eb" },
+    build: function (gj) {
+      return L.geoJSON(gj, {
+        renderer: canvasFor(),
+        style: {
+          color: "#2563eb", weight: 3, opacity: 0.85,
+          lineCap: "round",
+        },
+        onEachFeature: function (f, l) { bindPop(l, shtPopup(f)); },
+      });
     },
   },
   {
@@ -4722,6 +5124,7 @@ var LAYERS = [
     onByDefault: false, group: "The land", subgroup: "Management",
     swatch: { kind: "fill", color: "#7c3aed", border: "#5b21b6" },
     build: function (gj) {
+      clearSpiderfyPins("invasives");
       var layer = L.geoJSON(gj, {
         renderer: canvasFor(),
         pointToLayer: function (f, latlng) {
@@ -4730,7 +5133,10 @@ var LAYERS = [
             fillColor: "#7c3aed", fillOpacity: 0.6,
           });
         },
-        onEachFeature: function (f, l) { bindPop(l, invasivesPopup(f)); },
+        onEachFeature: function (f, l) {
+          bindPop(l, invasivesPopup(f));
+          registerSpiderfyPin("invasives", l, f);
+        },
       });
       return layer;
     },
@@ -4864,6 +5270,7 @@ var LAYERS = [
     group: "Around the trail", hiddenToggle: true,
     swatch: { kind: "alert", color: COLORS.gap },
     build: function (gj) {
+      clearSpiderfyPins("alerts");
       return L.geoJSON(gj, {
         pointToLayer: function (f, latlng) {
           return L.marker(latlng, {
@@ -4876,7 +5283,10 @@ var LAYERS = [
             }),
           });
         },
-        onEachFeature: function (f, l) { bindPop(l, alertPopup(f)); },
+        onEachFeature: function (f, l) {
+          bindPop(l, alertPopup(f));
+          registerSpiderfyPin("alerts", l, f);
+        },
       });
     },
   },
@@ -4938,6 +5348,7 @@ var LAYERS = [
     group: "ITM inventory", hiddenToggle: true,
     swatch: { kind: "chapter", color: COLORS.trailDeep },
     build: function (gj) {
+      clearSpiderfyPins("chapterplaces");
       var glyphs = { Parking: "P", Camping: "C", Water: "W",
                      Shelter: "S", Privy: "R" };
       return L.geoJSON(gj, {
@@ -4960,6 +5371,7 @@ var LAYERS = [
         },
         onEachFeature: function (f, l) {
           bindPop(l, chapterPopupHtml(f));
+          registerSpiderfyPin("chapterplaces", l, f);
         },
       });
     },
@@ -4984,6 +5396,7 @@ var LAYERS = [
     group: "ITM inventory",
     swatch: { kind: "pin", color: COLORS.tick },
     build: function (gj) {
+      clearSpiderfyPins("places");
       var inner = L.layerGroup();
       var outer = L.layerGroup();
       placesInnerRef = inner;
@@ -5022,6 +5435,7 @@ var LAYERS = [
           });
         }
         bindPop(mk, gazPopupHtml(f));
+        registerSpiderfyPin("places", mk, f);
         sub.addLayer(mk);
       });
       PLACES_KIND_TOGGLES.forEach(function (t) {
@@ -5124,7 +5538,7 @@ var LAYERS = [
          whole group. */
       var group = L.layerGroup();
       assetsTypeLayers = {};
-      assetPins.length = 0; /* fresh registry if the layer ever rebuilds */
+      clearSpiderfyPins("assets"); /* fresh registry if the layer ever rebuilds */
       ASSET_TYPE_TOGGLES.forEach(function (t) {
         var code = t[0];
         var feats = gj.features.filter(function (f) {
@@ -5142,15 +5556,8 @@ var LAYERS = [
                  when the layer loads, so it always reflects the
                  pin's current data. */
               bindPop(l, function () { return assetPopup(f); });
-              /* Spiderfy owns the click: the default auto-open
-                 would fire before the spiderfy handler and open
-                 the popup on the first (fan-out) click. Keypress
-                 opening is untouched. */
-              l.off("click", l._openPopup, l);
-              l.on("click", function () { onAssetPinClick(l, f); });
+              registerSpiderfyPin("assets", l, f);
               wireAssetHover(l, f);
-              assetPins.push({ layer: l, feature: f, latlng: L.latLng(
-                f.geometry.coordinates[1], f.geometry.coordinates[0]) });
             },
           });
         sub._assetType = code;
@@ -5259,6 +5666,27 @@ var LAYERS = [
       label.parentNode.insertBefore(wrap, label.nextSibling);
       treeHeightSlider = slider;
       treeHeightOpacityEl = opVal;
+    },
+  },
+  {
+    /* Waymarked Trails hiking routes (Paul, Nov 16, 2026): the
+       waymarked hiking routes as a transparent overlay over any
+       background, OFF by default. Keyless. Draws only where OSM
+       carries a waymarked hiking route — blank elsewhere, by
+       design. Grouped under "Other trails" with the other trail
+       lines. Pane zIndex 220: above the base (200), below the
+       vector trail lines (400). */
+    id: "waymarked", label: "Hiking routes (Waymarked Trails)",
+    title: "Waymarked hiking routes, over any background",
+    noFetch: true, onByDefault: false, group: "Other trails",
+    swatch: { kind: "line", color: "#e11d48" },
+    build: function () {
+      if (!map.getPane("waymarked")) {
+        var wp = map.createPane("waymarked");
+        wp.style.zIndex = 220;
+      }
+      waymarkedHiking.options.pane = "waymarked";
+      return waymarkedHiking;
     },
   },
   {
@@ -5402,6 +5830,7 @@ var LAYERS = [
     group: "The trail",
     swatch: { kind: "pin", color: "#4285f4" },
     build: function (gj) {
+      clearSpiderfyPins("streetview");
       var camSvg = "<svg width='12' height='12' viewBox='0 0 16 16' " +
         "aria-hidden='true'><path d='M1.5 6h2.6l1.2-1.6h5.4L11.9 6h2.6 " +
         "A1.5 1.5 0 0 1 16 7.5v4A1.5 1.5 0 0 1 14.5 13h-13A1.5 1.5 0 0 1 " +
@@ -5431,6 +5860,7 @@ var LAYERS = [
             "<br><a href='" + p.url + "' target='_blank' " +
             "rel='noopener'>Open Street View</a>";
           bindPop(l, html);
+          registerSpiderfyPin("streetview", l, f);
         },
       });
     },
@@ -5651,7 +6081,7 @@ function writeShareHash() {
    task, not by data source. The LAYERS array order is the build
    order; the PANEL order is this list, so a def's group decides
    where its toggle lands, not its position in the array. */
-var PANEL_GROUPS = ["The trail", "ITM inventory",
+var PANEL_GROUPS = ["The trail", "Other trails", "ITM inventory",
                     "The land", "Land ownership", "Around the trail"];
 LAYERS.forEach(function (def) {
   def.layer = null;
@@ -6069,14 +6499,20 @@ function assertDrawOrder() {
        uppermost. Nov 13, 2026: "trail-minnesota" sits directly
        under "trail" (the chapter line owns the corridor);
        "alerts-mn-lines" sits directly over it (reroutes read as
-       alternate routes). The three Nov 13 land layers
+       alternate routes). Nov 16, 2026: "loops" sits directly over
+       the adopted sections, so a loop reads whole where it shares
+       NCT tread; "atv", "ohm", "snow" and "sht" sit between the
+       sheet outlines and the Minnesota line, under the NCT tread.
+       The three Nov 13
+       land layers
        (foresthealth, invasives, chippewa-plan) sit with the
        other "The land" fills, after easements, before access. */
     ["leechlake", "parcels", "logedw", "logfim", "logcass", "loghubbard",
      "logbecker", "logclearwater", "easements", "foresthealth",
      "invasives", "chippewa-plan", "access",
-     "roads", "nctasheets", "trail-minnesota", "trail", "alerts-mn-lines",
-     "stretches", "gaps",
+     "roads", "nctasheets", "atv", "ohm", "snow", "sht",
+     "trail-minnesota", "trail", "alerts-mn-lines",
+     "stretches", "loops", "gaps",
      "boundaries", "termini", "milemarkers", "chainage", "contours",
      "places",
      "alerts", "chapterplaces", "assets"].forEach(function (id) {
@@ -6137,6 +6573,7 @@ function legendHtml() {
   add("", "<strong>Chapter sections</strong>");
   add(line(STRETCH_STYLE.color), "Adopted section");
   add(line(GAP_CORE_STYLE.color, true), "Adoption gap");
+  add(line("#0f766e"), "Chapter loop — Waboose Lake / Lake Erin / Nelson Lake");
   add(bar(COLORS.tick),
     "Section boundary — bar across the line (Adoption segment ends)");
   add(bar(CHAPTER_COLORS.ITM, true),
@@ -6173,6 +6610,11 @@ function legendHtml() {
     "W water, P parking, S shelter)");
   add("<span class='swatch chapterdisc closed'>C</span>",
     "Chapter place — CLOSED");
+  add("", "<strong>Other trails</strong>");
+  add(line("#762a83"), "ATV trail (DNR)");
+  add(line("#c51b8a"), "Dirt bike trail (DNR)");
+  add(line("#67a9cf"), "Snowmobile trail (DNR)");
+  add(line("#2563eb"), "Superior Hiking Trail (DNR, state-park portions)");
   add("", "<strong>The land</strong>");
   add("", "<strong>Tree height</strong> — six flat 5 m bands " +
     "(overlay, over any background)");

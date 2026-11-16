@@ -152,6 +152,22 @@
 <p>The North Country Trail Association&rsquo;s Minnesota map series &mdash; 104 sheets, MN-001 to MN-104, covering the trail from the North Dakota border to the Border Route Trail. Sheet images appear at closer zooms, with the sheet outlines and numbers as a locator below that. The edition shown is March 16, 2026.</p>
 <p class="src">Source: North Country Trail Association, Minnesota map series &mdash; <a href="https://northcountrytrail.org/maps/mn_map_series.pdf">northcountrytrail.org/maps/mn_map_series.pdf</a>. Downloaded November 11, 2026.</p>
 
+<h3>ATV trails</h3>
+<p>Minnesota DNR OHV trails, 2026 season, within 2 miles of the full Minnesota NCT line &mdash; 769 segments, 184 GIS miles, 16 systems (Forest Riders Trails, Round River Drive, Schoolcraft Trail, Soo Line North: Cass, Soo Line South: Carlton, Chisholm Trail, Prospectors, East Range Multi-Use OHV Trail, Quad Cities Trail, David Dill &ndash; Taconite State Trail, Iron Range OHV State Recreation Area East and West Units, Hibbing to Alborn, Len Hardy Memorial Trail, Genoa Trail, Alborn-Pengilly Railroad State Trail). Purple lines, off by default.</p>
+<p class="src">Source: Minnesota Department of Natural Resources, OHV Trails service &mdash; <a href="https://enterprise.gisdata.mn.gov/aghost/rest/services/us_mn_state_dnr/trans_ohv_trails_mn/FeatureServer/0">trans_ohv_trails_mn FeatureServer</a>. Pulled November 16, 2026.</p>
+
+<h3>Dirt bike trails</h3>
+<p>Minnesota DNR OHV trails open to off-highway motorcycles (dirt bikes), 2026 season, within 2 miles of the full Minnesota NCT line &mdash; 802 segments, 190 GIS miles, 14 systems (the same OHV systems as the ATV layer except Alborn-Pengilly, Len Hardy Memorial Trail and Soo Line North: Cass, plus Martineau Recreational Trails). The OHV service carries ATV and dirt-bike use on the same features, so a trail that allows both appears on both layers. Magenta lines, off by default.</p>
+<p class="src">Source: Minnesota Department of Natural Resources, OHV Trails service &mdash; <a href="https://enterprise.gisdata.mn.gov/aghost/rest/services/us_mn_state_dnr/trans_ohv_trails_mn/FeatureServer/0">trans_ohv_trails_mn FeatureServer</a>. Pulled November 16, 2026.</p>
+
+<h3>Snowmobile trails</h3>
+<p>Minnesota DNR snowmobile trails within 2 miles of the full Minnesota NCT line &mdash; 36 features, 588 GIS miles, 29 systems (Forest Rider Trails, Naytahwaush Nightriders Trails, Nevis Wilder Trails, North Country Trails, Northwoods Trail Riders, Otter Country Trails, Otter Trail Riders Trails, Cass County Trails, Bushwacker Trail, Bear Island State Forest, Chisholm, Side Lake, Hibbing, Spur Trails, East Range Multi-Use Trail, Ely Lake, Vermilion Lake Trails, Gunflint Trail &amp; Spur Trails, Hawks Trails, Iron Ore Trails, Itasca Trail #1 &ndash; Greenway, Itasca Trail #17 &ndash; Driftskipper, Keystone Trail, Lake Vermilion-Soudan Underground Mine State Park, Laurentian Trails, Lawron Trail, Moose Trail Biwabik to Gilbert, Moosehorn Trails, Taconite State Trail, Taconite and Stony Spur Trails, Tomahawk Trails, Ultra Trails, Wrenshall Trails). Icy-blue lines, off by default. The miles figure shown for a trail is the DNR service&rsquo;s published figure for the trail, not the length of the drawn (clipped) portion.</p>
+<p class="src">Source: Minnesota Department of Natural Resources, Snowmobile Trails service &mdash; <a href="https://enterprise.gisdata.mn.gov/aghost/rest/services/us_mn_state_dnr/trans_snowmobile_trails_mn/FeatureServer/0">trans_snowmobile_trails_mn FeatureServer</a>. Pulled November 16, 2026.</p>
+
+<h3>Superior Hiking Trail</h3>
+<p>The Superior Hiking Trail as carried in the Minnesota DNR state park trails service &mdash; 553 features, 207.6 GIS miles, the portions inside Minnesota state parks. That is about 67% of the ~310-mile published trail: the service does not carry the rest, including the southern terminus approach at Jay Cooke State Park. The line meets the North Country Trail only at its northern terminus, at the 270&deg; Overlook near Grand Portage. Blue line, off by default. The Border Route Trail has no separate layer: it shares tread with the NCT and is already drawn as the NCT itself.</p>
+<p class="src">Source: Minnesota Department of Natural Resources, State Park Trails and Roads service &mdash; <a href="https://enterprise.gisdata.mn.gov/aghost/rest/services/us_mn_state_dnr/trans_state_park_trails_roads/FeatureServer/0">trans_state_park_trails_roads FeatureServer</a>. Pulled November 16, 2026 (from the project&rsquo;s same-day inventory pull of the service; the live service was returning gateway errors at wiring time).</p>
+
 <h2>Basemaps</h2>
 <p>The backgrounds the map can be drawn on. All are live services, consumed directly by the site &mdash; nothing is downloaded into the project.</p>
 
@@ -201,10 +217,14 @@
 <p>A point every 5 miles from the depicted chain&rsquo;s west end, interpolated along the section geometries. A relative measure (&ldquo;miles from the west end&rdquo;), in neither mileage reckoning above &mdash; computed by the site build from the chapter&rsquo;s own stretch chainages.</p>
 <p class="src">Source: computed by this project; not an external dataset.</p>
 
+<h3>Chapter loops</h3>
+<p>Three loops the chapter manages that branch off the North Country Trail: the Waboose Lake Loop (3.64 mi, Paul Bunyan State Forest), the Lake Erin Loop (0.62 mi, Chippewa National Forest), and the Nelson Lake Loop (1.25 mi, Paul Bunyan State Forest, at the West-9 / West-10 segment boundary) with the Lake Twentyone Trail connector (1.01 mi). All lines have a small gap at the trailhead / parking area where the mapped tread ends; no tread has been invented to close them. The Nelson Lake Loop has a 140 m gap across the Gulch Lake Campground area on its north-east side.</p>
+<p class="src">Source: Waboose Lake Loop and Nelson Lake Loop lines &copy; OpenStreetMap contributors (ODbL) &mdash; <a href="https://www.openstreetmap.org/">openstreetmap.org</a>; Lake Erin Loop line: USDA Forest Service, National Forest System Trails (TrailNFS_Publish) &mdash; <a href="https://data.fs.usda.gov/geodata/edw/datasets.php?xmlKeyword=trailnfs">data.fs.usda.gov</a>. Lines as pulled November 16, 2026.</p>
+
 <h2>Privacy</h2>
 <p>Adopted sections show the adopters&rsquo; initials (for example &ldquo;JR&rdquo;) &mdash; the chapter&rsquo;s real adopter names are kept in its working files and never appear on this map. Adopter phone numbers and email addresses never cross to the public site. Parcel owner names appear in parcel popups when the parcels layer is switched on, because they are published public records in the county data. The chapter&rsquo;s working files &mdash; the full adoption tracker, the photo originals and the volunteer contact details &mdash; stay in the chapter&rsquo;s private records, not on this site.</p>
 
-<p class="foot">Itasca Moraine Chapter of the North Country Trail Association. This page lists the sources as of November 13, 2026; the project&rsquo;s working source register is <em>SOURCES.md</em> in the map repository. <a href="index.html">Back to the map</a>.</p>
+<p class="foot">Itasca Moraine Chapter of the North Country Trail Association. This page lists the sources as of November 16, 2026; the project&rsquo;s working source register is <em>SOURCES.md</em> in the map repository. <a href="index.html">Back to the map</a>.</p>
 </div>
 </body>
 </html>

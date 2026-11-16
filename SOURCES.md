@@ -94,8 +94,10 @@ pulled.
   compiled from opt-in counties (GAC parcel standard fields,
   including `owner_name` and `ownership`).
 - **URL:** https://enterprise.gisdata.mn.gov/aghost/rest/services/us_mn_state_mngeo/plan_parcels_open/FeatureServer
-  (layer 1, "Plan Parcels Open"; layer 0 is the per-county metadata
-  layer used for the coverage check). Commons page:
+  (layer 0, "Open Parcels In Minnesota"; layer 1 is the per-county
+  metadata layer used for the coverage check — the two layer numbers
+  flipped in the Nov 9, 2026 quarterly refresh; fixed 2026-11-13 and
+  verified live against the service). Commons page:
   https://gis.data.mn.gov/datasets/minnesota::parcels-compiled-from-opt-inopen-data-counes-minnesota-2
 - **Owner / publisher:** Minnesota Geospatial Information Office
   (MnGeo), Minnesota IT Services, from county-supplied data.
@@ -429,6 +431,12 @@ added later the same day** (Paul approved the pair): Aerial
 (2014) in the Aerial group and Winter (snow trails) in Streets
 & trails — eleven bases in all, same four groups.
 
+**Nov 16, 2026 (Paul):** four more entries — **Outdoors (Mapbox)**,
+**Outdoors (MapTiler)** and **Outdoors (Stadia)** in Streets & trails
+(sub-choices under Topo) and **Hiking routes (Waymarked Trails)** as
+an overlay in "Other trails". The Nov 11 no-key rule is lifted for
+all three keyed bases.
+
 - **Topo (OpenTopoMap)** — the DEFAULT base since v4.
   `https://tile.opentopomap.org/{z}/{x}/{y}.png`: OpenStreetMap
   data rendered with SRTM contours and hillshading. Attribution:
@@ -437,6 +445,39 @@ added later the same day** (Paul approved the pair): Aerial
 - **Streets (OSM)** — the standard OpenStreetMap rendering,
   `https://tile.openstreetmap.org/{z}/{x}/{y}.png`. Attribution:
   "© OpenStreetMap contributors".
+- **Outdoors (Mapbox)** — Mapbox Outdoors style (the base AllTrails
+  builds on),
+  `https://api.mapbox.com/styles/v1/mapbox/outdoors-v12/tiles/{z}/{x}/{y}?access_token=<token>`:
+  512 px raster tiles (tileSize 512, zoomOffset -1 in Leaflet),
+  max zoom 22. Needs the chapter's Mapbox public token (pk.*);
+  free tier 50,000 map loads/month. Token verified live over the
+  chapter Nov 16, 2026 (HTTP 200, 512 px PNG). Attribution: "© Mapbox,
+  © OpenStreetMap contributors".
+- **Outdoors (MapTiler)** — MapTiler Outdoor style,
+  `https://api.maptiler.com/maps/outdoor/{z}/{x}/{y}.png?key=<key>`:
+  512 px raster tiles (tileSize 512, zoomOffset -1 in Leaflet),
+  max zoom 22 (native 20). Needs the chapter's MapTiler key;
+  free plan 100,000 map loads/month, stops rather than bills.
+  Key verified live Nov 16, 2026 (HTTP 200, 512 px PNG with the
+  site's Origin; 403 without it — the key is origin-restricted to
+  pauljmorin.github.io). Attribution: "© MapTiler, © OpenStreetMap
+  contributors".
+- **Outdoors (Stadia)** — Stadia Maps Outdoors style,
+  `https://tiles.stadiamaps.com/tiles/outdoors/{z}/{x}/{y}.png?api_key=<key>`:
+  256 px raster tiles, max zoom 20. Needs the chapter's Stadia API
+  key; free plan 200,000 credits/month, no card, non-commercial.
+  Key verified live Nov 16, 2026 (HTTP 200, 256 px PNG — a bare
+  request with no Referer got 401; the property uses domain auth
+  and the browser sends a Referer from the live site).
+  Attribution: "© Stadia Maps, © OpenMapTiles, © OpenStreetMap
+  contributors".
+- **Hiking routes (Waymarked Trails)** — overlay, not a base:
+  transparent tiles carrying only waymarked hiking routes,
+  `https://tile.waymarkedtrails.org/hiking/{z}/{x}/{y}.png`.
+  Keyless, free; community infrastructure, fair-use policy.
+  Tiles are blank where no waymarked route crosses. Verified
+  live Nov 16, 2026 (HTTP 200). Attribution: "Hiking routes: ©
+  Waymarked Trails (Sarah Hoffmann), © OpenStreetMap contributors".
 - **MN LiDAR Hillshade** — Minnesota Geospatial Image
   Service (MnGeo), WMS 1.1.1, Web Mercator endpoint
   `https://imageserver.gisdata.mn.gov/cgi-bin/wmswm?`, layer
