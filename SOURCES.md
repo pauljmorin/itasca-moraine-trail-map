@@ -549,16 +549,20 @@ neither mileage reckoning above.
   type, acres, year, county, region, prescription, plus
   program extras and a per-program source line.
 - **Reading the map (Paul, Nov 16, 2026 — past / future only):
-  ** one amber (#d97706, edge #92400e) for every seller — Paul
+  ** one lime (#65a30d, edge #3f6212) for every seller — Paul
   corrected the first version, which colored sellers apart:
-  the map shows timing only. FILL is the timing — a solid fill
+  the map shows timing only. The lime replaced an amber
+  (#d97706) the same day Paul reported the planned fills and
+  the trail were nearly the same color: the trail's adopted
+  stretches are amber #e08214, and the near-Border-Route trail
+  is #d97706. FILL is the timing — a solid fill
   is planned (near-term year >= 2024 fills stronger); past is
-  the same amber as a dashed outline with only a faint fill
+  the same lime as a dashed outline with only a faint fill
   (fillOpacity 0.10, dash "5 4"), so timing reads without
   relying on color. The key lives in two places: a panel key
   under the Planned toggle (two rows, the two fills) and a
   "Timber sales" section in the map legend; the two toggles'
-  swatches are the same solid amber (the past swatch faded to
+  swatches are the same solid lime (the past swatch faded to
   0.45 opacity). The seller is named in each popup's first line
   ("Cass County — Planned"), not by color. The old per-county
   sale layers (logcass, logedw, loghubbard, logbecker,

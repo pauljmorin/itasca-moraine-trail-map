@@ -1741,13 +1741,23 @@ function logFimPopup(f) {
    examined stand becomes one. */
 /* Timber timing fills (Paul, Nov 16, 2026 — "I don't need to
    separate the colors of the sellers. I just need past/future."):
-   ONE amber for every seller; FILL is the timing. Planned is a
-   solid amber fill (a near-term year >= 2024 fills stronger, the
-   existing recency rule); past is the same amber as a dashed
+   ONE lime for every seller; FILL is the timing. Planned is a
+   solid lime fill (a near-term year >= 2024 fills stronger, the
+   existing recency rule); past is the same lime as a dashed
    outline with only a faint fill, so timing reads without relying
    on color. The seller is named in the popup's first line, not by
-   color. */
-var TIMBER_FILL = "#d97706", TIMBER_EDGE = "#92400e";
+   color.
+   Lime, not amber (Paul, Nov 16, 2026 — "the future cuts and
+   the trail are nearly the same color"): the trail's adopted
+   stretches are amber #e08214, nearly identical to the old
+   timber amber #d97706, and the near-Border-Route trail is
+   #d97706 too. Lime #65a30d is the one open hue on this map —
+   clear of the trail green #1a9850, the adopted amber, the gap
+   red, the teals, the blues, the purples, and the OHM magenta
+   #c51b8a — and it reads on pale topo and dark satellite alike.
+   The Cass forest-stands olive #6b8e23 is the nearest neighbour
+   (same hue family, but a faint 0.18 wash, off by default). */
+var TIMBER_FILL = "#65a30d", TIMBER_EDGE = "#3f6212";
 /* Seller label for the popup title: counties and the DNR come
    straight off manager; USFS splits by forest — Chippewa vs
    Superior are different sellers on this map. Name only, no
@@ -1759,7 +1769,7 @@ function timberSellerLabel(p) {
   }
   return p.manager;
 }
-/* One style for both statewide toggles: amber throughout, the
+/* One style for both statewide toggles: lime throughout, the
    timing picks the fill. */
 function timberStyle(f) {
   var p = f.properties || {};
@@ -5675,20 +5685,20 @@ var LAYERS = [
        stand-exam programs (10-yr 1,077 + annual 89) plus 24
        upcoming county sales / appraisals. ON by default: this is
        the watch list — planned harvests to track so a cut doesn't
-       reach the trail. Style is timberStyle: one amber for every
+       reach the trail. Style is timberStyle: one lime for every
        seller, planned is a solid fill (a near-term year
        >= 2024 fills stronger). The toggle's swatch is that same
-       solid amber. Same file as the past toggle below;
+       solid lime. Same file as the past toggle below;
        the second fetch of the same URL is served from the
        browser HTTP cache. */
     id: "logplanned", label: "Planned harvests — watch list",
     subgroup: "Timber sales",
-    title: "Planned timber harvests statewide along the trail — the watch list. Solid amber fill = planned",
+    title: "Planned timber harvests statewide along the trail — the watch list. Solid lime fill = planned",
     file: "data/timber-sales-minnesota.geojson",
     onByDefault: true, group: "The land",
     swatch: { kind: "fill",
-      color: "#d97706",
-      border: "#92400e" },
+      color: "#65a30d",
+      border: "#3f6212" },
     build: function (gj) {
       var planned = {
         type: "FeatureCollection",
@@ -5712,12 +5722,12 @@ var LAYERS = [
       var html = "<div class='tog-timber-key-title'>" +
         "Fill = timing</div>";
       html += "<div class='tog-timber-key-row'>" +
-        "<span class='tog-swatch-fill' style='background:#d97706;" +
-        "border-color:#92400e'></span>" +
+        "<span class='tog-swatch-fill' style='background:#65a30d;" +
+        "border-color:#3f6212'></span>" +
         "Solid fill = planned (watch list)</div>";
       html += "<div class='tog-timber-key-row'>" +
         "<span class='tog-swatch-fill' style='background:" +
-        "rgba(217,119,6,0.10);border:1px dashed #92400e'></span>" +
+        "rgba(101,163,13,0.10);border:1px dashed #3f6212'></span>" +
         "Dashed faint outline = past (sold)</div>";
       key.innerHTML = html;
       label.parentNode.insertBefore(key, label.nextSibling);
@@ -5727,18 +5737,18 @@ var LAYERS = [
     /* Statewide timber, PAST (Paul, Nov 16, 2026): 361 sold /
        completed sales in the 2-mile corridor — county sales 317
        + USFS EDW 44. OFF by default and LAZY: historical
-       context. Style is timberStyle: one amber for every seller,
+       context. Style is timberStyle: one lime for every seller,
        past is a dashed outline with only a faint fill, so past
        reads as past at a glance. The toggle's swatch is the
-       same amber, faded. */
+       same lime, faded. */
     id: "logpast", label: "Past timber sales",
     subgroup: "Timber sales",
     title: "Sold / completed timber sales statewide along the trail — historical context. Dashed faint outline = past",
     file: "data/timber-sales-minnesota.geojson",
     onByDefault: false, group: "The land",
     swatch: { kind: "fill",
-      color: "#d97706",
-      border: "#92400e", opacity: 0.45 },
+      color: "#65a30d",
+      border: "#3f6212", opacity: 0.45 },
     build: function (gj) {
       var past = {
         type: "FeatureCollection",
@@ -7772,14 +7782,14 @@ function legendHtml() {
     "Driftless parcel (Iowa Co., WI — half-mile corridor)");
   add(pin(COLORS.assetPin), "Asset pin (photo inventory)");
   /* Timber sales (Paul, Nov 16, 2026 — past / future only):
-     one amber for every seller; a solid fill is planned, a
+     one lime for every seller; a solid fill is planned, a
      dashed faint outline is past. The seller is named in each
      popup's first line, not by color. */
   add("", "<strong>Timber sales</strong>");
-  add("<span class='swatch fill' style='background:#d97706'></span>",
+  add("<span class='swatch fill' style='background:#65a30d'></span>",
     "Solid fill = planned (watch list)");
   add("<span class='swatch fill' style='background:" +
-    "rgba(217,119,6,0.10);border:1px dashed #92400e'></span>",
+    "rgba(101,163,13,0.10);border:1px dashed #3f6212'></span>",
     "Dashed faint outline = past (sold)");
   add("", "<strong>Trail alerts</strong>");
   add("<span class='swatch alert'></span>",
