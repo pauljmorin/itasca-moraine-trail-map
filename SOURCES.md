@@ -460,6 +460,101 @@ neither mileage reckoning above.
   Popup: management-area name, code, plan year, acres, summary.
   Honest label: "Chippewa Forest Plan management areas (2004)".
 
+## Timber sales — statewide along the trail (added 2026-11-16)
+
+- **What:** timber sales AND planned stand exams along the
+  whole Minnesota NCT — the chapter logging layers (Cass /
+  Hubbard / Becker / Clearwater + Chippewa EDW, corridor clip
+  lon -95.6 to -93.9) extended statewide. 1,551 features,
+  91,454.3 ac, in a 2-mile corridor around the statewide trail
+  line (348 features, 566.12 mi); a feature counts when its
+  polygon intersects the buffer. Counties crossed: Wilkin,
+  Otter Tail, Becker, Hubbard, Clearwater, Cass, Itasca,
+  St. Louis, Carlton, Lake, Cook (11).
+- **The split (Paul, Nov 16, 2026 — planned first):** every
+  feature carries a `timing` property, past | planned, decided
+  in the DATA by `scripts/add_timber_timing.py`. PLANNED (1,190
+  features, 27,290.4 ac) is everything not yet cut: both DNR
+  stand-exam programs (10-yr 1,077 + annual 89) plus 24
+  upcoming county sales / appraisals. PAST (361 features,
+  64,163.8 ac) is sold / completed sales: county-sale 317 +
+  USFS EDW 44. Rule: exams are always planned (an exam is not
+  a sale — DNR's caveat is that not every examined stand
+  becomes one); Hubbard's own sold / upcoming status is
+  authoritative; Becker's Closed field is the past / future
+  signal where filled; otherwise a recorded sale / award year
+  up to now means past, and a year-null feature with no status
+  signal is planned (cannot confirm a cut happened). 23
+  features were decided by that fallback and are counted as
+  ambiguous in the script output (Cass year-null 8, Becker
+  closed-null + year-null 14, EDW MARBLES year-null 1) — all
+  placed in planned. Paul's ruling: the planned set is the
+  watch list, the harvests to track so a cut doesn't reach the
+  trail; past sales are context, secondary.
+- **Programs:** county-sale 340 (Cass 271, Becker 49,
+  Hubbard 20) | usfs-edw-sale 45 (Chippewa 35, Superior 10) |
+  dnr-stand-exam-10yr 1,077 (se_year 2021–2030) |
+  dnr-stand-exam-annual 89 (plan_year 2027 for 85).
+  By region (all programs): west 681 | central 547 |
+  arrowhead 323. Far west is empty as Paul guessed — Wilkin 0
+  features, Otter Tail 7 exams and 0 sales — but the west
+  region holds 69 sales, all in Becker + Hubbard where the
+  trail enters the forest.
+- **URLs:**
+  - USFS EDW Activity Project Areas — Timber Sale, layer 2:
+    https://apps.fs.usda.gov/arcx/rest/services/EDW/EDW_ActivityProjectAreas_01/MapServer/2
+  - MN DNR 10-year Stand Exam List, layer 0:
+    https://enterprise.gisdata.mn.gov/aghost/rest/services/us_mn_state_dnr/biota_dnr_10yr_stand_exam_list/FeatureServer/0
+  - MN DNR Annual Stand Exam List (public), layer 0:
+    https://enterprise.gisdata.mn.gov/aghost/rest/services/us_mn_state_dnr/biota_dnr_annual_stand_exam_pub/FeatureServer/0
+  - Cass County Forestry Web Map — Timber Sales (Current),
+    layer 62:
+    https://cassweb.casscountymn.gov/arcgis/rest/services/Forestry_ForestPlan_Base/MapServer/62
+  - Hubbard County Timber Sales (sold layer 0 + upcoming
+    layer 1):
+    https://services.arcgis.com/auNjCUvKlkSqV04X/ArcGIS/rest/services/Hubbard_County_Timber_Sales/FeatureServer
+  - Becker County Forestry PreRX Appraisals, layer 0:
+    https://gis-server.co.becker.mn.us/arcgis/rest/services/Forestry/PreRX_Appraisals/FeatureServer/0
+  - Clearwater County Forestry PreRX Appraisals, layer 0:
+    https://map.co.clearwater.mn.us/arcgis/rest/services/Forestry/PreRX_Appraisals/FeatureServer/0
+- **Owner / publisher:** USDA Forest Service; Minnesota DNR,
+  Division of Forestry; Cass / Hubbard / Becker / Clearwater
+  County forestry. All public data.
+- **Vintage:** pulled 2026-11-16. Cass sales 2007–2026
+  (211 of 271 pre-2020); EDW fy_award 2001–2025; STH se_year
+  2021–2030; ASEL plan_year 2027 for 85 of 89. Becker
+  county-wide count drifted 139 → 137 between calls
+  (live-service drift). Hubbard acres are geometry-derived
+  (Shape__Area not in the re-pull's field list; verified
+  within ~1% Nov 13).
+- **Envelope:** lon -96.04 to -89.89, lat 46.43 to 48.12
+  (EPSG:4326).
+- **Gaps (stated, not hidden):** no DNR sold-sale polygon
+  service exists — DNR actual sales live in the timber sales
+  calendar's PDF notices (next corridor-area sales: Backus
+  Jan 7, 2027; Park Rapids May 11, 2027). St. Louis County's
+  timber-sale service exists but returns 499 Token Required
+  (land-department folders gated). Carlton County's services
+  exist but all layers return count 0. No timber-sale GIS
+  service found for Itasca, Lake, Cook, Wilkin, Otter Tail.
+  Private land is the standing blind spot (no permit system
+  in Minnesota); tribal lands have no public data.
+- **Use here:** `site/data/timber-sales-minnesota.geojson`,
+  two toggles off `timing` in subgroup "Timber sales", group
+  "The land": layer "logplanned" ("Planned harvests — watch
+  list", ON by default, prominent amber, near-term year
+  >= 2024 fills stronger) and layer "logpast" ("Past timber
+  sales", OFF by default, LAZY, dimmer slate, recent sales
+  still amber via the existing year >= 2024 rule). Planned
+  draws above past in the draw order. Popup: timing, type,
+  manager, acres, year, county, region, prescription, plus
+  program extras and a per-program source line.
+- **Refresh:** quarterly (county auctions quarterly; EDW
+  irregular; STH / ASEL annual). Re-run
+  `scripts/pull_timber_sales_statewide.py`, then
+  `scripts/add_timber_timing.py`. Full pull log:
+  `working/timber-statewide/pull-log-2026-11-16.md`.
+
 
 ## Base-map tile & image services (map v2, added 2026-11-10)
 

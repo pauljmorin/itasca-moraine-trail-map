@@ -1681,6 +1681,16 @@ var SRC_BECKER_TIMBER = "https://gis-server.co.becker.mn.us/arcgis/" +
   "rest/services/Forestry/PreRX_Appraisals/FeatureServer/0";
 var SRC_CLEARWATER_TIMBER = "https://map.co.clearwater.mn.us/arcgis/" +
   "rest/services/Forestry/PreRX_Appraisals/FeatureServer/0";
+/* Statewide timber sources (Paul, Nov 16, 2026 — the DNR stand
+   exam lists behind the statewide layer; the Nov 11 dead end is
+   resolved — the old arcgis.dnr.state.mn.us host 404s, but both
+   services are live on the enterprise host, verified Nov 16). */
+var SRC_DNR_STAND_EXAM_10YR = "https://enterprise.gisdata.mn.gov/aghost/" +
+  "rest/services/us_mn_state_dnr/biota_dnr_10yr_stand_exam_list/" +
+  "FeatureServer/0";
+var SRC_DNR_STAND_EXAM_ANNUAL = "https://enterprise.gisdata.mn.gov/aghost/" +
+  "rest/services/us_mn_state_dnr/biota_dnr_annual_stand_exam_pub/" +
+  "FeatureServer/0";
 var SRC_EASEMENTS = "https://apps.bwsr.state.mn.us/arcgis/" +
   "rest/services/RIM/RIM_Reserve_Easements/MapServer/0";
 /* Land layers (Paul, Nov 13, 2026 — "Wire the three ready
@@ -1806,6 +1816,96 @@ function logClearwaterPopup(f) {
     "real sales live in its auction packets, not this service.</p>" +
     popSourceLine(SRC_CLEARWATER_TIMBER,
       "Clearwater County Forestry — PreRX Appraisals, layer 0");
+}
+/* Statewide timber, past / planned split (Paul, Nov 16, 2026):
+   every feature in timber-sales-minnesota.geojson carries a
+   `timing` property — "planned" for everything not yet cut
+   (both DNR stand-exam programs + upcoming county sales /
+   appraisals), "past" for sold / completed sales. The viewer
+   splits the one file into two toggles on that property.
+   Planned is the watch list: flag a planned cut that would
+   reach the trail. A DNR exam is not a sale — not every
+   examined stand becomes one. */
+/* Planned style: prominent amber; a near-term year (>= 2024)
+   fills stronger, the existing recency rule. */
+function plannedTimberStyle(f) {
+  var y = (f.properties || {}).year;
+  var op = (typeof y === "number" && y >= 2024) ? 0.5 : 0.32;
+  return {
+    color: "#92400e", weight: 2,
+    fillColor: "#f59e0b", fillOpacity: op,
+  };
+}
+var STATEWIDE_PROGRAM_LABELS = {
+  "dnr-stand-exam-10yr": "DNR 10-year stand exam",
+  "dnr-stand-exam-annual": "DNR annual stand exam",
+  "county-sale": "County timber sale",
+  "usfs-edw-sale": "USFS timber sale",
+};
+var STATEWIDE_REGION_LABELS = {
+  west: "West (ND border–Itasca)",
+  central: "Central (Chippewa NF)",
+  arrowhead: "Arrowhead (Superior NF)",
+};
+function logStatewidePopup(f) {
+  var p = f.properties;
+  var planned = p.timing === "planned";
+  var rows = [
+    ["Timing", planned ? "Planned — watch list" : "Past — sold / completed"],
+    ["Type", STATEWIDE_PROGRAM_LABELS[p.program] || p.program],
+    ["Manager", p.manager],
+    ["Acres", p.acres],
+    ["Year", p.year],
+    ["County", p.county],
+    ["Region", STATEWIDE_REGION_LABELS[p.region] || p.region],
+    ["Prescription", p.prescrip_desc || p.pres_prelim],
+  ];
+  if (p.program === "usfs-edw-sale") {
+    rows.push(["Forest", p.forest], ["District", p.district],
+      ["Revised", p.rev_date], ["Category", p.sale_category]);
+  } else if (p.program === "dnr-stand-exam-10yr") {
+    rows.push(["Exam year", p.se_year], ["Plan", p.sfrmp],
+      ["Admin", p.admin], ["Status", p.status]);
+  } else if (p.program === "dnr-stand-exam-annual") {
+    rows.push(["Plan year", p.plan_year], ["Area", p.area]);
+  } else if (p.program === "county-sale") {
+    if (p.status) rows.push(["Status", p.status]);
+    if (p.operator) rows.push(["Operator", p.operator]);
+    if (p.closed) rows.push(["Closed", p.closed]);
+  }
+  var note = planned
+    ? "Planned, not yet cut — the watch list: flag it if a " +
+      "planned cut would reach the trail. A DNR exam is not a " +
+      "sale; not every examined stand becomes one."
+    : "Sold / completed — historical context. The year is the " +
+      "sale year.";
+  var out = "<h3>" + esc(p.name || (planned ? "Planned harvest"
+    : "Timber sale")) + "</h3>" + kvTable(rows) +
+    "<p class='pop-note'>" + note + "</p>";
+  if (p.program === "dnr-stand-exam-10yr") {
+    out += popSourceLine(SRC_DNR_STAND_EXAM_10YR,
+      "MN DNR 10-year Stand Exam List, enterprise GIS service");
+  } else if (p.program === "dnr-stand-exam-annual") {
+    out += popSourceLine(SRC_DNR_STAND_EXAM_ANNUAL,
+      "MN DNR Annual Stand Exam List (public), enterprise GIS service");
+  } else if (p.program === "usfs-edw-sale") {
+    out += popSourceLine(SRC_EDW,
+      "USFS EDW Activity Project Areas — Timber Sale");
+  } else if (p.program === "county-sale" && p.manager === "Cass County") {
+    out += popSourceLine(SRC_CASS_TIMBER,
+      "Cass County Forestry Web Map — Timber Sales (Current), layer 62");
+  } else if (p.program === "county-sale" && p.manager === "Hubbard County") {
+    out += popSourceLine(SRC_HUBBARD_TIMBER,
+      "Hubbard County Timber Sales — Timber sales, layer 0; " +
+      "Upcoming Timber Sales, layer 1");
+  } else if (p.program === "county-sale" && p.manager === "Becker County") {
+    out += popSourceLine(SRC_BECKER_TIMBER,
+      "Becker County Forestry — PreRX Appraisals, layer 0");
+  } else if (p.program === "county-sale" && p.manager === "Clearwater County") {
+    out += popSourceLine(SRC_CLEARWATER_TIMBER,
+      "Clearwater County Forestry — PreRX Appraisals, layer 0");
+  }
+  return out;
 }
 /* Conservation easements (Nov 12, 2026): BWSR RIM Reserve
    easements clipped to the corridor (40 easements, 3,370 ac —
@@ -5768,6 +5868,69 @@ var LAYERS = [
     },
   },
   {
+    /* Statewide timber, PLANNED (Paul, Nov 16, 2026 — planned
+       first): 1,190 features in the 2-mile corridor — both DNR
+       stand-exam programs (10-yr 1,077 + annual 89) plus 24
+       upcoming county sales / appraisals. ON by default: this is
+       the watch list — planned harvests to track so a cut doesn't
+       reach the trail. Prominent amber; a near-term year
+       (>= 2024) fills stronger via plannedTimberStyle. Same file
+       as the past toggle below; the second fetch of the same URL
+       is served from the browser HTTP cache. */
+    id: "logplanned", label: "Planned harvests — watch list",
+    subgroup: "Timber sales",
+    title: "Planned timber harvests statewide along the trail — the watch list",
+    file: "data/timber-sales-minnesota.geojson",
+    onByDefault: true, group: "The land",
+    swatch: { kind: "fill", color: "#f59e0b", border: "#92400e" },
+    build: function (gj) {
+      var planned = {
+        type: "FeatureCollection",
+        features: gj.features.filter(function (f) {
+          return (f.properties || {}).timing === "planned";
+        }),
+      };
+      var layer = L.geoJSON(planned, {
+        renderer: canvasFor(),
+        style: plannedTimberStyle,
+        onEachFeature: function (f, l) { bindPop(l, logStatewidePopup(f)); },
+      });
+      return layer;
+    },
+  },
+  {
+    /* Statewide timber, PAST (Paul, Nov 16, 2026): 361 sold /
+       completed sales in the 2-mile corridor — county sales 317
+       + USFS EDW 44. OFF by default and LAZY: historical
+       context, dimmer — recent sales (2024–2026) still render
+       amber via timberSaleStyle, like the chapter layers. */
+    id: "logpast", label: "Past timber sales",
+    subgroup: "Timber sales",
+    title: "Sold / completed timber sales statewide along the trail — historical context",
+    file: "data/timber-sales-minnesota.geojson",
+    onByDefault: false, group: "The land",
+    swatch: { kind: "fill", color: "#64748b", border: "#475569" },
+    build: function (gj) {
+      var past = {
+        type: "FeatureCollection",
+        features: gj.features.filter(function (f) {
+          return (f.properties || {}).timing === "past";
+        }),
+      };
+      var layer = L.geoJSON(past, {
+        renderer: canvasFor(),
+        style: function (f) {
+          return timberSaleStyle(f, {
+            color: "#475569", weight: 1.5,
+            fillColor: "#64748b", fillOpacity: 0.15,
+          });
+        },
+        onEachFeature: function (f, l) { bindPop(l, logStatewidePopup(f)); },
+      });
+      return layer;
+    },
+  },
+  {
     /* DNR forest health survey 2025 (Paul, Nov 13, 2026 — "Wire
        the three ready layers"): 123 polygons in the corridor
        (10,084 ac), all year 2025 — eastern larch beetle 41,
@@ -7676,7 +7839,7 @@ function assertDrawOrder() {
        (foresthealth, invasives, chippewa-plan) sit with the
        other "The land" fills, after easements, before access. */
     ["leechlake", "whiteearth", "parcels", "parcels-driftless", "logedw", "logfim", "logcass", "loghubbard",
-     "logbecker", "logclearwater", "easements", "foresthealth",
+     "logbecker", "logclearwater", "logpast", "logplanned", "easements", "foresthealth",
      "invasives", "chippewa-plan", "access",
      "roads", "nctasheets",
      "dnr-waboose", "dnr-burntside-bear-island", "dnr-grand-portage-sf",
