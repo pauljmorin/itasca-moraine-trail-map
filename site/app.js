@@ -7109,7 +7109,11 @@ PANEL_GROUPS.forEach(function (group) {
         gbtn.title = "Show " + group;
         gh.appendChild(gbtn);
         groupBody.classList.add("collapsed");
-        gbtn.addEventListener("click", function () {
+        /* Whole-row toggle (Paul, Nov 16, 2026): the heading
+           itself is the click target, not just the arrow — the
+           arrow button has no listener of its own; its click
+           bubbles up to the heading and toggles once. */
+        gh.addEventListener("click", function () {
           var collapsed = groupBody.classList.toggle("collapsed");
           gbtn.textContent = collapsed ? "▸" : "▾";
           gbtn.setAttribute("aria-expanded", collapsed ? "false" : "true");
@@ -7135,7 +7139,10 @@ PANEL_GROUPS.forEach(function (group) {
         sbody.className = "tog-subgroup-body collapsed";
         groupBody.appendChild(sh);
         groupBody.appendChild(sbody);
-        sbtn.addEventListener("click", function () {
+        /* Whole-row toggle, same as the group heading above
+           (Paul, Nov 16, 2026): the sub-group heading is the
+           click target; the arrow button's click bubbles up. */
+        sh.addEventListener("click", function () {
           var collapsed = sbody.classList.toggle("collapsed");
           sbtn.textContent = collapsed ? "▸" : "▾";
           sbtn.setAttribute("aria-expanded", collapsed ? "false" : "true");

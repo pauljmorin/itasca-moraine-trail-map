@@ -245,6 +245,11 @@ html, body {
 
 /* ---------------------------------------------------------- layers */
 
+/* Whole-row click target (Paul, Nov 16, 2026 — the older
+   volunteers need a big target): the group and sub-group
+   headings ARE the toggle, not just the arrow — clicking
+   anywhere on the heading row opens or closes the group.
+   The arrow is a visual indicator inside the row. */
 .tog-group {
   display: flex;
   align-items: center;
@@ -253,8 +258,13 @@ html, body {
   letter-spacing: 0.06em;
   color: var(--ink-soft);
   margin: 10px 0 2px;
+  cursor: pointer;
+  padding: 2px 4px;
+  border-radius: 4px;
 }
 .tog-group:first-child { margin-top: 2px; }
+.tog-group:hover,
+.tog-subgroup:hover { background: var(--paper-hover); }
 /* Pull-down groups (Paul, Nov 13, 2026 — The trail, Land
    ownership) and sub-groups (Timber sales under The land):
    the heading carries a disclosure; the body hides until
@@ -270,6 +280,9 @@ html, body {
   letter-spacing: 0.06em;
   color: var(--ink-soft);
   margin: 8px 0 2px 12px;
+  cursor: pointer;
+  padding: 2px 4px;
+  border-radius: 4px;
 }
 .tog-subgroup-body label { padding-left: 12px; }
 #layer-toggles label {
@@ -2018,16 +2031,21 @@ body.base-imagery.gap-chip .gap-label span {
    a disclosure button on the layer row; the button opens them.
    The main checkbox still controls the whole layer. --- */
 .sub-toggles.collapsed { display: none; }
+/* Bigger arrow (Paul, Nov 16, 2026 — the old volunteers
+   need to see it): 0.9rem was a small stylish triangle;
+   1.3rem with a 28px tap target is the disclosure now. */
 .tog-expand {
   margin-left: auto;
   flex: 0 0 auto;
+  min-width: 28px;
+  text-align: center;
   background: none;
   border: none;
   font: inherit;
-  font-size: 0.9rem;
+  font-size: 1.3rem;
   color: var(--ink-soft);
   cursor: pointer;
-  padding: 2px 4px;
+  padding: 4px 8px;
   border-radius: 4px;
 }
 .tog-expand:hover { background: var(--paper-hover); color: var(--ink); }
