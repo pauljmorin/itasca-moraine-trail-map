@@ -4573,8 +4573,10 @@ function buildDnrGeopdf(gj) {
    and LAZY. The six panels below are the MVUMs whose frames
    contain Minnesota NCT tread (geometric test, UTM 15N, against
    site/data/trail-minnesota.geojson — docs/forest-service-
-   geopdf-layers-2026-11-16.md). Group "Forest Service", a new
-   top-level group. CORRECTION (Nov 16, 2026, second pass): the
+   geopdf-layers-2026-11-16.md). Group "Agency Maps" since
+   Nov 16, 2026 (Paul: DNR + Forest Service under one
+   "Agency Maps" group; before that "Forest Service" was its
+   own top-level group). CORRECTION (Nov 16, 2026, second pass): the
    first pass placed these sheets with a lon/lat affine, which
    is the wrong model for a UTM map — it left a constant
    ~2e-03 deg (~150-220 m) lon residual, meridian convergence
@@ -6363,7 +6365,7 @@ var LAYERS = [
     id: "dnr-waboose", label: "DNR — Waboose (Paul Bunyan & Badoura)",
     title: "Paul Bunyan and Badoura State Forests Map — Minnesota DNR GeoPDF, 2017-06-14, placed by the map's own georeferencing",
     file: "data/dnr-waboose.geojson", onByDefault: false,
-    group: "The trail", subgroup: "DNR maps",
+    group: "Agency Maps", subgroup: "DNR maps",
     swatch: { kind: "fill", color: "#dbeafe", border: "#1d4ed8" },
     build: buildDnrGeopdf,
   },
@@ -6371,7 +6373,7 @@ var LAYERS = [
     id: "dnr-burntside-bear-island", label: "DNR — Burntside & Bear Island",
     title: "Burntside and Bear Island State Forests Public Recreation Map — Minnesota DNR GeoPDF, 2019-07-02, placed by the map's own georeferencing",
     file: "data/dnr-burntside-bear-island.geojson", onByDefault: false,
-    group: "The trail", subgroup: "DNR maps",
+    group: "Agency Maps", subgroup: "DNR maps",
     swatch: { kind: "fill", color: "#dbeafe", border: "#1d4ed8" },
     build: buildDnrGeopdf,
   },
@@ -6379,7 +6381,7 @@ var LAYERS = [
     id: "dnr-grand-portage-sf", label: "DNR — Grand Portage SF",
     title: "Grand Portage State Forest Public Geo PDF Recreation Map — Minnesota DNR GeoPDF, 2020-11-20, placed by the map's own georeferencing",
     file: "data/dnr-grand-portage-sf.geojson", onByDefault: false,
-    group: "The trail", subgroup: "DNR maps",
+    group: "Agency Maps", subgroup: "DNR maps",
     swatch: { kind: "fill", color: "#dbeafe", border: "#1d4ed8" },
     build: buildDnrGeopdf,
   },
@@ -6387,7 +6389,7 @@ var LAYERS = [
     id: "dnr-remer", label: "DNR — Remer",
     title: "Golden Anniversary and Remer State Forests Geo Referenced Public Recreation Map (Remer panel) — Minnesota DNR GeoPDF, 2019-03-21, placed by the map's own georeferencing",
     file: "data/dnr-remer.geojson", onByDefault: false,
-    group: "The trail", subgroup: "DNR maps",
+    group: "Agency Maps", subgroup: "DNR maps",
     swatch: { kind: "fill", color: "#dbeafe", border: "#1d4ed8" },
     build: buildDnrGeopdf,
   },
@@ -6395,7 +6397,7 @@ var LAYERS = [
     id: "dnr-white-earth", label: "DNR — White Earth",
     title: "White Earth State Forest Geo Reference Recreation Map — Minnesota DNR GeoPDF, 2019-03-21, placed by the map's own georeferencing",
     file: "data/dnr-white-earth.geojson", onByDefault: false,
-    group: "The trail", subgroup: "DNR maps",
+    group: "Agency Maps", subgroup: "DNR maps",
     swatch: { kind: "fill", color: "#dbeafe", border: "#1d4ed8" },
     build: buildDnrGeopdf,
   },
@@ -6403,7 +6405,7 @@ var LAYERS = [
     id: "dnr-itasca-summer", label: "DNR — Itasca Summer",
     title: "Itasca Summer GEO — Minnesota DNR GeoPDF, 2026-06-23, placed by the map's own georeferencing",
     file: "data/dnr-itasca-summer.geojson", onByDefault: false,
-    group: "The trail", subgroup: "DNR maps",
+    group: "Agency Maps", subgroup: "DNR maps",
     swatch: { kind: "fill", color: "#dbeafe", border: "#1d4ed8" },
     build: buildDnrGeopdf,
   },
@@ -6411,7 +6413,7 @@ var LAYERS = [
     id: "dnr-maplewood-summer", label: "DNR — Maplewood Summer",
     title: "Maplewood Summer GEO — Minnesota DNR GeoPDF, 2025-08-11, placed by the map's own georeferencing",
     file: "data/dnr-maplewood-summer.geojson", onByDefault: false,
-    group: "The trail", subgroup: "DNR maps",
+    group: "Agency Maps", subgroup: "DNR maps",
     swatch: { kind: "fill", color: "#dbeafe", border: "#1d4ed8" },
     build: buildDnrGeopdf,
   },
@@ -6419,7 +6421,7 @@ var LAYERS = [
     id: "dnr-maplewood-winter", label: "DNR — Maplewood Winter",
     title: "Maplewood Winter GEO — Minnesota DNR GeoPDF, 2025-11-24, placed by the map's own georeferencing",
     file: "data/dnr-maplewood-winter.geojson", onByDefault: false,
-    group: "The trail", subgroup: "DNR maps",
+    group: "Agency Maps", subgroup: "DNR maps",
     swatch: { kind: "fill", color: "#dbeafe", border: "#1d4ed8" },
     build: buildDnrGeopdf,
   },
@@ -6427,7 +6429,7 @@ var LAYERS = [
     id: "dnr-david-dill-taconite", label: "DNR — David Dill–Taconite",
     title: "David Dill Taconite GEO — Minnesota DNR GeoPDF, 2023-04-11, placed by the map's own georeferencing",
     file: "data/dnr-david-dill-taconite.geojson", onByDefault: false,
-    group: "The trail", subgroup: "DNR maps",
+    group: "Agency Maps", subgroup: "DNR maps",
     swatch: { kind: "fill", color: "#dbeafe", border: "#1d4ed8" },
     build: buildDnrGeopdf,
   },
@@ -6435,7 +6437,7 @@ var LAYERS = [
     id: "dnr-lake-vermilion-soudan", label: "DNR — Lake Vermilion–Soudan",
     title: "Lake Vermilion-Soudan Underground Mine GEO — Minnesota DNR GeoPDF, 2026-06-24, placed by the map's own georeferencing",
     file: "data/dnr-lake-vermilion-soudan.geojson", onByDefault: false,
-    group: "The trail", subgroup: "DNR maps",
+    group: "Agency Maps", subgroup: "DNR maps",
     swatch: { kind: "fill", color: "#dbeafe", border: "#1d4ed8" },
     build: buildDnrGeopdf,
   },
@@ -6443,7 +6445,7 @@ var LAYERS = [
     id: "dnr-finland-sf", label: "DNR — Finland SF",
     title: "Finland State Forest Public Recreation Map — Minnesota DNR GeoPDF, 2021-06-23, placed by the map's own georeferencing",
     file: "data/dnr-finland-sf.geojson", onByDefault: false,
-    group: "The trail", subgroup: "DNR maps",
+    group: "Agency Maps", subgroup: "DNR maps",
     swatch: { kind: "fill", color: "#dbeafe", border: "#1d4ed8" },
     build: buildDnrGeopdf,
   },
@@ -6451,7 +6453,7 @@ var LAYERS = [
     id: "dnr-pat-bayle-sf", label: "DNR — Pat Bayle SF",
     title: "Pat Bayle State Forest Public GeoPDF Recreation Map — Minnesota DNR GeoPDF, 2021-05-19, placed by the map's own georeferencing",
     file: "data/dnr-pat-bayle-sf.geojson", onByDefault: false,
-    group: "The trail", subgroup: "DNR maps",
+    group: "Agency Maps", subgroup: "DNR maps",
     swatch: { kind: "fill", color: "#dbeafe", border: "#1d4ed8" },
     build: buildDnrGeopdf,
   },
@@ -6459,7 +6461,7 @@ var LAYERS = [
     id: "dnr-bowstring-battleground-welsh-lake", label: "DNR — Bowstring–Battleground–Welsh Lake",
     title: "Bowstring, Battleground, and Welsh Lake State Forests Geo Referenced Public Recreation Map — Minnesota DNR GeoPDF, 2019-02-22, placed by the map's own georeferencing",
     file: "data/dnr-bowstring-battleground-welsh-lake.geojson", onByDefault: false,
-    group: "The trail", subgroup: "DNR maps",
+    group: "Agency Maps", subgroup: "DNR maps",
     swatch: { kind: "fill", color: "#dbeafe", border: "#1d4ed8" },
     build: buildDnrGeopdf,
   },
@@ -6467,7 +6469,7 @@ var LAYERS = [
     id: "dnr-paul-bunyan-gulch-lake", label: "DNR — Paul Bunyan–Gulch Lake Cg",
     title: "Paul Bunyan State Forest - Gulch Lake Campground — Minnesota DNR GeoPDF, 2017-03-13, placed by the map's own georeferencing",
     file: "data/dnr-paul-bunyan-gulch-lake.geojson", onByDefault: false,
-    group: "The trail", subgroup: "DNR maps",
+    group: "Agency Maps", subgroup: "DNR maps",
     swatch: { kind: "fill", color: "#dbeafe", border: "#1d4ed8" },
     build: buildDnrGeopdf,
   },
@@ -6475,7 +6477,7 @@ var LAYERS = [
     id: "dnr-tettegouche", label: "DNR — Tettegouche",
     title: "Tettegouche GEo — Minnesota DNR GeoPDF, 2026-07-27, placed by the map's own georeferencing",
     file: "data/dnr-tettegouche.geojson", onByDefault: false,
-    group: "The trail", subgroup: "DNR maps",
+    group: "Agency Maps", subgroup: "DNR maps",
     swatch: { kind: "fill", color: "#dbeafe", border: "#1d4ed8" },
     build: buildDnrGeopdf,
   },
@@ -6483,7 +6485,7 @@ var LAYERS = [
     id: "dnr-split-rock-summer", label: "DNR — Split Rock Summer",
     title: "Split Rock Lighthouse Summer GEO — Minnesota DNR GeoPDF, 2026-10-28, placed by the map's own georeferencing",
     file: "data/dnr-split-rock-summer.geojson", onByDefault: false,
-    group: "The trail", subgroup: "DNR maps",
+    group: "Agency Maps", subgroup: "DNR maps",
     swatch: { kind: "fill", color: "#dbeafe", border: "#1d4ed8" },
     build: buildDnrGeopdf,
   },
@@ -6491,7 +6493,7 @@ var LAYERS = [
     id: "dnr-split-rock-winter", label: "DNR — Split Rock Winter",
     title: "Split Rock Lighthouse Winter GEO — Minnesota DNR GeoPDF, 2026-10-28, placed by the map's own georeferencing",
     file: "data/dnr-split-rock-winter.geojson", onByDefault: false,
-    group: "The trail", subgroup: "DNR maps",
+    group: "Agency Maps", subgroup: "DNR maps",
     swatch: { kind: "fill", color: "#dbeafe", border: "#1d4ed8" },
     build: buildDnrGeopdf,
   },
@@ -6499,7 +6501,7 @@ var LAYERS = [
     id: "dnr-judge-c-r-magney", label: "DNR — Judge C.R. Magney",
     title: "Judge C.R. Magney GEO — Minnesota DNR GeoPDF, 2026-06-09, placed by the map's own georeferencing",
     file: "data/dnr-judge-c-r-magney.geojson", onByDefault: false,
-    group: "The trail", subgroup: "DNR maps",
+    group: "Agency Maps", subgroup: "DNR maps",
     swatch: { kind: "fill", color: "#dbeafe", border: "#1d4ed8" },
     build: buildDnrGeopdf,
   },
@@ -6507,7 +6509,7 @@ var LAYERS = [
     id: "dnr-temperance-river", label: "DNR — Temperance River",
     title: "Temperance River GEO — Minnesota DNR GeoPDF, 2026-06-09, placed by the map's own georeferencing",
     file: "data/dnr-temperance-river.geojson", onByDefault: false,
-    group: "The trail", subgroup: "DNR maps",
+    group: "Agency Maps", subgroup: "DNR maps",
     swatch: { kind: "fill", color: "#dbeafe", border: "#1d4ed8" },
     build: buildDnrGeopdf,
   },
@@ -6515,7 +6517,7 @@ var LAYERS = [
     id: "dnr-cascade-river", label: "DNR — Cascade River",
     title: "Cascade River GEO — Minnesota DNR GeoPDF, 2021-12-23, placed by the map's own georeferencing",
     file: "data/dnr-cascade-river.geojson", onByDefault: false,
-    group: "The trail", subgroup: "DNR maps",
+    group: "Agency Maps", subgroup: "DNR maps",
     swatch: { kind: "fill", color: "#dbeafe", border: "#1d4ed8" },
     build: buildDnrGeopdf,
   },
@@ -6523,7 +6525,7 @@ var LAYERS = [
     id: "dnr-george-crosby-manitou", label: "DNR — George Crosby Manitou",
     title: "George Crosby Manitou GEO — Minnesota DNR GeoPDF, 2024-08-05, placed by the map's own georeferencing",
     file: "data/dnr-george-crosby-manitou.geojson", onByDefault: false,
-    group: "The trail", subgroup: "DNR maps",
+    group: "Agency Maps", subgroup: "DNR maps",
     swatch: { kind: "fill", color: "#dbeafe", border: "#1d4ed8" },
     build: buildDnrGeopdf,
   },
@@ -6531,7 +6533,7 @@ var LAYERS = [
     id: "dnr-gooseberry-falls-summer", label: "DNR — Gooseberry Falls Summer",
     title: "Gooseberry Falls Summer GEO — Minnesota DNR GeoPDF, 2026-05-22, placed by the map's own georeferencing",
     file: "data/dnr-gooseberry-falls-summer.geojson", onByDefault: false,
-    group: "The trail", subgroup: "DNR maps",
+    group: "Agency Maps", subgroup: "DNR maps",
     swatch: { kind: "fill", color: "#dbeafe", border: "#1d4ed8" },
     build: buildDnrGeopdf,
   },
@@ -6539,7 +6541,7 @@ var LAYERS = [
     id: "dnr-gooseberry-falls-winter", label: "DNR — Gooseberry Falls Winter",
     title: "Gooseberry Falls Winter GEO — Minnesota DNR GeoPDF, 2025-11-17, placed by the map's own georeferencing",
     file: "data/dnr-gooseberry-falls-winter.geojson", onByDefault: false,
-    group: "The trail", subgroup: "DNR maps",
+    group: "Agency Maps", subgroup: "DNR maps",
     swatch: { kind: "fill", color: "#dbeafe", border: "#1d4ed8" },
     build: buildDnrGeopdf,
   },
@@ -6547,7 +6549,7 @@ var LAYERS = [
     id: "dnr-jay-cooke-summer", label: "DNR — Jay Cooke Summer",
     title: "Jay Cooke Summer GEO — Minnesota DNR GeoPDF, 2025-07-02, placed by the map's own georeferencing",
     file: "data/dnr-jay-cooke-summer.geojson", onByDefault: false,
-    group: "The trail", subgroup: "DNR maps",
+    group: "Agency Maps", subgroup: "DNR maps",
     swatch: { kind: "fill", color: "#dbeafe", border: "#1d4ed8" },
     build: buildDnrGeopdf,
   },
@@ -6555,7 +6557,7 @@ var LAYERS = [
     id: "dnr-jay-cooke-winter", label: "DNR — Jay Cooke Winter",
     title: "Jay Cooke Winter GEO — Minnesota DNR GeoPDF, 2025-10-27, placed by the map's own georeferencing",
     file: "data/dnr-jay-cooke-winter.geojson", onByDefault: false,
-    group: "The trail", subgroup: "DNR maps",
+    group: "Agency Maps", subgroup: "DNR maps",
     swatch: { kind: "fill", color: "#dbeafe", border: "#1d4ed8" },
     build: buildDnrGeopdf,
   },
@@ -6563,7 +6565,7 @@ var LAYERS = [
     id: "dnr-paul-bunyan-north-heartland", label: "DNR — Paul Bunyan North–Heartland",
     title: "Paul Bunyan North_Heartland GEO — Minnesota DNR GeoPDF, 2026-07-09, placed by the map's own georeferencing",
     file: "data/dnr-paul-bunyan-north-heartland.geojson", onByDefault: false,
-    group: "The trail", subgroup: "DNR maps",
+    group: "Agency Maps", subgroup: "DNR maps",
     swatch: { kind: "fill", color: "#dbeafe", border: "#1d4ed8" },
     build: buildDnrGeopdf,
   },
@@ -6571,7 +6573,7 @@ var LAYERS = [
     id: "dnr-munger-alex-laveau", label: "DNR — Munger–Alex Laveau",
     title: "Munger_Alex Laveau GEO — Minnesota DNR GeoPDF, 2026-09-30, placed by the map's own georeferencing",
     file: "data/dnr-munger-alex-laveau.geojson", onByDefault: false,
-    group: "The trail", subgroup: "DNR maps",
+    group: "Agency Maps", subgroup: "DNR maps",
     swatch: { kind: "fill", color: "#dbeafe", border: "#1d4ed8" },
     build: buildDnrGeopdf,
   },
@@ -6579,7 +6581,7 @@ var LAYERS = [
     id: "dnr-central-lakes", label: "DNR — Central Lakes",
     title: "Central Lakes GEO — Minnesota DNR GeoPDF, 2025-10-01, placed by the map's own georeferencing",
     file: "data/dnr-central-lakes.geojson", onByDefault: false,
-    group: "The trail", subgroup: "DNR maps",
+    group: "Agency Maps", subgroup: "DNR maps",
     swatch: { kind: "fill", color: "#dbeafe", border: "#1d4ed8" },
     build: buildDnrGeopdf,
   },
@@ -6587,7 +6589,7 @@ var LAYERS = [
     id: "dnr-taconite", label: "DNR — Taconite",
     title: "Taconite GEO — Minnesota DNR GeoPDF, 2023-04-12, placed by the map's own georeferencing",
     file: "data/dnr-taconite.geojson", onByDefault: false,
-    group: "The trail", subgroup: "DNR maps",
+    group: "Agency Maps", subgroup: "DNR maps",
     swatch: { kind: "fill", color: "#dbeafe", border: "#1d4ed8" },
     build: buildDnrGeopdf,
   },
@@ -6595,7 +6597,7 @@ var LAYERS = [
     id: "dnr-gitchi-gami", label: "DNR — Gitchi-Gami",
     title: "Gitchi-Gami Gooseberry GEO — Minnesota DNR GeoPDF, 2026-06-16, placed by the map's own georeferencing",
     file: "data/dnr-gitchi-gami.geojson", onByDefault: false,
-    group: "The trail", subgroup: "DNR maps",
+    group: "Agency Maps", subgroup: "DNR maps",
     swatch: { kind: "fill", color: "#dbeafe", border: "#1d4ed8" },
     build: buildDnrGeopdf,
   },
@@ -6603,7 +6605,7 @@ var LAYERS = [
     id: "dnr-cj-ramstad-duluth-britton-pit", label: "DNR — C.J. Ramstad–Duluth to Britton Pit",
     title: "CJ Ramstad_North Shore-Duluth to Britton Pit GEO — Minnesota DNR GeoPDF, 2023-04-11, placed by the map's own georeferencing",
     file: "data/dnr-cj-ramstad-duluth-britton-pit.geojson", onByDefault: false,
-    group: "The trail", subgroup: "DNR maps",
+    group: "Agency Maps", subgroup: "DNR maps",
     swatch: { kind: "fill", color: "#dbeafe", border: "#1d4ed8" },
     build: buildDnrGeopdf,
   },
@@ -6611,7 +6613,7 @@ var LAYERS = [
     id: "dnr-cj-ramstad-britton-pit-finland", label: "DNR — C.J. Ramstad–Britton Pit to Finland SF",
     title: "CJ Ramstad_North Shore-Britton Pit to Finland State Forest GEO — Minnesota DNR GeoPDF, 2023-04-11, placed by the map's own georeferencing",
     file: "data/dnr-cj-ramstad-britton-pit-finland.geojson", onByDefault: false,
-    group: "The trail", subgroup: "DNR maps",
+    group: "Agency Maps", subgroup: "DNR maps",
     swatch: { kind: "fill", color: "#dbeafe", border: "#1d4ed8" },
     build: buildDnrGeopdf,
   },
@@ -6619,7 +6621,7 @@ var LAYERS = [
     id: "dnr-cj-ramstad-finland-sawbill", label: "DNR — C.J. Ramstad–Finland SF to Sawbill Tr",
     title: "CJ Ramstad_North Shore-Finland State Forest to Sawbill Trail GEO — Minnesota DNR GeoPDF, 2023-04-11, placed by the map's own georeferencing",
     file: "data/dnr-cj-ramstad-finland-sawbill.geojson", onByDefault: false,
-    group: "The trail", subgroup: "DNR maps",
+    group: "Agency Maps", subgroup: "DNR maps",
     swatch: { kind: "fill", color: "#dbeafe", border: "#1d4ed8" },
     build: buildDnrGeopdf,
   },
@@ -6627,7 +6629,7 @@ var LAYERS = [
     id: "dnr-cj-ramstad-sawbill-grand-marais", label: "DNR — C.J. Ramstad–Sawbill Tr to Grand Marais",
     title: "CJ Ramstad_North Shore-Sawbill Trails to Grand Marais GEO — Minnesota DNR GeoPDF, 2023-04-11, placed by the map's own georeferencing",
     file: "data/dnr-cj-ramstad-sawbill-grand-marais.geojson", onByDefault: false,
-    group: "The trail", subgroup: "DNR maps",
+    group: "Agency Maps", subgroup: "DNR maps",
     swatch: { kind: "fill", color: "#dbeafe", border: "#1d4ed8" },
     build: buildDnrGeopdf,
   },
@@ -6635,7 +6637,7 @@ var LAYERS = [
     id: "dnr-gitchi-gami-schroeder-lutsen", label: "DNR — Gitchi-Gami–Schroeder to Lutsen",
     title: "Gitchi-Gami Schroeder — Minnesota DNR GeoPDF, 2025-11-17, placed by the map's own georeferencing",
     file: "data/dnr-gitchi-gami-schroeder-lutsen.geojson", onByDefault: false,
-    group: "The trail", subgroup: "DNR maps",
+    group: "Agency Maps", subgroup: "DNR maps",
     swatch: { kind: "fill", color: "#dbeafe", border: "#1d4ed8" },
     build: buildDnrGeopdf,
   },
@@ -6665,8 +6667,9 @@ var LAYERS = [
        sheets (sheetImages / applySheetImageGate above); the
        dashed outline + name label stay visible below that.
        Source GeoPDFs live in data/geopdf/ (repo, not site/).
-       Group "Forest Service" (new top-level group, pull-down,
-       collapsed by default) — NOT a subgroup of "The trail".
+       Group "Agency Maps", subgroup "Forest Service maps"
+       (pull-down, collapsed by default) — NOT a subgroup of
+       "The trail".
        NOT wired: the Chippewa North Front and North Back
        (neither frame holds trail — the NCT stays in the South
        sheet), the Superior Toimi Area map (nearest trail 2.4 km),
@@ -6684,7 +6687,7 @@ var LAYERS = [
     id: "fs-chippewa-south-front", label: "FS — Chippewa South Front",
     title: "Chippewa National Forest Motor Vehicle Use Map, South Front — US Forest Service GeoPDF, 2026-01-06, 80.6 km of trail inside the frame, placed by the map's own georeferencing",
     file: "data/fs-chippewa-south-front.geojson", onByDefault: false,
-    group: "Forest Service",
+    group: "Agency Maps", subgroup: "Forest Service maps",
     swatch: { kind: "fill", color: "#dcfce7", border: "#166534" },
     build: buildFsGeopdf,
   },
@@ -6692,7 +6695,7 @@ var LAYERS = [
     id: "fs-chippewa-south-back", label: "FS — Chippewa South Back",
     title: "Chippewa National Forest Motor Vehicle Use Map, South Back — US Forest Service GeoPDF, 2026-01-06, 85.8 km of trail inside the frame, placed by the map's own georeferencing",
     file: "data/fs-chippewa-south-back.geojson", onByDefault: false,
-    group: "Forest Service",
+    group: "Agency Maps", subgroup: "Forest Service maps",
     swatch: { kind: "fill", color: "#dcfce7", border: "#166534" },
     build: buildFsGeopdf,
   },
@@ -6700,7 +6703,7 @@ var LAYERS = [
     id: "fs-ely", label: "FS — Ely",
     title: "Ely Area Motor Vehicle Use Map, Superior National Forest — US Forest Service GeoPDF, 2025-07-07, 92.1 km of trail inside the frame, placed by the map's own georeferencing",
     file: "data/fs-ely.geojson", onByDefault: false,
-    group: "Forest Service",
+    group: "Agency Maps", subgroup: "Forest Service maps",
     swatch: { kind: "fill", color: "#dcfce7", border: "#166534" },
     build: buildFsGeopdf,
   },
@@ -6708,7 +6711,7 @@ var LAYERS = [
     id: "fs-virginia", label: "FS — Virginia",
     title: "Virginia Area Motor Vehicle Use Map, Superior National Forest — US Forest Service GeoPDF, 2025-07-07, 74.7 km of trail inside the frame, placed by the map's own georeferencing",
     file: "data/fs-virginia.geojson", onByDefault: false,
-    group: "Forest Service",
+    group: "Agency Maps", subgroup: "Forest Service maps",
     swatch: { kind: "fill", color: "#dcfce7", border: "#166534" },
     build: buildFsGeopdf,
   },
@@ -6716,7 +6719,7 @@ var LAYERS = [
     id: "fs-upper-trail", label: "FS — Upper Trail",
     title: "Upper Trail Area Motor Vehicle Use Map, Superior National Forest — US Forest Service GeoPDF, 2025-07-01, 85.4 km of trail inside the frame, placed by the map's own georeferencing",
     file: "data/fs-upper-trail.geojson", onByDefault: false,
-    group: "Forest Service",
+    group: "Agency Maps", subgroup: "Forest Service maps",
     swatch: { kind: "fill", color: "#dcfce7", border: "#166534" },
     build: buildFsGeopdf,
   },
@@ -6724,7 +6727,7 @@ var LAYERS = [
     id: "fs-grand-marais", label: "FS — Grand Marais",
     title: "Superior National Forest Motor Vehicle Use Map for the Grand Marais Area — US Forest Service GeoPDF, 2025-08-08, 97.5 km of trail inside the frame, placed by the map's own georeferencing",
     file: "data/fs-grand-marais.geojson", onByDefault: false,
-    group: "Forest Service",
+    group: "Agency Maps", subgroup: "Forest Service maps",
     swatch: { kind: "fill", color: "#dcfce7", border: "#166534" },
     build: buildFsGeopdf,
   },
@@ -6743,7 +6746,14 @@ var LAYERS = [
     title: "Google Street View at the trailheads and road " +
       "crossings that have it — opens aimed at the trail",
     file: "data/streetview.geojson", onByDefault: false,
-    group: "The trail",
+    /* Moved Nov 16, 2026 (Paul: "I don't know where to stick
+       that") — Street View is a way of looking at the trailheads
+       from the road, not trail content, so it sits with the
+       access-side layers in "Around the trail" instead of under
+       "The trail". The camera pins stay above the trail line:
+       markers must stay clickable, and Leaflet markers always
+       draw above vector lines. */
+    group: "Around the trail",
     swatch: { kind: "pin", color: "#4285f4" },
     build: function (gj) {
       clearSpiderfyPins("streetview");
@@ -6997,7 +7007,7 @@ function writeShareHash() {
    task, not by data source. The LAYERS array order is the build
    order; the PANEL order is this list, so a def's group decides
    where its toggle lands, not its position in the array. */
-var PANEL_GROUPS = ["The trail", "Forest Service", "Other trails", "ITM inventory",
+var PANEL_GROUPS = ["The trail", "Agency Maps", "Other trails", "ITM inventory",
                     "The land", "Land ownership", "Around the trail"];
 LAYERS.forEach(function (def) {
   def.layer = null;
@@ -7060,7 +7070,7 @@ LAYERS.forEach(function (def) {
   if (box.checked) ensureLayer(def, false);
 });
 /* Phase 2: lay the toggles out in panel (task) order. */
-var GROUP_PULLDOWNS = ["The trail", "Forest Service", "Other trails", "ITM inventory", "The land",
+var GROUP_PULLDOWNS = ["The trail", "Agency Maps", "Other trails", "ITM inventory", "The land",
   "Land ownership"]; /* Paul, Nov 13, 2026 — these groups are
   pull-downs: a disclosure on the heading, the layers hidden
   until opened. (The trail + Land ownership first; ITM inventory
