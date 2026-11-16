@@ -542,13 +542,39 @@ neither mileage reckoning above.
 - **Use here:** `site/data/timber-sales-minnesota.geojson`,
   two toggles off `timing` in subgroup "Timber sales", group
   "The land": layer "logplanned" ("Planned harvests — watch
-  list", ON by default, prominent amber, near-term year
-  >= 2024 fills stronger) and layer "logpast" ("Past timber
-  sales", OFF by default, LAZY, dimmer slate, recent sales
-  still amber via the existing year >= 2024 rule). Planned
-  draws above past in the draw order. Popup: timing, type,
-  manager, acres, year, county, region, prescription, plus
+  list", ON by default) and layer "logpast" ("Past timber
+  sales", OFF by default, LAZY). Planned draws above past in
+  the draw order. Popup first line names seller + timing
+  ("Cass County — Planned"); the rows carry unit, timing,
+  type, acres, year, county, region, prescription, plus
   program extras and a per-program source line.
+- **Reading the map (Paul, Nov 16, 2026 — seller + timing at
+  a glance):** COLOR is the seller — teal MN DNR (#0d9488),
+  amber Cass County (#d97706), green Becker County (#16a34a),
+  purple Hubbard County (#9333ea), blue USFS Chippewa NF
+  (#2563eb), pink USFS Superior NF (#db2777). FILL is the
+  timing — a solid fill is planned (near-term year >= 2024
+  fills stronger); past is the same seller color as a dashed
+  outline with only a faint fill (fillOpacity 0.10, dash
+  "5 4"), so timing reads without relying on color. The key
+  lives in three places, all generated from the same
+  `TIMBER_SELLERS` constants in `site/app.js`: a panel key
+  under the Planned toggle, a "Timber sales" section in the
+  map legend, and the two toggles' swatches (a six-segment
+  strip of the seller colors; the past swatch is faded to
+  0.45 opacity). The old per-county sale layers (logcass,
+  logedw, loghubbard, logbecker, logclearwater) were removed
+  from the panel the same day — the statewide file already
+  contains their polygons within the 2-mile corridor, so they
+  double-drew; the files stay on disk. The one Clearwater
+  appraisal in the old chapter file sits MORE than 2 miles
+  from the trail, so it is in neither the statewide file nor
+  the panel. "Cass forest stands" (logfim, inventory, not a
+  sale) stays, relabeled "Cass forest stands (inventory)".
+  The GeoPDF export (`site/export.js`) still draws the old
+  per-county layers from its own tables — harmonizing the
+  export with the statewide layer is a follow-up, not done
+  here.
 - **Refresh:** quarterly (county auctions quarterly; EDW
   irregular; STH / ASEL annual). Re-run
   `scripts/pull_timber_sales_statewide.py`, then

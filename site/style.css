@@ -339,6 +339,20 @@ html, body {
   font-size: 11.5px;
   padding: 0 4px 4px 26px;
 }
+/* Timber key under the Planned toggle (Paul, Nov 16, 2026):
+   color = seller, fill = timing. Same left offset as the
+   error line, so the key sits under the toggle's label text. */
+.tog-timber-key {
+  font-size: 11.5px;
+  color: var(--ink-soft);
+  padding: 2px 4px 6px 26px;
+  line-height: 1.6;
+}
+.tog-timber-key-title { font-weight: 600; color: var(--ink); }
+.tog-timber-key-row .tog-swatch-fill {
+  margin-right: 5px;
+  vertical-align: -1px;
+}
 /* S5 Winter toggle (snowmobile season) under the layer list. */
 .winter-row {
   display: flex;

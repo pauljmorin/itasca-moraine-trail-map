@@ -1711,34 +1711,6 @@ function popSourceLine(url, label) {
   return "<p class='pop-source'>Source: <a href='" + url +
     "' target='_blank' rel='noopener'>" + esc(label) + "</a></p>";
 }
-/* Timber sale style (Paul, Nov 12, 2026): recent sales
-   (2024–2026 — 113 Cass, 20 Chippewa NF) render amber and
-   highlighted; older sales keep the layer's standard style
-   (std). A sale with no year renders as older. */
-function timberSaleStyle(f, std) {
-  var y = (f.properties || {}).year;
-  if (typeof y === "number" && y >= 2024) {
-    return {
-      color: "#92400e", weight: 2,
-      fillColor: "#f59e0b", fillOpacity: 0.45,
-    };
-  }
-  return {
-    color: std.color, weight: std.weight,
-    fillColor: std.fillColor, fillOpacity: std.fillOpacity,
-  };
-}
-function logCassPopup(f) {
-  var p = f.properties;
-  return "<h3>" + esc(p.name || "Timber sale") + "</h3>" + kvTable([
-    ["Permit", p.permit],
-    ["Acres", p.acres],
-    ["Year", p.year],
-  ]) + "<p class='pop-note'>No expiry in the source — the year " +
-    "is the sale year, not a guarantee the sale is current.</p>" +
-    popSourceLine(SRC_CASS_TIMBER,
-      "Cass County Forestry Web Map — Timber Sales (Current), layer 62");
-}
 function logFimPopup(f) {
   var p = f.properties;
   var age = (p.stand_age == null || p.stand_age === 0)
@@ -1758,65 +1730,6 @@ function logFimPopup(f) {
     popSourceLine(SRC_CASS_FIM,
       "Cass County Forestry Web Map — FIM Stands (Current), layer 63");
 }
-function logEdwPopup(f) {
-  var p = f.properties;
-  return "<h3>" + esc(p.name || "Timber sale") + "</h3>" + kvTable([
-    ["Contract", p.permit],
-    ["Acres", p.acres],
-    ["Year", p.year],
-    ["Revised", p.rev_date],
-    ["Forest", p.forest],
-    ["District", p.district],
-  ]) + "<p class='pop-note'>Revised is the last revision date, " +
-    "not an expiry — the source carries none.</p>" +
-    popSourceLine(SRC_EDW,
-      "USFS EDW Activity Project Areas — Timber Sale, " +
-      "Chippewa National Forest");
-}
-function logHubbardPopup(f) {
-  var p = f.properties;
-  var status = p.status === "upcoming" ? "Upcoming (planned sale)"
-    : p.status === "sold" ? "Sold" : p.status;
-  return "<h3>" + esc(p.name || "Timber sale") + "</h3>" + kvTable([
-    ["Permit", p.permit],
-    ["Acres", p.acres],
-    ["Year", p.year],
-    ["Status", status],
-    ["Operator", p.operator],
-  ]) + "<p class='pop-note'>Status is the county's own sold / " +
-    "upcoming split — 'upcoming' is a planned sale, not a cut " +
-    "yet. The year is read off the sale number.</p>" +
-    popSourceLine(SRC_HUBBARD_TIMBER,
-      "Hubbard County Timber Sales — Timber sales, layer 0; " +
-      "Upcoming Timber Sales, layer 1");
-}
-function logBeckerPopup(f) {
-  var p = f.properties;
-  var closed = p.closed === "Yes" ? "Yes"
-    : p.closed === "No" ? "No" : null;
-  return "<h3>" + esc(p.name || "Timber sale") + "</h3>" + kvTable([
-    ["Permit", p.permit],
-    ["Acres", p.acres],
-    ["Year", p.year],
-    ["Closed", closed],
-  ]) + "<p class='pop-note'>Closed is the source's past / future " +
-    "signal where it is filled — about half the records leave it " +
-    "blank.</p>" +
-    popSourceLine(SRC_BECKER_TIMBER,
-      "Becker County Forestry — PreRX Appraisals, layer 0");
-}
-function logClearwaterPopup(f) {
-  var p = f.properties;
-  return "<h3>" + esc(p.name || "Timber appraisal") + "</h3>" + kvTable([
-    ["Acres", p.acres],
-    ["Year", p.year],
-    ["Closed", p.closed],
-  ]) + "<p class='pop-note'>The county's appraisal service holds " +
-    "almost nothing in the corridor — one appraisal. Clearwater's " +
-    "real sales live in its auction packets, not this service.</p>" +
-    popSourceLine(SRC_CLEARWATER_TIMBER,
-      "Clearwater County Forestry — PreRX Appraisals, layer 0");
-}
 /* Statewide timber, past / planned split (Paul, Nov 16, 2026):
    every feature in timber-sales-minnesota.geojson carries a
    `timing` property — "planned" for everything not yet cut
@@ -1826,15 +1739,54 @@ function logClearwaterPopup(f) {
    Planned is the watch list: flag a planned cut that would
    reach the trail. A DNR exam is not a sale — not every
    examined stand becomes one. */
-/* Planned style: prominent amber; a near-term year (>= 2024)
-   fills stronger, the existing recency rule. */
-function plannedTimberStyle(f) {
-  var y = (f.properties || {}).year;
-  var op = (typeof y === "number" && y >= 2024) ? 0.5 : 0.32;
-  return {
-    color: "#92400e", weight: 2,
-    fillColor: "#f59e0b", fillOpacity: op,
-  };
+/* Timber seller colors + timing fills (Paul, Nov 16, 2026 —
+   "I need to be able to tell each seller and future/past
+   apart"): COLOR is the seller, FILL is the timing. Planned is
+   a solid fill in the seller's color (a near-term year
+   >= 2024 fills stronger, the existing recency rule); past is
+   the same seller color as a dashed outline with only a faint
+   fill, so timing reads without relying on color. The same
+   constants feed the panel key (logplanned panelExtra) and the
+   map legend — one source of truth, per the legend rule. */
+var TIMBER_SELLERS = [
+  { key: "MN DNR",         label: "MN DNR",        fill: "#0d9488", edge: "#0f766e" },
+  { key: "Cass County",    label: "Cass County",   fill: "#d97706", edge: "#92400e" },
+  { key: "Becker County",  label: "Becker County", fill: "#16a34a", edge: "#14532d" },
+  { key: "Hubbard County", label: "Hubbard County", fill: "#9333ea", edge: "#6b21a8" },
+  { key: "USFS Chippewa",  label: "USFS Chippewa", fill: "#2563eb", edge: "#1e40af" },
+  { key: "USFS Superior",  label: "USFS Superior", fill: "#db2777", edge: "#9d174d" },
+];
+/* Seller key: counties and the DNR come straight off manager;
+   USFS splits by forest — Chippewa vs Superior are different
+   sellers on this map. Anything unrecognised falls back to
+   slate so it still draws. */
+function timberSellerKey(p) {
+  if ((p.manager || "") === "USFS") {
+    return (p.forest || "").indexOf("Superior") >= 0
+      ? "USFS Superior" : "USFS Chippewa";
+  }
+  return p.manager;
+}
+function timberSellerColor(p) {
+  var k = timberSellerKey(p), i;
+  for (i = 0; i < TIMBER_SELLERS.length; i++) {
+    if (TIMBER_SELLERS[i].key === k) return TIMBER_SELLERS[i];
+  }
+  return { key: k, label: k, fill: "#64748b", edge: "#475569" };
+}
+/* One style for both statewide toggles: the seller picks the
+   color, the timing picks the fill. */
+function timberStyle(f) {
+  var p = f.properties || {};
+  var c = timberSellerColor(p);
+  if (p.timing === "planned") {
+    var y = p.year;
+    var op = (typeof y === "number" && y >= 2024) ? 0.5 : 0.32;
+    return { color: c.edge, weight: 2,
+      fillColor: c.fill, fillOpacity: op };
+  }
+  return { color: c.edge, weight: 1.5, dashArray: "5 4",
+    fillColor: c.fill, fillOpacity: 0.10 };
 }
 var STATEWIDE_PROGRAM_LABELS = {
   "dnr-stand-exam-10yr": "DNR 10-year stand exam",
@@ -1850,10 +1802,15 @@ var STATEWIDE_REGION_LABELS = {
 function logStatewidePopup(f) {
   var p = f.properties;
   var planned = p.timing === "planned";
+  /* First line names both dimensions at a glance: seller —
+     timing (Paul, Nov 16, 2026). The seller label is the same
+     key the map colors use; the manager row is dropped — the
+     title now carries it. */
+  var seller = timberSellerColor(p).label;
   var rows = [
+    ["Unit", p.name || (planned ? "Planned harvest" : "Timber sale")],
     ["Timing", planned ? "Planned — watch list" : "Past — sold / completed"],
     ["Type", STATEWIDE_PROGRAM_LABELS[p.program] || p.program],
-    ["Manager", p.manager],
     ["Acres", p.acres],
     ["Year", p.year],
     ["County", p.county],
@@ -1879,8 +1836,8 @@ function logStatewidePopup(f) {
       "sale; not every examined stand becomes one."
     : "Sold / completed — historical context. The year is the " +
       "sale year.";
-  var out = "<h3>" + esc(p.name || (planned ? "Planned harvest"
-    : "Timber sale")) + "</h3>" + kvTable(rows) +
+  var out = "<h3>" + esc(seller + " — " +
+    (planned ? "Planned" : "Past")) + "</h3>" + kvTable(rows) +
     "<p class='pop-note'>" + note + "</p>";
   if (p.program === "dnr-stand-exam-10yr") {
     out += popSourceLine(SRC_DNR_STAND_EXAM_10YR,
@@ -4121,6 +4078,7 @@ function swatchFor(def) {
   if (s.kind === "fill") {
     return "<span class='tog-swatch-fill' style='background:" +
       s.color + ";border-color:" + (s.border || s.color) +
+      (s.opacity != null ? ";opacity:" + s.opacity : "") +
       "'></span>";
   }
   if (s.kind === "alert") {
@@ -5706,41 +5664,13 @@ var LAYERS = [
     },
   },
   {
-    /* Logging and burns (Phase 3, Nov 12, 2026): Cass County
-       timber sales, current, clipped to the trail corridor
-       (1,182 units, 2007–2026). OFF by default and LAZY like
-       parcels — nothing fetches data/logging-cass-timber-
-       sales.geojson until the box is first checked. No expiry
-       or status in the source, so the popup shows the year
-       prominently. */
-    id: "logcass", label: "Cass timber sales",
-    subgroup: "Timber sales",
-    title: "Cass County timber sales, current — year is the sale year",
-    file: "data/logging-cass-timber-sales.geojson",
-    onByDefault: false, group: "The land",
-    swatch: { kind: "fill", color: "#d97706", border: "#92400e" },
-    build: function (gj) {
-      var layer = L.geoJSON(gj, {
-        renderer: canvasFor(),
-        style: function (f) {
-          return timberSaleStyle(f, {
-            color: "#92400e", weight: 1.5,
-            fillColor: "#d97706", fillOpacity: 0.28,
-          });
-        },
-        onEachFeature: function (f, l) { bindPop(l, logCassPopup(f)); },
-      });
-      return layer;
-    },
-  },
-  {
     /* Cass County FIM (forest inventory) stands, current,
        clipped to the corridor (6,472 stands). OFF by default
        and LAZY. An inventory, not a sale — stand_age 0 means
        unrecorded. Geometry simplified to ~22 m for the viewer;
        no stands dropped. */
-    id: "logfim", label: "Cass forest stands",
-    title: "Cass County forest inventory stands",
+    id: "logfim", label: "Cass forest stands (inventory)",
+    title: "Cass County forest inventory stands — an inventory, not a sale",
     file: "data/logging-cass-fim-stands.geojson",
     onByDefault: false, group: "The land", subgroup: "Management",
     swatch: { kind: "fill", color: "#6b8e23", border: "#556b2f" },
@@ -5757,132 +5687,26 @@ var LAYERS = [
     },
   },
   {
-    /* USFS EDW timber sale project areas, Chippewa National
-       Forest (124 areas). OFF by default and LAZY. These are
-       project areas, not sale units — much larger than the
-       Cass sale units — so they draw underneath them. */
-    id: "logedw", label: "Chippewa NF timber sales",
-    subgroup: "Timber sales",
-    title: "USFS timber sale project areas, Chippewa National Forest",
-    file: "data/logging-edw-timber-sale.geojson",
-    onByDefault: false, group: "The land",
-    swatch: { kind: "fill", color: "#64748b", border: "#475569" },
-    build: function (gj) {
-      var layer = L.geoJSON(gj, {
-        renderer: canvasFor(),
-        style: function (f) {
-          return timberSaleStyle(f, {
-            color: "#475569", weight: 1.5,
-            fillColor: "#64748b", fillOpacity: 0.15,
-          });
-        },
-        onEachFeature: function (f, l) { bindPop(l, logEdwPopup(f)); },
-      });
-      return layer;
-    },
-  },
-  {
-    /* Hubbard County timber sales (Paul, Nov 13, 2026 — "I'm
-       seeing Cass County, but I'm not seeing Hubbard County"):
-       67 sales in the corridor, 3,137.5 ac, 2023–2026, pulled
-       Nov 13 from the county's own ArcGIS Online service
-       (scripts in working/logging-burns/county-timber-sales/).
-       OFF by default and LAZY. The Status field is the past /
-       future signal Paul asked for: 65 sold, 2 upcoming. Year
-       is read off the sale-number prefix (verified 23/23
-       against Becker's Year field). Recent sales (2024–2026)
-       render amber via timberSaleStyle, like Cass. */
-    id: "loghubbard", label: "Hubbard timber sales",
-    subgroup: "Timber sales",
-    title: "Hubbard County timber sales — status is the past/future signal",
-    file: "data/logging-hubbard-timber-sales.geojson",
-    onByDefault: false, group: "The land",
-    swatch: { kind: "fill", color: "#a16207", border: "#713f12" },
-    build: function (gj) {
-      var layer = L.geoJSON(gj, {
-        renderer: canvasFor(),
-        style: function (f) {
-          return timberSaleStyle(f, {
-            color: "#713f12", weight: 1.5,
-            fillColor: "#a16207", fillOpacity: 0.28,
-          });
-        },
-        onEachFeature: function (f, l) { bindPop(l, logHubbardPopup(f)); },
-      });
-      return layer;
-    },
-  },
-  {
-    /* Becker County timber appraisals (Paul, Nov 13, 2026): 88
-       in the corridor, 2,596.7 ac, 2023–2026, pulled Nov 13
-       from the county's PreRX Appraisals service. OFF by default
-       and LAZY. The Closed field is the past / future signal
-       where filled (Yes 37, No 1, null 50); 39 records carry no
-       year. Recent sales render amber via timberSaleStyle. */
-    id: "logbecker", label: "Becker timber sales",
-    subgroup: "Timber sales",
-    title: "Becker County timber appraisals",
-    file: "data/logging-becker-timber-sales.geojson",
-    onByDefault: false, group: "The land",
-    swatch: { kind: "fill", color: "#15803d", border: "#14532d" },
-    build: function (gj) {
-      var layer = L.geoJSON(gj, {
-        renderer: canvasFor(),
-        style: function (f) {
-          return timberSaleStyle(f, {
-            color: "#14532d", weight: 1.5,
-            fillColor: "#15803d", fillOpacity: 0.28,
-          });
-        },
-        onEachFeature: function (f, l) { bindPop(l, logBeckerPopup(f)); },
-      });
-      return layer;
-    },
-  },
-  {
-    /* Clearwater County timber appraisals (Paul, Nov 13, 2026):
-       the county's PreRX service holds almost nothing — 1
-       appraisal in the corridor (90.2 ac, no year), 3
-       county-wide. OFF by default and LAZY. Clearwater's real
-       sales live in its auction packets (Spring + Summer 2026
-       PDFs on disk) — a PLSS-conversion build, not a service
-       pull; that build is still owed. */
-    id: "logclearwater", label: "Clearwater timber sales",
-    subgroup: "Timber sales",
-    title: "Clearwater County timber appraisals — nearly empty service",
-    file: "data/logging-clearwater-timber-sales.geojson",
-    onByDefault: false, group: "The land",
-    swatch: { kind: "fill", color: "#1d4ed8", border: "#1e3a8a" },
-    build: function (gj) {
-      var layer = L.geoJSON(gj, {
-        renderer: canvasFor(),
-        style: function (f) {
-          return timberSaleStyle(f, {
-            color: "#1e3a8a", weight: 1.5,
-            fillColor: "#1d4ed8", fillOpacity: 0.28,
-          });
-        },
-        onEachFeature: function (f, l) { bindPop(l, logClearwaterPopup(f)); },
-      });
-      return layer;
-    },
-  },
-  {
     /* Statewide timber, PLANNED (Paul, Nov 16, 2026 — planned
        first): 1,190 features in the 2-mile corridor — both DNR
        stand-exam programs (10-yr 1,077 + annual 89) plus 24
        upcoming county sales / appraisals. ON by default: this is
        the watch list — planned harvests to track so a cut doesn't
-       reach the trail. Prominent amber; a near-term year
-       (>= 2024) fills stronger via plannedTimberStyle. Same file
-       as the past toggle below; the second fetch of the same URL
-       is served from the browser HTTP cache. */
+       reach the trail. Style is timberStyle: the seller picks
+       the color, planned is a solid fill (a near-term year
+       >= 2024 fills stronger). The toggle's swatch is a
+       six-segment strip of the seller colors — no single color
+       stands for the layer. Same file as the past toggle below;
+       the second fetch of the same URL is served from the
+       browser HTTP cache. */
     id: "logplanned", label: "Planned harvests — watch list",
     subgroup: "Timber sales",
-    title: "Planned timber harvests statewide along the trail — the watch list",
+    title: "Planned timber harvests statewide along the trail — the watch list. Color = seller, solid fill = planned",
     file: "data/timber-sales-minnesota.geojson",
     onByDefault: true, group: "The land",
-    swatch: { kind: "fill", color: "#f59e0b", border: "#92400e" },
+    swatch: { kind: "fill",
+      color: "linear-gradient(90deg,#0d9488 0 16.7%,#d97706 16.7% 33.3%,#16a34a 33.3% 50%,#9333ea 50% 66.7%,#2563eb 66.7% 83.3%,#db2777 83.3% 100%)",
+      border: "#374151" },
     build: function (gj) {
       var planned = {
         type: "FeatureCollection",
@@ -5892,24 +5716,54 @@ var LAYERS = [
       };
       var layer = L.geoJSON(planned, {
         renderer: canvasFor(),
-        style: plannedTimberStyle,
+        style: timberStyle,
         onEachFeature: function (f, l) { bindPop(l, logStatewidePopup(f)); },
       });
       return layer;
+    },
+    /* Panel key (Paul, Nov 16, 2026 — "tell each seller and
+       future/past apart"): the legend lives under this toggle,
+       inside the Timber sales subgroup, built from the same
+       TIMBER_SELLERS constants the map draws with. */
+    panelExtra: function (label) {
+      var key = document.createElement("div");
+      key.className = "tog-timber-key";
+      var html = "<div class='tog-timber-key-title'>" +
+        "Color = seller &middot; fill = timing</div>";
+      TIMBER_SELLERS.forEach(function (s) {
+        html += "<div class='tog-timber-key-row'>" +
+          "<span class='tog-swatch-fill' style='background:" +
+          s.fill + ";border-color:" + s.edge + "'></span>" +
+          s.label + "</div>";
+      });
+      html += "<div class='tog-timber-key-row'>" +
+        "<span class='tog-swatch-fill' style='background:#0d9488;" +
+        "border-color:#0f766e'></span>" +
+        "Solid fill = planned (watch list)</div>";
+      html += "<div class='tog-timber-key-row'>" +
+        "<span class='tog-swatch-fill' style='background:" +
+        "rgba(13,148,136,0.10);border:1px dashed #0f766e'></span>" +
+        "Dashed faint outline = past (sold)</div>";
+      key.innerHTML = html;
+      label.parentNode.insertBefore(key, label.nextSibling);
     },
   },
   {
     /* Statewide timber, PAST (Paul, Nov 16, 2026): 361 sold /
        completed sales in the 2-mile corridor — county sales 317
        + USFS EDW 44. OFF by default and LAZY: historical
-       context, dimmer — recent sales (2024–2026) still render
-       amber via timberSaleStyle, like the chapter layers. */
+       context. Style is timberStyle: the seller picks the color,
+       past is the same color as a dashed outline with only a
+       faint fill, so past reads as past at a glance. The
+       toggle's swatch is the six-seller strip, faded. */
     id: "logpast", label: "Past timber sales",
     subgroup: "Timber sales",
-    title: "Sold / completed timber sales statewide along the trail — historical context",
+    title: "Sold / completed timber sales statewide along the trail — historical context. Color = seller, dashed faint outline = past",
     file: "data/timber-sales-minnesota.geojson",
     onByDefault: false, group: "The land",
-    swatch: { kind: "fill", color: "#64748b", border: "#475569" },
+    swatch: { kind: "fill",
+      color: "linear-gradient(90deg,#0d9488 0 16.7%,#d97706 16.7% 33.3%,#16a34a 33.3% 50%,#9333ea 50% 66.7%,#2563eb 66.7% 83.3%,#db2777 83.3% 100%)",
+      border: "#374151", opacity: 0.45 },
     build: function (gj) {
       var past = {
         type: "FeatureCollection",
@@ -5919,12 +5773,7 @@ var LAYERS = [
       };
       var layer = L.geoJSON(past, {
         renderer: canvasFor(),
-        style: function (f) {
-          return timberSaleStyle(f, {
-            color: "#475569", weight: 1.5,
-            fillColor: "#64748b", fillOpacity: 0.15,
-          });
-        },
+        style: timberStyle,
         onEachFeature: function (f, l) { bindPop(l, logStatewidePopup(f)); },
       });
       return layer;
@@ -7838,8 +7687,8 @@ function assertDrawOrder() {
        land layers
        (foresthealth, invasives, chippewa-plan) sit with the
        other "The land" fills, after easements, before access. */
-    ["leechlake", "whiteearth", "parcels", "parcels-driftless", "logedw", "logfim", "logcass", "loghubbard",
-     "logbecker", "logclearwater", "logpast", "logplanned", "easements", "foresthealth",
+    ["leechlake", "whiteearth", "parcels", "parcels-driftless", "logfim",
+     "logpast", "logplanned", "easements", "foresthealth",
      "invasives", "chippewa-plan", "access",
      "roads", "nctasheets",
      "dnr-waboose", "dnr-burntside-bear-island", "dnr-grand-portage-sf",
@@ -7947,6 +7796,29 @@ function legendHtml() {
   add("<span class='swatch fill' style='background:#e7e1c3'></span>",
     "Driftless parcel (Iowa Co., WI — half-mile corridor)");
   add(pin(COLORS.assetPin), "Asset pin (photo inventory)");
+  /* Timber sales (Paul, Nov 16, 2026 — seller + timing at a
+     glance): the same TIMBER_SELLERS colors the map draws
+     with. Color is the seller; a solid fill is planned, a
+     dashed faint outline is past. */
+  add("", "<strong>Timber sales</strong>");
+  add("", "Color = seller &middot; fill = timing");
+  add("<span class='swatch fill' style='background:#0d9488'></span>",
+    "MN DNR (planned stand exams)");
+  add("<span class='swatch fill' style='background:#d97706'></span>",
+    "Cass County");
+  add("<span class='swatch fill' style='background:#16a34a'></span>",
+    "Becker County");
+  add("<span class='swatch fill' style='background:#9333ea'></span>",
+    "Hubbard County");
+  add("<span class='swatch fill' style='background:#2563eb'></span>",
+    "USFS — Chippewa National Forest");
+  add("<span class='swatch fill' style='background:#db2777'></span>",
+    "USFS — Superior National Forest");
+  add("<span class='swatch fill' style='background:#0d9488'></span>",
+    "Solid fill = planned (watch list)");
+  add("<span class='swatch fill' style='background:" +
+    "rgba(13,148,136,0.10);border:1px dashed #0f766e'></span>",
+    "Dashed faint outline = past (sold)");
   add("", "<strong>Trail alerts</strong>");
   add("<span class='swatch alert'></span>",
     "Trail alert — closure, storm damage, reroute (NCTA)");
