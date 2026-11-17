@@ -740,7 +740,7 @@ function baseByCode(code) {
      the button opens them. Same pattern as the layer
      sub-toggles. */
   var bgHead = document.getElementById("basemap-head");
-  if (bgHead) wireSubToggleExpand(bgHead, main, "basemap choices");
+  if (bgHead) wireSubToggleExpand(bgHead, main, "basemap choices", true);
 })();
 L.control.scale({ imperial: true, metric: true }).addTo(map);
 
@@ -2157,8 +2157,16 @@ function syncAlertsBox() {
    panelExtra builds per-item checkboxes gets a disclosure button
    on its label row; the items start hidden and the button opens
    them. The main checkbox still controls the whole layer — the
-   button only shows or hides the item list. */
-function wireSubToggleExpand(label, wrap, openLabel) {
+   button only shows or hides the item list.
+   wholeRow (Paul, Nov 16, 2026 — the Basemap heading): the
+   label is a plain heading with no checkbox, so the heading
+   itself is the click target, not just the arrow — the arrow
+   button has no listener of its own; its click bubbles up to
+   the heading and toggles once. Same pattern as the panel
+   groups. The layer-label call sites leave wholeRow off: their
+   rows carry the layer checkbox, so the arrow stays the only
+   toggle there. */
+function wireSubToggleExpand(label, wrap, openLabel, wholeRow) {
   wrap.classList.add("sub-toggles", "collapsed");
   var btn = document.createElement("button");
   btn.type = "button";
@@ -2167,14 +2175,16 @@ function wireSubToggleExpand(label, wrap, openLabel) {
   btn.setAttribute("aria-expanded", "false");
   btn.setAttribute("aria-label", "Show " + openLabel);
   btn.title = "Show " + openLabel;
-  btn.addEventListener("click", function () {
+  function toggle() {
     var collapsed = wrap.classList.toggle("collapsed");
     btn.textContent = collapsed ? "▸" : "▾";
     btn.setAttribute("aria-expanded", collapsed ? "false" : "true");
     btn.setAttribute("aria-label",
       (collapsed ? "Show " : "Hide ") + openLabel);
     btn.title = (collapsed ? "Show " : "Hide ") + openLabel;
-  });
+  }
+  if (wholeRow) label.addEventListener("click", toggle);
+  else btn.addEventListener("click", toggle);
   label.appendChild(btn);
 }
 function assetTypeCode(f) {

@@ -1622,7 +1622,11 @@ body.base-imagery.gap-chip .gap-label span {
   letter-spacing: 0.06em;
   color: var(--ink-soft);
   margin: 10px 0 2px;
+  cursor: pointer;
+  padding: 2px 4px;
+  border-radius: 4px;
 }
+#panel #basemap-head:hover { background: var(--paper-hover); }
 #background-choices.collapsed { display: none; }
 #background-choices {
   display: grid;
