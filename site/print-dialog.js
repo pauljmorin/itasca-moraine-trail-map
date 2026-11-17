@@ -1,7 +1,7 @@
 /* Print dialog — in-viewer printing (Paul, Nov 17, 2026).
  *
- * A small Print button sits in the map's top-right corner, the same
- * size as the Legend pill. Clicking it opens a dialog with one job:
+ * A printer icon sits next to the Copy link button in the panel.
+ * Clicking it opens a dialog with one job:
  * make ONE map of either a box you draw or the current map window,
  * as a GeoPDF download. The map book stays on the export page; this
  * dialog deliberately has no layer list — it prints the layers

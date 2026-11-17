@@ -906,25 +906,35 @@ html, body {
   color: #fff;
 }
 
-/* Print button + dialog (Paul, Nov 17, 2026): a small pill in the
-   map's top-right corner, the same size as the Legend button, opening
-   a dialog that prints ONE map — a drawn box or the current window.
-   No layer list here; it prints the layers ticked in the panel. */
-#print-corner {
-  position: absolute;
-  top: 10px;
-  right: 10px;
-  z-index: 1000;
+/* Print button + dialog (Paul, Nov 17, 2026): a printer icon next to
+   the Copy link button in the panel, in the Present button's idiom
+   (30px square, same border). It opens a dialog that prints ONE map —
+   a drawn box or the current window. No layer list here; it prints
+   the layers ticked in the panel. */
+.panel-actions {
+  display: flex;
+  gap: 6px;
+  margin: 8px 0 0;
 }
-#print-corner button {
-  background: var(--paper);
-  border: 1px solid #a89a5b;
-  border-radius: 14px;
-  padding: 4px 12px;
-  font-size: 0.85rem;
+.panel-actions .copy-link-btn {
+  flex: 1 1 auto;
+  width: auto;
+  margin: 0;
+}
+.print-btn {
+  flex: 0 0 auto;
+  width: 30px;
+  height: 30px;
+  padding: 0;
+  font-size: 16px;
+  line-height: 1;
+  color: var(--ink);
+  background: #fff;
+  border: 1px solid #b9cba5;
+  border-radius: 6px;
   cursor: pointer;
-  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.25);
 }
+.print-btn:hover { background: var(--paper-hover); }
 #print-dialog-backdrop {
   position: absolute;
   inset: 0;
@@ -2334,7 +2344,6 @@ body.present #panel {
 body.present #panel > :not(#inspector) { display: none; }
 body.present #inspector:not(.has-selection) { display: none; }
 body.present #corner-ui { display: none; }
-body.present #print-corner { display: none; }
 body.present .leaflet-popup-content { font-size: 1.05rem; }
 body.present .leaflet-popup-content h3 { font-size: 1.15rem; }
 body.present .leaflet-tooltip.section-name-label { font-size: 17px; }

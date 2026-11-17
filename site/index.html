@@ -22,7 +22,11 @@
       aria-label="Present — big screen">⛶</button>
   </div>
 
-  <button type="button" id="copy-link-btn" class="copy-link-btn" title="Copy link">Copy link</button>
+  <div class="panel-actions">
+    <button type="button" id="copy-link-btn" class="copy-link-btn" title="Copy link">Copy link</button>
+    <button type="button" id="btn-print" class="print-btn"
+      title="Print a map" aria-label="Print a map">&#x2399;</button>
+  </div>
 
   <h2>Adoption</h2>
   <p class="adopt-line"><strong>73.2 of 76.2 mi adopted.</strong>
@@ -90,13 +94,10 @@
       <button type="button" id="btn-legend" aria-pressed="false">Legend</button>
     </div>
   </div>
-  <!-- Print (Paul, Nov 17, 2026): a small button in the map's
-       top-right corner, the same size as the Legend button. It opens
-       a dialog that prints ONE map — a box you draw, or the current
-       map window. The map book stays on the export page. -->
-  <div id="print-corner">
-    <button type="button" id="btn-print">Print</button>
-  </div>
+  <!-- Print dialog (Paul, Nov 17, 2026): opened by the printer icon
+       next to Copy link in the panel. It prints ONE map — a box you
+       draw, or the current map window. The map book stays on the
+       export page. -->
   <div id="print-dialog-backdrop" hidden>
     <div id="print-dialog" role="dialog" aria-modal="true"
       aria-labelledby="print-dialog-title">
