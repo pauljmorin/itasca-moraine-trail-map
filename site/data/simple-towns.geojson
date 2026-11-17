@@ -1,0 +1,32 @@
+{
+"type": "FeatureCollection",
+"name": "points",
+"crs": { "type": "name", "properties": { "name": "urn:ogc:def:crs:OGC:1.3:CRS84" } },
+"features": [
+{ "type": "Feature", "properties": { "name": "Walker", "place": "village" }, "geometry": { "type": "Point", "coordinates": [ -94.57984, 47.10155 ] } },
+{ "type": "Feature", "properties": { "name": "Elbow Lake", "place": "hamlet" }, "geometry": { "type": "Point", "coordinates": [ -95.54603, 47.14802 ] } },
+{ "type": "Feature", "properties": { "name": "Brevik", "place": "hamlet" }, "geometry": { "type": "Point", "coordinates": [ -94.28859, 47.08301 ] } },
+{ "type": "Feature", "properties": { "name": "Hackensack", "place": "village" }, "geometry": { "type": "Point", "coordinates": [ -94.52041, 46.93003 ] } },
+{ "type": "Feature", "properties": { "name": "Chamberlain", "place": "hamlet" }, "geometry": { "type": "Point", "coordinates": [ -94.72167, 46.90524 ] } },
+{ "type": "Feature", "properties": { "name": "Goldenrod", "place": "hamlet" }, "geometry": { "type": "Point", "coordinates": [ -95.23419, 47.0944 ] } },
+{ "type": "Feature", "properties": { "name": "Arago", "place": "village" }, "geometry": { "type": "Point", "coordinates": [ -95.16148, 47.05123 ] } },
+{ "type": "Feature", "properties": { "name": "Park Estates", "place": "hamlet" }, "geometry": { "type": "Point", "coordinates": [ -95.01528, 46.94028 ] } },
+{ "type": "Feature", "properties": { "name": "Dorset", "place": "hamlet" }, "geometry": { "type": "Point", "coordinates": [ -94.95252, 46.95635 ] } },
+{ "type": "Feature", "properties": { "name": "Pine Point", "place": "village" }, "geometry": { "type": "Point", "coordinates": [ -95.38342, 46.97773 ] } },
+{ "type": "Feature", "properties": { "name": "Deer Lane", "place": "hamlet" }, "geometry": { "type": "Point", "coordinates": [ -94.97807, 47.03996 ] } },
+{ "type": "Feature", "properties": { "name": "Ponsford", "place": "hamlet" }, "geometry": { "type": "Point", "coordinates": [ -95.38387, 46.96996 ] } },
+{ "type": "Feature", "properties": { "name": "Ah-gwah-ching", "place": "hamlet" }, "geometry": { "type": "Point", "coordinates": [ -94.56277, 47.07412 ] } },
+{ "type": "Feature", "properties": { "name": "Lake George", "place": "village" }, "geometry": { "type": "Point", "coordinates": [ -94.99323, 47.20045 ] } },
+{ "type": "Feature", "properties": { "name": "Akeley", "place": "village" }, "geometry": { "type": "Point", "coordinates": [ -94.72696, 47.0042 ] } },
+{ "type": "Feature", "properties": { "name": "Nevis", "place": "village" }, "geometry": { "type": "Point", "coordinates": [ -94.83955, 46.96515 ] } },
+{ "type": "Feature", "properties": { "name": "Elbow Lake Village", "place": "hamlet" }, "geometry": { "type": "Point", "coordinates": [ -95.55198, 47.14667 ] } },
+{ "type": "Feature", "properties": { "name": "Osage", "place": "village" }, "geometry": { "type": "Point", "coordinates": [ -95.25691, 46.92033 ] } },
+{ "type": "Feature", "properties": { "name": "Park Rapids", "place": "town" }, "geometry": { "type": "Point", "coordinates": [ -95.05863, 46.92218 ] } },
+{ "type": "Feature", "properties": { "name": "Whipholt", "place": "hamlet" }, "geometry": { "type": "Point", "coordinates": [ -94.36526, 47.04885 ] } },
+{ "type": "Feature", "properties": { "name": "Emmaville", "place": "hamlet" }, "geometry": { "type": "Point", "coordinates": [ -94.98057, 47.06551 ] } },
+{ "type": "Feature", "properties": { "name": "Benedict", "place": "hamlet" }, "geometry": { "type": "Point", "coordinates": [ -94.69055, 47.15801 ] } },
+{ "type": "Feature", "properties": { "name": "Baker", "place": "hamlet" }, "geometry": { "type": "Point", "coordinates": [ -94.51916, 47.12162 ] } },
+{ "type": "Feature", "properties": { "name": "Onigum", "place": "hamlet" }, "geometry": { "type": "Point", "coordinates": [ -94.54713, 47.10757 ] } },
+{ "type": "Feature", "properties": { "name": "Two Inlets", "place": "village" }, "geometry": { "type": "Point", "coordinates": [ -95.21756, 47.05126 ] } }
+]
+}
