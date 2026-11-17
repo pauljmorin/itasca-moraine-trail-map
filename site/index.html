@@ -25,7 +25,7 @@
   <div class="panel-actions">
     <button type="button" id="copy-link-btn" class="copy-link-btn" title="Copy link">Copy link</button>
     <button type="button" id="btn-print" class="print-btn"
-      title="Print a map" aria-label="Print a map">&#x2399;</button>
+      title="Print" aria-label="Print">&#x2399;</button>
   </div>
 
   <h2>Adoption</h2>
@@ -126,14 +126,28 @@
       </div>
       <label class="print-field">Resolution
         <select id="print-dpi">
-          <option value="150" selected>150 dpi — quick print</option>
-          <option value="200">200 dpi</option>
-          <option value="300">300 dpi — print shop</option>
+          <option value="150">150 dpi — quick print</option>
+          <option value="300" selected>300 dpi — print shop</option>
+          <option value="600">600 dpi — large format</option>
         </select>
       </label>
+      <label class="print-choice print-simple-switch"><input type="checkbox"
+        id="print-simple"> Simple map — black linework on white</label>
+      <div id="print-simple-list" hidden>
+        <label class="print-choice print-simple-item"><input type="checkbox"
+          id="print-simple-trail" checked> Trail</label>
+        <label class="print-choice print-simple-item"><input type="checkbox"
+          id="print-simple-lakes" checked> Lake outlines</label>
+        <label class="print-choice print-simple-item"><input type="checkbox"
+          id="print-simple-roads" checked> Access roads</label>
+        <label class="print-choice print-simple-item"><input type="checkbox"
+          id="print-simple-parking" checked> Parking + trailheads</label>
+        <label class="print-choice print-simple-item"><input type="checkbox"
+          id="print-simple-towns" checked> Town names</label>
+      </div>
       <p id="print-size-line" class="print-note"></p>
-      <p class="print-note">Uses the layers turned on in the left
-        panel.</p>
+      <p id="print-mode-note" class="print-note">Uses the layers turned
+        on in the left panel.</p>
       <p id="print-status" class="print-status" role="status"></p>
       <div class="print-actions">
         <button type="button" id="print-go" class="print-go">Download

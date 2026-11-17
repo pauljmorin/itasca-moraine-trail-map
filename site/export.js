@@ -147,6 +147,17 @@
     termini: "boundaries.geojson",
     chainage: "chainage.geojson",
     "section-names": "stretches.geojson",
+    /* Simple map (Paul, Nov 17, 2026): black linework on white.
+       Lakes + towns + roads come from OSM (see
+       scripts/build-simple-map-data.sh); parking from the
+       gazetteer, trailheads from access-points. NOT in
+       RENDER_ORDER — the simple branch draws them directly. */
+    "simple-lakes": "simple-lakes.geojson",
+    "simple-roads": "simple-roads.geojson",
+    "simple-towns": "simple-towns.geojson",
+    "simple-parking": "gazetteer.geojson",
+    "simple-trailheads": "access-points.geojson",
+    "simple-trail": "trail.geojson",
   };
   /* Draw order, bottom -> top (same as scripts/export_geopdf.py
      LAYERS and the viewer's assertDrawOrder). */
@@ -271,7 +282,11 @@
   function walkGeom(geom, cb) {
     if (!geom) return;
     var t = geom.type;
-    if (t === "Point") cb("point", geom.coordinates);
+    if (t === "GeometryCollection") {
+      /* e.g. West Crooked Lake arrives as Polygon + LineString. */
+      (geom.geometries || []).forEach(function (g) { walkGeom(g, cb); });
+    }
+    else if (t === "Point") cb("point", geom.coordinates);
     else if (t === "MultiPoint") {
       geom.coordinates.forEach(function (c) { cb("point", c); });
     } else if (t === "LineString") cb("line", geom.coordinates);
@@ -760,6 +775,81 @@
           n++;
         });
         return n;
+      /* ---- Simple map (Paul, Nov 17, 2026): black linework on
+         white. Widths are points (scaled by PX_PER_PT); markers
+         are sized in points too, so they hold up at 300/600 dpi. */
+      case "simple-lakes":
+        feats.forEach(function (f) {
+          walkGeom(f.geometry, function (kind, coords) {
+            if (kind === "poly") {
+              /* Outline only — no fill (the board member's ask). */
+              fillPoly(ctx, coords, proj, null, "#000000", 1, null);
+              n++;
+            }
+          });
+        });
+        return n;
+      case "simple-roads":
+        feats.forEach(function (f) {
+          walkGeom(f.geometry, function (kind, coords) {
+            if (kind === "line") {
+              strokeCoords(ctx, coords, proj, "#777777", 1.5, null);
+              n++;
+            }
+          });
+        });
+        return n;
+      case "simple-trail":
+        feats.forEach(function (f) {
+          walkGeom(f.geometry, function (kind, coords) {
+            if (kind === "line") {
+              strokeCoords(ctx, coords, proj, "#000000", 3, null);
+              n++;
+            }
+          });
+        });
+        return n;
+      case "simple-parking":
+        feats.forEach(function (f) {
+          if (f.properties.kind !== "Parking") return;
+          walkGeom(f.geometry, function (kind, coords) {
+            if (kind !== "point") return;
+            var x = proj.x(coords[0]), y = proj.y(coords[1]);
+            if (x < -20 || y < -20 || x > proj.W + 20 || y > proj.H + 20) return;
+            disc(ctx, x, y, 7 * PX_PER_PT, "#000000", "#ffffff");
+            label(ctx, x, y, "P", 8, "#ffffff", false);
+            n++;
+          });
+        });
+        return n;
+      case "simple-trailheads":
+        feats.forEach(function (f) {
+          if (f.properties.kind !== "road") return;
+          walkGeom(f.geometry, function (kind, coords) {
+            if (kind !== "point") return;
+            var x = proj.x(coords[0]), y = proj.y(coords[1]);
+            if (x < -20 || y < -20 || x > proj.W + 20 || y > proj.H + 20) return;
+            disc(ctx, x, y, 4 * PX_PER_PT, "#000000", "#ffffff");
+            n++;
+          });
+        });
+        return n;
+      case "simple-towns": {
+        var TOWN_PT = { city: 13, town: 12, village: 11, hamlet: 10 };
+        feats.forEach(function (f) {
+          var name = f.properties.name;
+          if (!name) return;
+          var size = TOWN_PT[f.properties.place] || 10;
+          walkGeom(f.geometry, function (kind, coords) {
+            if (kind !== "point") return;
+            var x = proj.x(coords[0]), y = proj.y(coords[1]);
+            if (x < -40 || y < -40 || x > proj.W + 40 || y > proj.H + 40) return;
+            label(ctx, x, y, String(name), size, "#000000", false);
+            n++;
+          });
+        });
+        return n;
+      }
       default:
         return 0;
     }
@@ -915,7 +1005,15 @@
       }
     }
 
-    /* Basemap: OSM street tiles covering the area. */
+    /* Simple map (Paul, Nov 17, 2026): black linework on a white
+       page, using ONLY the dialog's checklist — it replaces the
+       layers ticked in the panel for this print. */
+    var simple = !!(opts && opts.simple);
+    var simpleLayers = (opts && opts.simpleLayers) || {};
+    function simpleOn(key) { return simpleLayers[key] !== false; }
+
+    /* Basemap: OSM street tiles covering the area — skipped for a
+       Simple map, which is black linework on a white page. */
     function tileList() {
       var list = [];
       var a0 = Math.floor(x0 / 256), a1 = Math.floor((x1 - 1) / 256);
@@ -925,8 +1023,8 @@
       }
       return list;
     }
-    var tiles = tileList();
-    if (paper) {
+    var tiles = simple ? [] : tileList();
+    if (paper && !simple) {
       /* Step the basemap zoom down until the tile count fits the
          budget; the vector layers stay full-resolution, only the
          street backdrop softens. */
@@ -937,7 +1035,7 @@
         tiles = tileList();
       }
     }
-    if (tiles.length > MAX_TILES) {
+    if (!simple && tiles.length > MAX_TILES) {
       throw new Error("area too large: needs " + tiles.length +
         " basemap tiles (max " + MAX_TILES + "); draw a smaller area");
     }
@@ -953,23 +1051,30 @@
       x: function (lon) { return (lonToPx(lon, zoom) - x0) / (x1 - x0) * W; },
       y: function (lat) { return (latToPx(lat, zoom) - y0) / (y1 - y0) * H; },
     };
-    if (onProgress) onProgress("Basemap: fetching " + tiles.length +
-      " street tiles (zoom " + zoom + ")…");
-    var BATCH = 6;
-    for (var i = 0; i < tiles.length; i += BATCH) {
-      var batch = tiles.slice(i, i + BATCH);
-      var imgs = await Promise.all(batch.map(function (t) {
-        return fetchTile(zoom, t[0], t[1]);
-      }));
-      imgs.forEach(function (img, j) {
-        var txx = batch[j][0], tyy = batch[j][1];
-        var tLonW = txx / Math.pow(2, zoom) * 360 - 180;
-        var tLonE = (txx + 1) / Math.pow(2, zoom) * 360 - 180;
-        var tLatN = tileLat(tyy, zoom), tLatS = tileLat(tyy + 1, zoom);
-        var dx = proj.x(tLonW), dw = proj.x(tLonE) - dx;
-        var dy = proj.y(tLatN), dh = proj.y(tLatS) - dy;
-        ctx.drawImage(img, dx, dy, dw, dh);
-      });
+    if (simple) {
+      /* White page (a JPEG has no transparency — an unfilled
+         canvas would print black). */
+      ctx.fillStyle = "#ffffff";
+      ctx.fillRect(0, 0, W, H);
+    } else {
+      if (onProgress) onProgress("Basemap: fetching " + tiles.length +
+        " street tiles (zoom " + zoom + ")…");
+      var BATCH = 6;
+      for (var i = 0; i < tiles.length; i += BATCH) {
+        var batch = tiles.slice(i, i + BATCH);
+        var imgs = await Promise.all(batch.map(function (t) {
+          return fetchTile(zoom, t[0], t[1]);
+        }));
+        imgs.forEach(function (img, j) {
+          var txx = batch[j][0], tyy = batch[j][1];
+          var tLonW = txx / Math.pow(2, zoom) * 360 - 180;
+          var tLonE = (txx + 1) / Math.pow(2, zoom) * 360 - 180;
+          var tLatN = tileLat(tyy, zoom), tLatS = tileLat(tyy + 1, zoom);
+          var dx = proj.x(tLonW), dw = proj.x(tLonE) - dx;
+          var dy = proj.y(tLatN), dh = proj.y(tLatS) - dy;
+          ctx.drawImage(img, dx, dy, dw, dh);
+        });
+      }
     }
 
     /* Vectors, in the viewer's draw order. */
@@ -977,24 +1082,71 @@
       assetTypes: enabledAssetTypes() };
     var drawnIds = [];
     var drawnCount = {};
-    for (var k = 0; k < RENDER_ORDER.length; k++) {
-      var id = RENDER_ORDER[k];
-      if (layerIds.indexOf(id) < 0) continue;
-      var file = LAYER_FILES[id];
-      if (!file) continue;
-      if (onProgress) onProgress("Drawing " + id + "…");
-      var gj = await fetchGeoJSON(file);
-      var cnt = drawLayer(ctx, id, gj, proj, env);
-      if (cnt > 0) {
-        drawnIds.push(id);
-        drawnCount[id] = cnt;
+    var simpleSkipped = [];
+    if (simple) {
+      /* Fixed order, bottom -> top: lakes, roads, trail, parking
+         + trailheads, towns. A file that fails to load is skipped
+         (the dialog greys it out first); roads fall back to the
+         chapter's curated roads file when the OSM extract is
+         missing. */
+      var simplePlan = [
+        ["lakes", "simple-lakes", null],
+        ["roads", "simple-roads", "roads"],
+        ["trail", "simple-trail", null],
+        ["parking", "simple-parking", null],
+        ["parking", "simple-trailheads", null],
+        ["towns", "simple-towns", null],
+      ];
+      for (var s = 0; s < simplePlan.length; s++) {
+        var sKey = simplePlan[s][0], sId = simplePlan[s][1],
+            sFallback = simplePlan[s][2];
+        if (!simpleOn(sKey)) continue;
+        var sFile = LAYER_FILES[sId];
+        if (!sFile) continue;
+        if (onProgress) onProgress("Drawing " + sId + "…");
+        var sGj = null;
+        try {
+          sGj = await fetchGeoJSON(sFile);
+        } catch (sErr) {
+          if (sFallback) {
+            try { sGj = await fetchGeoJSON(LAYER_FILES[sFallback]); }
+            catch (sErr2) { sGj = null; }
+          }
+        }
+        if (!sGj) { simpleSkipped.push(sKey); continue; }
+        var sCnt = drawLayer(ctx, sId, sGj, proj, env);
+        if (sCnt > 0) {
+          drawnIds.push(sId);
+          drawnCount[sId] = sCnt;
+        }
+      }
+    } else {
+      for (var k = 0; k < RENDER_ORDER.length; k++) {
+        var id = RENDER_ORDER[k];
+        if (layerIds.indexOf(id) < 0) continue;
+        var file = LAYER_FILES[id];
+        if (!file) continue;
+        if (onProgress) onProgress("Drawing " + id + "…");
+        var gj = await fetchGeoJSON(file);
+        var cnt = drawLayer(ctx, id, gj, proj, env);
+        if (cnt > 0) {
+          drawnIds.push(id);
+          drawnCount[id] = cnt;
+        }
       }
     }
 
-    drawLegend(ctx, legendRowsFor(drawnIds, env), W, H);
-    drawTitleFooter(ctx, title, subtitle, W, H);
+    /* The legend and title stay off the printed map (Paul, Nov 16,
+       2026 — the legend goes on a companion sheet, titles are
+       added in other software). The export page's bounds-shaped
+       path keeps them, as before. */
+    if (!paper) {
+      drawLegend(ctx, legendRowsFor(drawnIds, env), W, H);
+      drawTitleFooter(ctx, title, subtitle, W, H);
+    }
     return { canvas: canvas, bbox: [w, s, e, n], zoom: zoom,
-      layers: drawnIds, counts: drawnCount };
+      layers: drawnIds, counts: drawnCount,
+      simpleSkipped: simpleSkipped };
     } finally {
       /* The paper path scales PX_PER_PT to the chosen DPI; restore it
          so a later bounds-shaped export renders as before. */
@@ -1032,6 +1184,24 @@
     });
     if (!any || !anyOff) return null;
     return new Set(enabled);
+  }
+
+  /* Simple-map data check (Paul, Nov 17, 2026): which of the
+     checklist files actually load. Roads fall back to the
+     chapter's curated roads file, so they are available whenever
+     either file loads. Warms the GeoJSON cache for the render. */
+  async function simpleAvailable() {
+    var out = { lakes: false, towns: false, roads: false };
+    try { await fetchGeoJSON("simple-lakes.geojson"); out.lakes = true; }
+    catch (e) {}
+    try { await fetchGeoJSON("simple-towns.geojson"); out.towns = true; }
+    catch (e) {}
+    try { await fetchGeoJSON("simple-roads.geojson"); out.roads = true; }
+    catch (e) {
+      try { await fetchGeoJSON("roads.geojson"); out.roads = true; }
+      catch (e2) {}
+    }
+    return out;
   }
 
   /* ------------------------------------------------------------- UI */
@@ -1129,7 +1299,9 @@
     }
     if (!bounds) throw new Error("no map — the viewer did not load");
     var layerIds = onLayerIds();
-    if (!layerIds.length) {
+    /* A Simple map replaces the panel layers with its own
+       checklist, so it needs no layers ticked. */
+    if (!layerIds.length && !(opts && opts.simple)) {
       throw new Error("no layers are ticked — tick at least one layer");
     }
     var title = "Itasca Moraine — Trail Map export";
@@ -1165,15 +1337,21 @@
     setTimeout(function () { URL.revokeObjectURL(a.href); }, 60000);
     var mb = (pdfBlob.size / 1048576).toFixed(2);
     var paperLabel = "";
+    if (opts && opts.simple) paperLabel += "Simple map · ";
     if (opts && opts.paper && PAPER_SIZES[opts.paper]) {
-      paperLabel = PAPER_NAMES[opts.paper] + " " +
+      paperLabel += PAPER_NAMES[opts.paper] + " " +
         (opts.orientation === "landscape" ? "landscape" : "portrait") +
         " · " + ((opts && opts.dpi) || EXPORT_DPI) + " dpi · ";
     }
+    var skippedNote = "";
+    if (result.simpleSkipped && result.simpleSkipped.length) {
+      skippedNote = " (unavailable: " +
+        result.simpleSkipped.join(", ") + ")";
+    }
     return "Done — " + paperLabel + result.canvas.width + " × " +
       result.canvas.height + " px, zoom " + result.zoom + ", " +
-      result.layers.length + " layers, " + mb + " MB. " +
-      "Georeferenced (UTM 15N); opens in Avenza Maps and QGIS.";
+      result.layers.length + " layers" + skippedNote + ", " + mb +
+      " MB. Georeferenced (UTM 15N); opens in Avenza Maps and QGIS.";
   }
 
   async function doExport() {
@@ -1219,6 +1397,7 @@
       downloadGeoPdf: downloadGeoPdf,
       onLayerIds: onLayerIds,
       renderExport: renderExport,
+      simpleAvailable: simpleAvailable,
     };
     window.ItmExportTest = {
       lonToPx: lonToPx, latToPx: latToPx, tileLat: tileLat,

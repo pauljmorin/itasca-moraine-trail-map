@@ -8,8 +8,11 @@
  * ticked in the left panel, whatever they are.
  *
  * The dialog also picks the paper size (Letter, Legal, Tabloid, A4,
- * A3), the orientation, and the DPI (150/200/300); the map is fitted
- * to the paper exactly, so the GeoPDF page is the paper size.
+ * A3), the orientation, and the DPI (150/300/600, default 300); the
+ * map is fitted to the paper exactly, so the GeoPDF page is the
+ * paper size. The Simple map switch prints black linework on white
+ * — trail, lake outlines, access roads, parking + trailheads, town
+ * names only — instead of the layers ticked in the panel.
  *
  * Rendering is shared with the export page:
  * window.ItmExport.downloadGeoPdf(bounds, onStatus, opts) in export.js.
@@ -46,15 +49,35 @@
     a4: "A4", a3: "A3",
   };
 
+  function checked(id) {
+    var el = $(id);
+    return !!(el && el.checked);
+  }
+
+  /* Simple-map data availability, probed once per dialog open
+     (Paul, Nov 17, 2026): an item whose file is missing is greyed
+     out in the checklist instead of failing the print. Optimistic
+     until probed — the files normally exist. */
+  var simpleAvail = { lakes: true, towns: true, roads: true };
+
   function printOpts() {
     var paper = $("print-paper");
     var dpi = $("print-dpi");
     var orient = document.querySelector(
       'input[name="print-orient"]:checked');
+    var simple = checked("print-simple");
     return {
       paper: paper ? paper.value : "letter",
       orientation: orient ? orient.value : "portrait",
-      dpi: dpi ? parseInt(dpi.value, 10) : 150,
+      dpi: dpi ? parseInt(dpi.value, 10) : 300,
+      simple: simple,
+      simpleLayers: simple ? {
+        trail: checked("print-simple-trail"),
+        lakes: checked("print-simple-lakes"),
+        roads: checked("print-simple-roads"),
+        parking: checked("print-simple-parking"),
+        towns: checked("print-simple-towns"),
+      } : null,
     };
   }
 
@@ -73,10 +96,46 @@
       o.dpi + " dpi";
   }
 
+  function refreshSimpleAvailability() {
+    if (!window.ItmExport || !window.ItmExport.simpleAvailable) return;
+    window.ItmExport.simpleAvailable().then(function (avail) {
+      simpleAvail = avail;
+      [["print-simple-lakes", avail.lakes],
+       ["print-simple-roads", avail.roads],
+       ["print-simple-towns", avail.towns]].forEach(function (pair) {
+        var box = $(pair[0]);
+        if (!box) return;
+        box.disabled = !pair[1];
+        if (!pair[1]) box.checked = false;
+        if (box.parentNode) {
+          box.parentNode.classList.toggle("unavailable", !pair[1]);
+        }
+      });
+      refresh();
+    }).catch(function () { /* leave the checklist as-is */ });
+  }
+
   function refresh() {
     var go = $("print-go");
     var redraw = $("print-redraw");
     refreshSizeLine();
+    var simpleOn = checked("print-simple");
+    var simpleList = $("print-simple-list");
+    if (simpleList) simpleList.hidden = !simpleOn;
+    var note = $("print-mode-note");
+    if (note) {
+      if (simpleOn) {
+        var missing = [];
+        if (!simpleAvail.lakes) missing.push("lake outlines");
+        if (!simpleAvail.roads) missing.push("access roads");
+        if (!simpleAvail.towns) missing.push("town names");
+        note.textContent = "Simple map: only the items above, black " +
+          "on white." + (missing.length ?
+            " Not available: " + missing.join(", ") + "." : "");
+      } else {
+        note.textContent = "Uses the layers turned on in the left panel.";
+      }
+    }
     if (!go) return;
     if (mode === "box" && !drawnBounds) {
       go.textContent = "Draw a box on the map";
@@ -97,6 +156,7 @@
     if (!back) return;
     back.hidden = false;
     refresh();
+    refreshSimpleAvailability();
   }
   function closeDialog() {
     var back = $("print-dialog-backdrop");
@@ -227,6 +287,9 @@
     orientRadios.forEach(function (r) {
       r.addEventListener("change", refreshSizeLine);
     });
+    /* Simple map switch: show/hide its checklist + note. */
+    var simpleBox = $("print-simple");
+    if (simpleBox) simpleBox.addEventListener("change", refresh);
     /* Keep clicks on the button and the dialog from reaching the map
        underneath (otherwise a click on Print while drawing is armed
        would start a rectangle at the button). */

@@ -1007,6 +1007,12 @@ html, body {
   color: #475569;
   margin: 8px 0 0;
 }
+/* Simple map (Paul, Nov 17, 2026): the switch + its short
+   checklist of what the black linework includes. An item whose
+   data file is missing is greyed out (see print-dialog.js). */
+.print-simple-switch { margin-top: 10px; }
+#print-simple-list { margin: 2px 0 0 22px; }
+.print-simple-item.unavailable { color: #94a3b8; }
 .print-status {
   font-size: 0.85rem;
   line-height: 1.45;
@@ -1800,6 +1806,10 @@ body.base-imagery.gap-chip .gap-label span {
   font-weight: 400;
 }
 .bg-choice.on .bg-sub { color: #d8e4c8; }
+/* White — no basemap (Paul, Nov 17, 2026): with no tile layer the
+   map pane shows the container background — make it white, not
+   Leaflet's grey, so the map reads as a blank page. */
+body.base-white .leaflet-container { background: #ffffff; }
 /* A sub-choice (Streets, Trails under Topo) is a full-size
    button like every other base — same width, same height. The
    class stays so the code can tell them apart; it changes
@@ -2345,6 +2355,36 @@ body.view-work #copy-link-btn {
   box-shadow: 0 1px 4px rgba(0, 0, 0, 0.25);
 }
 body.view-work #copy-link-btn:hover { background-color: var(--paper-hover); }
+
+/* --- Work view Print button (Paul, Nov 17, 2026): in Work view the
+   Print button leaves the panel like Copy link does and becomes a
+   printer icon in the upper-right corner, immediately left of the
+   link icon — same 36 px, same border, shadow and paper
+   background, 6 px gap, no overlap. In Explore/Visit it stays the
+   panel icon next to Copy link. --- */
+body.view-work #btn-print {
+  position: fixed;
+  top: 10px;
+  right: 52px;
+  z-index: 1100;
+  width: 36px;
+  height: 36px;
+  margin: 0;
+  padding: 0;
+  font-size: 0;
+  background-color: var(--paper);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%231c2a1e' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9V2h12v7'/%3E%3Cpath d='M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2'/%3E%3Crect x='6' y='14' width='12' height='8'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 20px 20px;
+  border: 1px solid #b9cba5;
+  border-radius: 6px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.25);
+}
+body.view-work #btn-print:hover { background-color: var(--paper-hover); }
+/* With both buttons fixed to the corner, the panel-actions row in
+   the panel is empty — collapse its margin. */
+body.view-work .panel-actions { margin: 0; }
 
 /* --- Present mode (R4): the panel chrome hides and the
    record card floats over the map, bottom-left, above the

@@ -111,6 +111,12 @@ var osm = L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
   attribution: "© OpenStreetMap contributors",
 });
 
+/* White — no basemap (Paul, Nov 17, 2026): an empty layer group, so
+   choosing it removes the tiles and the map background goes white
+   (body.base-white in style.css). First button in the Basemap list,
+   for the board member's black-and-white line drawing. */
+var whiteBase = L.layerGroup([]);
+
 /* Base layers. v2 added the MnGeo LiDAR hillshade + aerials; v3 cut
    the USGS shaded relief and the MnGeo spring aerial and added the
    USGS Topo (1:24,000 quadrangle series); v4 makes OpenTopoMap the
@@ -496,6 +502,11 @@ var mnCanopyHeight = L.tileLayer(
    snowmobile emphasis in step (the old Leaflet layers control
    and its baselayerchange handler are gone). */
 var BASES = [
+  /* White — no basemap (Paul, Nov 17, 2026): first in the list, so
+     one tap clears the tiles for a white page. It is NOT the
+     default — Topo stays the default (see currentBase below). */
+  { name: "White — no basemap", code: "white",
+    label: "White — no basemap", layer: whiteBase, white: true },
   { name: "Topo (OpenTopoMap)", code: "topo", label: "OpenTopoMap",
     layer: topo },
   /* Streets and Trails sit under Topo (Paul, Nov 13, 2026):
@@ -594,7 +605,10 @@ var BASES = [
      bases are the Tree height overlay's source now, not
      choices. They stay defined above and are NOT listed here. */
 ];
-var currentBase = BASES[0];
+/* Topo stays the default even though White is first in the list
+   (baseByName is a hoisted function declaration, so this call
+   works here). */
+var currentBase = baseByName("Topo (OpenTopoMap)");
 
 function setBase(name) {
   var def = null;
@@ -604,6 +618,10 @@ function setBase(name) {
   map.addLayer(def.layer);
   currentBase = def;
   document.body.classList.toggle("base-imagery", /^Aerial/.test(name));
+  /* White — no basemap (Paul, Nov 17, 2026): with no tile layer
+     the map pane shows the container background — body.base-white
+     in style.css makes it white, not Leaflet's grey. */
+  document.body.classList.toggle("base-white", !!def.white);
   /* S3 (cartography notes): casing registers — the casing colour
      and register follow the base-map family. LLC never gets a
      casing in any register. Bases not listed default to paper. */
