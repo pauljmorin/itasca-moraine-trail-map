@@ -906,6 +906,112 @@ html, body {
   color: #fff;
 }
 
+/* Print button + dialog (Paul, Nov 17, 2026): a small pill in the
+   map's top-right corner, the same size as the Legend button, opening
+   a dialog that prints ONE map — a drawn box or the current window.
+   No layer list here; it prints the layers ticked in the panel. */
+#print-corner {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  z-index: 1000;
+}
+#print-corner button {
+  background: var(--paper);
+  border: 1px solid #a89a5b;
+  border-radius: 14px;
+  padding: 4px 12px;
+  font-size: 0.85rem;
+  cursor: pointer;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.25);
+}
+#print-dialog-backdrop {
+  position: absolute;
+  inset: 0;
+  z-index: 1100;
+  background: rgba(15, 23, 42, 0.35);
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding-top: 12vh;
+}
+#print-dialog-backdrop[hidden] { display: none; }
+#print-dialog {
+  position: relative;
+  background: var(--paper);
+  border: 1px solid var(--paper-line);
+  border-radius: 8px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+  padding: 14px 16px;
+  width: 320px;
+  max-width: 88vw;
+}
+#print-dialog h2 {
+  font-size: 1rem;
+  margin: 0 0 8px;
+}
+#print-close-x {
+  position: absolute;
+  top: 6px;
+  right: 10px;
+  border: none;
+  background: none;
+  font-size: 1.2rem;
+  line-height: 1;
+  cursor: pointer;
+  color: var(--ink);
+}
+.print-choice {
+  display: block;
+  font-size: 0.92rem;
+  line-height: 1.5;
+  cursor: pointer;
+}
+.print-note {
+  font-size: 0.82rem;
+  color: #475569;
+  margin: 8px 0 0;
+}
+.print-status {
+  font-size: 0.85rem;
+  line-height: 1.45;
+  margin: 8px 0 0;
+  min-height: 1.2em;
+}
+.print-actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 10px;
+}
+.print-actions button {
+  padding: 6px 12px;
+  border: 1px solid #64748b;
+  border-radius: 4px;
+  background: #fff;
+  color: #1e293b;
+  cursor: pointer;
+  font-size: 0.88rem;
+}
+.print-actions button.print-go {
+  font-weight: 600;
+  background: var(--trail-deep);
+  border-color: var(--trail-deep);
+  color: #fff;
+}
+.print-actions button:disabled { opacity: 0.45; cursor: default; }
+.print-redraw {
+  display: block;
+  margin: 8px 0 0;
+  padding: 0;
+  border: none;
+  background: none;
+  color: #1d4ed8;
+  font-size: 0.82rem;
+  cursor: pointer;
+  text-decoration: underline;
+}
+.print-redraw[hidden] { display: none; }
+
 /* Map-face text (divIcons, non-interactive): terminus names and the
    gap's name label. (Section names are Leaflet tooltips, styled
    separately below.) Children are absolutely positioned on the 0x0
@@ -2228,6 +2334,7 @@ body.present #panel {
 body.present #panel > :not(#inspector) { display: none; }
 body.present #inspector:not(.has-selection) { display: none; }
 body.present #corner-ui { display: none; }
+body.present #print-corner { display: none; }
 body.present .leaflet-popup-content { font-size: 1.05rem; }
 body.present .leaflet-popup-content h3 { font-size: 1.15rem; }
 body.present .leaflet-tooltip.section-name-label { font-size: 17px; }

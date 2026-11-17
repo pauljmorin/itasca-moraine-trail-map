@@ -90,6 +90,35 @@
       <button type="button" id="btn-legend" aria-pressed="false">Legend</button>
     </div>
   </div>
+  <!-- Print (Paul, Nov 17, 2026): a small button in the map's
+       top-right corner, the same size as the Legend button. It opens
+       a dialog that prints ONE map — a box you draw, or the current
+       map window. The map book stays on the export page. -->
+  <div id="print-corner">
+    <button type="button" id="btn-print">Print</button>
+  </div>
+  <div id="print-dialog-backdrop" hidden>
+    <div id="print-dialog" role="dialog" aria-modal="true"
+      aria-labelledby="print-dialog-title">
+      <button type="button" id="print-close-x"
+        aria-label="Close">×</button>
+      <h2 id="print-dialog-title">Print a map</h2>
+      <label class="print-choice"><input type="radio" name="print-area"
+        value="window" checked> This map window</label>
+      <label class="print-choice"><input type="radio" name="print-area"
+        value="box"> A box I draw on the map</label>
+      <p class="print-note">Uses the layers turned on in the left
+        panel.</p>
+      <p id="print-status" class="print-status" role="status"></p>
+      <div class="print-actions">
+        <button type="button" id="print-go" class="print-go">Download
+          GeoPDF</button>
+        <button type="button" id="print-close">Close</button>
+      </div>
+      <button type="button" id="print-redraw" class="print-redraw"
+        hidden>Draw a different box</button>
+    </div>
+  </div>
   <button type="button" id="show-panel-btn" hidden>‹ Show panel</button>
   <div id="present-strip" hidden><!-- Present-mode strip injected by app.js --></div>
   <div id="present-card" hidden><!-- Present-mode record card injected by app.js --></div>
@@ -97,5 +126,9 @@
 </div>
 <script src="leaflet.js"></script>
 <script src="app.js"></script>
+<script src="pdf-lib.min.js"></script>
+<script src="geopdf-writer.js"></script>
+<script src="export.js"></script>
+<script src="print-dialog.js"></script>
 </body>
 </html>

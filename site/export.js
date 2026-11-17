@@ -1016,61 +1016,71 @@
     });
   }
 
+  /* Shared download: render the given bounds as a GeoPDF and save it.
+   * Used by the export page (doExport below) and by the in-viewer
+   * print dialog (site/print-dialog.js, Paul Nov 17, 2026).
+   * onStatus receives short progress lines; resolves to a one-line
+   * summary, or rejects with the failure. */
+  async function downloadGeoPdf(bounds, onStatus) {
+    var say = onStatus || function () {};
+    if (typeof PDFLib === "undefined") {
+      throw new Error("pdf-lib failed to load — check site/pdf-lib.min.js");
+    }
+    if (!window.ItmGeoPdf) {
+      throw new Error("geopdf-writer.js failed to load");
+    }
+    if (!bounds) throw new Error("no map — the viewer did not load");
+    var layerIds = onLayerIds();
+    if (!layerIds.length) {
+      throw new Error("no layers are ticked — tick at least one layer");
+    }
+    var title = "Itasca Moraine — Trail Map export";
+    var subtitle = "Itasca Moraine Chapter, North Country Trail Association";
+    say("Rendering…");
+    var result = await renderExport(bounds, layerIds, title, subtitle, say);
+    say("Writing GeoPDF…");
+    var blob = await new Promise(function (resolve, reject) {
+      result.canvas.toBlob(function (b) {
+        if (b) resolve(b);
+        else reject(new Error("canvas to JPEG failed"));
+      }, "image/jpeg", 0.85);
+    });
+    var jpegBytes = new Uint8Array(await blob.arrayBuffer());
+    var pdfBytes = await window.ItmGeoPdf.writeGeoPdf({
+      jpegBytes: jpegBytes,
+      widthPx: result.canvas.width,
+      heightPx: result.canvas.height,
+      bboxLonLat: result.bbox,
+      title: title,
+      subject: subtitle,
+      dpi: EXPORT_DPI,
+    });
+    var pdfBlob = new Blob([pdfBytes], { type: "application/pdf" });
+    var stamp = new Date().toISOString().replace(/[-:T]/g, "")
+      .slice(0, 12);
+    var a = document.createElement("a");
+    a.href = URL.createObjectURL(pdfBlob);
+    a.download = "itasca-moraine-export-" + stamp + ".pdf";
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    setTimeout(function () { URL.revokeObjectURL(a.href); }, 60000);
+    var mb = (pdfBlob.size / 1048576).toFixed(2);
+    return "Done — " + result.canvas.width + " × " +
+      result.canvas.height + " px, zoom " + result.zoom + ", " +
+      result.layers.length + " layers, " + mb + " MB. " +
+      "Georeferenced (UTM 15N); opens in Avenza Maps and QGIS.";
+  }
+
   async function doExport() {
     var go = $("export-go");
     if (go) go.disabled = true;
     try {
-      if (typeof PDFLib === "undefined") {
-        throw new Error("pdf-lib failed to load — check site/pdf-lib.min.js");
-      }
-      if (!window.ItmGeoPdf) {
-        throw new Error("geopdf-writer.js failed to load");
-      }
       var bounds = exportBounds ||
         (typeof map !== "undefined" ? map.getBounds() : null);
-      if (!bounds) throw new Error("no map — the viewer did not load");
-      var layerIds = onLayerIds();
-      if (!layerIds.length) {
-        throw new Error("no layers are ticked — tick at least one layer");
-      }
-      var today = new Date().toISOString().slice(0, 10);
-      var title = "Itasca Moraine — Trail Map export";
-      var subtitle = "Itasca Moraine Chapter, North Country Trail Association";
-      setStatus("Rendering…");
-      var result = await renderExport(bounds, layerIds, title, subtitle,
-        function (msg) { setStatus(msg); });
-      setStatus("Writing GeoPDF…");
-      var blob = await new Promise(function (resolve, reject) {
-        result.canvas.toBlob(function (b) {
-          if (b) resolve(b);
-          else reject(new Error("canvas to JPEG failed"));
-        }, "image/jpeg", 0.85);
-      });
-      var jpegBytes = new Uint8Array(await blob.arrayBuffer());
-      var pdfBytes = await window.ItmGeoPdf.writeGeoPdf({
-        jpegBytes: jpegBytes,
-        widthPx: result.canvas.width,
-        heightPx: result.canvas.height,
-        bboxLonLat: result.bbox,
-        title: title,
-        subject: subtitle,
-        dpi: EXPORT_DPI,
-      });
-      var pdfBlob = new Blob([pdfBytes], { type: "application/pdf" });
-      var stamp = new Date().toISOString().replace(/[-:T]/g, "")
-        .slice(0, 12);
-      var a = document.createElement("a");
-      a.href = URL.createObjectURL(pdfBlob);
-      a.download = "itasca-moraine-export-" + stamp + ".pdf";
-      document.body.appendChild(a);
-      a.click();
-      a.remove();
-      setTimeout(function () { URL.revokeObjectURL(a.href); }, 60000);
-      var mb = (pdfBlob.size / 1048576).toFixed(2);
-      setStatus("Done — " + result.canvas.width + " × " +
-        result.canvas.height + " px, zoom " + result.zoom + ", " +
-        result.layers.length + " layers, " + mb + " MB. " +
-        "Georeferenced (UTM 15N); opens in Avenza Maps and QGIS.");
+      setStatus(await downloadGeoPdf(bounds, function (msg) {
+        setStatus(msg);
+      }));
     } catch (err) {
       setStatus("Export failed: " + (err && err.message ? err.message : err));
       if (window.console) console.error(err);
@@ -1100,6 +1110,12 @@
   /* Test hook: pure helpers + the canvas renderer, for node-side
      checks with a stub 2d context (no browser needed). */
   if (typeof window !== "undefined") {
+    /* The print dialog (site/print-dialog.js) renders through here. */
+    window.ItmExport = {
+      downloadGeoPdf: downloadGeoPdf,
+      onLayerIds: onLayerIds,
+      renderExport: renderExport,
+    };
     window.ItmExportTest = {
       lonToPx: lonToPx, latToPx: latToPx, tileLat: tileLat,
       chooseZoom: chooseZoom, drawLayer: drawLayer,
