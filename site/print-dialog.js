@@ -7,8 +7,12 @@
  * dialog deliberately has no layer list — it prints the layers
  * ticked in the left panel, whatever they are.
  *
+ * The dialog also picks the paper size (Letter, Legal, Tabloid, A4,
+ * A3), the orientation, and the DPI (150/200/300); the map is fitted
+ * to the paper exactly, so the GeoPDF page is the paper size.
+ *
  * Rendering is shared with the export page:
- * window.ItmExport.downloadGeoPdf(bounds, onStatus) in export.js.
+ * window.ItmExport.downloadGeoPdf(bounds, onStatus, opts) in export.js.
  */
 (function () {
   "use strict";
@@ -31,9 +35,48 @@
     return w + "° × " + h + " lon/lat";
   }
 
+  /* Paper sizes, inches, portrait — mirrors PAPER_SIZES in export.js.
+     Kept here so the dialog can show the resulting pixel size live. */
+  var PAPER_IN = {
+    letter: [8.5, 11], legal: [8.5, 14], tabloid: [11, 17],
+    a4: [8.27, 11.69], a3: [11.69, 16.54],
+  };
+  var PAPER_NAME = {
+    letter: "Letter", legal: "Legal", tabloid: "Tabloid",
+    a4: "A4", a3: "A3",
+  };
+
+  function printOpts() {
+    var paper = $("print-paper");
+    var dpi = $("print-dpi");
+    var orient = document.querySelector(
+      'input[name="print-orient"]:checked');
+    return {
+      paper: paper ? paper.value : "letter",
+      orientation: orient ? orient.value : "portrait",
+      dpi: dpi ? parseInt(dpi.value, 10) : 150,
+    };
+  }
+
+  function refreshSizeLine() {
+    var el = $("print-size-line");
+    if (!el) return;
+    var o = printOpts();
+    var d = PAPER_IN[o.paper] || PAPER_IN.letter;
+    var wIn = d[0], hIn = d[1];
+    if (o.orientation === "landscape") {
+      var t = wIn; wIn = hIn; hIn = t;
+    }
+    var wPx = Math.round(wIn * o.dpi), hPx = Math.round(hIn * o.dpi);
+    el.textContent = (PAPER_NAME[o.paper] || "Letter") + " " +
+      o.orientation + " · " + wPx + " × " + hPx + " px at " +
+      o.dpi + " dpi";
+  }
+
   function refresh() {
     var go = $("print-go");
     var redraw = $("print-redraw");
+    refreshSizeLine();
     if (!go) return;
     if (mode === "box" && !drawnBounds) {
       go.textContent = "Draw a box on the map";
@@ -147,7 +190,7 @@
     }
     if (go) go.disabled = true;
     try {
-      say(await window.ItmExport.downloadGeoPdf(bounds, say));
+      say(await window.ItmExport.downloadGeoPdf(bounds, say, printOpts()));
     } catch (err) {
       say("Print failed: " + (err && err.message ? err.message : err));
       if (window.console) console.error(err);
@@ -175,11 +218,21 @@
         refresh();
       });
     });
+    /* Paper size / orientation / DPI: keep the size line live. */
+    var paperSel = $("print-paper"), dpiSel = $("print-dpi");
+    if (paperSel) paperSel.addEventListener("change", refreshSizeLine);
+    if (dpiSel) dpiSel.addEventListener("change", refreshSizeLine);
+    var orientRadios =
+      document.querySelectorAll('input[name="print-orient"]');
+    orientRadios.forEach(function (r) {
+      r.addEventListener("change", refreshSizeLine);
+    });
     /* Keep clicks on the button and the dialog from reaching the map
        underneath (otherwise a click on Print while drawing is armed
        would start a rectangle at the button). */
     if (window.L && L.DomEvent) {
-      L.DomEvent.disableClickPropagation($("print-corner"));
+      var pb = $("btn-print");
+      if (pb) L.DomEvent.disableClickPropagation(pb);
       L.DomEvent.disableClickPropagation($("print-dialog-backdrop"));
     }
     wireMapEvents();

@@ -28,6 +28,61 @@
   var EXPORT_DPI = 150;
   var MAX_TILES = 500;
 
+  /* Paper sizes for the print dialog (Paul, Nov 17, 2026): [width,
+     height] in inches, portrait. The dialog picks one, plus
+     orientation and DPI; the canvas is rendered at exactly
+     paper-inches x dpi pixels, so the GeoPDF page comes out at
+     exactly the paper size (geopdf-writer.js sizes the page as
+     px * 72 / dpi). */
+  var PAPER_SIZES = {
+    letter: [8.5, 11],
+    legal: [8.5, 14],
+    tabloid: [11, 17],
+    a4: [8.27, 11.69],
+    a3: [11.69, 16.54],
+  };
+  var PAPER_NAMES = {
+    letter: "Letter", legal: "Legal", tabloid: "Tabloid",
+    a4: "A4", a3: "A3",
+  };
+
+  function pxToLon(px, z) {
+    return px / (256 * Math.pow(2, z)) * 360 - 180;
+  }
+  function pxToLat(py, z) {
+    /* Inverse of latToPx: tileLat takes a tile-y, and py/256 is that. */
+    return tileLat(py / 256, z);
+  }
+
+  /* Canvas pixels for a paper size + orientation at a DPI. */
+  function paperPx(paper, orientation, dpi) {
+    var dims = PAPER_SIZES[paper] || PAPER_SIZES.letter;
+    var wIn = dims[0], hIn = dims[1];
+    if (orientation === "landscape") {
+      var t = wIn; wIn = hIn; hIn = t;
+    }
+    return [Math.round(wIn * dpi), Math.round(hIn * dpi)];
+  }
+
+  /* Expand lon/lat bounds [w, s, e, n] to the target width/height
+     aspect, centred, in Web Mercator pixel space at zoom z — so the
+     rendered map fills the paper exactly. Returns [w, s, e, n]. */
+  function fitBoundsToAspect(w, s, e, n, aspect, z) {
+    var x0 = lonToPx(w, z), x1 = lonToPx(e, z);
+    var y0 = latToPx(n, z), y1 = latToPx(s, z);
+    var cw = x1 - x0, ch = y1 - y0;
+    if (cw / ch > aspect) {
+      /* Too wide: grow the height (north/south). */
+      var nh = cw / aspect, cy = (y0 + y1) / 2;
+      y0 = cy - nh / 2; y1 = cy + nh / 2;
+    } else {
+      /* Too tall: grow the width (west/east). */
+      var nw = ch * aspect, cx = (x0 + x1) / 2;
+      x0 = cx - nw / 2; x1 = cx + nw / 2;
+    }
+    return [pxToLon(x0, z), pxToLat(y1, z), pxToLon(x1, z), pxToLat(y0, z)];
+  }
+
   var COLORS = {
     trail: "#1a9850", trailDeep: "#14532d", neighbour: "#7e6a9e",
     slate: "#64748b", slateDark: "#37474f", adopted: "#e08214",
@@ -824,17 +879,67 @@
   }
 
   /* ------------------------------------------- render one export sheet */
-  async function renderExport(bounds, layerIds, title, subtitle, onProgress) {
+  async function renderExport(bounds, layerIds, title, subtitle, onProgress, opts) {
     var w = bounds.getWest(), s = bounds.getSouth();
     var e = bounds.getEast(), n = bounds.getNorth();
-    var zoom = chooseZoom(w, s, e, n, TARGET_PX);
+    /* Paper path (print dialog, Paul Nov 17, 2026): opts.paper picks a
+       paper size, opts.orientation portrait/landscape, opts.dpi the
+       resolution. Without opts this is exactly the old behaviour — a
+       bounds-shaped sheet, 1600 px long edge, 150 dpi. */
+    var paper = opts && opts.paper && PAPER_SIZES[opts.paper];
+    var dpi = (opts && opts.dpi) || EXPORT_DPI;
+    var savedPxPerPt = PX_PER_PT;
+    try {
+    var zoom, W, H;
+    if (paper) {
+      var dims = paperPx(opts.paper, opts.orientation, dpi);
+      W = dims[0]; H = dims[1];
+      var targetPx = Math.max(W, H);
+      zoom = chooseZoom(w, s, e, n, targetPx);
+      var fit = fitBoundsToAspect(w, s, e, n, W / H, zoom);
+      w = fit[0]; s = fit[1]; e = fit[2]; n = fit[3];
+      zoom = chooseZoom(w, s, e, n, targetPx);
+      /* Lines and type print at their true point sizes at this DPI. */
+      PX_PER_PT = dpi / 72;
+    } else {
+      zoom = chooseZoom(w, s, e, n, TARGET_PX);
+      W = TARGET_PX;
+    }
     var x0 = lonToPx(w, zoom), x1 = lonToPx(e, zoom);
     var y0 = latToPx(n, zoom), y1 = latToPx(s, zoom);
-    var W = TARGET_PX;
-    var H = Math.round(W * (y1 - y0) / (x1 - x0));
-    if (H > 2600) {
-      H = 2600;
-      W = Math.round(H * (x1 - x0) / (y1 - y0));
+    if (!paper) {
+      H = Math.round(W * (y1 - y0) / (x1 - x0));
+      if (H > 2600) {
+        H = 2600;
+        W = Math.round(H * (x1 - x0) / (y1 - y0));
+      }
+    }
+
+    /* Basemap: OSM street tiles covering the area. */
+    function tileList() {
+      var list = [];
+      var a0 = Math.floor(x0 / 256), a1 = Math.floor((x1 - 1) / 256);
+      var b0 = Math.floor(y0 / 256), b1 = Math.floor((y1 - 1) / 256);
+      for (var tx = a0; tx <= a1; tx++) {
+        for (var ty = b0; ty <= b1; ty++) list.push([tx, ty]);
+      }
+      return list;
+    }
+    var tiles = tileList();
+    if (paper) {
+      /* Step the basemap zoom down until the tile count fits the
+         budget; the vector layers stay full-resolution, only the
+         street backdrop softens. */
+      while (tiles.length > MAX_TILES && zoom > 9) {
+        zoom--;
+        x0 = lonToPx(w, zoom); x1 = lonToPx(e, zoom);
+        y0 = latToPx(n, zoom); y1 = latToPx(s, zoom);
+        tiles = tileList();
+      }
+    }
+    if (tiles.length > MAX_TILES) {
+      throw new Error("area too large: needs " + tiles.length +
+        " basemap tiles (max " + MAX_TILES + "); draw a smaller area");
     }
     var canvas = document.createElement("canvas");
     canvas.width = W;
@@ -848,18 +953,6 @@
       x: function (lon) { return (lonToPx(lon, zoom) - x0) / (x1 - x0) * W; },
       y: function (lat) { return (latToPx(lat, zoom) - y0) / (y1 - y0) * H; },
     };
-
-    /* Basemap: OSM street tiles covering the area. */
-    var tx0 = Math.floor(x0 / 256), tx1 = Math.floor((x1 - 1) / 256);
-    var ty0 = Math.floor(y0 / 256), ty1 = Math.floor((y1 - 1) / 256);
-    var tiles = [];
-    for (var tx = tx0; tx <= tx1; tx++) {
-      for (var ty = ty0; ty <= ty1; ty++) tiles.push([tx, ty]);
-    }
-    if (tiles.length > MAX_TILES) {
-      throw new Error("area too large: needs " + tiles.length +
-        " basemap tiles (max " + MAX_TILES + "); draw a smaller area");
-    }
     if (onProgress) onProgress("Basemap: fetching " + tiles.length +
       " street tiles (zoom " + zoom + ")…");
     var BATCH = 6;
@@ -902,6 +995,11 @@
     drawTitleFooter(ctx, title, subtitle, W, H);
     return { canvas: canvas, bbox: [w, s, e, n], zoom: zoom,
       layers: drawnIds, counts: drawnCount };
+    } finally {
+      /* The paper path scales PX_PER_PT to the chosen DPI; restore it
+         so a later bounds-shaped export renders as before. */
+      PX_PER_PT = savedPxPerPt;
+    }
   }
 
   /* ------------------------------------------- which layers are on? */
@@ -1021,7 +1119,7 @@
    * print dialog (site/print-dialog.js, Paul Nov 17, 2026).
    * onStatus receives short progress lines; resolves to a one-line
    * summary, or rejects with the failure. */
-  async function downloadGeoPdf(bounds, onStatus) {
+  async function downloadGeoPdf(bounds, onStatus, opts) {
     var say = onStatus || function () {};
     if (typeof PDFLib === "undefined") {
       throw new Error("pdf-lib failed to load — check site/pdf-lib.min.js");
@@ -1037,7 +1135,7 @@
     var title = "Itasca Moraine — Trail Map export";
     var subtitle = "Itasca Moraine Chapter, North Country Trail Association";
     say("Rendering…");
-    var result = await renderExport(bounds, layerIds, title, subtitle, say);
+    var result = await renderExport(bounds, layerIds, title, subtitle, say, opts);
     say("Writing GeoPDF…");
     var blob = await new Promise(function (resolve, reject) {
       result.canvas.toBlob(function (b) {
@@ -1053,7 +1151,7 @@
       bboxLonLat: result.bbox,
       title: title,
       subject: subtitle,
-      dpi: EXPORT_DPI,
+      dpi: (opts && opts.dpi) || EXPORT_DPI,
     });
     var pdfBlob = new Blob([pdfBytes], { type: "application/pdf" });
     var stamp = new Date().toISOString().replace(/[-:T]/g, "")
@@ -1066,7 +1164,13 @@
     a.remove();
     setTimeout(function () { URL.revokeObjectURL(a.href); }, 60000);
     var mb = (pdfBlob.size / 1048576).toFixed(2);
-    return "Done — " + result.canvas.width + " × " +
+    var paperLabel = "";
+    if (opts && opts.paper && PAPER_SIZES[opts.paper]) {
+      paperLabel = PAPER_NAMES[opts.paper] + " " +
+        (opts.orientation === "landscape" ? "landscape" : "portrait") +
+        " · " + ((opts && opts.dpi) || EXPORT_DPI) + " dpi · ";
+    }
+    return "Done — " + paperLabel + result.canvas.width + " × " +
       result.canvas.height + " px, zoom " + result.zoom + ", " +
       result.layers.length + " layers, " + mb + " MB. " +
       "Georeferenced (UTM 15N); opens in Avenza Maps and QGIS.";
@@ -1122,6 +1226,9 @@
       legendRowsFor: legendRowsFor, drawLegend: drawLegend,
       drawTitleFooter: drawTitleFooter, RENDER_ORDER: RENDER_ORDER,
       LAYER_FILES: LAYER_FILES,
+      paperPx: paperPx, fitBoundsToAspect: fitBoundsToAspect,
+      pxToLon: pxToLon, pxToLat: pxToLat,
+      PAPER_SIZES: PAPER_SIZES, PAPER_NAMES: PAPER_NAMES,
     };
   }
 

@@ -103,11 +103,35 @@
       aria-labelledby="print-dialog-title">
       <button type="button" id="print-close-x"
         aria-label="Close">×</button>
-      <h2 id="print-dialog-title">Print a map</h2>
+      <h2 id="print-dialog-title">Print</h2>
       <label class="print-choice"><input type="radio" name="print-area"
         value="window" checked> This map window</label>
       <label class="print-choice"><input type="radio" name="print-area"
         value="box"> A box I draw on the map</label>
+      <label class="print-field">Paper size
+        <select id="print-paper">
+          <option value="letter" selected>Letter — 8.5 × 11 in</option>
+          <option value="legal">Legal — 8.5 × 14 in</option>
+          <option value="tabloid">Tabloid — 11 × 17 in</option>
+          <option value="a4">A4 — 210 × 297 mm</option>
+          <option value="a3">A3 — 297 × 420 mm</option>
+        </select>
+      </label>
+      <div class="print-field"><span
+        class="print-field-label">Orientation</span>
+        <label class="print-choice-inline"><input type="radio"
+          name="print-orient" value="portrait" checked> Portrait</label>
+        <label class="print-choice-inline"><input type="radio"
+          name="print-orient" value="landscape"> Landscape</label>
+      </div>
+      <label class="print-field">Resolution
+        <select id="print-dpi">
+          <option value="150" selected>150 dpi — quick print</option>
+          <option value="200">200 dpi</option>
+          <option value="300">300 dpi — print shop</option>
+        </select>
+      </label>
+      <p id="print-size-line" class="print-note"></p>
       <p class="print-note">Uses the layers turned on in the left
         panel.</p>
       <p id="print-status" class="print-status" role="status"></p>
