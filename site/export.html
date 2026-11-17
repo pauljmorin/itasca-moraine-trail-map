@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Itasca Moraine Chapter — Trail Map (GeoPDF export)</title>
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
+<link rel="stylesheet" href="leaflet.css">
+<link rel="stylesheet" href="style.css">
+<style>
+#export-box .export-note, #sheets-box .export-note { font-size: 13px; line-height: 1.45; margin: 4px 0 8px; }
+#sheets-box .sheets-table { width: 100%; border-collapse: collapse; font-size: 13px; margin: 8px 0; }
+#sheets-box .sheets-table th, #sheets-box .sheets-table td { text-align: left; padding: 3px 6px 3px 0; border-bottom: 1px solid #e2e8f0; vertical-align: top; }
+#sheets-box .sheets-table th { color: #475569; font-weight: 600; }
+#sheets-box .sheets-table td.num { white-space: nowrap; }
+#sheets-box a { color: #1d4ed8; }
+#export-box .export-buttons { display: flex; flex-wrap: wrap; gap: 6px; }
+#export-box .export-btn { padding: 6px 10px; border: 1px solid #64748b; border-radius: 4px; background: #fff; color: #1e293b; cursor: pointer; font-size: 13px; }
+#export-box .export-btn:hover { background: #f1f5f9; }
+#export-box .export-btn.active { background: #d7301f; border-color: #b2182b; color: #fff; }
+#export-box .export-btn:disabled { opacity: 0.45; cursor: default; }
+#export-box .export-go { font-weight: 600; }
+#export-box .export-status { font-size: 13px; line-height: 1.45; margin: 8px 0 0; min-height: 1.2em; }
+</style>
+</head>
+<body>
+<div id="panel">
+  <div class="masthead">
+    <img class="masthead-logo" src="ncta-logo.png"
+      alt="North Country Trail Association">
+    <div class="masthead-words">
+      <h1>Itasca Moraine Chapter</h1>
+      <p class="masthead-desc">Trail Map</p>
+    </div>
+    <button type="button" id="present-btn" class="present-btn"
+      title="Present — big screen"
+      aria-label="Present — big screen">⛶</button>
+  </div>
+
+  <button type="button" id="copy-link-btn" class="copy-link-btn" title="Copy link">Copy link</button>
+
+  <h2>Adoption</h2>
+  <p class="adopt-line"><strong>73.2 of 76.2 mi adopted.</strong>
+    <span class="bar" aria-hidden="true"><i></i></span>
+    One gap left:
+    <button type="button" id="gap-story" class="gap-link">2.9 mi at
+      the west end, in Itasca State Park — it needs an
+      adopter.</button></p>
+
+  <h2>Find</h2>
+  <div id="gazetteer">
+    <input id="gaz-search" type="search" autocomplete="off"
+      role="combobox" aria-expanded="false" aria-controls="gaz-results"
+      aria-autocomplete="list"
+      placeholder="Type a place, section, or crossing…">
+    <div id="gaz-results" role="listbox" hidden></div>
+  </div>
+  <p class="gaz-hint" id="gaz-hint">257 places: sections, crossings,
+    parking, camping, water. Type a place, section, or crossing.</p>
+
+  <div id="inspector" tabindex="-1"><!-- inspector injected by app.js --></div>
+
+  <div id="layer-toggles"><!-- checkboxes injected by app.js --></div>
+
+  <h2 id="basemap-head">Basemap</h2>
+  <div id="background-choices"><!-- base choices injected by app.js --></div>
+
+  <h2>Export GeoPDF</h2>
+  <div id="export-box">
+    <p class="export-note">Export the area you choose as a georeferenced
+      PDF (opens in Avenza Maps and QGIS), with the layers ticked above
+      and the simple street basemap — whatever basemap the map is
+      showing. Draw a rectangle, or export the current view.</p>
+    <div class="export-buttons">
+      <button type="button" id="export-draw" class="export-btn">Draw export area</button>
+      <button type="button" id="export-go" class="export-btn export-go">Download GeoPDF</button>
+      <button type="button" id="export-clear" class="export-btn">Clear area</button>
+    </div>
+    <p id="export-status" class="export-status" role="status"></p>
+  </div>
+
+  <h2>Print the trail in sheets</h2>
+  <div id="sheets-box">
+    <p class="export-note">Print the trail a sheet at a time: one georeferenced PDF per adopted section, rendered at 150 dpi with the street basemap — open in Avenza Maps or QGIS, or print and take it on the trail. Page sizes vary with each section&rsquo;s shape; print scaled to fit letter or 11&times;17. Chainage runs west to east, miles from the west end.</p>
+    <p class="export-note"><a href="books/itasca-moraine-map-book-combined.pdf" download><strong>Combined book — all 30 sheets in one PDF</strong></a> (30 pages, 13.1 MB)</p>
+    <p class="export-note"><a href="books/itasca-moraine-public-2026-11-15.pdf" download><strong>Whole trail on one page</strong></a> — the public-view map as a single vector GeoPDF with toggleable layers (1 page, 25.5 MB)</p>
+    <table class="sheets-table">
+      <thead><tr><th>Sheet</th><th>Trail miles</th><th>Page size</th><th>File</th></tr></thead>
+      <tbody>
+      <tr><td><a href="books/itasca-moraine-book-west-1.pdf" download>West-1</a></td><td class="num">mi 2.9–4.1 · 1.1 mi</td><td class="num">10.7 × 7.8 in</td><td class="num">289 KB</td></tr>
+      <tr><td><a href="books/itasca-moraine-book-west-2.pdf" download>West-2</a></td><td class="num">mi 4.1–6.5 · 2.4 mi</td><td class="num">10.7 × 6.1 in</td><td class="num">201 KB</td></tr>
+      <tr><td><a href="books/itasca-moraine-book-west-3.pdf" download>West-3</a></td><td class="num">mi 6.5–8.4 · 1.9 mi</td><td class="num">10.7 × 6.5 in</td><td class="num">159 KB</td></tr>
+      <tr><td><a href="books/itasca-moraine-book-west-4.pdf" download>West-4</a></td><td class="num">mi 8.4–11.0 · 2.7 mi</td><td class="num">10.7 × 7.9 in</td><td class="num">208 KB</td></tr>
+      <tr><td><a href="books/itasca-moraine-book-west-5.pdf" download>West-5</a></td><td class="num">mi 11.0–13.6 · 2.6 mi</td><td class="num">10.7 × 11.2 in</td><td class="num">280 KB</td></tr>
+      <tr><td><a href="books/itasca-moraine-book-west-6.pdf" download>West-6</a></td><td class="num">mi 13.6–15.9 · 2.4 mi</td><td class="num">10.7 × 10.0 in</td><td class="num">332 KB</td></tr>
+      <tr><td><a href="books/itasca-moraine-book-west-7.pdf" download>West-7</a></td><td class="num">mi 15.9–19.2 · 3.3 mi</td><td class="num">10.7 × 8.7 in</td><td class="num">377 KB</td></tr>
+      <tr><td><a href="books/itasca-moraine-book-west-8a.pdf" download>West-8a</a></td><td class="num">mi 19.2–21.4 · 2.2 mi</td><td class="num">10.7 × 10.4 in</td><td class="num">645 KB</td></tr>
+      <tr><td><a href="books/itasca-moraine-book-west-8b.pdf" download>West-8b</a></td><td class="num">mi 21.4–23.9 · 2.5 mi</td><td class="num">10.7 × 6.6 in</td><td class="num">582 KB</td></tr>
+      <tr><td><a href="books/itasca-moraine-book-west-9.pdf" download>West-9</a></td><td class="num">mi 23.9–25.8 · 1.9 mi</td><td class="num">10.7 × 7.1 in</td><td class="num">584 KB</td></tr>
+      <tr><td><a href="books/itasca-moraine-book-west-10.pdf" download>West-10</a></td><td class="num">mi 25.8–27.5 · 1.7 mi</td><td class="num">10.7 × 14.3 in</td><td class="num">1.0 MB</td></tr>
+      <tr><td><a href="books/itasca-moraine-book-west-11.pdf" download>West-11</a></td><td class="num">mi 27.5–31.0 · 3.5 mi</td><td class="num">10.0 × 17.3 in</td><td class="num">1.1 MB</td></tr>
+      <tr><td><a href="books/itasca-moraine-book-west-12.pdf" download>West-12</a></td><td class="num">mi 31.0–33.1 · 2.1 mi</td><td class="num">10.7 × 11.9 in</td><td class="num">864 KB</td></tr>
+      <tr><td><a href="books/itasca-moraine-book-west-13.pdf" download>West-13</a></td><td class="num">mi 33.1–35.3 · 2.2 mi</td><td class="num">10.7 × 11.5 in</td><td class="num">933 KB</td></tr>
+      <tr><td><a href="books/itasca-moraine-book-west-14.pdf" download>West-14</a></td><td class="num">mi 35.3–37.8 · 2.5 mi</td><td class="num">10.7 × 5.7 in</td><td class="num">447 KB</td></tr>
+      <tr><td><a href="books/itasca-moraine-book-west-15.pdf" download>West-15</a></td><td class="num">mi 37.8–40.5 · 2.8 mi</td><td class="num">10.7 × 7.0 in</td><td class="num">518 KB</td></tr>
+      <tr><td><a href="books/itasca-moraine-book-west-16.pdf" download>West-16</a></td><td class="num">mi 40.5–42.3 · 1.8 mi</td><td class="num">10.7 × 7.8 in</td><td class="num">426 KB</td></tr>
+      <tr><td><a href="books/itasca-moraine-book-west-17.pdf" download>West-17</a></td><td class="num">mi 42.3–45.0 · 2.7 mi</td><td class="num">10.7 × 6.1 in</td><td class="num">202 KB</td></tr>
+      <tr><td><a href="books/itasca-moraine-book-chip-1.pdf" download>Chip-1</a></td><td class="num">mi 45.0–48.4 · 3.4 mi</td><td class="num">10.7 × 13.3 in</td><td class="num">599 KB</td></tr>
+      <tr><td><a href="books/itasca-moraine-book-chip-2.pdf" download>Chip-2</a></td><td class="num">mi 48.4–51.2 · 2.9 mi</td><td class="num">10.7 × 7.8 in</td><td class="num">355 KB</td></tr>
+      <tr><td><a href="books/itasca-moraine-book-chip-3.pdf" download>Chip-3</a></td><td class="num">mi 51.2–53.1 · 1.9 mi</td><td class="num">10.7 × 7.0 in</td><td class="num">328 KB</td></tr>
+      <tr><td><a href="books/itasca-moraine-book-chip-4.pdf" download>Chip-4</a></td><td class="num">mi 53.1–56.5 · 3.4 mi</td><td class="num">10.7 × 10.6 in</td><td class="num">497 KB</td></tr>
+      <tr><td><a href="books/itasca-moraine-book-chip-5.pdf" download>Chip-5</a></td><td class="num">mi 56.5–58.6 · 2.1 mi</td><td class="num">10.7 × 10.4 in</td><td class="num">393 KB</td></tr>
+      <tr><td><a href="books/itasca-moraine-book-chip-6.pdf" download>Chip-6</a></td><td class="num">mi 58.6–60.7 · 2.2 mi</td><td class="num">10.7 × 7.5 in</td><td class="num">265 KB</td></tr>
+      <tr><td><a href="books/itasca-moraine-book-chip-7.pdf" download>Chip-7</a></td><td class="num">mi 60.7–62.4 · 1.7 mi</td><td class="num">10.7 × 8.5 in</td><td class="num">264 KB</td></tr>
+      <tr><td><a href="books/itasca-moraine-book-chip-8.pdf" download>Chip-8</a></td><td class="num">mi 62.4–63.9 · 1.5 mi</td><td class="num">10.7 × 7.4 in</td><td class="num">231 KB</td></tr>
+      <tr><td><a href="books/itasca-moraine-book-chip-9.pdf" download>Chip-9</a></td><td class="num">mi 63.9–66.4 · 2.5 mi</td><td class="num">10.7 × 6.3 in</td><td class="num">228 KB</td></tr>
+      <tr><td><a href="books/itasca-moraine-book-chip-10.pdf" download>Chip-10</a></td><td class="num">mi 66.4–69.7 · 3.3 mi</td><td class="num">10.7 × 6.0 in</td><td class="num">251 KB</td></tr>
+      <tr><td><a href="books/itasca-moraine-book-chip-11.pdf" download>Chip-11</a></td><td class="num">mi 69.7–72.1 · 2.4 mi</td><td class="num">10.7 × 6.6 in</td><td class="num">358 KB</td></tr>
+      <tr><td><a href="books/itasca-moraine-book-chip-12.pdf" download>Chip-12</a></td><td class="num">mi 72.1–76.2 · 4.1 mi</td><td class="num">10.7 × 8.3 in</td><td class="num">407 KB</td></tr>
+      </tbody>
+    </table>
+    <p class="export-note">Sheets built Nov 15, 2026 from the chapter&rsquo;s own data (scripts/export_geopdf.py, GDAL route). The draw-a-rectangle export above is the live version; these sheets are the printable set.</p>
+  </div>
+
+  <p id="load-status" class="status"></p>
+
+  <p class="panel-foot"><a href="data-sources.html" target="_blank"
+    rel="noopener" id="data-sources-link">Data sources</a>
+    <a href="about.html" target="_blank"
+    rel="noopener" id="about-link">About this map</a>
+    <a href="protocol.html" target="_blank"
+    rel="noopener" id="protocol-link">Volunteer protocol</a></p>
+
+  <div id="legend-print" aria-hidden="true">
+    <h2>Legend</h2>
+    <div id="legend-print-body"><!-- print legend injected by app.js --></div>
+  </div>
+  <div class="print-header">
+    <div class="print-masthead">
+      <img class="print-logo" src="ncta-logo.png" alt="">
+      <div>
+        <p class="print-name">Itasca Moraine Chapter</p>
+        <p class="print-desc">Trail Map</p>
+      </div>
+    </div>
+    <p class="print-line">Printed from the chapter trail
+      map<span id="print-date"></span>. For paper use, the USGS Topo
+      base prints cleanest.</p>
+  </div>
+</div>
+<div id="map">
+  <!-- Reference material (sources + legend) lives behind these
+       corner buttons, toggled by app.js; both cards start closed. -->
+  <div id="corner-ui">
+    <div id="legend-card" class="corner-card" hidden>
+      <h2>Legend</h2>
+      <div id="legend"><!-- legend injected by app.js --></div>
+    </div>
+    <div id="corner-buttons">
+      <button type="button" id="btn-legend" aria-pressed="false">Legend</button>
+    </div>
+  </div>
+  <button type="button" id="show-panel-btn" hidden>‹ Show panel</button>
+  <div id="present-strip" hidden><!-- Present-mode strip injected by app.js --></div>
+  <div id="present-card" hidden><!-- Present-mode record card injected by app.js --></div>
+  <div id="present-key" hidden><!-- Present-mode tree-height key injected by app.js --></div>
+</div>
+<script src="leaflet.js"></script>
+<script src="app.js"></script>
+<script src="pdf-lib.min.js"></script>
+<script src="geopdf-writer.js"></script>
+<script src="export.js"></script>
+</body>
+</html>
