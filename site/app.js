@@ -1145,7 +1145,12 @@ function printAccessStyle(f, s) {
 
 /* §2.8 (v7): parcels restyled for the layer's return — re-enabled
    Nov 10, 2026 (evening) as an off-by-default, lazy-loaded layer;
-   styles apply only at Z3+. */
+   styles apply only at Z3+. Nov 17, 2026 (Paul): the adjoining
+   outline was 0.5px dashed — sub-pixel on the canvas renderer,
+   so the fills showed with no visible edge. Adjoining is now a
+   full 1px dashed line, still below the crossed parcels' 1px
+   solid orange, so the hierarchy (crossed reads strongest) holds
+   and every parcel now has an edge you can see. */
 function parcelStyle(f) {
   if (currentBand < 3) {
     return { color: "#a89a5b", weight: 0, opacity: 0, fillOpacity: 0 };
@@ -1153,7 +1158,7 @@ function parcelStyle(f) {
   var crossed = f.properties.corridor === "crossed";
   return {
     color: crossed ? "#b35806" : "#a89a5b",
-    weight: crossed ? 1 : 0.5,
+    weight: 1,
     dashArray: crossed ? null : "3 3",
     fillColor: crossed ? "#fdbb84" : "#e7e1c3",
     fillOpacity: crossed ? 0.32 : 0.12,
