@@ -6143,6 +6143,57 @@ var LAYERS = [
     },
   },
   {
+    /* AllTrails-listed trails (Paul, Nov 17, 2026 — "build the
+       AllTrails suggested layer"): the chapter trails that have
+       AllTrails pages, as one toggleable highlight — the set to
+       promote. OFF by default and LAZY, beside the chapter's own
+       campsites in ITM inventory. Contents, all from the
+       chapter's own data (the map links out to AllTrails; it
+       never copies AllTrails routes or reviews): the three
+       chapter loops in data/chapter-loops.geojson — Waboose Lake
+       Loop, Lake Erin Loop, Nelson Lake Loop (+ Lake Twentyone
+       Trail connector) — each already carrying its `alltrails`
+       URL, drawn here in AllTrails green with a white casing
+       over the teal loops. The two NCT stretches with AllTrails
+       pages are NOT in this layer: their boundaries could not be
+       matched confidently from the chapter's data. (1) North
+       Country Trail in Itasca State Park, 14.3 mi out-and-back
+       (7.15 mi one-way): the chapter holds no Itasca State Park
+       boundary, so the park-exit crossing cannot be located; the
+       7.15-mi point lands mid-West-3 with no landmark, and the
+       page names no trailhead. Missing: the park boundary
+       polygon + the route's start point. (2) NCT Lake Erin to
+       North Stocking Lake, 13.2 mi point-to-point: measured
+       along the chapter's NCT the two endpoints are 9.56 mi
+       apart (Lake Erin trailhead at chainage 56.51, North
+       Stocking Lake at chainage 66.07), and there is no gap and
+       no reroute in that range to explain the 3.6-mi
+       difference. Missing: the AllTrails track itself, or
+       chapter confirmation of which alignment/endpoints
+       AllTrails used. */
+    id: "alltrails", label: "AllTrails-listed trails",
+    title: "Chapter trails with AllTrails pages: Waboose Lake, " +
+      "Lake Erin and Nelson Lake loops — the set to promote",
+    file: "data/chapter-loops.geojson",
+    onByDefault: false, group: "ITM inventory",
+    swatch: { kind: "line", color: "#428a13" },
+    build: function (gj) {
+      return boldLine(gj, "#428a13", function (f) {
+        var p = f.properties;
+        var h = "<h3>" + esc(p.name) + "</h3>" +
+          kvTable([
+            ["Length", p.length_mi != null
+              ? p.length_mi + " mi" : null],
+            ["Source", p.source],
+          ]) + "<p class='pop-note'>Listed on AllTrails.</p>";
+        if (p.alltrails) h += "<p class='pop-note'><a href='" +
+          esc(p.alltrails) + "' target='_blank' rel='noopener'>" +
+          "View on AllTrails</a> &mdash; reviews, photos, directions</p>";
+        return h;
+      });
+    },
+  },
+  {
     /* S4 NCTA Places (renamed from Places, Paul, Nov 13, 2026):
        the gazetteer's 78 NCTA waypoints (parking, water,
        shelters, POIs) as a map layer, Z3+ only. Camping is NOT
@@ -7773,7 +7824,7 @@ function assertDrawOrder() {
      "atv", "ohm", "snow", "sht", "brt", "driftless",
      "near-brt-sht", "bwca-portages",
      "trail-minnesota", "trail", "alerts-mn-lines",
-     "stretches", "loops", "gaps",
+     "stretches", "loops", "alltrails", "gaps",
      "boundaries", "termini", "milemarkers", "chainage", "contours",
      "places",
      "alerts", "chapterplaces", "assets"].forEach(function (id) {
