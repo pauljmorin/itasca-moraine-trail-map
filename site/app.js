@@ -1151,6 +1151,10 @@ function printAccessStyle(f, s) {
    full 1px dashed line, still below the crossed parcels' 1px
    solid orange, so the hierarchy (crossed reads strongest) holds
    and every parcel now has an edge you can see. */
+/* Parcels (Paul, Nov 17, 2026 — outlines thickened so they read):
+   crossed parcels get a 2px solid orange outline, adjoining parcels
+   a 2px dashed khaki outline. The earlier 1px lines were too faint
+   on the canvas renderer to read as boundaries. Fills unchanged. */
 function parcelStyle(f) {
   if (currentBand < 3) {
     return { color: "#a89a5b", weight: 0, opacity: 0, fillOpacity: 0 };
@@ -1158,7 +1162,7 @@ function parcelStyle(f) {
   var crossed = f.properties.corridor === "crossed";
   return {
     color: crossed ? "#b35806" : "#a89a5b",
-    weight: 1,
+    weight: 2,
     dashArray: crossed ? null : "3 3",
     fillColor: crossed ? "#fdbb84" : "#e7e1c3",
     fillOpacity: crossed ? 0.32 : 0.12,
@@ -1579,11 +1583,57 @@ function trailPopup(f) {
   ]);
 }
 
+/* Parcel land-class labels (Paul, Nov 17, 2026 — the county
+   assessor's raw codes are obtuse, so the popup shows plain
+   English with the county's own code in parentheses). PILT =
+   payment in lieu of taxes. DNR = Minnesota Department of
+   Natural Resources. ConCon = consolidated conservation area.
+   Only the wording is translated; the code stays visible so
+   nothing is lost. Unmapped codes show as-is. */
+var PARCEL_LAND_CLASS_LABELS = {
+  "Co Admin-TaxForf": "County-administered tax-forfeited land",
+  "983 Co Admin-TaxForf": "County-administered tax-forfeited land",
+  "5E STATE ACQUIRED - PILT": "State-acquired land, payment in lieu of taxes (PILT)",
+  "5E COUNTY ADMINISTERED - PILT": "County-administered land, payment in lieu of taxes (PILT)",
+  "Tax Forfeited County Administered/PILT": "County-administered tax-forfeited land (PILT)",
+  "5E STATE ADMINISTERED - PILT": "State-administered land, payment in lieu of taxes (PILT)",
+  "Non-Comm Seasonal Residential Recreational": "Non-commercial seasonal residential / recreational",
+  "30% DNR-RentPmt": "DNR rent-payment land, 30%",
+  "Srr": "Seasonal residential / recreational",
+  "125 Srr": "Seasonal residential / recreational",
+  "ForestParkRefuge": "Forest, park or refuge land",
+  "941 ForestParkRefuge": "Forest, park or refuge land",
+  "Res 1 Unit": "Residential, 1 unit",
+  "100 Res 1 Unit": "Residential, 1 unit",
+  "4C12 SEASONAL RESIDENTIAL RECREATION": "Seasonal residential / recreational (class 4c12)",
+  "1A/1B/4BB RESIDENTIAL SINGLE UNIT": "Residential single unit (classes 1a / 1b / 4bb)",
+  "State Admin Lands Outside ConCon Area/PILT": "State-administered land outside a consolidated conservation area (PILT)",
+  "State Acq Lands Outside ConCon Area/PILT": "State-acquired land outside a consolidated conservation area (PILT)",
+  "982 State Admin-DNR": "State-administered land (DNR)",
+  "942 Indian Resrv": "Indian reservation land",
+  "211 Rural Vacant Land": "Rural vacant land",
+  "2B/1B RURAL VACANT LAND": "Rural vacant land (classes 2b / 1b)",
+  "981 State Acquired": "State-acquired land",
+  "Ag Non-Productive Contiguous": "Agricultural, non-productive, contiguous",
+  "State Trust Lands in ConCon Area/PILT": "State trust land in a consolidated conservation area (PILT)",
+  "5E COUNTY-PUBLIC SERVICE-OTHER": "County public-service land, other",
+  "Non-Homestead Qualifying Single Res Unit": "Non-homestead qualifying single residential unit",
+  "InLieuTx Co D 8": "In lieu of taxes, county ditch 8",
+  "5E FORESTS,PARKS,WILDLIFE REFUGES": "Forests, parks and wildlife refuges",
+};
+function parcelLandClassLabel(raw) {
+  if (raw == null) return null;
+  if (raw === "None") return "No classification listed";
+  var label = PARCEL_LAND_CLASS_LABELS[raw];
+  if (!label) return raw;
+  return label + " (county code: " + raw + ")";
+}
+
 function parcelPopup(f) {
   var p = f.properties;
   return "<h3>Parcel " + (esc(p.parcel_id) || "—") + "</h3>" + kvTable([
     ["County", p.county],
-    ["Land class", p.land_class],
+    ["Land class", parcelLandClassLabel(p.land_class)],
     ["Acres", p.acres],
     ["Owner", p.owner],
     ["Source", "County parcel records — public record"],
