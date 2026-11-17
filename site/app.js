@@ -7905,12 +7905,16 @@ function legendHtml() {
      Restore alongside the def's `enabled: false` line if the
      layer comes back:
        add(line("#8a6d1a"), "Height lines — every 5 m"); */
-  add("<span class='swatch fill' style='background:#d97706'></span>",
-    "Cass timber sale — year is the sale year (no expiry in the source)");
+  /* Per-county timber-sale legend entries removed Nov 16, 2026
+     with their panel layers (add18f0): the statewide timber
+     layer replaced them. The Cass forest-stand entry stays —
+     logfim is still wired, as inventory, not a sale.
+       add("<span class='swatch fill' style='background:#d97706'></span>",
+         "Cass timber sale — year is the sale year (no expiry in the source)");
+       add("<span class='swatch fill' style='background:#64748b'></span>",
+         "Chippewa NF timber sale — project area"); */
   add("<span class='swatch fill' style='background:#6b8e23'></span>",
     "Cass forest stand — inventory, not a sale");
-  add("<span class='swatch fill' style='background:#64748b'></span>",
-    "Chippewa NF timber sale — project area");
   return rows.join("");
 }
 
