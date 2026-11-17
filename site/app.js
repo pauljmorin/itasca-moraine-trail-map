@@ -5691,11 +5691,12 @@ var LAYERS = [
   },
   {
     /* Statewide timber, PLANNED (Paul, Nov 16, 2026 — planned
-       first): 1,190 features in the 2-mile corridor — both DNR
+       first; Paul, Nov 17, 2026 — OFF by default at startup):
+       1,190 features in the 2-mile corridor — both DNR
        stand-exam programs (10-yr 1,077 + annual 89) plus 24
-       upcoming county sales / appraisals. ON by default: this is
-       the watch list — planned harvests to track so a cut doesn't
-       reach the trail. Style is timberStyle: one lime for every
+       upcoming county sales / appraisals. OFF by default: the
+       watch list is a toggle the reader turns on, not a layer
+       the map opens with. Style is timberStyle: one lime for every
        seller, planned is a solid fill (a near-term year
        >= 2024 fills stronger). The toggle's swatch is that same
        solid lime. Same file as the past toggle below;
@@ -5705,7 +5706,7 @@ var LAYERS = [
     subgroup: "Timber sales",
     title: "Planned timber harvests statewide along the trail — the watch list. Solid lime fill = planned",
     file: "data/timber-sales-minnesota.geojson",
-    onByDefault: true, group: "The land",
+    onByDefault: false, group: "The land",
     swatch: { kind: "fill",
       color: "#65a30d",
       border: "#3f6212" },
