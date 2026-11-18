@@ -52,15 +52,46 @@ pulled.
   the North) 2, ARW (Arrowhead) 90, ELY (Ely Northwoods) 5, KEK
   (Kekekabic Trail) 41, BRT (Border Route Trail) 11, BSC 2,
   unassigned 6 (short connectors near Duluth/Superior).
-- **Use here:** the "NCT — all Minnesota" layer — a thin slate
-  context line drawn UNDER the chapter line (see `assertDrawOrder`
-  in `site/app.js`), ON by default. Popups reuse `trailPopup`;
+- **Use here:** the "NCT — all Minnesota" layer — a stronger
+  slate-blue line (weight 3.5, opacity 0.9, #4a6fa5 since Nov 18,
+  2026 — Paul: the old 2px faint slate was too hard to read),
+  drawn UNDER the chapter line (see `assertDrawOrder` in
+  `site/app.js`), ON by default. Popups reuse `trailPopup`;
   the other Minnesota chapter names were added to `CHAPTER_NAMES`
   with this layer (BRT = Border Route Trail; BSC left unmapped).
 - **Note:** the often-quoted "~800 miles" for the NCT in Minnesota
   is not what the official service draws — the service's Minnesota
   features measure 566 mi. The gap is unexamined (service gaps vs
   the figure counting the Border Route / Kekekabic / SHT links).
+
+## Arrowhead reroute polygon — 2004 NPS preferred-alternative corridor (added 2026-11-18, Paul)
+
+- **What:** The congressionally approved planning corridor for the
+  Arrowhead reroute: the 2004 NPS preferred alternative (NPS Draft
+  Route Assessment & Environmental Assessment, 2004; authorized by
+  Congress March 2019, Dingell Act, P.L. 116-9). One polygon, 107
+  points, ~315 mi perimeter, ~1,255 sq mi (geometry-measured).
+- **Source:** `site/buildout/src/corridor-2004.kmz` (the same file
+  the Finishing-the-Trail build-out viewer draws as its
+  "corridor" layer, `site/buildout/data/corridor-2004.geojson`).
+  Copied verbatim to `site/data/arrowhead-reroute-polygon.geojson`
+  so the ITM viewer stays self-contained.
+- **Note on the build-out viewer's popup:** it calls the corridor
+  "about a 200-foot-wide planning corridor". The polygon as drawn
+  is miles wide (~1,255 sq mi) — the "200-foot" phrase describes
+  the planning concept, not the polygon. The ITM viewer's popup
+  does not repeat it.
+- **Use here:** the "Arrowhead reroute polygon" layer (The trail
+  group), OFF by default and LAZY, styled as in the build-out
+  viewer (blue #2166ac, weight 1.5, fill 0.08). The polygon is the
+  container for the Arrowhead parcels (see the parcels section):
+  it contains ALL parcels shown, and the bike path / road walk
+  fall outside it. A second, narrower polygon exists in the
+  build-out sources (`site/buildout/src/corridor-buffer-arrowhead.geojson`,
+  an 804.67 m buffer around the proposed 102-mi route, ~140 sq mi)
+  — it is NOT the reroute polygon: it contains the whole gap line
+  including the bike path and road walk, so it cannot express
+  Paul's rule. It is used for corridor statistics only.
 
 ## Trail alerts — NCTA (chapter extent + Minnesota)
 
@@ -132,6 +163,67 @@ pulled.
   `data/parcels/parcels-corridor.geojson` with `source_county` and
   `source_dataset` fields distinguishing it. Pulled 2026-11-10 by
   the same script. Working view only, same privacy rule.
+
+### Arrowhead reroute corridor parcels (added 2026-11-18, Paul)
+
+- **What:** Same MnGeo compilation as above (layer 0), clipped to
+  the Arrowhead reroute corridor instead of the chapter's trail.
+- **Counties crossed** (determined 2026-11-18 by intersecting the
+  2004 reroute polygon with county boundaries, confirmed against
+  two independent sources — OSM admin_level=6 relations and the
+  U.S. Census TIGERweb county file, which agree exactly): Itasca
+  (45 polygon vertices), St. Louis (31), Lake (17), Aitkin (4),
+  Cass (10). **All five are in the compilation**
+  (`gac_open_approval` true, verified 2026-11-18 from the
+  metadata layer), so no county fallback service is needed.
+  Cook County is NOT crossed — the corridor's eastern end stops
+  in Lake County.
+- **Selection rule (Paul's reroute-polygon rule, Nov 18, 2026):**
+  the reroute polygon contains ALL parcels shown, and NO parcel
+  polygons are drawn along the bike path or the road walk.
+  Implemented as: only gap-line segments that lie INSIDE the
+  2004 polygon AND are not bike-path (`surface` "paved", the
+  Mesabi Trail, 114.9 mi) or road-walk (`surface` "road", 25.0 mi)
+  segments take part in the crossed/adjoining selection. The
+  in-polygon foot trail is the gap-line mileage inside the polygon
+  with the bike-path and road-walk surfaces removed: **12.9 mi**
+  (25 features, all in the Grand Rapids area, Itasca County — the
+  rest of the gap line east of Grand Rapids is Mesabi Trail bike
+  path and road walk, with no foot trail at all). 54.5 mi of the
+  152.8-mi gap line lies inside the polygon across all surfaces.
+  "All parcels inside the polygon" is NOT published: 45,793
+  parcels intersect the 1,255-sq-mi polygon (Itasca 25,586; St.
+  Louis 18,241; Lake 1,458; Aitkin 80; Cass 428) — a ~22 MB file
+  and not a trail corridor set. The polygon is the container;
+  the corridor set is the crossed + one adjoining ring along the
+  in-polygon foot trail, exactly as for the chapter parcels.
+- **Use here:** `data/parcels/parcels-arrowhead.geojson`, pulled
+  2026-11-18 by `scripts/pull_parcels_arrowhead.py`: **355 parcels
+  (108 crossed + 247 adjoining), all Itasca County** — the
+  in-polygon foot trail is the Grand Rapids-area pieces only
+  (12.9 mi), so no St. Louis / Lake / Aitkin / Cass parcel is
+  selected. The pull drops 639 attribute-empty records (water
+  bodies and rights-of-way, e.g. Pokegama Lake ~22.7 sq km and
+  the Mississippi River corridor) before selection: without the
+  filter they bridge the ring — the first run returned 2,823
+  adjoining parcels, most of them lakeshore / riverbank parcels
+  adjoining the water, not the trail. Same privacy rule as the
+  chapter parcels: owner name + mailing address as published
+  (chapter ruling Nov 10, 2026), taxpayer fields never carried.
+  **Itasca County's compiled records carry no `owner_name` and no
+  `own_add_*`** (and no `acres_poly` / `acres_deed`), so the
+  published Arrowhead parcels show parcel ID, county, land class
+  and corridor — but no owner, and acres derived from the record's
+  own `Shape__Area` (sq m / 4046.8564224; validated against
+  `acres_poly` on 361 chapter parcels, median difference 0.01%).
+  The taxpayer name (`tax_name`, populated for all 355) is NOT
+  carried, per the chapter's privacy rule. Land class: Itasca
+  records carry the bare numeric assessor class code in
+  `useclass1` (33 codes, e.g. 201, 670, 776), not the descriptive
+  string the other counties carry — the popup translates them via
+  `PARCEL_LAND_CLASS_LABELS` using the Minnesota assessor
+  class-code definitions (St. Louis County's published
+  ClassCodeLegend, same statewide code system).
 
 ## Access layers — forest roads and recreation trails
 
@@ -583,6 +675,85 @@ neither mileage reckoning above.
   `scripts/add_timber_timing.py`. Full pull log:
   `working/timber-statewide/pull-log-2026-11-16.md`.
 
+
+## Arrowhead campsites — NCTA camping waypoints (added 2026-11-18, Paul)
+
+- **What:** The NCTA public waypoint layer's Camping points for
+  the Arrowhead gap (Grand Rapids to Ely), kept where within 2 km
+  of the gap line.
+- **Source:** Same NCTA public ArcGIS feature service as the
+  official line ("North Country Trail (Public)", layer 1 "Point
+  Data — Public"), pulled by `scripts/pull_arrowhead_points.py`
+  (same envelope + object-id method as `scripts/pull_points.py`).
+- **Counts:** 8 Camping points in the gap bbox; **6 kept**
+  (Pokegama Dam Recreation Area Campground, Itasca County
+  Fairgrounds Campground, "Camping" near Tower, Vermilion Trail
+  Park Campground, Gilbert City Campground, "Campsite" near Grand
+  Rapids). **2 excluded** as beyond 2 km from the gap line:
+  Fall Lake Campground (3.0 km — serves the Ely end from the
+  ELY/Border Route side, not the Arrowhead chunk) and "Camping"
+  (-92.0865, 47.7919; 4.3 km). Names are carried exactly as
+  published, including the two generic ones. Each kept point
+  carries `dist_trail_km`.
+- **Use here:** `data/points/ncta-points-arrowhead.geojson` →
+  `site/data/campsites-arrowhead.geojson` (built by
+  `scripts/build_site_data.py`), the "Camping — Arrowhead" layer:
+  deep-green discs with a "C", same treatment as the chapter's own
+  Camping layer, OFF by default and LAZY.
+
+## Road walk — T07 western segments + Arrowhead road pieces (added 2026-11-18, Paul)
+
+- **What:** The on-road line, one speed badge per western
+  road-walk segment, and the High-Injury Network crash markers.
+- **Sources:** T07 (Trail Research Brief T07 — Western Road Walk:
+  The Safety Case, Segment by Segment, Nov 15, 2026; data
+  retrieved Nov 16, 2026) for the 15 western segments, their
+  speeds and the crash spots; the NCTA gap lines for geometry
+  (`site/buildout/data/gap-western.geojson`, 90 features,
+  104.86 mi; `site/buildout/data/gap-arrowhead.geojson`).
+- **Geometry method:** the western gap line is ordered west→east
+  by a graph walk from the Red River end (endpoint adjacency
+  within 2 km), validated against T07's mileposts (City of Fergus
+  Falls at chain mile 39.5–42.4 vs T07 MN-40.0–43.5; Maplewood
+  Church Rd at 67.3 vs MN-66.0–68.5; Becker Co Line at 95.1–96.4
+  vs MN-94.8–97.0). Chain miles track T07 miles within ~1 mi
+  (chain total 104.86 mi vs T07 corridor 107.0 mi). The western
+  road-walk line is the chain clipped to T07's segment ranges
+  (78.1 mi measured; the 2.1-mi shortfall is the NCTA GIS being
+  2% shorter than the map-series miles). Speed badges sit at each
+  segment's midpoint by cumulative chain miles (Seg 14 sits at
+  the US-10 crossing, chain mile 95.2, instead — its midpoint
+  falls in Frazee, but the segment's expressway portion is the
+  crossing). Crash markers sit at the HIN corridor's segment
+  midpoint (CSAH 88 at MN-39.5; CSAH 4 at MN-85.5 in Vergas;
+  CSAH 1 / Tower Road at MN-56.5). Positions are approximate
+  within ~1 mi and the popups say so.
+- **Speeds (T07 Leg 2):** statutory 55 mph rural / 30 mph urban /
+  65 mph expressway (Minn. Stat. § 169.14), or the Otter Tail SAP
+  "majority 55 mph" finding. Badge values: 55 everywhere except
+  Seg 7 (Fergus Falls urban, 30) and Seg 14 (US-10 crossing, 65).
+  The Mesabi Trail bike path (surface "paved", 114.9 mi) is NOT
+  road walk and is not drawn.
+- **Crash spots (T07 Leg 3, Otter Tail SAP pp. 60–64, Table 10):**
+  CSAH 88 HIN 6.0 (Seg 6) + Tier 3; CSAH 4 in Vergas HIN 6.0
+  (Seg 12) + Tier 3 (CSAH 41 in the same segment is Tier 1);
+  CSAH 1 / Tower Road HIN 7.0 (adjacent to Seg 9) + Tier 3.
+  Caveat carried in every crash popup: no published record
+  attributes any crash to a hiker.
+- **Gap (reported, not filled):** T07 covers the WESTERN road walk
+  only (Wilkin / Otter Tail / Becker). No crash analysis and no
+  verified per-segment speeds exist in the packet for the ITM or
+  Arrowhead road walk, so the Arrowhead pieces (14 features,
+  25.0 mi) carry the line only — no speed badge, no crash icon.
+  Wilkin/Becker segment-level pedestrian/bicycle counts could not
+  be resolved in T07 either (MnCMAT2 login-restricted; MNCrash
+  upstream error; TCMAC gated).
+- **Use here:** `data/roadwalk.geojson` (74 features: 56 line
+  pieces, 15 speed badges, 3 crash markers) →
+  `site/data/roadwalk.geojson` (built by
+  `scripts/build_site_data.py`), three layers in the "Road walk"
+  group (Road walk / Speed limits / Accident-prone areas), all OFF
+  by default and LAZY.
 
 ## Base-map tile & image services (map v2, added 2026-11-10)
 

@@ -1287,6 +1287,52 @@ body.gap-chip .gap-label span {
 }
 .chapter-dot.closed { background: #6e6e66; border-color: var(--gap); }
 
+/* Road-walk speed badges (Paul, Nov 18, 2026): a small white pill
+   reading like a speed-limit sign — the number with a small
+   "mph" — one per T07 western road-walk segment. */
+.speed-badge-wrap { background: none; border: none; }
+.speed-badge {
+  display: inline-block;
+  height: 20px;
+  padding: 0 6px;
+  border-radius: 10px;
+  background: #fff;
+  border: 2px solid #1f2937;
+  color: #1f2937;
+  font-size: 11px;
+  font-weight: 800;
+  line-height: 17px;
+  text-align: center;
+  white-space: nowrap;
+  box-shadow: 0 1px 3px rgba(28, 42, 30, 0.45);
+}
+.speed-badge small { font-size: 8px; font-weight: 700; }
+
+/* Road-walk crash markers (Paul, Nov 18, 2026): an amber warning
+   diamond with a "!" — the High-Injury Network corridors. Amber,
+   deliberately unlike the red alert diamonds (trail alerts) and
+   the orange asset pins. */
+.crash-marker-wrap { background: none; border: none; }
+.crash-marker {
+  display: block;
+  width: 18px;
+  height: 18px;
+  transform: rotate(45deg);
+  background: #b45309;
+  border: 1.5px solid #fff;
+  border-radius: 3px;
+  box-shadow: 0 1px 3px rgba(28, 42, 30, 0.45);
+}
+.crash-glyph {
+  display: block;
+  transform: rotate(-45deg);
+  color: #fff;
+  font-size: 11px;
+  font-weight: 800;
+  line-height: 18px;
+  text-align: center;
+}
+
 /* Asset-pin pictographs (Paul, Nov 12, 2026): the photo-inventory
    pins are pictographic discs, not dots — one glyph per type, white
    on the orange pin, so a volunteer reads what a pin IS at a

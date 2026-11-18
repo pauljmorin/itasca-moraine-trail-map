@@ -162,6 +162,10 @@ PRECISION = 5  # decimal places on coordinates (~1.1 m in latitude)
 TOLERANCES_M = {
     "trail": 10.0,
     "parcels": 15.0,
+    # Arrowhead parcels (Nov 18, 2026): the corridor is Grand Rapids
+    # town lots (median 673 sq m) - 15 m drops 38 of 355, including
+    # 13 the trail crosses. 2 m drops none and the file stays small.
+    "parcels_arrowhead": 2.0,
     "access": 15.0,
     "roads": 20.0,
     "stretches": 10.0,
@@ -541,6 +545,56 @@ def map_access_point(p):
     }
 
 
+def map_arrowhead_parcel(p):
+    """Arrowhead parcels: map_parcel, plus an acres fallback.
+    Itasca County's compiled records carry no acres_poly /
+    acres_deed (both null) and no owner_name / own_add_* — only
+    Shape__Area (the GIS polygon area, sq m) and tax_name (the
+    TAXPAYER, which the chapter's privacy rule does not carry).
+    Acres fall back to Shape__Area / 4046.8564224, validated
+    against acres_poly on 361 chapter parcels (median difference
+    0.01%). Owner stays null where the compilation publishes
+    none; the popup omits the row, as it already does for the
+    chapter's public-land parcels."""
+    out = map_parcel(p)
+    if out.get("acres") is None and p.get("Shape__Area") is not None:
+        try:
+            out["acres"] = round(float(p["Shape__Area"]) / 4046.8564224, 2)
+        except (TypeError, ValueError):
+            pass
+    return out
+
+
+def map_arrowhead_campsite(p):
+    """Arrowhead campsites: the NCTA camping waypoint fields, kept
+    verbatim (names as published, including the generic "Camping" /
+    "Campsite"), plus the distance to the gap line."""
+    return {
+        "name": clean_str(p.get("name")),
+        "type": clean_str(p.get("type")),
+        "subtype": clean_str(p.get("subtype")),
+        "owner": clean_str(p.get("owner")),
+        "description": clean_str(p.get("description")),
+        "chapter": clean_str(p.get("chapter")),
+        "dist_trail_km": num(p.get("dist_trail_km")),
+    }
+
+
+def map_roadwalk(p):
+    """Road walk: keep whichever fields the feature's kind carries
+    (line / speed / crash); absent fields are omitted, not nulled."""
+    keep = ["kind", "area", "segment", "road", "miles", "speed_mph",
+            "speed_text", "aadt", "position_note", "source", "hin_score",
+            "extent", "tier", "note", "caveat"]
+    out = {}
+    for k in keep:
+        v = p.get(k)
+        if v is None:
+            continue
+        out[k] = clean_str(v) if isinstance(v, str) else v
+    return out
+
+
 LAYERS = [
     # (source, dest, tolerance key, keep-list or mapping function)
     ("data/segments/official-line-chapter-extent.geojson",
@@ -552,6 +606,14 @@ LAYERS = [
      "site/data/trail-minnesota.geojson", "trail", TRAIL_KEEP),
     ("data/parcels/parcels-corridor.geojson",
      "site/data/parcels.geojson", "parcels", map_parcel),
+    # Arrowhead reroute corridor parcels (Paul, Nov 18, 2026):
+    # same mapping as the chapter parcels; source is
+    # scripts/pull_parcels_arrowhead.py (in-polygon foot trail,
+    # crossed + one adjoining ring; no parcels along the Mesabi
+    # Trail bike path or the road walk).
+    ("data/parcels/parcels-arrowhead.geojson",
+     "site/data/parcels-arrowhead.geojson", "parcels_arrowhead",
+     map_arrowhead_parcel),
     # access + roads are built by build_corridor_layers() below
     # (corridor clip C1-C4; state forest roads land in the roads
     # output as class F) — they are not plain whitelist copies.
@@ -561,6 +623,18 @@ LAYERS = [
      "site/data/gaps.geojson", "gaps", map_gap),
     ("data/segments/access-points.geojson",
      "site/data/access-points.geojson", "access_points", map_access_point),
+    # Arrowhead campsites (Paul, Nov 18, 2026): NCTA camping
+    # waypoints within 2 km of the Arrowhead gap line; source is
+    # scripts/pull_arrowhead_points.py.
+    ("data/points/ncta-points-arrowhead.geojson",
+     "site/data/campsites-arrowhead.geojson", "access_points",
+     map_arrowhead_campsite),
+    # Road walk (Paul, Nov 18, 2026): the on-road line, T07 speed
+    # badges and HIN crash markers; source is
+    # scripts/build_roadwalk.py. Mixed LineString + Point; the
+    # app filters by the "kind" property per layer.
+    ("data/roadwalk.geojson",
+     "site/data/roadwalk.geojson", "gaps", map_roadwalk),
 ]
 
 

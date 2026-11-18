@@ -502,11 +502,6 @@ var mnCanopyHeight = L.tileLayer(
    snowmobile emphasis in step (the old Leaflet layers control
    and its baselayerchange handler are gone). */
 var BASES = [
-  /* White — no basemap (Paul, Nov 17, 2026): first in the list, so
-     one tap clears the tiles for a white page. It is NOT the
-     default — Topo stays the default (see currentBase below). */
-  { name: "White — no basemap", code: "white",
-    label: "White — no basemap", layer: whiteBase, white: true },
   { name: "Topo (OpenTopoMap)", code: "topo", label: "OpenTopoMap",
     layer: topo },
   /* Streets and Trails sit under Topo (Paul, Nov 13, 2026):
@@ -601,11 +596,19 @@ var BASES = [
     sub: "1:24k quadrangles", layer: usgsTopo },
   { name: "National Geographic (Esri)", code: "natgeo", label: "National Geographic",
     layer: esriNatGeo },
+  /* White — no basemap (Paul, Nov 17, 2026; moved to the END of
+     the list Nov 18, 2026, Paul): last in the list, so one tap
+     clears the tiles for a white page. It is NOT the default —
+     Topo stays the default (see currentBase below). The label is
+     two lines like the other entries: "White" with the smaller
+     unbolded sub "no base map", no hyphen. */
+  { name: "White — no basemap", code: "white", label: "White",
+    sub: "no base map", layer: whiteBase, white: true },
   /* Retired Nov 11, 2026 (design review §7): the two canopy
      bases are the Tree height overlay's source now, not
      choices. They stay defined above and are NOT listed here. */
 ];
-/* Topo stays the default even though White is first in the list
+/* Topo stays the default even though White is last in the list
    (baseByName is a hoisted function declaration, so this call
    works here). */
 var currentBase = baseByName("Topo (OpenTopoMap)");
@@ -1638,6 +1641,46 @@ var PARCEL_LAND_CLASS_LABELS = {
   "Non-Homestead Qualifying Single Res Unit": "Non-homestead qualifying single residential unit",
   "InLieuTx Co D 8": "In lieu of taxes, county ditch 8",
   "5E FORESTS,PARKS,WILDLIFE REFUGES": "Forests, parks and wildlife refuges",
+  /* Numeric assessor class codes (Nov 18, 2026 — Arrowhead parcels):
+     Itasca County's compiled records carry the bare numeric code
+     in useclass1, not the descriptive string the other counties
+     carry. Definitions are the Minnesota assessor class-code
+     system, from St. Louis County's published ClassCodeLegend
+     (the same statewide codes; Itasca's 33 codes are all listed
+     there). The label function appends "(county code: N)". */
+  "105": "Agricultural, non-contiguous",
+  "111": "Rural vacant land",
+  "112": "Managed forest land",
+  "151": "Non-commercial seasonal residential / recreational",
+  "200": "Residential, 2–3 units",
+  "201": "Residential, 1 unit",
+  "203": "Residential, 1–3 units (previously seasonal residential recreational)",
+  "204": "Non-homestead qualifying single residential unit",
+  "205": "Apartment (4 or more units)",
+  "211": "Unimproved residential land",
+  "215": "Manufactured home park",
+  "233": "Commercial (preferred)",
+  "234": "Industrial (preferred)",
+  "240": "Utility / pipeline land (non-preferred, county-assessed)",
+  "243": "Commercial (non-preferred)",
+  "244": "Industrial (non-preferred)",
+  "324": "Qualifying low-income rental housing, 4+ units",
+  "501": "Railroad",
+  "505": "Street or roadway",
+  "560": "Housing redevelopment authority property",
+  "650": "State-acquired land outside a consolidated conservation area (PILT)",
+  "660": "State-administered land outside a consolidated conservation area (PILT)",
+  "670": "Tax-forfeited land, county-administered (PILT)",
+  "671": "Tax-forfeited platted city lots (non-PILT)",
+  "710": "Public K–12 school",
+  "715": "Public hospital",
+  "720": "Public college",
+  "730": "Charitable institution",
+  "736": "Agricultural historical society",
+  "770": "County public service enterprise",
+  "771": "County public property, all other",
+  "775": "Municipal public service enterprise",
+  "776": "Municipal property, all other",
 };
 function parcelLandClassLabel(raw) {
   if (raw == null) return null;
@@ -4896,10 +4939,13 @@ var LAYERS = [
        there"): the official NCTA line for the whole state, North
        Dakota border to the Border Route Trail — 348 features,
        566 mi, pulled Nov 13 by scripts/pull_minnesota_line.py
-       (state == 'MN'). A thin slate context line, drawn UNDER
+       (state == 'MN'). A stronger slate-blue line, drawn UNDER
        the chapter line (see assertDrawOrder) so the chapter's
        own green line still owns the corridor; outside it, this
-       is the trail. ON by default — the extension is the point.
+       is the trail. Strengthened Nov 18, 2026 (Paul — the old
+       2px faint slate was too hard to read): weight 3.5, opacity
+       0.9, colour #4a6fa5, keeping the chapter trail primary.
+       ON by default — the extension is the point.
        Popups reuse trailPopup (chapter, type, source); the
        chapter names for the other Minnesota chapters were added
        to CHAPTER_NAMES with this layer. */
@@ -4908,13 +4954,13 @@ var LAYERS = [
       "North Dakota border to the Border Route Trail",
     file: "data/trail-minnesota.geojson",
     onByDefault: true, group: "The trail",
-    swatch: { kind: "line", color: "#64748b" },
+    swatch: { kind: "line", color: "#4a6fa5" },
     build: function (gj) {
       var layer = L.geoJSON(gj, {
         renderer: canvasFor(),
         style: function (f) {
           return {
-            color: "#64748b", weight: 2, opacity: 0.75,
+            color: "#4a6fa5", weight: 3.5, opacity: 0.9,
             dashArray: isOnRoad(f.properties) ? "2 7" : null,
             lineCap: "round",
           };
@@ -4922,6 +4968,41 @@ var LAYERS = [
         onEachFeature: function (f, l) { bindPop(l, trailPopup(f)); },
       });
       return layer;
+    },
+  },
+  {
+    /* Arrowhead reroute polygon (Paul, Nov 18, 2026): the
+       congressionally approved planning corridor for the
+       Arrowhead reroute — the same polygon the Finishing-the-
+       Trail build-out viewer draws (site/buildout/data/
+       corridor-2004.geojson, from src/corridor-2004.kmz, the
+       2004 NPS preferred alternative; 107 points, ~315 mi
+       perimeter, ~1,255 sq mi). Copied verbatim to
+       data/arrowhead-reroute-polygon.geojson so this viewer
+       stays self-contained. The polygon is the container for
+       the Arrowhead parcels (Paul's reroute-polygon rule: it
+       contains ALL parcels shown, and no parcels are drawn
+       along the bike path or the road walk, which fall outside
+       it). Style matches the build-out viewer: blue #2166ac,
+       weight 1.5, fill 0.08. OFF by default and LAZY. */
+    id: "reroute-arrowhead", label: "Arrowhead reroute polygon",
+    title: "The congressionally approved planning corridor for the Arrowhead reroute (2004)",
+    file: "data/arrowhead-reroute-polygon.geojson",
+    onByDefault: false, group: "The trail",
+    swatch: { kind: "fill", color: "#2166ac", border: "#2166ac" },
+    build: function (gj) {
+      return L.geoJSON(gj, {
+        renderer: canvasFor(),
+        style: {
+          color: "#2166ac", weight: 1.5, opacity: 0.6,
+          fillColor: "#2166ac", fillOpacity: 0.08,
+        },
+        onEachFeature: function (f, l) {
+          bindPop(l, "<h3>2004 approved corridor</h3>" +
+            "<p>The congressionally approved planning corridor for the Arrowhead reroute (NPS Draft Route Assessment &amp; Environmental Assessment, 2004; authorized by Congress March 2019, Dingell Act, P.L. 116-9). The Act authorizes the route; it appropriates no construction money.</p>" +
+            "<p class='pop-note'>The polygon contains the Arrowhead parcels: no parcels are drawn along the bike path or the road walk, which fall outside it.</p>");
+        },
+      });
     },
   },
   {
@@ -5627,6 +5708,33 @@ var LAYERS = [
     },
   },
   {
+    /* Parcels — Arrowhead (Paul, Nov 18, 2026): the Arrowhead
+       reroute corridor parcels — parcels the in-polygon foot
+       trail crosses, plus the adjoining ring one parcel deep,
+       pulled by scripts/pull_parcels_arrowhead.py from the same
+       MnGeo compilation as the chapter parcels (Itasca, St.
+       Louis, Lake, Aitkin and Cass Counties, all opt-in; Cook
+       County is not crossed by the corridor). Same fence as the
+       chapter parcels: published county records only, owner
+       name + mailing address as published (chapter ruling Nov
+       10, 2026), taxpayer fields never carried. The reroute
+       polygon contains ALL parcels shown; none is drawn along
+       the Mesabi Trail bike path or the road walk. OFF by
+       default and LAZY like parcels. */
+    id: "parcels-arrowhead", label: "Parcels — Arrowhead",
+    title: "Parcels along the Arrowhead reroute corridor (in-polygon foot trail)",
+    file: "data/parcels-arrowhead.geojson",
+    onByDefault: false, group: "Land ownership",
+    swatch: { kind: "fill", color: "#fdbb84", border: "#b35806" },
+    build: function (gj) {
+      return L.geoJSON(gj, {
+        renderer: canvasFor(),
+        style: parcelStyle,
+        onEachFeature: function (f, l) { bindPop(l, parcelPopup(f)); },
+      });
+    },
+  },
+  {
     /* Leech Lake Reservation (Paul, Nov 11, 2026 — "put a
        specific polygon in for native nations"): the federal
        reservation boundary as published by the Bureau of
@@ -6143,6 +6251,52 @@ var LAYERS = [
     },
   },
   {
+    /* Camping — Arrowhead (Paul, Nov 18, 2026): campsites for
+       the Arrowhead chunk, same treatment as the chapter's own
+       Camping layer — deep-green discs with a "C", OFF by
+       default and LAZY. Contents are NCTA public waypoints
+       (Point Data — Public), pulled by
+       scripts/pull_arrowhead_points.py: the 6 Camping points
+       within 2 km of the Arrowhead gap line (2 further Camping
+       points in the bbox sit beyond 2 km and are not drawn).
+       Names are carried exactly as published, including the two
+       generic ones ("Camping", "Campsite"). The popup states
+       each site's distance from the trail. */
+    id: "campsites-arrowhead", label: "Camping — Arrowhead",
+    title: "Campsites along the Arrowhead chunk (NCTA waypoints within 2 km of the trail)",
+    file: "data/campsites-arrowhead.geojson",
+    onByDefault: false, group: "Around the trail",
+    swatch: { kind: "chapter", color: COLORS.trailDeep },
+    build: function (gj) {
+      clearSpiderfyPins("campsites-arrowhead");
+      return L.geoJSON(gj, {
+        pointToLayer: function (f, latlng) {
+          return L.marker(latlng, {
+            keyboard: false,
+            icon: L.divIcon({
+              className: "chapter-disc-wrap", iconSize: [19, 19],
+              iconAnchor: [10, 10],
+              html: "<span class='chapter-disc'>C</span>",
+            }),
+          });
+        },
+        onEachFeature: function (f, l) {
+          var p = f.properties;
+          bindPop(l, "<h3>" + esc(p.name || "Campsite") + "</h3>" +
+            kvTable([
+              ["Type", p.subtype || p.type],
+              ["Managing authority", p.owner],
+              ["Chapter", p.chapter],
+              ["Distance from the trail", p.dist_trail_km != null
+                ? p.dist_trail_km + " km" : null],
+              ["Description", p.description],
+            ]) + "<p class='pop-note'>NCTA public waypoint (Point Data — Public); one of the campsites within 2 km of the Arrowhead gap line.</p>");
+          registerSpiderfyPin("campsites-arrowhead", l, f);
+        },
+      });
+    },
+  },
+  {
     /* AllTrails-listed trails (Paul, Nov 17, 2026 — "build the
        AllTrails suggested layer"): the chapter trails that have
        AllTrails pages, as one toggleable highlight — the set to
@@ -6190,6 +6344,128 @@ var LAYERS = [
           esc(p.alltrails) + "' target='_blank' rel='noopener'>" +
           "View on AllTrails</a> &mdash; reviews, photos, directions</p>";
         return h;
+      });
+    },
+  },
+  {
+    /* Road walk (Paul, Nov 18, 2026): the on-road portions of
+       the trail — the western T07 segments (Wilkin / Otter Tail
+       / Becker, 80.2 mi per T07) and the Arrowhead road pieces
+       (25.0 mi). Built by scripts/build_roadwalk.py from the
+       NCTA gap lines; the western pieces are clipped to T07's
+       segment ranges. The Mesabi Trail bike path is NOT road
+       walk and is not drawn here. OFF by default and LAZY. */
+    id: "roadwalk", label: "Road walk",
+    title: "Where the trail follows public roads — western T07 segments and Arrowhead road pieces",
+    file: "data/roadwalk.geojson",
+    onByDefault: false, group: "Road walk",
+    swatch: { kind: "line", color: "#b45309", dashed: true },
+    build: function (gj) {
+      return L.geoJSON(gj, {
+        renderer: canvasFor(),
+        filter: function (f) { return f.properties.kind === "line"; },
+        style: {
+          color: "#b45309", weight: 4, opacity: 0.85,
+          dashArray: "8 4", lineCap: "round",
+        },
+        onEachFeature: function (f, l) {
+          var p = f.properties;
+          bindPop(l, "<h3>Road walk" + (p.segment
+            ? " — " + esc(p.segment) : "") + "</h3>" +
+            kvTable([
+              ["Area", p.area],
+              ["Source", p.source],
+            ]) + "<p class='pop-note'>The trail follows a public road here. Speeds and crash spots are separate toggles in this group.</p>");
+        },
+      });
+    },
+  },
+  {
+    /* Speed limits (Paul, Nov 18, 2026): one badge per T07
+       western road-walk segment, at the segment midpoint (Seg 14
+       sits at the US-10 crossing instead — see
+       scripts/build_roadwalk.py). Values are T07's: statutory
+       55 rural / 30 urban / 65 expressway (Minn. Stat. § 169.14)
+       or the Otter Tail SAP "majority 55 mph" finding. The badge
+       shows the limit at the badge's spot; the popup carries the
+       segment's full wording, AADT and source. No Arrowhead
+       badges: the packet verifies no per-segment speeds there.
+       OFF by default and LAZY. */
+    id: "roadwalk-speeds", label: "Speed limits",
+    title: "Speed limit per western road-walk segment (T07)",
+    file: "data/roadwalk.geojson",
+    onByDefault: false, group: "Road walk",
+    swatch: { kind: "pin", color: "#1f2937" },
+    build: function (gj) {
+      return L.geoJSON(gj, {
+        filter: function (f) { return f.properties.kind === "speed"; },
+        pointToLayer: function (f, latlng) {
+          var p = f.properties;
+          return L.marker(latlng, {
+            keyboard: false,
+            icon: L.divIcon({
+              className: "speed-badge-wrap", iconSize: [46, 20],
+              iconAnchor: [23, 10],
+              html: "<span class='speed-badge'>" + esc(p.speed_mph) +
+                "<small> mph</small></span>",
+            }),
+          });
+        },
+        onEachFeature: function (f, l) {
+          var p = f.properties;
+          bindPop(l, "<h3>" + esc(p.segment) + " — " + esc(p.road) + "</h3>" +
+            kvTable([
+              ["Speed limit", p.speed_mph + " mph"],
+              ["Miles", p.miles],
+              ["Speed, in full", p.speed_text],
+              ["Traffic (AADT)", p.aadt],
+              ["Position", p.position_note],
+              ["Source", p.source],
+            ]));
+        },
+      });
+    },
+  },
+  {
+    /* Accident-prone areas (Paul, Nov 18, 2026): the three
+       Otter Tail County High-Injury Network corridors on or next
+       to the western road walk (SAP pp. 60-64), with their
+       systemic-risk tiers (Table 10, pp. 73-75). Markers sit at
+       the corridor's segment midpoint; the popup carries the SAP
+       extent verbatim and the caveat that no crash in the record
+       is attributed to a hiker. No Arrowhead markers: the packet
+       has no crash analysis there. OFF by default and LAZY. */
+    id: "roadwalk-crashes", label: "Accident-prone areas",
+    title: "High-Injury Network corridors on the western road walk (Otter Tail SAP)",
+    file: "data/roadwalk.geojson",
+    onByDefault: false, group: "Road walk",
+    swatch: { kind: "alert", color: "#b45309" },
+    build: function (gj) {
+      return L.geoJSON(gj, {
+        filter: function (f) { return f.properties.kind === "crash"; },
+        pointToLayer: function (f, latlng) {
+          return L.marker(latlng, {
+            keyboard: false,
+            icon: L.divIcon({
+              className: "crash-marker-wrap", iconSize: [18, 18],
+              iconAnchor: [9, 9],
+              html: "<span class='crash-marker'><span class='crash-glyph'>!</span></span>",
+            }),
+          });
+        },
+        onEachFeature: function (f, l) {
+          var p = f.properties;
+          bindPop(l, "<h3>High-Injury Network — " + esc(p.road) + "</h3>" +
+            kvTable([
+              ["HIN score", p.hin_score],
+              ["Segment", p.segment],
+              ["Corridor extent", p.extent],
+              ["Systemic risk", p.tier],
+              ["Note", p.note],
+              ["Position", p.position_note],
+              ["Source", p.source],
+            ]) + "<p class='pop-note'>" + esc(p.caveat) + "</p>");
+        },
       });
     },
   },
@@ -7795,7 +8071,14 @@ function assertDrawOrder() {
        "near-brt-sht" and "bwca-portages" sit between the sheet
        outlines and the Minnesota line, under the NCT tread.
        "parcels-driftless" sits with "parcels", directly after
-       it, in the land-ownership fills. The
+       it, in the land-ownership fills. Nov 18, 2026: "parcels-
+       arrowhead" sits with "parcels" directly after
+       "parcels-driftless"; "reroute-arrowhead" sits directly
+       under "trail-minnesota" (the corridor fill under the trail
+       lines); "roadwalk" sits directly over "trail" (the
+       on-road highlight over the tread); "campsites-arrowhead",
+       "roadwalk-speeds" and "roadwalk-crashes" sit with the
+       markers uppermost, after "chapterplaces", before "assets". The
        35 DNR GeoPDF sheets (Nov 16, 2026) sit directly after
        "nctasheets" and before "atv", with the NCTA sheets. The
        six Forest Service MVUM panels sit directly after the
@@ -7807,7 +8090,7 @@ function assertDrawOrder() {
        land layers
        (foresthealth, invasives, chippewa-plan) sit with the
        other "The land" fills, after easements, before access. */
-    ["leechlake", "whiteearth", "parcels", "parcels-driftless", "logfim",
+    ["leechlake", "whiteearth", "parcels", "parcels-driftless", "parcels-arrowhead", "logfim",
      "logpast", "logplanned", "easements", "foresthealth",
      "invasives", "chippewa-plan", "access",
      "roads", "nctasheets",
@@ -7823,11 +8106,13 @@ function assertDrawOrder() {
      "fws-tamarac-2of3", "fws-tamarac-3of3",
      "atv", "ohm", "snow", "sht", "brt", "driftless",
      "near-brt-sht", "bwca-portages",
-     "trail-minnesota", "trail", "alerts-mn-lines",
+     "reroute-arrowhead",
+     "trail-minnesota", "trail", "roadwalk", "alerts-mn-lines",
      "stretches", "loops", "alltrails", "gaps",
      "boundaries", "termini", "milemarkers", "chainage", "contours",
      "places",
-     "alerts", "chapterplaces", "assets"].forEach(function (id) {
+     "alerts", "chapterplaces", "campsites-arrowhead",
+     "roadwalk-speeds", "roadwalk-crashes", "assets"].forEach(function (id) {
       var d = layerById(id);
       if (!d || !d.layer || !map.hasLayer(d.layer)) return;
       if (d.layer.bringToFront) { d.layer.bringToFront(); return; }

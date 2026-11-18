@@ -1,0 +1,158 @@
+{
+ "type": "FeatureCollection",
+ "metadata": {
+  "dataset": "NCTA public camping waypoints for the Arrowhead gap, kept where within 2 km of the gap line",
+  "source_service": "https://services2.arcgis.com/UfGVyqUm4GHa2zrj/arcgis/rest/services/nct_public/FeatureServer",
+  "source_layer_id": 1,
+  "source_layer_name": "Point Data - Public",
+  "pulled_utc_date": "2026-11-18",
+  "extent_wgs84": {
+   "xmin": -93.7,
+   "ymin": 47.15,
+   "xmax": -91.7,
+   "ymax": 47.98
+  },
+  "clip_method": "Envelope selection (object-id fetch, chunk-verified); kept Camping points within 2.0 km of the Arrowhead gap line (site/buildout/data/gap-arrowhead.geojson)",
+  "feature_count": 6,
+  "counts_by_chapter": {
+   "null": 3,
+   "ARW": 3
+  },
+  "excluded_camping": [
+   {
+    "name": "Fall Lake Campground",
+    "coordinates": [
+     -91.724465,
+     47.948551
+    ],
+    "dist_trail_km": 3.01,
+    "reason": "beyond 2 km from the Arrowhead gap line"
+   },
+   {
+    "name": "Camping",
+    "coordinates": [
+     -92.086486,
+     47.791896
+    ],
+    "dist_trail_km": 4.28,
+    "reason": "beyond 2 km from the Arrowhead gap line"
+   }
+  ]
+ },
+ "features": [
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -92.187918,
+     47.847187
+    ]
+   },
+   "properties": {
+    "name": "Camping",
+    "type": "Camping",
+    "subtype": null,
+    "owner": null,
+    "description": null,
+    "chapter": null,
+    "dist_trail_km": 1.23
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -93.609539,
+     47.231528
+    ]
+   },
+   "properties": {
+    "name": "Campsite",
+    "type": "Camping",
+    "subtype": null,
+    "owner": null,
+    "description": null,
+    "chapter": "ARW",
+    "dist_trail_km": 0.0
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -92.464465,
+     47.484094
+    ]
+   },
+   "properties": {
+    "name": "Gilbert  CIty Campground",
+    "type": "Camping",
+    "subtype": null,
+    "owner": null,
+    "description": null,
+    "chapter": null,
+    "dist_trail_km": 0.61
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -93.518996,
+     47.2472
+    ]
+   },
+   "properties": {
+    "name": "Itasca County Fairgrounds Campground",
+    "type": "Camping",
+    "subtype": null,
+    "owner": null,
+    "description": null,
+    "chapter": "ARW",
+    "dist_trail_km": 0.08
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -93.583756,
+     47.249487
+    ]
+   },
+   "properties": {
+    "name": "Pokegama Dam Recreation Area Campground",
+    "type": "Camping",
+    "subtype": null,
+    "owner": null,
+    "description": null,
+    "chapter": "ARW",
+    "dist_trail_km": 1.2
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -92.327572,
+     47.530346
+    ]
+   },
+   "properties": {
+    "name": "Vermilion Trail Park Campground",
+    "type": "Camping",
+    "subtype": null,
+    "owner": null,
+    "description": null,
+    "chapter": null,
+    "dist_trail_km": 0.09
+   }
+  }
+ ]
+}
