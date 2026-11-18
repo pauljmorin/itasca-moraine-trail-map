@@ -129,7 +129,17 @@ def _orient(a, b, c):
 def seg_seg_intersect(p1, p2, p3, p4):
     o1, o2 = _orient(p1, p2, p3), _orient(p1, p2, p4)
     o3, o4 = _orient(p3, p4, p1), _orient(p3, p4, p2)
-    if o1 != o2 and o3 != o4:
+    # General case: the endpoints must lie on STRICTLY opposite sides
+    # of the other segment. An orientation of 0 means collinear within
+    # the epsilon (common for the short, nearly-parallel lot lines in
+    # a town grid) and must NOT count as "the other side" — it falls
+    # through to the collinear point-on-segment checks below. The old
+    # test (o1 != o2 and o3 != o4) treated 0 as a side, so two
+    # parallel lot lines 4–22 m apart could report as intersecting
+    # (found Nov 18, 2026: 8 Arrowhead parcels admitted to the
+    # adjoining ring that are not within 3 m of any crossed parcel).
+    if ((o1 == 1 and o2 == -1) or (o1 == -1 and o2 == 1)) and \
+       ((o3 == 1 and o4 == -1) or (o3 == -1 and o4 == 1)):
         return True
     if o1 == 0 and point_on_segment(p3, p1, p2):
         return True

@@ -92,6 +92,27 @@ pulled.
   — it is NOT the reroute polygon: it contains the whole gap line
   including the bike path and road walk, so it cannot express
   Paul's rule. It is used for corridor statistics only.
+- **Confirmed Nov 18, 2026 (Paul's rule check):** the 2004 corridor
+  is the polygon the U of M / North Star Consulting route study
+  ("North Country National Scenic Trail Route Plan", Dec 8, 2025,
+  `site/buildout/src/uofm-arrowhead-report.txt`) uses as its study
+  area — "the NCT's revised preferred alternative corridor between
+  Grand Rapids and Snowbank Lake. This corridor polygon, provided
+  by NCTA" (p. 4); its "buffered version" is a modest buffer of
+  that corridor, not the 140-sq-mi gap-line buffer above (which is
+  far smaller than the 1,243-sq-mi corridor, not larger).
+  `site/buildout/src/nlcd-corridor-stats.json` carries only NLCD
+  pixel-class counts for the two corridors — no polygon geometry.
+  `site/buildout/build-data.py` §3 builds the 2004 corridor from
+  the KMZ; no other Arrowhead polygon is built there. The T-series
+  packet was also checked for a different polygon: T06's brief and
+  output Doc (`nct-arrowhead-reroute-status-2026-11-15`, 3,252
+  words — "polygon", "geojson", "kmz", "shapefile" all 0 hits),
+  the T13 brief (its output Doc does not exist yet), the T19
+  brief (a map specification, no polygon geometry), and the
+  completion case plan — none describes a reroute polygon other
+  than the 2004 corridor. Polygon equal-area re-measured Nov 18:
+  1,243.4 sq mi (3,220.4 km2, NAD83 Conus Albers).
 
 ## Trail alerts — NCTA (chapter extent + Minnesota)
 
@@ -198,17 +219,33 @@ pulled.
   the corridor set is the crossed + one adjoining ring along the
   in-polygon foot trail, exactly as for the chapter parcels.
 - **Use here:** `data/parcels/parcels-arrowhead.geojson`, pulled
-  2026-11-18 by `scripts/pull_parcels_arrowhead.py`: **355 parcels
-  (108 crossed + 247 adjoining), all Itasca County** — the
+  2026-11-18 by `scripts/pull_parcels_arrowhead.py`: **347 parcels
+  (108 crossed + 239 adjoining), all Itasca County** — the
   in-polygon foot trail is the Grand Rapids-area pieces only
   (12.9 mi), so no St. Louis / Lake / Aitkin / Cass parcel is
-  selected. The pull drops 639 attribute-empty records (water
-  bodies and rights-of-way, e.g. Pokegama Lake ~22.7 sq km and
-  the Mississippi River corridor) before selection: without the
-  filter they bridge the ring — the first run returned 2,823
-  adjoining parcels, most of them lakeshore / riverbank parcels
-  adjoining the water, not the trail. Same privacy rule as the
-  chapter parcels: owner name + mailing address as published
+  selected. (First build was 355; a Nov 18 verification pass
+  found 8 adjoining parcels 4–22 m from the nearest crossed
+  parcel — admitted by a false "intersect" in the shared
+  `scripts/geo_util.py` `seg_seg_intersect` (its general case
+  treated a collinear orientation of 0 as "the other side", so
+  two nearly-parallel lot lines could report as intersecting).
+  Fixed to require strictly opposite signs; re-pulled 347.
+  The chapter parcels were checked the same way and are clean:
+  0 of 786 adjoining parcels outside the 3 m ring, so no
+  chapter repair is owed.) The pull drops 639 attribute-empty
+  records (water bodies and rights-of-way, e.g. Pokegama Lake
+  ~22.7 sq km and the Mississippi River corridor) before
+  selection: without the filter they bridge the ring — the first
+  run returned 2,823 adjoining parcels, most of them lakeshore /
+  riverbank parcels adjoining the water, not the trail. Verified
+  Nov 18 on the published file: all 347 centroids inside the
+  reroute polygon; all 108 crossed within 1 m of in-polygon
+  foot/other trail; all 239 adjoining within 3 m of a crossed
+  parcel; zero parcels whose only trail contact is the bike path
+  or road walk (6 parcels sit within 3 m of the bike path /
+  road walk but touch a crossed parcel — they are in via the
+  foot-trail ring, not via the bike path). Same privacy rule as
+  the chapter parcels: owner name + mailing address as published
   (chapter ruling Nov 10, 2026), taxpayer fields never carried.
   **Itasca County's compiled records carry no `owner_name` and no
   `own_add_*`** (and no `acres_poly` / `acres_deed`), so the
@@ -216,7 +253,7 @@ pulled.
   and corridor — but no owner, and acres derived from the record's
   own `Shape__Area` (sq m / 4046.8564224; validated against
   `acres_poly` on 361 chapter parcels, median difference 0.01%).
-  The taxpayer name (`tax_name`, populated for all 355) is NOT
+  The taxpayer name (`tax_name`, populated for all 347) is NOT
   carried, per the chapter's privacy rule. Land class: Itasca
   records carry the bare numeric assessor class code in
   `useclass1` (33 codes, e.g. 201, 670, 776), not the descriptive
