@@ -2001,11 +2001,22 @@ function timberIsUpcomingSale(p) {
 }
 /* One style for both statewide toggles: lime throughout, the
    timing picks the fill — except the 24 upcoming sales, which
-   fill red (see TIMBER_SALE_FILL above). Three states read
-   distinctly: solid lime = examined for future sale, solid red
-   = identified for sale, dashed lime outline = past / sold. */
+   fill red (see TIMBER_SALE_FILL above), and except any feature
+   inside the Arrowhead reroute corridor polygon, which fills
+   SOLID red (Paul, Nov 19, 2026 — past AND examined-for-future,
+   everything in the polygon, for the Arrowhead demo). The
+   corridor rule keys off the `in_reroute_polygon` property set
+   by scripts/add_timber_reroute_flag.py; it beats the timing
+   rules, so a past sale in the polygon is solid red too. Three
+   states read distinctly outside the polygon: solid lime =
+   examined for future sale, solid red = identified for sale,
+   dashed lime outline = past / sold. */
 function timberStyle(f) {
   var p = f.properties || {};
+  if (p.in_reroute_polygon) {
+    return { color: TIMBER_SALE_EDGE, weight: 2.5,
+      fillColor: TIMBER_SALE_FILL, fillOpacity: 1 };
+  }
   if (timberIsUpcomingSale(p)) {
     return { color: TIMBER_SALE_EDGE, weight: 2.5,
       fillColor: TIMBER_SALE_FILL, fillOpacity: 0.55 };
@@ -2110,6 +2121,8 @@ function logStatewidePopup(f) {
     ["Year", p.year],
     ["County", p.county],
     ["Region", STATEWIDE_REGION_LABELS[p.region] || null],
+    ["Corridor", p.in_reroute_polygon ?
+      "Inside the Arrowhead reroute corridor (2004)" : null],
     ["Prescription", p.prescrip_desc || p.pres_prelim],
   ];
   if (p.program === "usfs-edw-sale") {
@@ -6600,13 +6613,15 @@ var LAYERS = [
        seller, planned is a solid fill (a near-term year
        >= 2024 fills stronger) — except the 24 upcoming sales,
        which fill red (TIMBER_SALE_FILL) so what is identified
-       for sale reads at a glance. The toggle's swatch is that same
+       for sale reads at a glance, and except the 219 features
+       inside the Arrowhead reroute corridor, which fill SOLID
+       red (Nov 19, 2026, Paul). The toggle's swatch is that same
        solid lime. Same file as the past toggle below;
        the second fetch of the same URL is served from the
        browser HTTP cache. */
     id: "logplanned", label: "Examined for future sale — watch list",
     subgroup: "Timber sales",
-    title: "Stands examined for future sale statewide along the trail — the watch list. Solid lime fill = examined for future sale; solid red fill = identified for sale (24 upcoming sales). 1,166 are DNR stand exams and 24 are upcoming sales; an exam is not a guaranteed sale.",
+    title: "Stands examined for future sale statewide along the trail — the watch list. Solid lime fill = examined for future sale; solid red fill = identified for sale (24 upcoming sales) or inside the Arrowhead reroute corridor (219 features, past + examined). 1,166 are DNR stand exams and 24 are upcoming sales; an exam is not a guaranteed sale.",
     file: "data/timber-sales-minnesota.geojson",
     onByDefault: false, group: "The land",
     swatch: { kind: "fill",
@@ -6639,13 +6654,17 @@ var LAYERS = [
         "border-color:#3f6212'></span>" +
         "Solid fill = examined for future sale (watch list)</div>";
       html += "<div class='tog-timber-key-row'>" +
+        "<span class='tog-swatch-fill' style='background:" +
+        "rgba(225,29,72,0.55);border-color:#9f1239'></span>" +
+        "Red fill = identified for sale — upcoming sale (24)</div>";
+      html += "<div class='tog-timber-key-row'>" +
         "<span class='tog-swatch-fill' style='background:#e11d48;" +
         "border-color:#9f1239'></span>" +
-        "Solid red fill = identified for sale — upcoming sale (24)</div>";
+        "Solid red fill = inside the Arrowhead reroute corridor (219)</div>";
       html += "<div class='tog-timber-key-row'>" +
         "<span class='tog-swatch-fill' style='background:" +
         "rgba(101,163,13,0.10);border:1px dashed #3f6212'></span>" +
-        "Dashed faint outline = past (sold)</div>";
+        "Dashed faint outline = past (sold), outside the corridor</div>";
       key.innerHTML = html;
       label.parentNode.insertBefore(key, label.nextSibling);
     },
@@ -6656,11 +6675,13 @@ var LAYERS = [
        + USFS EDW 44. OFF by default and LAZY: historical
        context. Style is timberStyle: one lime for every seller,
        past is a dashed outline with only a faint fill, so past
-       reads as past at a glance. The toggle's swatch is the
+       reads as past at a glance — except the 35 past sales inside
+       the Arrowhead reroute corridor, which fill solid red
+       (Nov 19, 2026, Paul). The toggle's swatch is the
        same lime, faded. */
     id: "logpast", label: "Past timber sales",
     subgroup: "Timber sales",
-    title: "Sold / completed timber sales statewide along the trail — historical context. Dashed faint outline = past",
+    title: "Sold / completed timber sales statewide along the trail — historical context. Dashed faint outline = past outside the Arrowhead reroute corridor; past sales inside the corridor fill solid red",
     file: "data/timber-sales-minnesota.geojson",
     onByDefault: false, group: "The land",
     swatch: { kind: "fill",

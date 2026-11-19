@@ -1355,6 +1355,41 @@ neither mileage reckoning above.
   dashed lime past outline — so what has actually been identified
   for sale reads at a glance. The rule keys off program +
   timing in `timberStyle`; no data property was added.
+- **Arrowhead reroute corridor (Paul, Nov 19, 2026 — for the
+  Arrowhead demo that evening):** timber BOTH past and
+  examined-for-future, solid red fill, everything inside the
+  2004 reroute corridor polygon
+  (`site/data/arrowhead-reroute-polygon.geojson`, 1,243.4 sq mi).
+  **Clip rule:** a feature counts when its polygon INTERSECTS
+  the corridor polygon (any overlap), computed in Python with
+  Shapely from the same file the viewer draws — the `region`
+  property is NOT the clip (96 of the 219 flagged features
+  carry region "central": Cass County, where the corridor's
+  western end reaches). **Counts (Nov 19, 2026): 219 features —
+  planned 184 / past 35.** By county: St. Louis 101 (98 planned
+  + 3 past), Cass 60 (31 + 29), Itasca 36 (all planned), Lake 22
+  (19 + 3); Cook 0, Carlton 0. By program: DNR 10-yr exams 160,
+  DNR annual exams 24, county sales 23, USFS EDW 12. **Cook is
+  zero by geography, not a data gap:** all 79 Cook features lie
+  east of the corridor (nearest 0.59° of longitude away, up the
+  Gunflint) — the corridor polygon ends at lon -91.371. **Past
+  inside the corridor is thin, and the thinness is a source gap:**
+  the 35 past features are 29 Cass County sales + 6 USFS EDW
+  historic sales (3 Lake, 3 St. Louis); no DNR past sale exists
+  anywhere in the file, because no DNR sold-sale polygon service
+  exists (see Gaps below), and Itasca past is 0 for the same
+  reason. **Style:** `timberStyle` in `site/app.js` returns
+  solid red (#e11d48, fillOpacity 1, edge #9f1239) for any
+  feature carrying `in_reroute_polygon`, in BOTH toggles — the
+  corridor rule beats the timing rules, so a past sale in the
+  polygon is solid red too, while an upcoming sale outside the
+  polygon stays at 0.55. The flag is set by
+  `scripts/add_timber_reroute_flag.py` (idempotent; clears the
+  flag where a feature no longer intersects) — re-run it after
+  any re-pull of the statewide timber file, which would wipe the
+  flag. Popups name the corridor in a "Corridor" row; the panel
+  key under the Planned toggle carries a solid-red row for it.
+  Both toggles stay OFF by default.
 - **URLs:**
   - USFS EDW Activity Project Areas — Timber Sale, layer 2:
     https://apps.fs.usda.gov/arcx/rest/services/EDW/EDW_ActivityProjectAreas_01/MapServer/2
@@ -1446,7 +1481,9 @@ neither mileage reckoning above.
   is planned (near-term year >= 2024 fills stronger); past is
   the same lime as a dashed outline with only a faint fill
   (fillOpacity 0.10, dash "5 4"), so timing reads without
-  relying on color. The key lives in two places: a panel key
+  relying on color — except inside the Arrowhead reroute
+  corridor, where past AND planned both fill solid red (see the
+  corridor bullet above). The key lives in two places: a panel key
   under the Planned toggle (two rows, the two fills) and a
   "Timber sales" section in the map legend; the two toggles'
   swatches are the same solid lime (the past swatch faded to
