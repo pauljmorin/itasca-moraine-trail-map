@@ -2279,8 +2279,8 @@ neither mileage reckoning above.
   decision on whether and how to add it. Wilkin/Becker segment-level pedestrian/bicycle counts could not
   be resolved in T07 either (MnCMAT2 login-restricted; MNCrash
   upstream error; TCMAC gated).
-- **Use here:** `data/roadwalk.geojson` (74 features: 56 line
-  pieces, 15 speed badges, 3 crash markers) →
+- **Use here:** `data/roadwalk.geojson` (73 features: 56 line
+  pieces, 14 speed badges, 3 crash markers) →
   `site/data/roadwalk.geojson` (built by
   `scripts/build_site_data.py`), three layers in the "Road walk"
   group (Road walk / Speed limits / Accident-prone areas), all OFF

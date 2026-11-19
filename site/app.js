@@ -7362,7 +7362,8 @@ var LAYERS = [
             : "The trail follows a public road here. No speed or crash data is published for the Arrowhead road pieces.";
           bindPop(l, popKicker("Road walk") + "<h3>Road walk — " +
             (isWestern ? esc(p.segment) : "Arrowhead") + "</h3>" +
-            kvTable(rows) + "<p class='pop-note'>" + note + "</p>");
+            kvTable(rows) + "<p class='pop-note'>" + note + "</p>" +
+            popDataLink("roadwalk"));
         },
       });
     },
@@ -7413,7 +7414,7 @@ var LAYERS = [
               ["Shoulder source", p.shoulder_source],
               ["Position", p.position_note],
               ["Source", p.source],
-            ]));
+            ]) + popDataLink("roadwalk"));
         },
       });
     },
@@ -7456,7 +7457,7 @@ var LAYERS = [
               ["Note", p.note],
               ["Position", p.position_note],
               ["Source", p.source],
-            ]) + "<p class='pop-note'>" + esc(p.caveat) + "</p>");
+            ]) + "<p class='pop-note'>" + esc(p.caveat) + "</p>" + popDataLink("roadwalk"));
         },
       });
     },
