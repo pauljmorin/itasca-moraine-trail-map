@@ -44,6 +44,52 @@ Sources (all verified, nothing invented):
     counts could not be resolved in T07 either (MnCMAT2
     login-restricted; MNCrash upstream error; TCMAC gated) -
     the layer does not claim them.
+  * SHOULDERS (added 2026-11-18): no as-built shoulder width
+    exists for any western segment in any reachable
+    authoritative source. T07 Leg 2 ("Shoulder Width / Edge
+    Condition" column) reads "Not published in MnDOT TCDS"
+    for all 15 segments - MnDOT TCDS omits shoulder widths in
+    public station views - and Segs 3 and 8 have no TCDS
+    station at all. What T07 does give per segment is edge
+    CONDITION: the Otter Tail SAP systemic-risk tier and Edge
+    Risk 2S/3 deficiencies (SAP Table 10, pp. 73-75), plus
+    the Seg 7 sidewalk. Those are carried as
+    "shoulder_quality" - a condition statement, NOT a width.
+    No numeric shoulder_width_ft is carried for any segment.
+    Checked and NOT usable as as-built widths: MN Rules
+    8820.9920 (design-table required widths for new
+    construction by projected ADT, not measurements); the
+    MnDOT Bikeways map (shows per-road shoulder widths but is
+    JS-only; the statewide BIKEWAY FeatureServer is
+    WAF-blocked to text fetch, and the Bikeways Data Standard
+    v1.0 carries no numeric shoulder-width field - shoulder
+    appears only as a separation-type value); the MnDOT
+    District 4 shoulder-widening prioritization study
+    (exists, could not be located - request from District 4);
+    county bikeways maps ("Paved Shoulder 4' or Wider" class,
+    per-road values need a visual map read, not tried here).
+    Benchmark (guidance, not a measurement): FHWA recommends
+    a walkable shoulder of at least 4 ft (stabilized or paved)
+    on both sides of rural highways routinely used by
+    pedestrians. The Arrowhead road pieces carry no shoulder
+    fields at all - nothing was found for them.
+  * OBSERVED SPEEDS (added 2026-11-18): none published per
+    segment. MnDOT's Speed Monitoring Program (57 automated
+    stations) reports average 85th percentile speed aggregated
+    by roadway category only (five categories) and publishes
+    no station list, so no station can be tied to a road-walk
+    segment and the category average must NOT be substituted
+    as a segment speed. MnDOT speed studies exist for CSAH 1
+    (Tower Road), CSAH 1 in Weetown, CSAH 4 & 60 in Vergas,
+    CSAH 35, CSAH 41 and CSAH 88 (Otter Tail County Board
+    minutes, Jan 3, 2023) - but only the recommendations are
+    public (e.g. CSAH 1 Weetown: raise 50 to 55 mph; CSAH 4 &
+    60 Vergas: no change in 40 mph; CSAH 41: no change in
+    55 mph), not the measured 85th percentile speeds; the
+    studies themselves are a records request to MnDOT District
+    4 / Otter Tail County Highway Dept. T07 contains no
+    observed-speed data at all (no 85th percentile values, no
+    speed-study results, no "speeding" mentions).
 
 Output: data/roadwalk.geojson (working data) with a "kind"
 property per feature: "line" (the road-walk line), "speed"
@@ -141,6 +187,74 @@ HIN_SPOTS = [
      "tier": "Tier 3 systemic risk (SAP Table 10, pp. 74-75)",
      "note": "Highest HIN score on the western route; the corridor connects with Seg 9."},
 ]
+
+# ---------------------------------------------------------------- shoulders
+# Shoulder width / edge condition per T07 segment, transcribed
+# from T07 Leg 2 ("Segment Safety & Traffic Data Breakdown", the
+# "Shoulder Width / Edge Condition" column; T07 output Doc
+# nct-western-roadwalk-safety-2026-11-15,
+# 1wHqDBbJxoU-k128QWiQkUa1DNPwBTZ0eFxn4C6qNJho).
+#
+# INTERPRETATION METHOD (so every value is reproducible):
+# shoulder_quality is a DIRECT COPY of the T07 table cell for
+# the segment, lightly compressed (station lists dropped, the
+# SAP tier/edge-risk clauses kept verbatim in substance). No
+# width is inferred, estimated or derived from any other
+# source: where the cell says "Not published", the field says
+# so. The one wording change is Seg 7: the T07 cell reads
+# "Concrete sidewalk" and the row text adds "Concrete
+# sidewalks along ~3.64 mi in NCTA GIS" - the field renders
+# that as "Concrete sidewalk along ~3.64 mi (NCTA GIS); no
+# shoulder - walkers on sidewalk". The "no shoulder" clause
+# is a wording summary [judgment: the cell does not state it
+# in those words; the sidewalk is the documented edge
+# condition for the segment]. No numeric shoulder_width_ft
+# key is emitted for any segment: no as-built width exists
+# in any source checked (see the docstring), so the key is
+# ABSENT, not zero and not a design-table value. Segs 3 and
+# 8 read "Not published (no MnDOT TCDS station on this
+# segment)" because T07 records no station there.
+SHOULDER = {
+    "Seg 1": ("Not published in MnDOT TCDS",
+              "T07 Leg 2 (MnDOT TCDS)"),
+    "Seg 2": ("Not published in MnDOT TCDS",
+              "T07 Leg 2 (MnDOT TCDS)"),
+    "Seg 3": ("Not published (no MnDOT TCDS station on this segment)",
+              "T07 Leg 2"),
+    "Seg 4": ("Not published in MnDOT TCDS",
+              "T07 Leg 2 (MnDOT TCDS)"),
+    "Seg 5": ("Not published in MnDOT TCDS",
+              "T07 Leg 2 (MnDOT TCDS)"),
+    "Seg 6": ("Not published in MnDOT TCDS; CSAH 88 on Otter Tail "
+              "High-Injury Network (HIN score 6.0) and Tier 3 "
+              "systemic risk (SAP Table 10, p. 75)",
+              "T07 Leg 2 (MnDOT TCDS; Otter Tail SAP)"),
+    "Seg 7": ("Concrete sidewalk along ~3.64 mi (NCTA GIS); no "
+              "shoulder - walkers on sidewalk",
+              "T07 Leg 2 (NCTA GIS)"),
+    "Seg 8": ("Not published (no MnDOT TCDS station on this segment)",
+              "T07 Leg 2"),
+    "Seg 9": ("Not published in MnDOT TCDS; CSAH 1 segments 9, "
+              "15-20 Tier 3 systemic risk (SAP Table 10, pp. 74-75)",
+              "T07 Leg 2 (MnDOT TCDS; Otter Tail SAP)"),
+    "Seg 10": ("Not published in MnDOT TCDS; CSAH 3 segments 1-3 "
+               "Tier 2 systemic risk with Edge Risk 2S/3 deficiencies "
+               "(SAP Table 10, pp. 73-74)",
+               "T07 Leg 2 (MnDOT TCDS; Otter Tail SAP)"),
+    "Seg 11": ("Not published in MnDOT TCDS",
+               "T07 Leg 2 (MnDOT TCDS)"),
+    "Seg 12": ("Not published in MnDOT TCDS; CSAH 41 Segments 1 & 2 "
+               "Tier 1 systemic risk (all 4 risk factors incl. Edge "
+               "Risk 2S/3, SAP Table 10, p. 73); CSAH 4 in Vergas on "
+               "HIN (score 6.0) and Tier 3 systemic risk",
+               "T07 Leg 2 (MnDOT TCDS; Otter Tail SAP)"),
+    "Seg 13": ("Not published in MnDOT TCDS",
+               "T07 Leg 2 (MnDOT TCDS)"),
+    "Seg 14": ("Not published in MnDOT TCDS",
+               "T07 Leg 2 (MnDOT TCDS)"),
+    "Seg 15": ("Not published in MnDOT TCDS",
+               "T07 Leg 2 (MnDOT TCDS)"),
+}
 
 CRASH_CAVEAT = (
     "Otter Tail County 2020-2024: 17 pedestrian crashes (1 fatal/serious, "
@@ -344,6 +458,8 @@ def main():
                 "properties": {
                     "kind": "line", "area": "western",
                     "segment": seg_name,
+                    "shoulder_quality": SHOULDER[seg_name][0],
+                    "shoulder_source": SHOULDER[seg_name][1],
                     "source": "NCTA gap line clipped to the T07 segment range",
                 },
             })
@@ -395,6 +511,8 @@ def main():
                 "miles": f"MN-{s:.1f} to MN-{e:.1f}",
                 "speed_mph": mph, "speed_text": wording,
                 "aadt": aadt,
+                "shoulder_quality": SHOULDER[seg][0],
+                "shoulder_source": SHOULDER[seg][1],
                 "position_note": note,
                 "source": "T07 (MnDOT TCDS; Minn. Stat. \u00a7 169.14; "
                           "Otter Tail SAP, adopted May 26, 2026)",
@@ -435,7 +553,20 @@ def main():
             "gap_note": "T07 covers the western road walk only. No crash "
                         "analysis and no verified per-segment speeds exist "
                         "in the packet for the ITM or Arrowhead road walk, "
-                        "so the Arrowhead pieces carry the line only.",
+                        "so the Arrowhead pieces carry the line only. "
+                        "Shoulders: no as-built shoulder width is published "
+                        "for any western segment (MnDOT TCDS omits shoulder "
+                        "widths), so the layer carries the T07 edge-condition "
+                        "note per segment (shoulder_quality) and no numeric "
+                        "shoulder_width_ft for any segment; the Arrowhead "
+                        "pieces carry no shoulder fields at all. Observed "
+                        "speeds: none published per segment - MnDOT's Speed "
+                        "Monitoring Program reports average 85th percentile "
+                        "speed aggregated by roadway category only, with no "
+                        "published station list; speed studies exist for "
+                        "CSAH 1, 4, 41, 60 and 88 (Otter Tail Board minutes, "
+                        "Jan 3, 2023) but only their recommendations are "
+                        "public, not the measured 85th percentile speeds.",
         },
         "features": features,
     }

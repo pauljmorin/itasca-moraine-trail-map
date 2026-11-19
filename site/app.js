@@ -1190,6 +1190,58 @@ function parcelStyle(f) {
   };
 }
 
+/* Government-owned lands (Paul, Nov 18, 2026): ownership-class
+   coverage in the Minnesota NCT corridor — the "who do I talk to"
+   layer, next to Parcels in the panel. One layer, five categories
+   (Federal / State / Land trust / County / Tribal); Private has no
+   geometry here — see the legend note, it lives in Parcels. Fills
+   are washes (0.25) so the trail and parcels underneath still read;
+   tax-forfeit county land gets a dashed outline (county forest,
+   loggable). Hidden below band 3 like parcels. Colors are a first
+   cut (Paul: display adjustable later) — chosen clear of parcels
+   orange, timber lime, the reroute blue wash and the reservation
+   violet. */
+var GOV_OWNED_STYLES = {
+  "Federal":    { fill: "#1d4ed8", border: "#1e3a8a" },
+  "State":      { fill: "#15803d", border: "#166534" },
+  "Land trust": { fill: "#a16207", border: "#713f12" },
+  "County":     { fill: "#78716c", border: "#57534e" },
+  "Tribal":     { fill: "#be185d", border: "#9d174d" },
+};
+function govOwnedStyle(f) {
+  if (currentBand < 3) {
+    return { color: "#a89a5b", weight: 0, opacity: 0, fillOpacity: 0 };
+  }
+  var s = GOV_OWNED_STYLES[f.properties.category] || GOV_OWNED_STYLES.State;
+  return {
+    color: s.border,
+    weight: 1.5,
+    dashArray: f.properties.kind === "Tax-forfeit (county forest land)" ? "5 3" : null,
+    fillColor: s.fill,
+    fillOpacity: 0.25,
+  };
+}
+function govOwnedPopup(f) {
+  var p = f.properties;
+  var rows = [
+    ["Entity to contact", p.entity],
+    ["Category", p.category],
+    ["Kind", p.kind],
+    ["County", p.county],
+    ["Acres (corridor clip)", p.acres],
+    ["Source", p.source],
+  ];
+  if (p.gap_fill) {
+    rows.push(["Note", "Hubbard County has no coverage in the MnGeo "
+      + "government-owned service — this is the DNR statutory boundary, "
+      + "which includes private inholdings; see Parcels."]);
+  }
+  return "<h3>" + (esc(p.entity) || "Government-owned land") + "</h3>"
+    + kvTable(rows)
+    + "<p class='pop-note'>Ownership-class coverage, not a parcel record — "
+    + "for the owner of a specific parcel, see the Parcels layer.</p>";
+}
+
 /* Adopted stretches (§2.3, v7): amber #e08214 at opacity 1,
    weight 6 in Z1–Z3 and 5 in Z4 (the line is fully in view at
    ground zoom, so the highlight can afford to be calmer). The
@@ -1367,7 +1419,9 @@ document.addEventListener("click", function (e) {
     if (label) {
       var lab = t.getAttribute("data-label") || "";
       var dat = t.getAttribute("data-date") || "";
-      label.textContent = lab + (dat ? " · " + dat : "");
+      var brg = t.getAttribute("data-bearing") || "";
+      label.textContent = lab + (dat ? " · " + dat : "") +
+        (brg ? " · " + brg : "");
     }
     var btns = wrap.querySelectorAll(".pop-face");
     for (var i = 0; i < btns.length; i++) {
@@ -1823,6 +1877,14 @@ var SRC_INVASIVES = "https://enterprise.gisdata.mn.gov/aghost/" +
   "FeatureServer";
 var SRC_CHIPPEWA_PLAN = "https://apps.fs.usda.gov/arcx/rest/services/" +
   "EDW/EDW_LandManagementPlanning_01/MapServer";
+/* NWI wetlands (Paul, Nov 18, 2026 — GO): USFWS National Wetlands
+   Inventory as republished on ArcGIS Online. The brief's fws.gov
+   MapServer URL 404s — the service moved; the DNR's own updated-NWI
+   service is token-gated (499). Minnesota content in the national
+   file is the DNR June 2019 update. Per-polygon vintage is not
+   exposed by the service. */
+var SRC_NWI = "https://services.arcgis.com/P3ePLMYs2RVChkJx/ArcGIS/" +
+  "rest/services/USA_Wetlands/FeatureServer/0";
 function popSourceLine(url, label) {
   return "<p class='pop-source'>Source: <a href='" + url +
     "' target='_blank' rel='noopener'>" + esc(label) + "</a></p>";
@@ -1852,8 +1914,11 @@ function logFimPopup(f) {
    (both DNR stand-exam programs + upcoming county sales /
    appraisals), "past" for sold / completed sales. The viewer
    splits the one file into two toggles on that property.
-   Planned is the watch list: flag a planned cut that would
-   reach the trail. A DNR exam is not a sale — not every
+   The planned set is the watch list: flag a cut that would
+   reach the trail. Renamed Nov 18, 2026 (Paul): "Planned
+   harvests" → "Examined for future sale" — 1,166 of the 1,190
+   planned features are DNR stand exams, and an exam is not a
+   guaranteed sale. A DNR exam is not a sale — not every
    examined stand becomes one. */
 /* Timber timing fills (Paul, Nov 16, 2026 — "I don't need to
    separate the colors of the sellers. I just need past/future."):
@@ -1861,7 +1926,8 @@ function logFimPopup(f) {
    solid lime fill (a near-term year >= 2024 fills stronger, the
    existing recency rule); past is the same lime as a dashed
    outline with only a faint fill, so timing reads without relying
-   on color. The seller is named in the popup's first line, not by
+   on color. Exception (Nov 18, 2026): the 24 upcoming sales fill
+   red — see TIMBER_SALE_FILL. The seller is named in the popup's first line, not by
    color.
    Lime, not amber (Paul, Nov 16, 2026 — "the future cuts and
    the trail are nearly the same color"): the trail's adopted
@@ -1874,6 +1940,19 @@ function logFimPopup(f) {
    The Cass forest-stands olive #6b8e23 is the nearest neighbour
    (same hue family, but a faint 0.18 wash, off by default). */
 var TIMBER_FILL = "#65a30d", TIMBER_EDGE = "#3f6212";
+/* Identified for sale (Paul, Nov 18, 2026 — "we want to be able
+   to see what has actually been identified for sale or sold"):
+   the 24 planned features that are real upcoming sales, not
+   stand exams — 23 county-sale + 1 USFS EDW, all timing planned.
+   They fill RED so they read at a glance against the lime exams.
+   Red choice: #e11d48 fill / #9f1239 edge. The map already has
+   reds — gap red #d7301f and BRT #b91c1c are LINES, and the
+   forest-health fill is #dc2626 at 0.30 — so #e11d48 was picked
+   as the most distant red that still reads as red: cooler and
+   pinker than the orange-red gap and the #dc2626 forest-health
+   wash, and at 0.55 fill it is stronger than the forest-health
+   0.30. It reads on pale topo and dark satellite alike. */
+var TIMBER_SALE_FILL = "#e11d48", TIMBER_SALE_EDGE = "#9f1239";
 /* Seller label for the popup title: counties and the DNR come
    straight off manager; USFS splits by forest — Chippewa vs
    Superior are different sellers on this map. Name only, no
@@ -1885,10 +1964,26 @@ function timberSellerLabel(p) {
   }
   return p.manager;
 }
+/* A planned feature is an upcoming sale — identified for sale,
+   not merely examined — when its program is a sale program
+   (county-sale or usfs-edw-sale) rather than a DNR stand-exam
+   program. Keys off program + timing only; no new data property.
+   24 features in the current file (23 county-sale + 1 USFS EDW). */
+function timberIsUpcomingSale(p) {
+  return p.timing === "planned" &&
+    (p.program === "county-sale" || p.program === "usfs-edw-sale");
+}
 /* One style for both statewide toggles: lime throughout, the
-   timing picks the fill. */
+   timing picks the fill — except the 24 upcoming sales, which
+   fill red (see TIMBER_SALE_FILL above). Three states read
+   distinctly: solid lime = examined for future sale, solid red
+   = identified for sale, dashed lime outline = past / sold. */
 function timberStyle(f) {
   var p = f.properties || {};
+  if (timberIsUpcomingSale(p)) {
+    return { color: TIMBER_SALE_EDGE, weight: 2.5,
+      fillColor: TIMBER_SALE_FILL, fillOpacity: 0.55 };
+  }
   if (p.timing === "planned") {
     var y = p.year;
     var op = (typeof y === "number" && y >= 2024) ? 0.5 : 0.32;
@@ -1916,9 +2011,13 @@ function logStatewidePopup(f) {
      timing (Paul, Nov 16, 2026). The seller is named here, not
      by color — the map shows timing only. */
   var seller = timberSellerLabel(p);
+  var upcomingSale = timberIsUpcomingSale(p);
   var rows = [
-    ["Unit", p.name || (planned ? "Planned harvest" : "Timber sale")],
-    ["Timing", planned ? "Planned — watch list" : "Past — sold / completed"],
+    ["Unit", p.name || (upcomingSale ? "Identified for sale" :
+      planned ? "Examined for future sale" : "Timber sale")],
+    ["Timing", upcomingSale ? "Identified for sale — upcoming" :
+      planned ? "Examined for future sale — watch list" :
+      "Past — sold / completed"],
     ["Type", STATEWIDE_PROGRAM_LABELS[p.program] || p.program],
     ["Acres", p.acres],
     ["Year", p.year],
@@ -1939,14 +2038,19 @@ function logStatewidePopup(f) {
     if (p.operator) rows.push(["Operator", p.operator]);
     if (p.closed) rows.push(["Closed", p.closed]);
   }
-  var note = planned
-    ? "Planned, not yet cut — the watch list: flag it if a " +
-      "planned cut would reach the trail. A DNR exam is not a " +
-      "sale; not every examined stand becomes one."
+  var note = upcomingSale
+    ? "Identified for an upcoming sale — this stand is slated " +
+      "for sale, not merely examined. Flag it if a cut would " +
+      "reach the trail."
+    : planned
+    ? "Examined for future sale, not yet cut — the watch list: " +
+      "flag it if a cut would reach the trail. A DNR exam is not " +
+      "a sale; not every examined stand becomes one."
     : "Sold / completed — historical context. The year is the " +
       "sale year.";
   var out = "<h3>" + esc(seller + " — " +
-    (planned ? "Planned" : "Past")) + "</h3>" + kvTable(rows) +
+    (upcomingSale ? "Identified for sale" :
+      planned ? "Examined for future sale" : "Past")) + "</h3>" + kvTable(rows) +
     "<p class='pop-note'>" + note + "</p>";
   if (p.program === "dnr-stand-exam-10yr") {
     out += popSourceLine(SRC_DNR_STAND_EXAM_10YR,
@@ -1971,6 +2075,134 @@ function logStatewidePopup(f) {
     out += popSourceLine(SRC_CLEARWATER_TIMBER,
       "Clearwater County Forestry — PreRX Appraisals, layer 0");
   }
+  return out;
+}
+/* NWI wetlands, classified for trail routing (Paul, Nov 18, 2026 —
+   GO). Rules W1–W10 / C1–C4 from the Nov 18 classification sweep
+   (research_notes/nwi-wetland-trail-classification-20261118-1744/
+   report.md). The GeoJSON carries only the short rule id per
+   feature; the structure + note text lives here so 91,479 features
+   do not each repeat the same strings (the file went from 82.9 MB
+   to 50.5 MB by moving this text here). This table mirrors RULE_TEXT
+   in scripts/pull_nwi_corridor.py — keep the two in sync.
+   Placeholders in notes: {code} Cowardin code, {regime} regime
+   letter, {regime_name} regime in words, {mods} modifier letters,
+   {wet_type} wetland type. W8 has one entry per rating (perennial
+   riverine is NO-GO along the channel; intermittent is MAYBE).
+   W9-analog has a second note for regime K (artificially flooded).
+   "judgment" is the J-register tag for placements that are the
+   chapter's judgment, not a published matrix — shown in the popup. */
+var WETLAND_RULES = {
+  "W3": { structure: "Avoid — reroute around; a bridge is a bridge " +
+      "project, not a trail-routing MAYBE",
+    note: "Permanently flooded / open water ({code}).",
+    judgment: "J2: categorical H→NO-GO is judgment" },
+  "W4": { structure: "Avoid for a through-route; MAYBE only for a " +
+      "short, named, maintainable spur on bog bridge",
+    note: "Black spruce / tamarack bog or bog shrub ({code}, regime " +
+      "{regime}). NPS Arrowhead precedent: 70 mi of this swamp was " +
+      "left unbuilt and rerouted.",
+    judgment: "J3: spur exception, no numeric size threshold — table " +
+      "row applied as written" },
+  "W5": { structure: "Short, narrow boardwalk only; NO-GO if the " +
+      "crossing exceeds ~300 ft",
+    note: "Semipermanently flooded — surface water persists most of " +
+      "the growing season.",
+    judgment: "J4: >~300 ft of F-regime tread = NO-GO, route-level check" },
+  "W6": { structure: "Bog bridge / boardwalk, short crossing only — " +
+      "narrow point, perpendicular, spanning the full saturated width",
+    note: "Seasonally flooded/saturated ({regime_name}).",
+    judgment: null },
+  "W6-analog": { structure: "Bog bridge / boardwalk, short crossing only",
+    note: "Continuously saturated.",
+    judgment: "Report rules do not name regime D; treated as seasonally " +
+      "saturated" },
+  "W7": { structure: "Turnpike / puncheon — edge crossing, shortest " +
+      "distance, perpendicular",
+    note: "Temporarily flooded/saturated ({regime_name}); field-check " +
+      "peat depth.",
+    judgment: "J5: rod-sounding field upgrade — if a rod meets no " +
+      "resistance, upgrade to NO-GO" },
+  "W8": {
+    "nogo": { structure: "No tread along the channel; a single bridge " +
+        "point is a separate project decision, not a routing MAYBE",
+      note: "Perennial riverine (R2/R3). Stay 25 ft from the stream " +
+        "edge except at the crossing.",
+      judgment: null },
+    "maybe": { structure: "Bridge / boardwalk at a narrow point only",
+      note: "Intermittent riverine (R4/R5).",
+      judgment: null } },
+  "W9": { structure: "Field-check first — do NOT assume degraded = GO; " +
+      "LGU/TEP determination required",
+    note: "Modifier '{mods}' (ditched/farmed/excavated) — WCA/404 " +
+      "status is not removed by the modifier.",
+    judgment: "J6: MAYBE placement is judgment" },
+  "W9-analog": { structure: "Field-check first",
+    note: "Shore / intermittently exposed ({code}).",
+    note_k: "Artificially flooded — water level is managed ({code}).",
+    judgment: "Shore / intermittently exposed treated as W9 MAYBE; " +
+      "regime K (artificially flooded) treated the same way" },
+  "UNCLASSIFIED": { structure: "Field-check first",
+    note: "Cowardin code {code} ({wet_type}) matched no classification rule.",
+    judgment: "No rule in W1-W10 names this code; field-check, do not " +
+      "assume GO" },
+};
+/* Wetland fills (report J12: MAYBE amber, NO-GO red; Leaflet has no
+   native hatch, so the MAYBE edge is dashed to read as the softer
+   state — the timber pattern for a secondary state). NO-GO is a
+   solid red fill. Dissolved features are ordered MAYBE then NO-GO
+   in the file, so NO-GO draws on top where they overlap. */
+function wetlandStyle(f) {
+  var p = f.properties || {};
+  if (p.rating === "nogo") {
+    return { color: "#7f1d1d", weight: 1.5,
+      fillColor: "#dc2626", fillOpacity: 0.45 };
+  }
+  return { color: "#92400e", weight: 1.5, dashArray: "4 3",
+    fillColor: "#f59e0b", fillOpacity: 0.35 };
+}
+function wetlandPopup(f) {
+  var p = f.properties;
+  var rule = WETLAND_RULES[p.rule] || WETLAND_RULES.UNCLASSIFIED;
+  var entry = rule[p.rating] || rule;
+  var note = entry.note || "";
+  if (p.rule === "W9-analog" && p.regime === "K" && entry.note_k) {
+    note = entry.note_k;
+  }
+  note = note.replace("{code}", p.code || "")
+    .replace("{regime}", p.regime || "")
+    .replace("{regime_name}", p.regime_name || "")
+    .replace("{mods}", p.modifier || "")
+    .replace("{wet_type}", p.wetland_type || "");
+  var nogo = p.rating === "nogo";
+  var rows = [
+    ["Classification", nogo ? "NO-GO — avoid" :
+      "MAYBE — short crossing only"],
+    ["Rule", p.rule + (entry.judgment ? " — judgment: " + entry.judgment :
+      "")],
+    ["Cowardin code", p.code],
+    ["Water regime", (p.regime || "") +
+      (p.regime_name ? " — " + p.regime_name : "")],
+    ["Wetland type", p.wetland_type],
+    ["System / Class", [p.system, p.class, p.subclass]
+      .filter(function (v) { return v; }).join(" / ") || null],
+    ["Acres", p.acres],
+    ["County", p.county],
+    ["Region", p.region],
+  ];
+  var out = "<h3>Wetland — " + (nogo ? "NO-GO" : "MAYBE") + "</h3>" +
+    kvTable(rows) +
+    "<p class='pop-note'>" + esc(entry.structure) + " " + esc(note) +
+    "</p>" +
+    "<p class='pop-note'>Screening only — NWI is not a delineation " +
+    "(identification ~90%, classification ~75%, 95% of features " +
+    "within ±5.9 m; minimum mapping unit 0.5 ac). Field delineation " +
+    "and permits before any MAYBE becomes a route. Not checked " +
+    "against DNR public waters, calcareous fens, or rare natural " +
+    "communities — no public layer for those in the viewer yet.</p>";
+  out += popSourceLine(SRC_NWI,
+    "USFWS National Wetlands Inventory — USA_Wetlands FeatureServer " +
+    "(Minnesota content: DNR June 2019 update)");
   return out;
 }
 /* Conservation easements (Nov 12, 2026): BWSR RIM Reserve
@@ -2436,15 +2668,26 @@ function assetPopup(f, savedMsg) {
     /* Photo date under the photo (Paul, Nov 12): the date the
        photo was taken, from its EXIF datetime. */
     var d1 = fmtPhotoDate(photos[0].datetime || p.datetime);
-    if (d1) html += "<div class=\"pop-photo-date\">" + esc(d1) + "</div>";
+    var b1 = (photos[0].direction_deg != null) ? photos[0].direction_deg
+      : p.direction_deg;
+    var c1 = (photos[0].direction_compass != null)
+      ? photos[0].direction_compass : p.direction_compass;
+    var t1 = d1 || "";
+    if (b1 != null) {
+      t1 += (t1 ? " · " : "") + Math.round(b1) + "°" +
+        (c1 ? " " + c1 : "");
+    }
+    if (t1) html += "<div class=\"pop-photo-date\">" + esc(t1) + "</div>";
   } else if (photos.length > 1) {
     /* Face flip (Nov 11, 2026): one face at a time — Front/Back for
        two photos, Face 1/2/3… for more — with a "Show all photos"
-       that opens the full grid, so no photo is hidden. The compass
-       bearing is NOT shown: the phone records no camera direction
-       (direction_deg is null on every Nov 11 photo), so the faces
-       are labelled by the order they were shot; if a future batch
-       carries per-photo direction_deg, append it to the label here. */
+       that opens the full grid, so no photo is hidden. The faces
+       are labelled by the order they were shot; when a photo
+       carries per-photo direction_deg (EXIF camera direction, or
+       track-inferred from Nov 18, 2026 on), the bearing is
+       appended to the label, e.g. "Front · Nov 18, 2026 · 241° WSW".
+       direction_ref "track" means the bearing was inferred from
+       the GPS track's direction of travel, not read from the phone. */
     var faceLabel = function (i) {
       return photos.length === 2 ? (i === 0 ? "Front" : "Back")
         : "Face " + (i + 1);
@@ -2456,7 +2699,13 @@ function assetPopup(f, savedMsg) {
     };
     var faceLabelDate = function (i) {
       var d = faceDate(i);
-      return faceLabel(i) + (d ? " · " + d : "");
+      var label = faceLabel(i) + (d ? " · " + d : "");
+      var ph = photos[i];
+      if (ph && ph.direction_deg != null) {
+        label += " · " + Math.round(ph.direction_deg) + "°" +
+          (ph.direction_compass ? " " + ph.direction_compass : "");
+      }
+      return label;
     };
     html += "<div class=\"pop-flip\">";
     var drive0 = photoDriveUrl(photos[0]);
@@ -2478,6 +2727,10 @@ function assetPopup(f, savedMsg) {
         (i === 0 ? " active" : "") + "\" data-derivative=\"" +
         esc(ph.derivative) + "\" data-label=\"" + esc(faceLabel(i)) +
         "\" data-date=\"" + esc(faceDate(i) || "") +
+        "\" data-bearing=\"" + ((ph.direction_deg != null)
+          ? esc(Math.round(ph.direction_deg) + "°" +
+            (ph.direction_compass ? " " + ph.direction_compass : ""))
+          : "") +
         "\" data-full=\"" + esc(photoFullUrl(ph)) +
         "\" data-caption=\"" + esc(photoCaption(p, ph, faceLabel(i))) +
         "\"" + (drv ? " data-drive=\"" + esc(drv) + "\"" : "") +
@@ -4472,6 +4725,65 @@ function snowPopup(f) {
     "groomers up to 17,000 lb.</p>";
   return h;
 }
+/* Bike trails (Paul, Nov 18, 2026): DNR state trails with
+   use_bike = 1, FULL STATE — 364 features, 649.80 GIS miles,
+   29 named trails — plus the Mesabi Trail from OpenStreetMap
+   (73 way features, 96.15 GIS miles; the Mesabi is not in the
+   DNR service and no authoritative GIS for it is reachable
+   here, so its geometry is community-mapped and labeled as
+   such). The DNR fields are read as stored, like the
+   motorized popups. Surface comes from `surfacetyp` on DNR
+   features and `surface` on OSM features. The `lengthmile`
+   row is the DNR service's figure for the segment; field and
+   drawn miles agree to 0.01 mi statewide. */
+function bikeUses(p) {
+  var v = [];
+  if (p.use_bike === 1) v.push("Bike");
+  if (p.use_mntbik === 1) v.push("Mountain bike");
+  if (p.use_inline === 1) v.push("Inline skating");
+  if (p.use_hike === 1 || p.use_hiking === 1) v.push("Hiking");
+  return v.length ? v.join(", ") : null;
+}
+function bikePopup(f) {
+  var p = f.properties;
+  /* The DNR service stores a missing string as a single space;
+     trim it to null so kvTable skips the row instead of showing
+     an empty one. */
+  function s(v) {
+    var t = (v == null ? "" : String(v)).trim();
+    return t === "" ? null : t;
+  }
+  var h = "<h3>Bike &mdash; " + esc(p.trail_name || "Trail") + "</h3>";
+  h += kvTable([
+    ["Surface", s(p.surfacetyp || p.surface)],
+    ["Width", s(p.width)],
+    ["Uses", bikeUses(p)],
+    ["This segment", p.lengthmile != null
+      ? p.lengthmile + " mi (DNR service)" : null],
+  ]);
+  if (p.kind === "mesabi-osm") {
+    h += "<p><a href=\"https://mesabitrail.com/\" target=\"_blank\" " +
+      "rel=\"noopener\">Mesabi Trail</a> &mdash; Grand Rapids to " +
+      "Ely, paved, 10 ft wide. A Wheel Pass is required " +
+      "($10 / 3 days, $20 / year).</p>";
+    h += "<p class='pop-note'>Mesabi Trail geometry is from " +
+      "OpenStreetMap (community-mapped ways named \"Mesabi " +
+      "Trail\"), not the trail authority: the St. Louis &amp; " +
+      "Lake Counties Regional Railroad Authority publishes a " +
+      "paper/PDF map only, and MnDOT's statewide bikeways " +
+      "service is blocked from here. 96.15 GIS miles drawn " +
+      "against ~126 miles published finished — on-road and " +
+      "shared sections carried under road names are not in " +
+      "this file.</p>";
+  } else {
+    h += "<p class='pop-note'>Minnesota DNR State Trails " +
+      "(use_bike = 1), full state, via the MnGeo " +
+      "FeatureServer. Paved multi-use state trails that allow " +
+      "biking — Paul Bunyan, Heartland, David Dill&ndash;" +
+      "Taconite, Gitchi-Gami and 25 more.</p>";
+  }
+  return h;
+}
 function shtPopup(f) {
   var p = f.properties;
   var h = "<h3>Superior Hiking Trail</h3>";
@@ -4485,6 +4797,34 @@ function shtPopup(f) {
     "the trail is not in that service. It meets the North " +
     "Country Trail only at its northern terminus, at the " +
     "270&deg; Overlook near Grand Portage.</p>";
+  return h;
+}
+/* Inventoried trail (Paul, Nov 18, 2026): the trail that has
+   been inventoried — a concatenation of the GPS tracks walked
+   while inventorying, not the published trail line. Only the
+   ground actually walked is drawn. Nov 11, 2026: 1,038 points,
+   6.42 mi. Nov 18, 2026: 729 points, 4.50 mi, car tail cut
+   (the tracker stayed on for the drive home; 323 points /
+   5.22 mi removed). New tracks are appended as new lines in
+   data/inventoried-trail.geojson. */
+function inventoriedPopup(f) {
+  var p = f.properties;
+  var h = "<h3>Inventoried trail</h3>";
+  var walked = "";
+  if (p.total_miles != null) walked += p.total_miles + " mi";
+  if (p.total_points != null) {
+    walked += (walked ? " · " : "") + p.total_points + " GPS points";
+  }
+  var rows = [["Walked so far", walked || null]];
+  (p.sources || []).forEach(function (s) {
+    rows.push([s.date, s.miles + " mi · " + s.points + " points" +
+      (s.chopped ? " · car tail cut" : "")]);
+  });
+  h += kvTable(rows);
+  h += "<p class='pop-note'>The ground actually walked while " +
+    "inventorying the trail — not the published trail line. " +
+    "The Nov 18 car tail (driving, tracker left on) was cut " +
+    "before this layer was built.</p>";
   return h;
 }
 /* TrailNFS names arrive ALL-CAPS ("CARIBOU ROCK", "BRT-SOCK LAKE
@@ -4948,7 +5288,16 @@ var LAYERS = [
        ON by default — the extension is the point.
        Popups reuse trailPopup (chapter, type, source); the
        chapter names for the other Minnesota chapters were added
-       to CHAPTER_NAMES with this layer. */
+       to CHAPTER_NAMES with this layer. The Star of the North
+       chunk (Paul, Nov 18, 2026 — same treatment as Arrowhead)
+       is drawn by this layer: the 12 official-line features
+       from the MN-84 crossing to the MN-6 crossing NE of
+       Remer (25.93 mi foot path + 0.74 mi on-road connectors,
+       all Cass County). The drawn line continues 3.87 mi west
+       of MN-84 to the Itasca Moraine boundary — that western
+       piece is Itasca Moraine's, already covered by the chapter
+       parcels; only the parcel selection is clipped at MN-84
+       (see Parcels — Star of the North). */
     id: "trail-minnesota", label: "NCT — all Minnesota",
     title: "The North Country Trail across all of Minnesota — " +
       "North Dakota border to the Border Route Trail",
@@ -4968,6 +5317,29 @@ var LAYERS = [
         onEachFeature: function (f, l) { bindPop(l, trailPopup(f)); },
       });
       return layer;
+    },
+  },
+  {
+    /* Inventoried trail (Paul, Nov 18, 2026): "the trail that
+       has been inventoried" — a concatenation of ALL the GPS
+       tracks walked while inventorying, not the published trail
+       line. Nov 11, 2026: 1,038 points, 6.42 mi. Nov 18, 2026:
+       729 points, 4.50 mi (car tail cut — see the file's
+       properties). Total 1,767 points, 10.91 mi. New tracks are
+       appended as new lines in data/inventoried-trail.geojson
+       (and the site copy). Teal #0d9488, distinct from the NCT
+       blue, the bike orange and the motorized colours. OFF by
+       default and LAZY. */
+    id: "inventoried-trail", label: "Inventoried trail",
+    title: "The trail that has been inventoried — the GPS tracks walked while inventorying (Nov 11 + Nov 18, 2026; 10.91 mi)",
+    file: "data/inventoried-trail.geojson",
+    onByDefault: false, group: "The trail",
+    swatch: { kind: "line", color: "#0d9488" },
+    build: function (gj) {
+      return hitLine(gj, {
+        color: "#0d9488", weight: 3, opacity: 0.9,
+        lineCap: "round",
+      }, inventoriedPopup);
     },
   },
   {
@@ -5247,6 +5619,39 @@ var LAYERS = [
         color: "#67a9cf", weight: 3, opacity: 0.85,
         lineCap: "round",
       }, snowPopup);
+    },
+  },
+  {
+    /* Bike trails (Paul, Nov 18, 2026): bike trails showed
+       only on the base maps, never as their own layer — now
+       grouped with the motorized layers. DNR state trails
+       with use_bike = 1, FULL STATE — 364 features, 649.80
+       GIS miles, 29 named trails — plus the Mesabi Trail
+       from OpenStreetMap (73 ways, 96.15 GIS miles; the
+       Mesabi is not in the DNR service and MnDOT's bikeways
+       service is blocked from here, so OSM is the geometry
+       and the popup says so). Total 437 features, 745.95 GIS
+       miles. Orange #ea580c, distinct from ATV purple, OHM
+       magenta, snow icy blue and SHT blue. OFF by default
+       and LAZY. Popup names the trail and its surface/type;
+       Mesabi popups carry the OSM-source caveat and the
+       Wheel Pass note. Not in the layer, by the service's
+       own flags: mountain-bike-only singletrack (368
+       features, e.g. Cuyuna Lakes), the Blue Ox (unpaved,
+       motorized) and the C.J. Ramstad / David Dill–Arrowhead
+       trails (use_bike = 0); and no on-road bikeway — MnDOT's
+       BIKEWAY service is unreachable here. */
+    id: "bike", label: "Bike trails",
+    title: "Bike trails — 29 DNR state trails + Mesabi Trail, " +
+      "746 GIS miles, full state",
+    file: "data/bike-trails.geojson",
+    onByDefault: false, group: "Other trails",
+    swatch: { kind: "line", color: "#ea580c" },
+    build: function (gj) {
+      return hitLine(gj, {
+        color: "#ea580c", weight: 3, opacity: 0.85,
+        lineCap: "round",
+      }, bikePopup);
     },
   },
   {
@@ -5735,6 +6140,72 @@ var LAYERS = [
     },
   },
   {
+    /* Parcels — Star of the North (Paul, Nov 18, 2026):
+       parcels along the Star of the North chapter's trail
+       (MN-84 to MN-6 NE of Remer), same treatment as the
+       Arrowhead corridor parcels: the parcels the foot trail
+       crosses (36), plus the adjoining ring one parcel deep
+       (298), pulled by scripts/pull_parcels_stn.py from the
+       same MnGeo compilation as the chapter parcels (Cass
+       County only — the line crosses no other county; Cass is
+       opt-in). Same fence as the chapter parcels: published
+       county records only, owner name + mailing address as
+       published (chapter ruling Nov 10, 2026), taxpayer fields
+       never carried. There is NO reroute polygon for Star of
+       the North, so the polygon rule does not apply — but the
+       underlying principle does: no parcels are drawn along
+       the 3 on-road connectors (0.74 mi); selection ran on the
+       foot path only (25.93 mi). The 3.87 mi of footpath west
+       of MN-84 is Itasca Moraine's and is already covered by
+       the chapter parcels, so it is not drawn twice here.
+       OFF by default and LAZY like parcels. */
+    id: "parcels-stn", label: "Parcels — Star of the North",
+    title: "Parcels along the Star of the North trail (MN-84 to MN-6, foot trail only)",
+    file: "data/parcels-stn.geojson",
+    onByDefault: false, group: "Land ownership",
+    swatch: { kind: "fill", color: "#fdbb84", border: "#b35806" },
+    build: function (gj) {
+      return L.geoJSON(gj, {
+        renderer: canvasFor(),
+        style: parcelStyle,
+        onEachFeature: function (f, l) { bindPop(l, parcelPopup(f)); },
+      });
+    },
+  },
+  {
+    /* Government-owned lands (Paul, Nov 18, 2026): the "who do I
+       talk to" layer, immediately next to Parcels in the panel.
+       Ownership-class coverage in the Minnesota NCT corridor
+       (2-mile buffer, same as timber) from the MnGeo
+       government-owned service, with kind refinements from the DNR
+       school-trust polygons (Land trust), DNR managed areas (State
+       Forest / State Park / State Recreation Area / State Wayside),
+       USFS proclaimed boundaries + Tamarac NWR (Federal kinds), and
+       the reservation boundaries (Tribal). One layer, category
+       styling; the popup names the managing entity first. Private
+       land has NO geometry here — the service covers government
+       land only, and a complement would mislabel lakes and roads
+       as private; private ownership is parcel-level and lives in
+       the Parcels layer (see the legend note). Hubbard County has
+       no coverage in the service; DNR statutory park/forest
+       polygons clipped to Hubbard are drawn as gap-fill features
+       and flagged. OFF by default and LAZY like parcels. Display
+       adjustable later (Paul): colors, split into per-category
+       toggles, or on-by-default are all open. */
+    id: "gov-owned", label: "Government-owned lands",
+    title: "Who owns the ground — the entity to talk to / work with",
+    file: "data/government-owned-lands.geojson",
+    onByDefault: false, group: "Land ownership",
+    swatch: { kind: "fill", color: "#1d4ed8", border: "#1e3a8a" },
+    build: function (gj) {
+      return L.geoJSON(gj, {
+        renderer: canvasFor(),
+        style: govOwnedStyle,
+        onEachFeature: function (f, l) { bindPop(l, govOwnedPopup(f)); },
+      });
+    },
+  },
+  {
     /* Leech Lake Reservation (Paul, Nov 11, 2026 — "put a
        specific polygon in for native nations"): the federal
        reservation boundary as published by the Bureau of
@@ -5875,17 +6346,24 @@ var LAYERS = [
        first; Paul, Nov 17, 2026 — OFF by default at startup):
        1,190 features in the 2-mile corridor — both DNR
        stand-exam programs (10-yr 1,077 + annual 89) plus 24
-       upcoming county sales / appraisals. OFF by default: the
+       upcoming county sales / appraisals. Renamed Nov 18, 2026
+       (Paul): "Planned harvests" → "Examined for future sale" —
+       1,166 of 1,190 are exams, and an exam is not a guaranteed
+       sale; the 24 upcoming sales are the exception. Layer id
+       stays logplanned; the `timing` property stays past |
+       planned. OFF by default: the
        watch list is a toggle the reader turns on, not a layer
        the map opens with. Style is timberStyle: one lime for every
        seller, planned is a solid fill (a near-term year
-       >= 2024 fills stronger). The toggle's swatch is that same
+       >= 2024 fills stronger) — except the 24 upcoming sales,
+       which fill red (TIMBER_SALE_FILL) so what is identified
+       for sale reads at a glance. The toggle's swatch is that same
        solid lime. Same file as the past toggle below;
        the second fetch of the same URL is served from the
        browser HTTP cache. */
-    id: "logplanned", label: "Planned harvests — watch list",
+    id: "logplanned", label: "Examined for future sale — watch list",
     subgroup: "Timber sales",
-    title: "Planned timber harvests statewide along the trail — the watch list. Solid lime fill = planned",
+    title: "Stands examined for future sale statewide along the trail — the watch list. Solid lime fill = examined for future sale; solid red fill = identified for sale (24 upcoming sales). 1,166 are DNR stand exams and 24 are upcoming sales; an exam is not a guaranteed sale.",
     file: "data/timber-sales-minnesota.geojson",
     onByDefault: false, group: "The land",
     swatch: { kind: "fill",
@@ -5912,11 +6390,15 @@ var LAYERS = [
       var key = document.createElement("div");
       key.className = "tog-timber-key";
       var html = "<div class='tog-timber-key-title'>" +
-        "Fill = timing</div>";
+        "Fill = status</div>";
       html += "<div class='tog-timber-key-row'>" +
         "<span class='tog-swatch-fill' style='background:#65a30d;" +
         "border-color:#3f6212'></span>" +
-        "Solid fill = planned (watch list)</div>";
+        "Solid fill = examined for future sale (watch list)</div>";
+      html += "<div class='tog-timber-key-row'>" +
+        "<span class='tog-swatch-fill' style='background:#e11d48;" +
+        "border-color:#9f1239'></span>" +
+        "Solid red fill = identified for sale — upcoming sale (24)</div>";
       html += "<div class='tog-timber-key-row'>" +
         "<span class='tog-swatch-fill' style='background:" +
         "rgba(101,163,13,0.10);border:1px dashed #3f6212'></span>" +
@@ -5954,6 +6436,60 @@ var LAYERS = [
         onEachFeature: function (f, l) { bindPop(l, logStatewidePopup(f)); },
       });
       return layer;
+    },
+  },
+  {
+    /* NWI wetlands, classified for trail routing (Paul, Nov 18, 2026
+       — GO): 91,479 polygons in the 2-mile corridor around the
+       statewide trail line, 321,582.9 ac — MAYBE 85,155 (181,967 ac),
+       NO-GO 6,324 (139,616 ac). Pulled Nov 18 from the USFWS
+       national NWI service on ArcGIS Online (the brief's fws.gov
+       URL 404s; the DNR service is token-gated); Minnesota content
+       is the DNR June 2019 update. Classification W1–W10 / C1–C4
+       from the Nov 18 sweep — water regime drives the call (A/B
+       turnpike/puncheon, C/E bog bridge/boardwalk, F short
+       boardwalk only, H open water NO-GO); every judgment stays
+       labeled (WETLAND_RULES above, SOURCES.md). No GO features
+       exist in the file: GO is absence of a polygon (W1). OFF by
+       default and LAZY. Style is wetlandStyle: MAYBE amber fill
+       with a dashed edge, NO-GO solid red fill. The toggle's
+       swatch is the amber MAYBE, the majority state. */
+    id: "wetlands-nwi", label: "Wetlands (NWI) — trail routing",
+    subgroup: "Wetlands + soils",
+    title: "National Wetlands Inventory along the whole Minnesota trail, classified for trail routing. Amber dashed fill = MAYBE — short crossing only (bog bridge, boardwalk, turnpike or puncheon, by water regime). Solid red fill = NO-GO — avoid (open water, large bog, perennial riverine). Screening only: NWI is not a delineation.",
+    file: "data/wetlands-nwi-minnesota.geojson",
+    onByDefault: false, group: "The land",
+    swatch: { kind: "fill",
+      color: "#f59e0b",
+      border: "#92400e" },
+    build: function (gj) {
+      var layer = L.geoJSON(gj, {
+        renderer: canvasFor(),
+        style: wetlandStyle,
+        onEachFeature: function (f, l) { bindPop(l, wetlandPopup(f)); },
+      });
+      return layer;
+    },
+    /* Panel key: the legend lives under this toggle, inside the
+       Wetlands + soils subgroup — two rows, the two fills, plus
+       the screening-only line. */
+    panelExtra: function (label) {
+      var key = document.createElement("div");
+      key.className = "tog-timber-key";
+      var html = "<div class='tog-timber-key-title'>" +
+        "Fill = routing call</div>";
+      html += "<div class='tog-timber-key-row'>" +
+        "<span class='tog-swatch-fill' style='background:" +
+        "rgba(245,158,11,0.35);border:1px dashed #92400e'></span>" +
+        "Dashed amber fill = MAYBE — short crossing only</div>";
+      html += "<div class='tog-timber-key-row'>" +
+        "<span class='tog-swatch-fill' style='background:#dc2626;" +
+        "border-color:#7f1d1d'></span>" +
+        "Solid red fill = NO-GO — avoid</div>";
+      html += "<div class='tog-timber-key-row'>" +
+        "Screening only — not a delineation; field-check before routing</div>";
+      key.innerHTML = html;
+      label.parentNode.insertBefore(key, label.nextSibling);
     },
   },
   {
@@ -6297,6 +6833,184 @@ var LAYERS = [
     },
   },
   {
+    /* Camping — Star of the North (Paul, Nov 18, 2026):
+       campsites for the Star of the North chunk, same
+       treatment as the chapter's own Camping layer — deep-green
+       discs with a "C", OFF by default and LAZY. Contents are
+       NCTA public waypoints (Point Data — Public), pulled by
+       scripts/pull_stn_points.py: the 4 Camping points within
+       2 km of the Star of the North line (1 further Camping
+       point in the bbox, Hazel Lake Campsite, sits 7.57 km off
+       the line and is not drawn). Names are carried exactly as
+       published, including the generic one ("Campsite"). The
+       popup states each site's distance from the trail. */
+    id: "campsites-stn", label: "Camping — Star of the North",
+    title: "Campsites along the Star of the North trail (NCTA waypoints within 2 km of the trail)",
+    file: "data/campsites-stn.geojson",
+    onByDefault: false, group: "Around the trail",
+    swatch: { kind: "chapter", color: COLORS.trailDeep },
+    build: function (gj) {
+      clearSpiderfyPins("campsites-stn");
+      return L.geoJSON(gj, {
+        pointToLayer: function (f, latlng) {
+          return L.marker(latlng, {
+            keyboard: false,
+            icon: L.divIcon({
+              className: "chapter-disc-wrap", iconSize: [19, 19],
+              iconAnchor: [10, 10],
+              html: "<span class='chapter-disc'>C</span>",
+            }),
+          });
+        },
+        onEachFeature: function (f, l) {
+          var p = f.properties;
+          bindPop(l, "<h3>" + esc(p.name || "Campsite") + "</h3>" +
+            kvTable([
+              ["Type", p.subtype || p.type],
+              ["Managing authority", p.owner],
+              ["Chapter", p.chapter],
+              ["Distance from the trail", p.dist_trail_km != null
+                ? p.dist_trail_km + " km" : null],
+              ["Description", p.description],
+            ]) + "<p class='pop-note'>NCTA public waypoint (Point Data — Public); one of the campsites within 2 km of the Star of the North trail.</p>");
+          registerSpiderfyPin("campsites-stn", l, f);
+        },
+      });
+    },
+  },
+  {
+    /* DNR state forest campgrounds (Paul, Nov 18, 2026): the
+       Minnesota DNR's state forest campground inventory within
+       2 miles of the statewide trail — 2 sites, pulled by
+       scripts/pull_dnr_campgrounds.py. A different manager with
+       different rules from the NCTA/chapter campsites, so it
+       gets its own toggle and its own disc letter ("D" for DNR,
+       not the "C" of the NCTA campsites): rustic, first-come, no
+       reservations, minimal facilities — the popup says so. OFF
+       by default and LAZY. The Gulch Lake site coincides with
+       the chapter's own Gulch Lakes Campground (9 m apart); both
+       are kept, never merged. */
+    id: "dnr-campgrounds", label: "DNR state forest campgrounds",
+    title: "Minnesota DNR state forest campgrounds within 2 miles of the trail (rustic, first-come)",
+    file: "data/dnr-campgrounds.geojson",
+    onByDefault: false, group: "Around the trail",
+    swatch: { kind: "chapter", color: COLORS.trailDeep },
+    build: function (gj) {
+      clearSpiderfyPins("dnr-campgrounds");
+      return L.geoJSON(gj, {
+        pointToLayer: function (f, latlng) {
+          return L.marker(latlng, {
+            keyboard: false,
+            icon: L.divIcon({
+              className: "chapter-disc-wrap", iconSize: [19, 19],
+              iconAnchor: [10, 10],
+              html: "<span class='chapter-disc'>D</span>",
+            }),
+          });
+        },
+        onEachFeature: function (f, l) {
+          var p = f.properties;
+          bindPop(l, "<h3>" + esc(p.name || "Campground") + "</h3>" +
+            kvTable([
+              ["Type", p.site_type],
+              ["State forest", p.state_forest],
+              ["County", p.county],
+              ["Managing unit", p.admin_unit],
+              ["DNR region", p.dnr_region],
+              ["Distance from the trail", p.dist_trail_km != null
+                ? p.dist_trail_km + " km" : null],
+            ]) + "<p class='pop-note'>Minnesota DNR state forest campground — rustic, first-come, no reservations; minimal facilities. A different manager with different rules from the NCTA/chapter campsites.</p>");
+          registerSpiderfyPin("dnr-campgrounds", l, f);
+        },
+      });
+    },
+  },
+  {
+    /* Bridge inventory — crossing opportunities (Paul, Nov 18,
+       2026): existing highway bridges that might carry the trail,
+       pairing with the right-of-way work around the Ely
+       bottleneck. 80 structures, pulled by
+       scripts/pull_nbi_bridges.py from the FHWA National Bridge
+       Inventory 2025 (all-records file) — the MnDOT trans-bridges
+       service was unreachable at the pull (token-gated on the
+       MnGeo host, GDRS paths 404, mndotgis unreachable); NBI is
+       the federal inventory fed by MnDOT's own inspection system,
+       same structures and bridge numbers. Two tiers: Tier 1 —
+       pedestrian/mixed-use bridges (service on = Pedestrian-
+       bicycle or Highway-pedestrian) within 2 miles of the trail,
+       30 structures; Tier 2 — highway bridges the trail passes
+       within 400 m, 50 structures [JUDGMENT: the 400-m line is
+       the call — a 2-mile vehicular net would be every county-
+       road bridge in the corridor]. Closed (K) and not-yet-open
+       (G) structures are excluded; blank open/closed codes are
+       kept (the field does not apply to non-highway records).
+       Marker is a "B" disc; Tier 1 reads first in the popup.
+       OFF by default and LAZY. The Ely bottleneck crossings are
+       in here: the twin MN 169 bridges over the Shagawa River
+       (97320/97321) sit on the trail line itself. */
+    id: "nbi-bridges", label: "Bridges — crossing opportunities",
+    title: "Bridge inventory (FHWA NBI 2025): pedestrian/mixed-use bridges within 2 miles of the trail, plus highway bridges the trail passes within 400 m",
+    file: "data/nbi-bridges.geojson",
+    onByDefault: false, group: "Around the trail",
+    swatch: { kind: "chapter", color: COLORS.trailDeep },
+    build: function (gj) {
+      clearSpiderfyPins("nbi-bridges");
+      return L.geoJSON(gj, {
+        pointToLayer: function (f, latlng) {
+          return L.marker(latlng, {
+            keyboard: false,
+            icon: L.divIcon({
+              className: "chapter-disc-wrap", iconSize: [19, 19],
+              iconAnchor: [10, 10],
+              html: "<span class='chapter-disc'>B</span>",
+            }),
+          });
+        },
+        onEachFeature: function (f, l) {
+          var p = f.properties;
+          var sidewalk = null;
+          if (p.sidewalk_left_m > 0 || p.sidewalk_right_m > 0) {
+            sidewalk = "left " + p.sidewalk_left_m + " m, right " +
+              p.sidewalk_right_m + " m";
+          }
+          var built = p.year_built != null ? String(p.year_built) : null;
+          if (p.year_reconstructed != null) {
+            built = (built || "") + " (rebuilt " +
+              p.year_reconstructed + ")";
+          }
+          var note = p.tier === 1
+            ? "Pedestrian or mixed-use bridge — a crossing a hiker can use."
+            : "Highway bridge the trail passes within 400 m — check on the ground whether the trail uses it.";
+          bindPop(l, "<h3>Bridge " + esc(p.bridge_number || "?") +
+            " — " + esc(p.facility_carried || "") + "</h3>" +
+            kvTable([
+              ["Crosses", p.features_crossed],
+              ["Location", p.location],
+              ["Service on bridge", p.service_on],
+              ["Service under bridge", p.service_under],
+              ["Sidewalk", sidewalk],
+              ["Owner", p.owner],
+              ["Maintained by", p.maintenance],
+              ["County", p.county],
+              ["MnDOT district", p.district],
+              ["Built", built],
+              ["Length", p.structure_len_m != null
+                ? p.structure_len_m + " m" : null],
+              ["Deck width", p.deck_width_m != null
+                ? p.deck_width_m + " m" : null],
+              ["Structure", p.structure_kind],
+              ["Status", p.open_closed],
+              ["Distance from the trail", p.dist_trail_km != null
+                ? p.dist_trail_km + " km" : null],
+            ]) + "<p class='pop-note'>" + note +
+            " FHWA National Bridge Inventory 2025; bridge number " +
+            esc(p.bridge_number || "") + ".</p>");
+          registerSpiderfyPin("nbi-bridges", l, f);
+        },
+      });
+    },
+  },
+  {
     /* AllTrails-listed trails (Paul, Nov 17, 2026 — "build the
        AllTrails suggested layer"): the chapter trails that have
        AllTrails pages, as one toggleable highlight — the set to
@@ -6354,7 +7068,10 @@ var LAYERS = [
        (25.0 mi). Built by scripts/build_roadwalk.py from the
        NCTA gap lines; the western pieces are clipped to T07's
        segment ranges. The Mesabi Trail bike path is NOT road
-       walk and is not drawn here. OFF by default and LAZY. */
+       walk and is not drawn here. Line popups carry the T07
+       shoulder / edge-condition note per western segment (no
+       as-built shoulder width exists for any segment — see
+       scripts/build_roadwalk.py). OFF by default and LAZY. */
     id: "roadwalk", label: "Road walk",
     title: "Where the trail follows public roads — western T07 segments and Arrowhead road pieces",
     file: "data/roadwalk.geojson",
@@ -6374,6 +7091,8 @@ var LAYERS = [
             ? " — " + esc(p.segment) : "") + "</h3>" +
             kvTable([
               ["Area", p.area],
+              ["Shoulder", p.shoulder_quality],
+              ["Shoulder source", p.shoulder_source],
               ["Source", p.source],
             ]) + "<p class='pop-note'>The trail follows a public road here. Speeds and crash spots are separate toggles in this group.</p>");
         },
@@ -6388,8 +7107,9 @@ var LAYERS = [
        55 rural / 30 urban / 65 expressway (Minn. Stat. § 169.14)
        or the Otter Tail SAP "majority 55 mph" finding. The badge
        shows the limit at the badge's spot; the popup carries the
-       segment's full wording, AADT and source. No Arrowhead
-       badges: the packet verifies no per-segment speeds there.
+       segment's full wording, AADT, shoulder condition and
+       source. No Arrowhead badges: the packet verifies no
+       per-segment speeds there.
        OFF by default and LAZY. */
     id: "roadwalk-speeds", label: "Speed limits",
     title: "Speed limit per western road-walk segment (T07)",
@@ -6419,6 +7139,8 @@ var LAYERS = [
               ["Miles", p.miles],
               ["Speed, in full", p.speed_text],
               ["Traffic (AADT)", p.aadt],
+              ["Shoulder", p.shoulder_quality],
+              ["Shoulder source", p.shoulder_source],
               ["Position", p.position_note],
               ["Source", p.source],
             ]));
@@ -7364,10 +8086,12 @@ var LAYERS = [
     build: buildFwsGeopdf,
   },
   {
-    /* Street View (Paul, Nov 13, 2026): the 11 trailheads and
-       road crossings verified to have Google Street View imagery
-       (browser check Nov 13 — 11 of 19 spots; the other 8 have
-       none). One camera marker per spot at the panorama location
+    /* Street View (Paul, Nov 13, 2026): the trailheads, road
+       crossings and road-walk points verified to have Google
+       Street View imagery (browser check Nov 13 — 11 of 19 spots;
+       the other 8 have none; +13 parking spots the same day, +6
+       verified road-walk points Nov 18, 2026 — 30 total). One
+       camera marker per spot at the panorama location
        (where the photo was taken from), and the Street View link
        opens aimed at the trail crossing / trailhead (heading in
        the data). Off by default. Under "The trail" since Nov 13,
@@ -8073,11 +8797,15 @@ function assertDrawOrder() {
        "parcels-driftless" sits with "parcels", directly after
        it, in the land-ownership fills. Nov 18, 2026: "parcels-
        arrowhead" sits with "parcels" directly after
-       "parcels-driftless"; "reroute-arrowhead" sits directly
+       "parcels-driftless"; "parcels-stn" sits directly after
+       "parcels-arrowhead"; "gov-owned" sits directly after
+       "parcels-stn"; "reroute-arrowhead" sits directly
        under "trail-minnesota" (the corridor fill under the trail
        lines); "roadwalk" sits directly over "trail" (the
        on-road highlight over the tread); "campsites-arrowhead",
-       "roadwalk-speeds" and "roadwalk-crashes" sit with the
+       "campsites-stn" and "dnr-campgrounds", "nbi-bridges",
+       "roadwalk-speeds" and
+       "roadwalk-crashes" sit with the
        markers uppermost, after "chapterplaces", before "assets". The
        35 DNR GeoPDF sheets (Nov 16, 2026) sit directly after
        "nctasheets" and before "atv", with the NCTA sheets. The
@@ -8090,8 +8818,8 @@ function assertDrawOrder() {
        land layers
        (foresthealth, invasives, chippewa-plan) sit with the
        other "The land" fills, after easements, before access. */
-    ["leechlake", "whiteearth", "parcels", "parcels-driftless", "parcels-arrowhead", "logfim",
-     "logpast", "logplanned", "easements", "foresthealth",
+    ["leechlake", "whiteearth", "parcels", "parcels-driftless", "parcels-arrowhead", "parcels-stn", "gov-owned", "logfim",
+     "logpast", "logplanned", "easements", "wetlands-nwi", "foresthealth",
      "invasives", "chippewa-plan", "access",
      "roads", "nctasheets",
      "dnr-waboose", "dnr-burntside-bear-island", "dnr-grand-portage-sf",
@@ -8111,7 +8839,8 @@ function assertDrawOrder() {
      "stretches", "loops", "alltrails", "gaps",
      "boundaries", "termini", "milemarkers", "chainage", "contours",
      "places",
-     "alerts", "chapterplaces", "campsites-arrowhead",
+     "alerts", "chapterplaces", "campsites-arrowhead", "campsites-stn",
+     "dnr-campgrounds", "nbi-bridges",
      "roadwalk-speeds", "roadwalk-crashes", "assets"].forEach(function (id) {
       var d = layerById(id);
       if (!d || !d.layer || !map.hasLayer(d.layer)) return;
@@ -8200,14 +8929,30 @@ function legendHtml() {
     "Adjoining parcel (corridor ring)");
   add("<span class='swatch fill' style='background:#e7e1c3'></span>",
     "Driftless parcel (Iowa Co., WI — half-mile corridor)");
+  add("", "<strong>Government-owned lands</strong>");
+  add("<span class='swatch fill' style='background:#1d4ed8'></span>",
+    "Federal — National Forest / National Wildlife Refuge / other");
+  add("<span class='swatch fill' style='background:#15803d'></span>",
+    "State — State Forest / State Park / Recreation Area / Wayside / other");
+  add("<span class='swatch fill' style='background:#a16207'></span>",
+    "Land trust — School Trust land (DNR Lands and Minerals)");
+  add("<span class='swatch fill' style='background:#78716c'></span>",
+    "County — county fee / tax-forfeit (dashed outline = tax-forfeit)");
+  add("<span class='swatch fill' style='background:#be185d'></span>",
+    "Tribal — reservation land");
+  add("", "Private land — see Parcels (click a parcel for the owner)");
   add(pin(COLORS.assetPin), "Asset pin (photo inventory)");
   /* Timber sales (Paul, Nov 16, 2026 — past / future only):
-     one lime for every seller; a solid fill is planned, a
-     dashed faint outline is past. The seller is named in each
-     popup's first line, not by color. */
+     one lime for every seller; a solid fill is examined for
+     future sale, a solid red fill is identified for sale
+     (Nov 18, 2026 — 24 upcoming sales), a dashed faint outline
+     is past. The seller is named in each popup's first line,
+     not by color. */
   add("", "<strong>Timber sales</strong>");
   add("<span class='swatch fill' style='background:#65a30d'></span>",
-    "Solid fill = planned (watch list)");
+    "Solid fill = examined for future sale (watch list)");
+  add("<span class='swatch fill' style='background:#e11d48'></span>",
+    "Solid red fill = identified for sale (upcoming sale)");
   add("<span class='swatch fill' style='background:" +
     "rgba(101,163,13,0.10);border:1px dashed #3f6212'></span>",
     "Dashed faint outline = past (sold)");
@@ -8335,6 +9080,16 @@ function legendHtml() {
          "Chippewa NF timber sale — project area"); */
   add("<span class='swatch fill' style='background:#6b8e23'></span>",
     "Cass forest stand — inventory, not a sale");
+  /* Wetlands (NWI), classified for trail routing (Paul, Nov 18,
+     2026 — GO): MAYBE is a dashed amber fill, NO-GO a solid red
+     fill — the same fills the layer draws with (wetlandStyle).
+     Screening only: NWI is not a delineation. */
+  add("", "<strong>Wetlands (NWI) — trail routing</strong>");
+  add("<span class='swatch fill' style='background:" +
+    "rgba(245,158,11,0.35);border:1px dashed #92400e'></span>",
+    "Dashed amber fill = MAYBE — short crossing only");
+  add("<span class='swatch fill' style='background:#dc2626'></span>",
+    "Solid red fill = NO-GO — avoid");
   return rows.join("");
 }
 

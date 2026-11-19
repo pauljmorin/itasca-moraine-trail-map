@@ -580,12 +580,63 @@ def map_arrowhead_campsite(p):
     }
 
 
+def map_dnr_campground(p):
+    """DNR state forest campgrounds: the service fields, renamed to
+    the viewer's plain names, plus the corridor distance. Source is
+    scripts/pull_dnr_campgrounds.py (campground site types only —
+    day-use-only areas are excluded at the pull)."""
+    return {
+        "name": clean_str(p.get("name")),
+        "site_type": clean_str(p.get("site_type")),
+        "state_forest": clean_str(p.get("state_forest")),
+        "county": clean_str(p.get("county")),
+        "admin_unit": clean_str(p.get("admin_unit")),
+        "dnr_region": clean_str(p.get("dnr_region")),
+        "dist_trail_km": num(p.get("dist_trail_km")),
+    }
+
+
+def map_nbi_bridge(p):
+    """Bridge inventory: the NBI fields, renamed to the viewer's
+    plain names. Source is scripts/pull_nbi_bridges.py (FHWA NBI
+    2025, all-records file — the MnDOT trans-bridges service was
+    unreachable, see that script's header). Codes are already
+    decoded at the pull (FHWA Coding Guide FHWA-PD-96-001);
+    the raw codes ride along so the popup can show both."""
+    return {
+        "bridge_number": clean_str(p.get("bridge_number")),
+        "facility_carried": clean_str(p.get("facility_carried")),
+        "features_crossed": clean_str(p.get("features_crossed")),
+        "location": clean_str(p.get("location")),
+        "county": clean_str(p.get("county")),
+        "district": clean_str(p.get("district")),
+        "owner": clean_str(p.get("owner")),
+        "owner_code": clean_str(p.get("owner_code")),
+        "maintenance": clean_str(p.get("maintenance")),
+        "year_built": p.get("year_built"),
+        "year_reconstructed": p.get("year_reconstructed"),
+        "structure_len_m": num(p.get("structure_len_m")),
+        "deck_width_m": num(p.get("deck_width_m")),
+        "sidewalk_left_m": num(p.get("sidewalk_left_m")),
+        "sidewalk_right_m": num(p.get("sidewalk_right_m")),
+        "service_on": clean_str(p.get("service_on")),
+        "service_under": clean_str(p.get("service_under")),
+        "open_closed": clean_str(p.get("open_closed")),
+        "structure_kind": clean_str(p.get("structure_kind")),
+        "structure_type": clean_str(p.get("structure_type")),
+        "tier": p.get("tier"),
+        "dist_trail_km": num(p.get("dist_trail_km")),
+        "nbi_records": p.get("nbi_records"),
+    }
+
+
 def map_roadwalk(p):
     """Road walk: keep whichever fields the feature's kind carries
     (line / speed / crash); absent fields are omitted, not nulled."""
     keep = ["kind", "area", "segment", "road", "miles", "speed_mph",
             "speed_text", "aadt", "position_note", "source", "hin_score",
-            "extent", "tier", "note", "caveat"]
+            "extent", "tier", "note", "caveat", "shoulder_quality",
+            "shoulder_source"]
     out = {}
     for k in keep:
         v = p.get(k)
@@ -614,6 +665,15 @@ LAYERS = [
     ("data/parcels/parcels-arrowhead.geojson",
      "site/data/parcels-arrowhead.geojson", "parcels_arrowhead",
      map_arrowhead_parcel),
+    # Star of the North trail parcels (Paul, Nov 18, 2026):
+    # same mapping as the chapter parcels (map_parcel: Cass
+    # records carry owner_name and acres_deed); source is
+    # scripts/pull_parcels_stn.py (foot trail only, crossed +
+    # one adjoining ring; no parcels along the on-road
+    # connectors).
+    ("data/parcels/parcels-stn.geojson",
+     "site/data/parcels-stn.geojson", "parcels",
+     map_parcel),
     # access + roads are built by build_corridor_layers() below
     # (corridor clip C1-C4; state forest roads land in the roads
     # output as class F) — they are not plain whitelist copies.
@@ -629,6 +689,28 @@ LAYERS = [
     ("data/points/ncta-points-arrowhead.geojson",
      "site/data/campsites-arrowhead.geojson", "access_points",
      map_arrowhead_campsite),
+    # Star of the North campsites (Paul, Nov 18, 2026): NCTA
+    # camping waypoints within 2 km of the STN line; source is
+    # scripts/pull_stn_points.py.
+    ("data/points/ncta-points-stn.geojson",
+     "site/data/campsites-stn.geojson", "access_points",
+     map_arrowhead_campsite),
+    # DNR state forest campgrounds (Paul, Nov 18, 2026): the DNR
+    # inventory within 2 miles of the statewide trail line;
+    # source is scripts/pull_dnr_campgrounds.py (campground site
+    # types only — day-use-only areas are excluded at the pull).
+    ("data/points/dnr-campgrounds.geojson",
+     "site/data/dnr-campgrounds.geojson", "access_points",
+     map_dnr_campground),
+    # Bridge inventory (Paul, Nov 18, 2026): crossing
+    # opportunities — pedestrian/mixed-use bridges within 2 miles
+    # of the trail plus highway bridges the trail passes within
+    # 400 m; source is scripts/pull_nbi_bridges.py (FHWA NBI 2025,
+    # all-records file; the MnDOT trans-bridges service was
+    # unreachable at the pull — see that script's header).
+    ("data/points/nbi-bridges.geojson",
+     "site/data/nbi-bridges.geojson", "access_points",
+     map_nbi_bridge),
     # Road walk (Paul, Nov 18, 2026): the on-road line, T07 speed
     # badges and HIN crash markers; source is
     # scripts/build_roadwalk.py. Mixed LineString + Point; the

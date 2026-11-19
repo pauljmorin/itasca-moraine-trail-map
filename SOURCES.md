@@ -59,6 +59,49 @@ pulled.
   `site/app.js`), ON by default. Popups reuse `trailPopup`;
   the other Minnesota chapter names were added to `CHAPTER_NAMES`
   with this layer (BRT = Border Route Trail; BSC left unmapped).
+- **Star of the North extent (added 2026-11-18, Paul):** the
+  chapter's segment per NCTA's own chapter page
+  (https://northcountrytrail.org/trail/minnesota/stn/): "from
+  Minnesota 84 to Highway 6, northeast of Remer" — about 30
+  miles of trail. The extent is NOT taken from the official
+  line's `chapter` attribute: it tags only 2 features / 10.2 mi
+  as STN; the rest of the same continuous trail is tagged ARW.
+  **Interpretation method:** the 12 official-line features
+  between the two crossings were chained end-to-end (150 m
+  endpoint tolerance, no breaks), 30.59 mi total, then clipped
+  at the west end. **West cut [JUDGMENT J1]:** the MN-84
+  crossing is placed at lon −94.21, from the OSM "State Highway
+  84" line's northern terminus (−94.209, 46.981) and Longville
+  (−94.207); good to ~0.3 mi. The OSM road extract in the repo
+  ends at lat 46.98 and the MnDOT centerlines service carries no
+  usable route number for MN-84 here, so the crossing is by
+  longitude, not measured against a road survey. The 3.87 mi of
+  footpath west of the cut is Itasca Moraine territory per the
+  chapter definition and is already covered by the chapter
+  parcels, so the cut loses nothing and draws no parcel twice.
+  **East end:** the MN-6 crossing NE of Remer (−93.847, 47.103),
+  ~5 mi NE of Remer, where the footpath meets the Highway 6 road
+  walk; the chain ends exactly at the junction, so no clip is
+  needed there. **Result:** `data/segments/trail-stn.geojson`
+  (built by `scripts/build_stn_line.py`): 12 features, 26.67 mi
+  clipped (25.93 mi foot path + 0.74 mi on-road connectors), all
+  in Cass County (verified against the MnGeo county boundaries
+  service: only Cass intersects the slice bbox). Note the
+  chapter's "30 miles" counts the full 30.59-mi chain from the
+  Itasca Moraine boundary; the clipped STN line is 26.67 mi.
+  **Trail styling:** the STN chunk needs no new layer — the
+  "NCT — all Minnesota" layer above already draws all 12
+  features (verified Nov 18: 11 match the published file at
+  0–1 m on both ends; the 12th is the clipped first feature,
+  whose end matches at 1 m and whose start is 3,784 m east of
+  the published feature's start — exactly the MN-84 clip, since
+  the drawn line continues unclipped to the Itasca Moraine
+  boundary). **Open question for Paul:** the J1 crossing
+  placement (±0.3 mi) and the "30 miles" vs 26.67 mi difference
+  are recorded here; if the chapter's maintained section in fact
+  starts at the Itasca Moraine boundary rather than at MN-84,
+  the clip (and the 3.87-mi piece's parcels) moves to the STN
+  layer.
 - **Note:** the often-quoted "~800 miles" for the NCT in Minnesota
   is not what the official service draws — the service's Minnesota
   features measure 566 mi. The gap is unexamined (service gaps vs
@@ -113,6 +156,37 @@ pulled.
   completion case plan — none describes a reroute polygon other
   than the 2004 corridor. Polygon equal-area re-measured Nov 18:
   1,243.4 sq mi (3,220.4 km2, NAD83 Conus Albers).
+
+## Inventoried trail (added 2026-11-18, Paul)
+
+- **What:** one layer, `site/data/inventoried-trail.geojson`, **1
+  feature (MultiLineString, 2 lines), 1,767 points, 10.91 GIS
+  miles** — the concatenation of ALL the GPS tracks walked while
+  inventorying the trail, not the published trail line. Wired in
+  `site/app.js` as id `inventoried-trail`, group "The trail",
+  right after the NCT — all Minnesota layer, OFF by default and
+  LAZY, teal #0d9488. Only the ground actually walked is drawn.
+- **Sources (chapter property, in `data/inventoried-trail.geojson`
+  properties):**
+  - Nov 11, 2026: `Nov_11,_2026,_10_36_12_AM.gpx`, 1,038 points,
+    6.42 mi. No car tail: longest run above 15 mph is 0
+    consecutive segments under the same rule used for Nov 18.
+  - Nov 18, 2026: `Nov_18,_2026,_2_47_32_PM-chopped.gpx`, 729
+    points, 4.50 mi. The car tail was cut before this layer was
+    built: the tracker stayed on for the drive home — walking
+    ~3.5 mph until 22:24:30 UTC, then sustained 50–70 mph (max
+    89 mph) to the end of the track. Rule: first index where the
+    next 30 consecutive segments are all above 15 mph, then back
+    to the last point at or under 5 mph. Cut after 22:25:29 UTC
+    (47.01664, −94.53610): 323 points, 5.22 mi removed from
+    1,052 points / 9.72 mi. The chopped GPX is kept at
+    `working/photos-inbox-2026-11-18/` alongside the original.
+  - New tracks are appended as new lines in the same file (and
+    its `site/data/` copy) as the inventory grows.
+- **Interpretation:** none beyond the chop. The layer shows where
+  the volunteers actually walked; it makes no claim about the
+  official route, and a gap in it is a gap in the inventory,
+  not a gap in the trail.
 
 ## Trail alerts — NCTA (chapter extent + Minnesota)
 
@@ -262,6 +336,231 @@ pulled.
   class-code definitions (St. Louis County's published
   ClassCodeLegend, same statewide code system).
 
+### Star of the North trail parcels (added 2026-11-18, Paul)
+
+- **What:** Same MnGeo compilation as above (layer 0), clipped to
+  the Star of the North trail instead of the chapter's trail.
+- **Line:** `data/segments/trail-stn.geojson`, built by
+  `scripts/build_stn_line.py` from the official NCTA line — the
+  chapter's segment per NCTA's own chapter page ("from Minnesota
+  84 to Highway 6, northeast of Remer"), 26.67 mi clipped
+  (25.93 mi foot path + 0.74 mi on-road connectors). See the
+  "Star of the North extent" note under "Official trail line —
+  Minnesota portion" for the chain, the MN-84 cut [JUDGMENT J1],
+  and the open question on the west end.
+- **Counties crossed:** Cass ONLY (verified 2026-11-18 against
+  the MnGeo county boundaries service — only Cass intersects the
+  slice bbox, lon −94.30..−93.80, lat 46.95..47.20). Cass is in
+  the compilation (`gac_open_approval` true, verified 2026-11-18
+  from the service's metadata layer), so no county fallback
+  service is needed. Hubbard County, which is NOT in the
+  compilation, is not crossed — the line starts at the MN-84
+  crossing, east of the Hubbard/Cass line.
+- **Selection rule:** crossed + one adjoining ring along the
+  chapter trail, exactly as for the chapter parcels (crossed =
+  line crosses/touches the parcel or passes within 1 m;
+  adjoining = boundary within 3 m of a crossed parcel's
+  boundary). There is NO reroute polygon for Star of the North,
+  so Paul's polygon rule does not apply — but the underlying
+  principle does: NO parcel polygons are drawn along a road
+  walk. Implemented as: only the `slice_role` "foot" features
+  (25.93 mi) take part in the selection; the 3 on-road
+  connectors (0.74 mi) are excluded.
+- **Cass County fields:** Cass's compiled records carry
+  `owner_name` and `acres_deed` (`acres_poly` is null on all Cass
+  records, so acres falls back to `acres_deed` — `map_parcel`
+  already does this; no `Shape__Area` acres fallback is needed,
+  unlike Itasca County in the Arrowhead pull). Same privacy rule
+  as the chapter parcels: owner name + mailing address as
+  published (chapter ruling Nov 10, 2026), taxpayer fields never
+  carried.
+- **Use here:** `data/parcels/parcels-stn.geojson`, pulled
+  2026-11-18 by `scripts/pull_parcels_stn.py`: **334 parcels
+  (36 crossed + 298 adjoining), all Cass County**, published as
+  `site/data/parcels-stn.geojson` (334 in → 334 out, 0 dropped in
+  simplification; 334/334 carry an owner, 332/334 carry acres —
+  the two without acres are an "Assessed Elsewhere" parcel and a
+  county public parcel, legitimate nulls). The pull drops 142
+  attribute-empty records before selection (water bodies and
+  rights-of-way). The filter was tightened the same day after the
+  first run admitted 13 attribute-empty shell polygons into the
+  ring: their `state_pin` is the bare county prefix ("27021-",
+  no PIN body), which a naive non-null test accepts as an
+  identity — the filter now requires a PIN body after the prefix
+  (or an owner / land class / ownership value). Verified Nov 18
+  on the published file: 36/36 crossed and 298/298 adjoining
+  present; 0 shell parcel IDs (no ID ending in "-"); all 334
+  centroids inside the STN corridor; zero parcels whose only
+  trail contact is an on-road connector (connectors never entered
+  the selection).
+
+## Government-owned lands — who to talk to (added 2026-11-18, Paul)
+
+- **What:** Ownership-class coverage in the Minnesota NCT corridor —
+  the layer that tells you who the entity is you have to talk to and
+  work with, next to Parcels in the panel. Parcels give
+  click-for-information on a piece of ground; this layer names the
+  managing entity/owner for the ground around the trail. One layer,
+  five categories — Federal, State, Land trust, County, Tribal —
+  each broken into kinds. This is coverage, not per-parcel records:
+  it overlaps the Parcels layer by design, and the popup says so.
+- **Corridor:** the same 2-mile buffer around
+  `site/data/trail-minnesota.geojson` (348 features, 566.12 mi) as
+  timber — 4,973.7 km² (1,229,025 ac), all three chapters (ITM,
+  Arrowhead, Star of the North). The 2004 reroute polygon is NOT
+  used here; coverage is the trail buffer.
+- **Backbone — MnGeo Government-Owned Lands**
+  (research doc §4.1, grade A management / B public):
+  https://enterprise.gisdata.mn.gov/aghost/rest/services/us_mn_state_mngeo/plan_gov_own_open/FeatureServer
+  (layer 0, "Plan Gov Own Open"). Fields carried: `govt_own`,
+  `county_pin`, `co_name`. Statewide the service holds 179,934
+  features: State 82,764; Tax Forfeit 42,097; Federal 38,125;
+  County Fee 11,608; Tribal 5,340 — across 55 counties.
+  **Hubbard County is NOT in the service** (confirmed absent from
+  the county list) — see the gap fill below.
+- **Kind refinements:**
+  - Land trust — DNR `plan_stateland_dnr`, layer 1 "Stateland Type
+    Trust" (research doc §2.7): school-trust polygons with
+    `landtype`, `administrator`, `countyname`, `su_acres`. The DNR
+    manages school trust land through its Lands and Minerals
+    division.
+  - State kinds — DNR `bdry_dnr_managed_areas`, layer 2 "Dnr Stat
+    Plan Areas": statutory boundaries with `area_type` (State
+    Forest / State Park / State Recreation Area / State Wayside)
+    and `area_name`. 142 areas statewide; 13 fall in the corridor
+    (State Forest, State Park, State Recreation Area only — no
+    State Wayside in the corridor).
+  - Federal kinds — USFS `EDW_ProclaimedForestBoundaries_01`,
+    layer 0 (research doc §1.3): Chippewa National Forest
+    (1,599,789.4 ac proclaimed) and Superior National Forest
+    (3,270,136.0 ac proclaimed); plus the Tamarac National Wildlife
+    Refuge boundary from the local sheets
+    (`site/data/tamarac-1of3/2of3/3of3.geojson`, 489.2 km² union).
+  - Tribal kinds — the reservation boundaries already in the viewer
+    (`site/data/leech-lake-reservation.geojson`,
+    `site/data/white-earth-reservation.geojson`).
+  - Hubbard gap fill — the county boundary from MnGeo
+    `bdry_counties_minnesota` (2,590.3 km²), used only to clip the
+    statutory polygons.
+- **Pull:** 2026-11-18 by `scripts/pull_gov_owned_lands.py`
+  (re-run the same day after a labeling correction — see below).
+  Grid-envelope id queries (0.1° cells, 159 envelopes) against the
+  gov-owned service, then fetch by objectId in chunks of 500:
+  20,527 gov-owned candidates; 4,719 trust candidates. Published
+  file `site/data/government-owned-lands.geojson` (11,465 features,
+  7.26 MB, simplified 15 m like parcels, 0 dropped); working file
+  `data/government-owned-lands.geojson` at full resolution.
+- **Counts by category and kind** (recomputed from the published
+  file, 2026-11-18):
+
+  | Category | Kind | Features |
+  |---|---|---:|
+  | County | County fee | 362 |
+  | County | Tax-forfeit (county forest land) | 4,116 |
+  | Federal | National Forest — Superior | 2,411 |
+  | Federal | National Forest — Chippewa | 249 |
+  | Federal | National Wildlife Refuge — Tamarac | 152 |
+  | Federal | Other federal | 103 |
+  | Land trust | School trust land | 1,910 |
+  | State | Other state | 1,604 |
+  | State | State Forest — Bear Island / Burntside / Grand Portage / Nemadji / Paul Bunyan / Remer / White Earth | 36 / 11 / 43 / 34 / 1 / 10 / 65 |
+  | State | State Park — Bear Head Lake / Itasca / Lake Vermilion-Soudan Underground Mine / Maplewood | 11 / 29 / 111 / 45 |
+  | State | State Recreation Area — Iron Range Off-Highway Vehicle | 47 |
+  | Tribal | Tribal — Leech Lake Band of Ojibwe | 74 |
+  | Tribal | Tribal — White Earth Nation | 28 |
+  | Tribal | Tribal (nation not identified in this source) | 13 |
+  | **Total** | | **11,465** |
+
+  Category totals: County 4,478; Federal 2,915; Land trust 1,910;
+  State 2,047; Tribal 115.
+- **Coverage acres** (corridor-clipped; categories overlap where
+  boundaries overlap, so these do not sum to a single total):
+  Federal 242,059 ac; County 149,353 ac; State 103,095 ac; Land
+  trust 70,770 ac; Tribal 4,686 ac — 569,963 ac of feature area
+  inside a 1,229,025-ac corridor (~46%). The rest of the corridor
+  is private land, which has NO geometry in this layer (see J3).
+- **Method — judgment register** (the interpretation method; every
+  call below is labeled):
+  - **J1 Trust precedence.** Trust polygons are drawn as Land trust
+    features, and trust area is subtracted from any gov-owned
+    feature it overlaps, so trust ground is drawn exactly once:
+    1,719 features cut (by base class: State 1,022; Federal 369;
+    Tax Forfeit 287; County Fee 30; Tribal 11), 227 dropped as
+    fully trust. The trust polygons themselves (1,910) carry the
+    trust source, not the gov-owned service.
+  - **J2 Kind by plurality share.** A feature's kind is the overlay
+    covering the largest share of its corridor-clipped area;
+    `kind_share` records that share (0–1). 1,739 features (15%)
+    have `kind_share` < 0.5 — they straddle a kind boundary and the
+    label is the plurality, not a clean fit. The popup does not show
+    the share; it is in the data for anyone checking a boundary.
+  - **J3 Private has no geometry.** The gov-owned service covers
+    government land only. A complement (everything not government
+    = private) would mislabel lakes, roads and other non-parcel
+    land as private. Private ownership is parcel-level and already
+    carried by the Parcels layer; the legend says so ("Private
+    land — see Parcels").
+  - **J4 Hubbard gap fill.** The service has no Hubbard coverage,
+    so 2 features are drawn from DNR statutory park/forest
+    polygons clipped to Hubbard County, flagged `gap_fill=true`.
+    Statutory boundaries include private inholdings — the popup
+    says so, and Parcels underneath shows them.
+  - **J5 County category.** County Fee / Tax Forfeit are carried as
+    a County category though Paul named four categories; the
+    service returns it and it is a real entity to talk to; hiding
+    it would leave holes in the coverage. Adjustable later (hide
+    or merge).
+  - **J6 Tribal category.** Carried as its own category; the nation
+    is named from the reservation overlay (Leech Lake Band of
+    Ojibwe, White Earth Nation) and otherwise reads "nation not
+    identified in this source" (13 features) — never guessed.
+- **Entity strings** (the popup names the entity first):
+  National Forest → "USDA Forest Service — {forest}"; National
+  Wildlife Refuge → "U.S. Fish and Wildlife Service — Tamarac
+  National Wildlife Refuge"; other federal → "Federal — managing
+  agency not named in this source"; State Forest → "Minnesota DNR
+  — Division of Forestry ({name} State Forest)"; State Park /
+  State Recreation Area / State Wayside → "Minnesota DNR — Parks
+  and Trails ({name} …)"; Land trust → "Minnesota DNR — Lands and
+  Minerals (School Trust land)"; County fee → "{County} County";
+  Tax Forfeit → "{County} County — Tax Forfeit Land"; Tribal →
+  the nation name, or "Tribal government (nation not identified
+  in this source)".
+- **What was excluded or uncertain:**
+  - **"Other state" (1,604 features) and "Other federal" (103):**
+    the service names only the level of government, not the agency
+    or unit. The popup says "State of Minnesota (managing agency
+    not identified in this source)" / "Federal — managing agency
+    not named in this source" rather than attributing to DNR or
+    any other agency. The first pull labeled "Other state" as DNR
+    land; that was caught on verification and corrected before
+    filing, and the pull was re-run.
+  - Trust features carry no `county_pin` / `govt_own` (nulls — the
+    trust source has neither); their county comes from the trust
+    layer's `countyname`.
+  - No State Wayside falls in the corridor, so that kind does not
+    appear in the file even though the classifier handles it.
+  - The two Ottawa / Chequamegon proclaimed forests that fall in
+    the query bbox are outside the Minnesota corridor and
+    contribute no features.
+- **Use here:** layer id `gov-owned`, label "Government-owned
+  lands", OFF by default, LAZY, group "Land ownership",
+  immediately after `parcels-stn` in the panel (also in
+  `assertDrawOrder` right after `parcels-stn`); style
+  `govOwnedStyle` / popup `govOwnedPopup` in `site/app.js`; legend
+  section after the Parcels rows, including the Private note.
+  Display adjustable later (Paul): colors (Federal blue
+  `#1d4ed8`, State green `#15803d`, Land trust amber `#a16207`,
+  County grey `#78716c`, Tribal pink `#be185d`, all 0.25 fill with
+  darker borders; tax-forfeit dashed outline), split into
+  per-category toggles, or on-by-default.
+- **Verification (2026-11-18):** counts recomputed from both files
+  (11,465 features each; category counts match the pull summary;
+  0 non-polygon geometries; `gap_fill` 2; `kind_share` < 0.5
+  1,739); one sample popup per category checked against the
+  properties; `node --check site/app.js` passes. Not committed,
+  not deployed.
+
 ## Access layers — forest roads and recreation trails
 
 Pulled 2026-11-10 by `scripts/pull_access_layers.py` into
@@ -297,6 +596,372 @@ the services carry no per-service copyright text.
   https://enterprise.gisdata.mn.gov/aghost/rest/services/us_mn_state_dnr/trans_state_park_trails_roads/FeatureServer
   (layer 0). Owner: Minnesota DNR, Parks and Trails. In this extent
   this is chiefly the Itasca State Park trail/road network.
+
+## Motorized trails — existing layers verified + proposed-trail hunt (added 2026-11-18, Paul)
+
+### Existing layers — verified 2026-11-18
+
+- Files: `site/data/motorized-atv.geojson` (6,968 features, 102 systems,
+  3,357 GIS miles), `site/data/motorized-ohm.geojson` (5,732 features,
+  78 systems, 2,551 GIS miles), `site/data/motorized-snow.geojson`
+  (276 features, 191 systems, 23,151 GIS miles). All recomputed from
+  the live files 2026-11-18; they match the counts in `site/app.js`
+  and `site/data-sources.html` exactly. Nothing was changed — the
+  counts are right.
+- Sources: DNR OHV service `trans_ohv_trails_mn/FeatureServer/0`
+  (live count 2026-11-18: 7,931 total features — the ATV and OHM
+  layers overlap on the same features, 6,968 ATV + 5,732 OHM −
+  7,931 = 4,769 features allow both) and DNR snowmobile service
+  `trans_snowmobile_trails_mn/FeatureServer/0` (live count 276,
+  unchanged). Pulled 2026-11-16 by
+  `scripts/pull-motorized-mn-statewide.py` (full state). The
+  2026-season claim still holds: the live service counts are
+  unchanged from the Nov 16 pull. (Note: the build scripts are
+  `scripts/pull-motorized-*.py`; there is no `build-motorized.py` or
+  `build-motorized-bc.py` in the repo.)
+- Buildout raw files (`site/buildout/data/`): `motorized-atv.geojson`
+  1,074 features (GIA-funded, e.g. Alborn-Pengilly Railroad State
+  Trail), `motorized-snow.geojson` 26 features (club-maintained, e.g.
+  Hawks Trails / TrailHawks Snowmobile Club),
+  `motorized-atv-bc.geojson` 2,333 features (OHM, e.g. Alger Grade
+  OHM Trail, Lake County). Counts recomputed 2026-11-18, as claimed.
+- Corridor overlap (computed 2026-11-18 against
+  `site/data/arrowhead-reroute-polygon.geojson`, the 2004 corridor,
+  1,242.5 sq mi): designated ATV 165.5 GIS miles inside the
+  corridor (incl. Big Aspen 23.14 mi, Quad Cities 14.22 mi,
+  Taconite 35.61 mi); designated OHM 165.5 mi (the corridor's OHM
+  trails are the same lines as its ATV trails); designated
+  snowmobile 564.4 mi. Method: shapely union of each file's
+  geometries intersected with the polygon; miles = degrees × 69
+  (approximate, same convention as the layer titles).
+
+### Proposed trails — hunt, 2026-11-18
+
+- NO new viewer layer was wired: no proposed route in or around the
+  corridor has published GIS. Per Paul's rule (Nov 18), proposed
+  routes are never drawn without GIS; pinpoints below instead.
+- How "proposed vs existing" was decided (interpretation method): a
+  route counts as proposed only if a dated public source (DNR news
+  release / GIA proposal / EAW / master plan / club or county
+  document) names it as proposed, in review, or in planning AND it
+  does not appear as a designated feature in the live DNR
+  OHV/snowmobile service pull of 2026-11-18. A route in the live
+  service is treated as existing/designated even if its history
+  began as a proposal (e.g. the Itasca County trails below). Where
+  the service cannot separate a proposal's segments from the
+  designated system, that is stated, not resolved by guessing.
+  Corridor membership was tested by point-in-polygon against the
+  2004 corridor polygon, not by town name or county.
+
+#### In / around the corridor — the planning question
+
+1. **Prospectors Loop Phase 2 ("Connect Four")** — ~59 mi (22 mi
+   existing route open to ATV use + 28 mi existing route with new
+   ATV use + 9 mi proposed new route), connecting Ely, Babbitt,
+   Embarrass, Tower, Soudan. Proposer: Prospectors Trail Alliance
+   Club. Source: DNR environmental review, EAW April 2023, Record
+   of Decision (no EIS required) issued; project page
+   https://www.dnr.state.mn.us/input/environmentalreview/prospectors-loop.html.
+   EAW figures are USGS topo PDFs (figure-3 checked — NOT a
+   GeoPDF). Status: the DNR service already carries 278
+   "Prospectors" features (system 180 mi per DNR trail detail
+   id=118, June 2026), but the service does not flag which are
+   Phase 2, so the designation/build status of the 9 new-route
+   miles is NOT confirmed from the service alone. The
+   Soudan/Breitung access route is still proposed, in environmental
+   review, "a couple years" out (DNR trail detail + OHV closures
+   page, Nov 1, 2026). OVERLAP FLAG: Ely and Soudan are inside the
+   corridor polygon; the Soudan/Breitung access route is a live
+   proposed motorized route on the corridor's high dry ground
+   (Tower–Ely–Soudan). Related leads (motorized status
+   unconfirmed): Iron Range Resources 2021 grant (Prospector's Loop
+   phase two incl. Beaver River Bridge, Ely–Babbitt); Tower Area
+   Coalition of Trails $200k Federal Recreational Trails Program
+   grant, Sept 2025, incl. "Prospector Connection Trail" (wetland
+   delineation commenced).
+2. **David Dill–Taconite and David Dill–Arrowhead state trails, ATV
+   additions** — proposed additions named in the DNR ATV Strategic
+   Master Plan §2.4.3 (Dec 2025): "Current proposed routes include
+   additions to the Voyageur Country ATV trail system, the
+   Prospectors Trail, and the David Dill-Taconite and David-Dill
+   Arrowhead state trails. Mapped proposed mileage included in this
+   inventory totals 121.6 miles, all located in DNR Region 2."
+   Source: https://files.dnr.state.mn.us/input/mgmtplans/ohv/plans/strategic/atv-strategic-master-plan.pdf.
+   The plan does not break out mileage per route and publishes no
+   route GIS. OVERLAP FLAG: the David Dill/Arrowhead State Trail
+   runs Tower–Ely along the former DM&IR grade — inside the
+   corridor polygon; an ATV addition there would put motorized use
+   on the corridor's high dry ground at its eastern end. (JUDGMENT:
+   the corridor location of the David Dill additions is inferred
+   from the state trail's known Tower–Ely alignment, not from a
+   proposed-route map — no such map is published.)
+3. **Quad Cities ATV Club GIA proposal (2024)** — 31.1 mi existing
+   corridor open to ATV use + 2.2 mi existing corridor with new ATV
+   use (5 segments: Quad Cities Spur South, 2× Spur North, Big
+   Aspen Trail Complex, Pfeiffer Area connection); connects
+   Eveleth/Virginia to the USFS Big Aspen system, Pfeiffer Lake,
+   ultimately the Voyageur Country system. Proposer: Quad Cities
+   ATV Club; sponsor St. Louis County; comments through July 15,
+   2024. Source: DNR OHV GIA proposal (2024). Status: the live
+   service carries 75 "Quad Cities" features and 30 "Big Aspen"
+   features; 14.22 miles of Quad Cities and 23.14 miles of Big
+   Aspen designated trails lie inside the corridor polygon — but
+   the service does not label proposal origin, so the proposal's
+   segments cannot be separated from the designated system
+   segment-by-segment. The proposal is consistent with the
+   designated mileage inside the corridor; designation of its
+   specific segments is not separately confirmed.
+
+#### Outside the corridor (checked, not in the corridor)
+
+- **Seven Beavers Connector** — 3.5 mi, ~14 mi SE of Hoyt Lakes,
+  St. Louis County; sponsor St. Louis County, maintainer Ranger
+  Snowmobile/ATV Club, ATV+OHM, follows an existing
+  forest-management/snowmobile corridor, links the East Range
+  multi-use system + Seven Beavers bridge. DNR news release Feb 17,
+  2026; public comment Feb 17–Mar 18, 2026 (23 comments). Map is a
+  DNR GeoPDF (Nov 18, 2025):
+  https://files.dnr.state.mn.us/input/mgmtplans/ohv/plans/seven-beavers-proposal-map.pdf.
+  18.15 mi from the corridor polygon (nearest corridor point
+  −92.066, 47.7585). NOT in the DNR OHV service (trail_name LIKE
+  '%SEVEN%' returns 0) — still proposed; designation decision not
+  confirmed (comment-summary PDF 404'd). No GIS — pinpoint only.
+- **Twig Area Trail Riders EAW** — ~509.8 mi total (437.1 preferred
+  + 72.7 alternate) across Carlton + St. Louis counties; proposer
+  Twig Area Trail Riders, RGU DNR Environmental Review Unit; EAW
+  published Sept 1, 2026, comments through Oct 1, 2026. Cat 1
+  existing roads 298.4 mi (no improvements); Cat 2 existing
+  trails/roads needing improvements 192.1 mi; Cat 3 NEW trail
+  construction only 19.3 mi. Areas: Brookston Loops, Canyon to
+  Cotton, Lumberjack to Brookston, Taft to Canyon. All named places
+  test outside the corridor (northernmost, Canyon/Cotton, just south
+  of the boundary). No GeoPDF viewports in the EAW PDF. Source:
+  https://www.dnr.state.mn.us/input/environmentalreview/twig-area-trail.html;
+  EAW PDF https://files.dnr.state.mn.us/input/environmentalreview/twig-area-trail/2026-08-13-tatr-eaw.pdf.
+  Master-plan figure (Mar 2025) was ~229 mi — the system grew by
+  the Aug 2026 EAW.
+- **Voyageur Country ATV Phase 2** — up to 125 additional miles (39
+  existing + 78 existing-with-improvements + 8 new), Koochiching +
+  St. Louis counties, connecting to International Falls, Littlefork,
+  East Koochiching, Rainy Lake, NW St. Louis County; EAW with DNR
+  Record of Decision (no EIS) — "can proceed to permitting and
+  approvals". Source: https://www.dnr.state.mn.us/input/environmentalreview/voyageur-country-trail-expansion.html.
+  Existing system in the live file: 118 features, bbox lon −92.94
+  to −92.484, lat 48.01 to 48.317 — does NOT intersect the corridor.
+  Master plan (Mar 2025): ~29 mi planned, two-phase addition,
+  Phase 1 in planning/permitting, Phase 2 decision expected April
+  2025. Related: Blue Ox Connection ATV Trail (LCCMR 2027 proposal
+  2027-552, Voyageur Country ATV, $100k, planning/engineering for
+  ~4.6 mi Ericsburg→Blue Ox State Trail, Koochiching County,
+  completion Oct 31, 2028). Voyageur Country ATV Master Plan (2018)
+  proposes ~538 miles in phases.
+- **Ice Cracking ATV Trail** — ~57 mi existing roads/trails, Two
+  Inlets State Forest → White Earth State Forest, Becker County;
+  proposer Woods and Wheels ATV Club, sponsor Becker County;
+  comments through Nov 13, 2026; no new construction. Outside the
+  corridor (Becker County, west). Source: DNR OHV GIA proposal,
+  Oct 2026.
+- **Chatfield Connector** — 22.5 mi, Fillmore County; DNR news
+  release Feb 17, 2026; comment period done (25 comments). Outside
+  the corridor.
+- **Lake of the Woods Connector** (58 mi, Roseau + Lake of the Woods
+  counties) and **North Star Connector** (28 mi, Moose River Dike,
+  Beltrami County) — proposed OHV GIA trails per the DNR release
+  quoted in ATV MN newsletter Jan 17, 2026. NW Minnesota, outside
+  the corridor.
+- **NE Regional ATV Master Plan** (SEH, Mar 17, 2025, Northeast
+  Regional Joint Powers Board) — the systematic club inventory:
+  Alborn Dirt Devils ~10 mi (CR 166→Ostman Rd); Head of the Lakes
+  ATV Club — future trails near Duluth/Carlton County, mileages
+  undefined; Prospector ATV Club — two-phase addition ~57 mi, Phase
+  1 completed, Phase 2 in planning/permitting (~45 mi); Ranger
+  Snowmobile & ATV Club — ~10 mi planned + managing 11.3 mi Bird
+  Lake trail segment, no mandatory EAW; Twig Area Trail Riders
+  ~229 mi (Mar 2025 figure); Voyageur Country ATV Club —
+  two-phase addition ~29 mi; Wild Country ATV Club (Lake County,
+  30-mi Wild Country Trail near Finland/Beaver Bay/Silver Bay — all
+  outside the corridor) ~29 mi planned incl. improvements to 25+
+  mi existing, "exceeds threshold for mandatory EAW". "The
+  remaining seven ATV clubs in the JPB planning area do not have
+  new trails or segments that would require environmental review."
+  JPB counties: St. Louis, Lake, Koochiching, Carlton (and Cook per
+  the plan text). Source: https://www.sehinc.com/hubfs/Website/Online/northeastern-regional-atv-joint-powers-board/2025-03-17-NE-Regional-MasterPlan-Powerpoint.pdf
+- **Itasca County (corridor's west end)** — no current proposed ATV
+  trail in/around the corridor. The older proposals are now
+  designated and in the live service, all outside the corridor
+  polygon: Balsam Trail + Big Fork and Balsam (B&B) Connection
+  Trail (Balsam Trailblazers ATV Club, 25-mi proposal, Grand Rapids
+  Herald-Review 2012, Grand Rapids→Bigfork via George Washington
+  State Forest + Chippewa NF); Len Hardy Memorial Trail (Range
+  Riders ATV, 9-mi Nashwauk→Alborn-Pengilly GIA proposal, comments
+  through July 6, 2020); Wilderness Trail (USFS approved Oct 2021,
+  Wilderness Wheelers ATV, Itasca County sponsorship Nov 2021);
+  Herb Brandstrom Trail (Swampsiders ATV, Itasca County sponsorship
+  per the 2021 annual report); Goodland Trail. Nashwauk, Pengilly,
+  Alborn, Bigfork, Marcell, Squaw Lake, Northome all test outside
+  the corridor polygon. The 2015 Blue Lake connector (4,100 ft along
+  Blue Lake near Nashwauk, Range Riders + Red Rock Riders) is NOT in
+  the live service — no record of completion found; outside the
+  corridor. Sources: Itasca County Land Department 2021 Annual
+  Report; Grand Rapids Herald-Review articles (2012, 2015, 2020).
+- **Cook County ATV Club** — no proposed additions found; the club
+  is not among the eight named with planned mileage in the NE
+  Regional Master Plan inventory (Mar 2025), and the plan states
+  the seven clubs not listed have no new trails requiring
+  environmental review. (JUDGMENT: the plan's slide text does not
+  name the seven, so the Cook County club's membership in that
+  group is inferred from its absence from the named list, not
+  directly stated.)
+- **Superior National Forest** — no specific proposed motorized route
+  found in any Superior NF travel-management / NEPA document
+  checked. The Superior NF OHM Strategic Master Plan (Dec 2025)
+  notes the 2004 forest plans allow a maximum of 90 additional OHV
+  trail miles on Chippewa + Superior NFs combined; no specific new
+  Superior NF route is named. The 2006 Cloquet Valley State Forest
+  74-mi ATV/OHM proposal (Island Lake→Pequaywan Lake, ~63 mi
+  existing + 11 mi new) is old history, south of the corridor; the
+  Apr 2026 press claim of a "new Pequaywan ATV club adding 500
+  miles" is unverified — no EAW or DNR proposal found (Pequaywan
+  Area Trail Blazers is a snowmobile club; "Pequaywan" returns 0
+  hits in the live OHV service).
+- **DNR state-forest OHV planning**
+  (https://www.dnr.state.mn.us/input/mgmtplans/ohv/designation/revisions.html)
+  — corridor forests Bear Island, Burntside, Insula Lake, Lake
+  Isabella, Lake Jeanette, Sturgeon River + scattered northern St.
+  Louis County lands had a trail-revision process with comment
+  period ended Oct 11, 2018 (historic, designations made by
+  Commissioner's Order); no live proposal for those forests. The
+  only current items on the page are outside the corridor (Zumbro
+  Bottoms, Wabasha County; Solana, Aitkin County; Cloquet
+  Valley/Riverlands, St. Louis/Carlton counties).
+- **Snowmobile** — no proposed NEW snowmobile trail found in/around
+  the corridor via DNR news (2025–2026), the OHV public-input page,
+  or club checks (Ely Igloo, Vermilion Penguins, Cook Timberwolves,
+  Babbitt ATV & Snowmobile, Finland Snowmobile & ATV, Lutsen Trail
+  Breakers, Silver Trail Riders, TrailHawks, Voyageur Snowmobile
+  Club). The snowmobile GIA program's 2026–27 work is
+  administrative (hybrid grant model, 15-member workgroup May–Sept
+  2026). The Seven Beavers connector route follows an existing
+  snowmobile-use corridor but is an ATV/OHM designation, not a new
+  snowmobile trail.
+- **Negative (checked, nothing found):** DNR OHV GIA proposals
+  2024–2026 (news releases + public-input page); DNR
+  environmental-review pages (Prospectors, Twig, Voyageur Country);
+  DNR ATV/OHM/ORV Strategic Master Plans (Dec 2025); NE Regional
+  ATV Master Plan (Mar 2025); DNR state-forest OHV planning page;
+  Itasca County Land Department annual report; Superior NF
+  travel-management / NEPA documents; club sites for the corridor
+  clubs above. Exact queries: DNR service query trail_name LIKE
+  '%SEVEN%' → 0; live-file name checks Balsam / Len Hardy /
+  Wilderness / Brandstrom / Goodland / Alborn / Voyageur Country →
+  present (designated), Blue Lake / Pequaywan → absent.
+
+## Bike trails (added 2026-11-18, Paul)
+
+- **What:** one layer, `site/data/bike-trails.geojson`, **437
+  features, 745.95 GIS miles, full state** — every DNR state trail
+  that allows biking (364 features, 649.80 GIS miles, 29 named
+  trails) plus the Mesabi Trail from OpenStreetMap (73 way
+  features, 96.15 GIS miles). Wired in `site/app.js` as id
+  `bike`, group "Other trails", right after the snowmobile layer,
+  OFF by default and LAZY, orange #ea580c. Pulled 2026-11-18 by
+  `scripts/pull_bike_trails.py`; Mesabi geometry harvested by
+  `scripts/harvest_mesabi_osm.py`. Counts recomputed from the
+  live file 2026-11-18; they match the counts in `site/app.js`
+  and `site/data-sources.html` exactly.
+- **Sources:**
+  - Minnesota DNR State Trails service,
+    `trans_state_trails_minnesota/FeatureServer/0`
+    (https://enterprise.gisdata.mn.gov/aghost/rest/services/us_mn_state_dnr/trans_state_trails_minnesota/FeatureServer/0),
+    filter `use_bike = 1`. Live service count 2026-11-18: 978
+    total features; 364 with `use_bike = 1`.
+  - Mesabi Trail geometry: OpenStreetMap, ways named "Mesabi
+    Trail" (highway=cycleway), harvested via Nominatim bounded
+    searches along the Grand Rapids–Ely corridor plus the OSM
+    API (`/way/{id}/full`), 73 ways, 0 failed.
+- **Corridor trails in the layer:** Paul Bunyan State Trail
+  (41 features, 99.2 mi drawn), Heartland State Trail (14, 46.6
+  mi), David Dill–Taconite State Trail (1, 1.1 mi), Gitchi-Gami
+  State Trail (73, 33.5 mi), Taconite State Trail (2, 4.5 mi —
+  only the bike-flagged pieces; most of the 165-mi Taconite
+  carries `use_bike = 0`), Mesabi Trail (73, 96.15 mi, OSM).
+  The DNR's own published figures differ from the drawn miles
+  on Paul Bunyan (113 mi published vs 99.2 mi in the service)
+  — the difference is in the service, not a clip: the DNR
+  `lengthmile` field sums to 649.79 mi statewide against
+  649.80 mi drawn, so field and drawn agree to 0.01 mi.
+- **How the layer was decided (interpretation method):** a
+  feature is in the layer if and only if the DNR service flags
+  it `use_bike = 1`, plus the Mesabi Trail, which is not in the
+  DNR service at all (query `trail_name LIKE '%MESABI%'` → 0).
+  The popup reads the service's fields as stored (`surfacetyp`,
+  `width`, `lengthmile`, the `use_*` flags); the DNR stores a
+  missing string as a single space, which the popup trims to
+  nothing so no empty row shows. Surfaces in the file: Asphalt
+  335, blank 13, Limestone/rock 5, natural unimproved 4,
+  Unknown 3, crushed gravel 2, plastic 2.
+- **What is NOT in the layer, and why:**
+  - Mountain-bike-only singletrack (`use_mntbik = 1` AND
+    `use_bike = 0`): 368 features statewide, e.g. the Cuyuna
+    Lakes mountain-bike system (35 features). Different use
+    class, mostly inside state parks/forests — a second layer
+    if Paul wants it, not folded in silently.
+  - Blue Ox State Trail (unpaved, motorized; `use_bike = 0`)
+    and the "OHV access to Taconite State Trail via USFS Rd
+    11404" spur (`use_bike = 0`) — not bike trails in the
+    service's terms.
+  - C.J. Ramstad / North Shore State Trail (84 features in the
+    service) and David Dill–Arrowhead State Trail: both carry
+    `use_bike = 0` — hiking/ski and motorized respectively,
+    not bike.
+  - The on-road bike network (shoulders, bike lanes, county
+    bikeways): MnDOT's BIKEWAY FeatureServer
+    (`webgis.dot.state.mn.us/65agsf1/rest/services/sdw_trans/BIKEWAY/FeatureServer`)
+    answers HTTP 200 + an HTML "Request Rejected" page from
+    this environment (support IDs 7888479202558097992 /
+    7888479202558098008, checked 2026-11-18) and its MnGeo
+    mirror (`trans_bikeway`) is token-gated (499). Same
+    WAF-block family as the MnDOT right-of-way service. The
+    layer is trails, not the on-road network; re-pull when
+    MnDOT access is sorted.
+  - Mesabi Trail gaps: 96.15 GIS miles drawn against ~126 mi
+    published finished (Greater Minnesota Regional Parks and
+    Trails Commission, 2020) to ~145 mi (Trailforks). The
+    missing mileage is on-road and shared sections carried
+    under road names in OSM, plus stretches not mapped as
+    named ways — no road segment was drawn as trail without a
+    source. The popup states the gap in full. Unbuilt Mesabi
+    segments (Hwy 88–Ely, Aurora–Hoyt Lakes, both funded
+    2026) are not drawn either: proposed routes are never
+    drawn without GIS.
+  - The trail authority (St. Louis & Lake Counties Regional
+    Railroad Authority, mesabitrail.com) publishes a paper/PDF
+    map only — no GIS download exists to pull from. Pinpoint:
+    2026 Mesabi Trail Map, mesabitrail.com/plan-your-trip/
+    trail-maps/paper-map-ordering/; Ride with GPS paved routes,
+    mesabitrail.com/plan-your-trip/trail-maps/ride-with-gps/.
+- **Judgment register:**
+  - J1 — Full state, not the 2-mile corridor: follows the
+    motorized layers' precedent (Paul, Nov 16, 2026). A
+    corridor clip would have reintroduced the clip artifacts
+    those layers deliberately removed.
+  - J2 — Mesabi geometry from OpenStreetMap, labeled as such
+    on every feature (`kind: mesabi-osm`, `source:
+    OpenStreetMap`) and in the popup. OSM is the source, not
+    the authority; the authority's map is PDF-only and MnDOT's
+    bikeways service is blocked. Leaving the Mesabi out would
+    have left the layer's most corridor-relevant trail missing
+    — the NCT gap line east of Grand Rapids follows the Mesabi
+    Trail bike path.
+  - J3 — Overpass was NOT used: every Overpass mirror is
+    unreachable from here (406 on overpass-api.de and
+    kumi.systems, timeouts on private.coffee/nchc, 403
+    whitelist-only on openstreetmap.fr). The harvest went
+    through Nominatim + the OSM API instead, which is slower
+    (73 way fetches) but reachable.
+  - J4 — The Mesabi popup carries the Wheel Pass note ($10 /
+    3 days, $20 / year, mesabitrail.com) because the pass is
+    required to ride it — a use condition, not a data field.
 
 ## Roads — road centerlines
 
@@ -629,6 +1294,43 @@ neither mileage reckoning above.
   features, Otter Tail 7 exams and 0 sales — but the west
   region holds 69 sales, all in Becker + Hubbard where the
   trail enters the forest.
+- **Coverage by county (recomputed 2026-11-18 from
+  `site/data/timber-sales-minnesota.geojson`):** past |
+  planned — Becker 34 | 121; Carlton 0 | 24; Cass 298 | 156;
+  Clearwater 0 | 35; Cook 0 | 79; Hubbard 20 | 464; Itasca 0 |
+  93; Lake 3 | 22; Otter Tail 0 | 7; St. Louis 6 | 189;
+  Wilkin 0 | 0. Totals 361 past / 1,190 planned.
+- **Coverage by chapter (Nov 18, 2026):** Star of the North
+  (Cass + Hubbard) is well covered both ways — 318 past (283
+  county sales + 35 USFS EDW) and 620 planned (561 10-yr exams
+  + 51 annual exams + 8 county sales); Cass holds the deepest
+  past coverage in the file (298) and Hubbard the largest
+  planned count (464). Arrowhead (Itasca, St. Louis, Lake,
+  Cook) has planned coverage but past sales are thin — 9 past
+  (St. Louis 6, Lake 3, Itasca 0, Cook 0) against 383 planned,
+  of which 382 are DNR stand exams and 1 is a USFS EDW project
+  area (MARBLES, year-null, placed in planned by the fallback
+  rule). The thin past is a source gap, not a trail gap: no DNR
+  sold-sale polygon service exists, St. Louis County's service
+  returns 499 Token Required, and no timber-sale GIS service
+  was found for Itasca, Lake, Cook, Wilkin, or Otter Tail (see
+  Gaps below). Private land is the standing blind spot; tribal
+  lands have no public data.
+- **Naming (Paul, Nov 18, 2026):** the planned set is labeled
+  "Examined for future sale" in the viewer, not "Planned
+  harvests" and not "future parcels" — 1,166 of the 1,190
+  planned features (98%) are DNR stand exams, and an exam is
+  not a guaranteed sale. The other 24 are upcoming county
+  sales / appraisals (23) and one USFS EDW project area. The
+  layer id stays `logplanned`; the `timing` property stays
+  past | planned.
+- **Red for identified sales (Paul, Nov 18, 2026):** the 24
+  upcoming-sale features (23 county-sale + 1 USFS EDW, all
+  timing planned) fill solid red (#e11d48, edge #9f1239) in the
+  viewer, against the lime examined-for-future-sale fill and the
+  dashed lime past outline — so what has actually been identified
+  for sale reads at a glance. The rule keys off program +
+  timing in `timberStyle`; no data property was added.
 - **URLs:**
   - USFS EDW Activity Project Areas — Timber Sale, layer 2:
     https://apps.fs.usda.gov/arcx/rest/services/EDW/EDW_ActivityProjectAreas_01/MapServer/2
@@ -670,8 +1372,8 @@ neither mileage reckoning above.
   in Minnesota); tribal lands have no public data.
 - **Use here:** `site/data/timber-sales-minnesota.geojson`,
   two toggles off `timing` in subgroup "Timber sales", group
-  "The land": layer "logplanned" ("Planned harvests — watch
-  list", ON by default) and layer "logpast" ("Past timber
+  "The land": layer "logplanned" ("Examined for future sale —
+  watch list", OFF by default) and layer "logpast" ("Past timber
   sales", OFF by default, LAZY). Planned draws above past in
   the draw order. Popup first line names seller + timing
   ("Cass County — Planned"); the rows carry unit, timing,
@@ -713,6 +1415,294 @@ neither mileage reckoning above.
   `working/timber-statewide/pull-log-2026-11-16.md`.
 
 
+## Wetlands (NWI) — classified for trail routing (added 2026-11-18, Paul)
+
+- **What:** the USFWS National Wetlands Inventory along the whole
+  Minnesota NCT, classified GO / MAYBE / NO-GO for trail routing.
+  **91,479 polygons, 321,582.9 ac**, in the same 2-mile corridor
+  around the statewide trail line as the timber layer (348
+  features, 566.12 mi); a wetland counts when its polygon
+  intersects the buffer. By rating: **MAYBE 85,155 (181,967.4 ac)
+  / NO-GO 6,324 (139,615.5 ac)**. There are NO GO features in the
+  file: GO is absence of a polygon (rule W1 below). By rule:
+  W6-analog 38,601 (116,213.0 ac), W6 32,310 (40,079.2 ac),
+  W5 5,778 (8,122.3 ac), W7 5,318 (11,461.5 ac), W3 5,312
+  (135,971.9 ac), W8 1,898 (3,740.2 ac), W9-analog 1,683
+  (4,104.6 ac), W9 510 (856.1 ac), W4 69 (250.0 ac),
+  UNCLASSIFIED 0. By county: Cass 18,172; Hubbard 12,295;
+  St. Louis 10,687; Otter Tail 10,129; Becker 9,818; Cook 8,521;
+  Itasca 8,267; Lake 7,337; Clearwater 3,173; Wilkin 1,471;
+  Carlton 811; county null 798 (see open gaps). By region: west
+  36,886; arrowhead 27,356; central 26,439; other 798.
+- **Source:** USFWS National Wetlands Inventory, national service
+  as republished on ArcGIS Online:
+  `https://services.arcgis.com/P3ePLMYs2RVChkJx/ArcGIS/rest/services/USA_Wetlands/FeatureServer/0`
+  (layer 0 "USA_Wetlands", maxRecordCount 1000). Minnesota content
+  in the national file is the **DNR June 2019 update** delivered to
+  FWS. Per-polygon vintage is NOT exposed by the service — recorded
+  as a limit. Pulled 2026-11-18 by
+  `scripts/pull_nwi_corridor.py` (run log
+  `working/nwi/pull-run-2026-11-18b.log`; raw fetch
+  `working/nwi/raw-nwi.geojson`, 100,829 unique features).
+- **Service substitutions (verified live 2026-11-18):** the brief's
+  URL `https://www.fws.gov/wetlands/arcgis/rest/services/Wetlands/MapServer`
+  returns **404** — the service moved to ArcGIS Online (the URL
+  above). The DNR's own updated-NWI service
+  (`enterprise.gisdata.mn.gov/aghost/rest/services/us_mn_state_dnr/env_wetlands_nwi/MapServer`)
+  returns **499 Token Required** — not publicly queryable. The
+  research report's R4b citation (Wetlands_RLIS FeatureServer) is
+  WRONG — it is Portland Metro RLIS (Oregon State Plane North,
+  wkid 2913); it returns 0 features in Minnesota. Do not use it.
+  `inSR=4326` is REQUIRED on the USA_Wetlands service — envelope
+  queries without it fail with 400.
+- **Pull method:** the corridor (lon -96.7587..-89.8911, lat
+  46.2245..48.1311) was cut into 56 cells of 0.25°; each cell was
+  queried by geometry POST (the cell's intersection with the
+  corridor buffer, simplified 0.002°, widened 0.5 km — a superset;
+  the exact clip happens in Python), rings in ArcGIS JSON format
+  (exterior clockwise, holes counter-clockwise), `resultOffset`
+  pagination 1,000/page ordered by OBJECTID, with a
+  `returnCountOnly` cross-check per cell (every cell's fetched
+  count matched its service count). Dedupe by OBJECTID across
+  cells: **100,829 unique features**. An earlier attempt that
+  fetched by 500-id IN lists failed on chunk 1 with HTTP 404 (URL
+  too long for this service) — the geometry-POST rewrite replaced
+  it. Clip to the exact corridor in Python: 89,366 polygons kept;
+  11,462 fell outside the corridor (the query geometry was a
+  widened superset), 1 invalid geometry and 1 unparsed code
+  skipped. Dissolve: touching polygons with the same (rating,
+  Cowardin code) merged into connected components, exploded —
+  91,479 output features. Simplification: maxAllowableOffset
+  0.0002 (~22 m) + geometryPrecision 5, measured on a 200-feature
+  Itasca sample (raw 1,614,232 bytes → 51,953 bytes, 0 empty
+  geometries, smallest polygon 856 m² intact); coordinates rounded
+  to 4 decimals. File: `site/data/wetlands-nwi-minnesota.geojson`,
+  **50,468,829 bytes**.
+- **Classification — the interpretation method (Paul, Nov 18, 2026;
+  full text in `~/workspace/research_notes/nwi-wetland-trail-classification-20261118-1744/report.md`
+  and the classification page artifact
+  "Wetland and Soil Classification for Trail Routing"). NO published
+  Cowardin→GO/MAYBE/NO-GO matrix exists — this classification is a
+  flagged synthesis, and every judgment stays labeled as judgment.
+  Apply in order; first rule that fires wins:**
+  - W1 — No polygon → GO (screening only). Judgment J1: GO as
+    absence is the chapter's definition.
+  - W2 — Overlay: overlaps DNR public waters, a calcareous fen,
+    or a Minnesota Biological Survey rare natural community →
+    NO-GO pending agency advice, regardless of code. **NOT APPLIED
+    in this build** — NWI alone cannot identify these and the viewer
+    has no public-waters / Natural Heritage layer yet (open gap).
+  - W3 — Open / permanent water: regime H, Lacustrine UB, or
+    PUB/PAB with H → NO-GO. Judgment J2: the categorical H→NO-GO
+    is judgment.
+  - W4 — Large bog / muskeg complex: PFO2/PFO4/PSS2/3/4 with regime
+    B/C → NO-GO for a through-route; MAYBE only for a short, named,
+    maintainable spur. Judgment J3: the spur exception and the word
+    "large" (no numeric threshold is set). **Build note: no size
+    gate is applied** — every bog-class B/C complex is NO-GO for a
+    through-route, because no published threshold exists; the size
+    question is left to the field/route check.
+  - W5 — Semipermanently flooded (regime F) → MAYBE, short narrow
+    boardwalk only; >~300 ft of F-regime tread = NO-GO. Judgment
+    J4: the 300-ft threshold; the length check is route-level, not
+    applied in the layer.
+  - W6 — Seasonally flooded/saturated (regime C/E) → MAYBE, bog
+    bridge / boardwalk, short crossing only.
+  - W7 — Temporarily flooded / saturated (regime A/B) → MAYBE,
+    turnpike / puncheon. Judgment J5: rod-sounding field upgrade —
+    if a rod meets no resistance, upgrade to NO-GO.
+  - W8 — Riverine FIRST (before W3–W7): R2/R3 perennial → NO-GO
+    along the channel (a single bridge point is a separate project
+    decision); R4/R5 intermittent → MAYBE, bridge/boardwalk at a
+    narrow point. Stay ≥25 ft from the stream edge except at the
+    crossing.
+  - W9 — Modifiers d (partly drained/ditched), f (farmed), x
+    (excavated), or Class US / shore → MAYBE, field-check first; do
+    NOT downgrade to GO. Judgment J6: the MAYBE placement.
+  - W10 — Cumulative length through any MAYBE class on a proposed
+    route >~½ mile → NO-GO for the route as drawn. Judgment J7:
+    the ½-mile figure; route-level, not applied in the layer.
+  - **Combined rules C1–C4** (applied where the two layers are read
+    together): C1 stricter governs — a NO-GO from either dataset is
+    a NO-GO overall. C2 soil cannot rescue a wetland — a
+    Not-limited soil inside any NWI polygon is never GO. C3 NWI
+    polygon + hydric major component = highest-confidence wetland;
+    hydric soil with no NWI polygon = MAYBE/field-check, never GO;
+    NWI polygon on a non-hydric unit still governs. C4 absence from
+    BOTH datasets is the only GO (plus a side-hill 3–10% alignment,
+    rule S4) — screening only.
+  - **Build-time judgments (extensions of the report's register,
+    labeled here):** J13 — regime D (Continuously Saturated) is not
+    named in the report's rules; 38,601 features (116,213.0 ac, 42%
+    of the file) carry it, so it is treated as W6-analog MAYBE (bog
+    bridge/boardwalk), the same treatment as C/E. J14 — regime K
+    (Artificially Flooded) is not named in the report's rules; 238
+    features carry it, treated as W9-analog MAYBE (field-check;
+    water level is managed). Both are the chapter's judgment, not a
+    published rule. The parser also handles split classes
+    (e.g. PFO1/4D) by reading the regime from the END of the full
+    code — taking the first '/'-part alone loses the regime (45
+    split-class polygons in an Itasca test box came out
+    UNCLASSIFIED before the fix) — and regime-less codes (e.g. PUS)
+    by parsing against the known class set, so the class letters
+    are not misread as a regime.
+- **What each feature carries:** `code` (Cowardin), `wetland_type`,
+  `system`, `class`, `subclass`, `regime`, `regime_name`,
+  `modifier`, `rating` (maybe | nogo), `rule` (short id: W3–W9,
+  W6-analog, W9-analog, UNCLASSIFIED), `acres`, `n_polygons`
+  (source polygons merged into this feature), `county`, `region`.
+  The full rule text (structure + note + judgment tag) is NOT
+  repeated per feature — it lives once in `site/app.js`
+  (WETLAND_RULES, mirroring RULE_TEXT in
+  `scripts/pull_nwi_corridor.py`, also saved as
+  `working/nwi/wetland-rules.json`; the two were diffed, 0
+  mismatches). Moving that text out of the file cut it from
+  82,885,820 bytes to 50,468,829 bytes with identical counts.
+- **Dataset limits:** DNR-updated NWI, June 2019. Minimum mapping
+  unit 0.5 ac; identification ~90%, classification ~75%; 95% of
+  features within ±5.9 m. Intended use 1:12,000 or smaller. NWI is
+  a screening layer, not a delineation: field delineation +
+  permits before any MAYBE becomes a route. The 1980s file missed
+  forested/drier wetlands and had a 1–3 ac minimum — the dense
+  small polygons in this pull (sampled min 856 m², median ~7,300
+  m²) with forested/shrub types in quantity are consistent with the
+  updated file, not the 1980s one.
+- **Regulatory gates:** federal Clean Water Act §404, Nationwide
+  Permit 42 (2026 reissue, ≤½ acre, pre-construction notification
+  required). Minnesota Wetland Conservation Act: avoid → minimize
+  → replace; de minimis exemption 400 sq ft / 10,000 sq ft,
+  type- and location-dependent — confirm with the local government
+  unit. Public waters need a DNR permit (Minn. Stat. 103G);
+  WCA exemptions do not apply to calcareous fens (Minn. R.
+  8420.0420). Precedent: the NPS Arrowhead reroute left 70 miles
+  of black spruce/tamarack swamp unbuilt.
+- **Open gaps:** (1) W2 overlay not applied (above). (2) W4 has no
+  numeric "large" threshold (above). (3) W5 300-ft and W10 ½-mile
+  are route-level checks — they need an actual drawn route, not a
+  layer. (4) 798 features have county null / region "other" — their
+  centroids fall outside the TIGERweb county polygons (Lake
+  Superior / border waters; e.g. L1UBG lake polygons). (5) 1 invalid
+  geometry and 1 unparsed Cowardin code were skipped at clip time.
+  (6) Do NOT use the county `wetlands.zip` (46.4 MB, 2017 vintage)
+  — flagged STALE in the Nov 11 useful-layers doc.
+- **Use here:** `site/data/wetlands-nwi-minnesota.geojson`, layer
+  "wetlands-nwi" ("Wetlands (NWI) — trail routing", subgroup
+  "Wetlands + soils", group "The land", OFF by default, LAZY).
+  Style `wetlandStyle`: MAYBE amber fill (#f59e0b, 0.35) with a
+  dashed edge, NO-GO solid red fill (#dc2626, 0.45); dissolved
+  features are ordered MAYBE then NO-GO so NO-GO draws on top
+  where they overlap. Popup `wetlandPopup` shows classification,
+  rule + judgment tag, Cowardin code + water regime in words,
+  wetland type, system/class, acres, county, region, the rule's
+  structure + note, the screening-only caveat, and the W2 gap.
+  Z-order: after "easements", before "foresthealth". Panel key
+  under the toggle states the two fills + the screening-only line.
+  Headless check 2026-11-18: all 9 rule ids render with matching
+  styles, K-regime popup names "Artificially flooded", 0 rule-text
+  mismatches between the script and app.js.
+- **Refresh:** re-run `scripts/pull_nwi_corridor.py` (or
+  `--from-raw` to reprocess `working/nwi/raw-nwi.geojson` without
+  re-fetching). Full pull log:
+  `working/nwi/pull-run-2026-11-18b.log` (+ reprocess log
+  `working/nwi/pull-run-2026-11-18c.log`).
+
+
+## Soils (SSURGO) — classified for trail routing (BLOCKED 2026-11-18, Paul)
+
+- **Status: BLOCKED — NRCS Soil Data Access is down.** The
+  tabular REST endpoint
+  `https://sdmdataaccess.sc.egov.usda.gov/Tabular/post.rest` returns
+  **HTTP 502 Bad Gateway** on repeated checks through the evening
+  of 2026-11-18 (3 attempts in a row, plus earlier single checks).
+  The alternate host
+  `https://sdmdataaccess.nrcs.usda.gov/Tabular/SDMTabularService/post.rest`
+  also returns 502, and the spatial WFS
+  (`https://sdmdataaccess.nrcs.usda.gov/Spatial/SDMWGS84Geographic.wfs`)
+  also returns 502. The failing query is the SDA health check
+  `SELECT TOP 1 mukey FROM muaggatt` (POST, JSON). The script
+  fails fast with a clear message when SDA is down; re-run it when
+  SDA recovers. **No soils layer is wired yet — the viewer carries
+  wetlands only until SDA recovers.**
+- **What was prepared:** `scripts/pull_ssurgo_corridor.py` is
+  written and its classifier unit-tested (6 cases). It adapts
+  `site/buildout/build-soils.py` Part A (which proved the SDA
+  pattern on 2026-11-13: `SDA_Get_Mukey_from_intersection_with_WktWgs84`,
+  `SDA_Get_Mupolygonkey_from_intersection_with_WktWgs84`,
+  `mupolygon.mupolygongeo` WKT, `mapunit`, `muaggatt`,
+  `component.hydricrating`) to the same 2-mile statewide corridor
+  as timber and wetlands (it reuses
+  `working/nwi/corridor-2mi.geojson` so all three layers share one
+  identical corridor), and classifies per the Nov 18 sweep:
+  - S1 backbone: the NRCS **Paths and Trails** rating for the
+    dominant component, from `muaggatt.urbrecptdcd` (dominant
+    condition) + `urbrecptwta` (weighted-average index) — the rating
+    lives directly in muaggatt, so no cointerp dependency for the
+    backbone. S2 mapping (JUDGMENT J8 — NRCS publishes a limitation
+    rating, not a go/no-go): Not limited → GO; Somewhat limited →
+    MAYBE; Very limited → NO-GO.
+  - S3 attribute check (can move the S2 rating): (a) drainage
+    Poorly/Very poorly drained, or frequent ponding/flooding, or
+    depth to saturated zone <1 ft (`muaggatt.wtdepannmin` < 30 cm)
+    → NO-GO for ground tread (the <1 ft cut-off is JUDGMENT J9);
+    (b) Histosol major component (organic soil) → NO-GO.
+    Texture splits S3(c)/(d) are NOT applied as overrides — texture
+    never overrides wetness or grade (report §11 summary); drainage
+    + slope are carried on the feature so a reader can apply them by
+    eye.
+  - S4 grade/alignment (TG/TSA from 1-m LiDAR) is NOT computable at
+    the map-unit level — it needs the actual trail alignment; it is
+    a route-level check, recorded in the popup note (JUDGMENT J10
+    in application). S5 IMBA grade maxima NOT used (no empirical
+    data cited). S6 hydric MAJOR component → suspected wetland (C3):
+    a GO rating is downgraded to MAYBE; the soil rating alone never
+    makes it GO (the ≤~10% minor-component figure is JUDGMENT J11).
+    S7 frost action, K-factor, T-factor, hydrologic group, Ksat,
+    AASHTO/USCS, shrink–swell, depth to bedrock, AWC, pH, EC are
+    recorded exclusions (not routing attributes). S8 read at
+    component level — the file will carry the dominant rating AND
+    % hydric by component, never the map-unit name alone.
+  - Limiting reasons: probed opportunistically from `cointerp`
+    (rule tree: ruledepth = 0 is the aggregated rating, ruledepth =
+    1 rows are the limiting features, `mrulename` LIKE
+    '%Paths and Trails%'); if the probe returns nothing the file is
+    still written with rating + attributes and reasons = null, and
+    the gap is logged.
+  - Output (when it runs): `site/data/soils-ssurgo-minnesota.geojson`,
+    dissolved by mukey (connected components), simplified ~70–90 m,
+    every feature carrying rating (go | maybe | nogo), rule, NRCS
+    rating + index, reasons, drainage, hydric %, hydric-major flag,
+    slope, flood/pond frequency, depth to water table, map-unit
+    name/symbol, acres, county, region. Planned viewer style
+    (report J12): Not limited neutral faint, Somewhat limited amber,
+    Very limited red; popup shows map-unit name, limiting reason(s)
+    + index, drainage class, hydric rating (% hydric), slope.
+    Never display a single "GO" colour for a soil without the NWI
+    overlay visible at the same time (report §12, rule C4).
+- **Fallbacks checked and dead:** the Esri Living Atlas "USA Soils
+  Map Units" FeatureServer
+  (`https://landscape11.arcgis.com/arcgis/rest/services/USA_Soils_Map_Units/FeatureServer`,
+  updated Oct 2025, 173 fields from nine SSURGO tables — it carries
+  urbrecptdcd/urbrecptwta) returns **499 Token Required** — not
+  publicly queryable. A Web Soil Survey guide PDF fetch from
+  nrcs.usda.gov timed out (curl exit 28, 60 s). No working soils
+  fallback was found; keep retrying SDA.
+- **Do NOT wire as the soils layer:**
+  `site/buildout/data/soils-corridor.geojson` — it covers only
+  0.5-mi buffers around the two gap lines (western 4,883 +
+  arrowhead 2,390 = 7,273 features), has NO Paths and Trails
+  rating (the classification backbone), and does not cover the ITM
+  chapter or the full corridor. The Nov 18 U of M data-sources
+  audit (`docs/uofm-arrowhead-data-sources-audit-2026-11-18.md`)
+  says exactly this.
+- **Dataset limits (from the Nov 18 sweep):** SSURGO minimum
+  delineation 1.4–5.7 ac depending on scale; planning/screening
+  only — a "Not limited" unit can contain a wet inclusion under the
+  tread and a "Very limited" unit can contain a dry ridge (S8).
+  Survey vintage varies by county. Combined rules C1–C4 (see the
+  wetlands section above) govern how soils and wetlands are read
+  together; the soils file will carry the SOILS rating only.
+
+
 ## Arrowhead campsites — NCTA camping waypoints (added 2026-11-18, Paul)
 
 - **What:** The NCTA public waypoint layer's Camping points for
@@ -737,6 +1727,319 @@ neither mileage reckoning above.
   `scripts/build_site_data.py`), the "Camping — Arrowhead" layer:
   deep-green discs with a "C", same treatment as the chapter's own
   Camping layer, OFF by default and LAZY.
+
+## Star of the North campsites — NCTA camping waypoints (added 2026-11-18, Paul)
+
+- **What:** The NCTA public waypoint layer's Camping points for
+  the Star of the North trail (MN-84 to MN-6 NE of Remer), kept
+  where within 2 km of the STN line.
+- **Source:** Same NCTA public ArcGIS feature service as the
+  official line ("North Country Trail (Public)", layer 1 "Point
+  Data — Public"), pulled by `scripts/pull_stn_points.py`
+  (same envelope + object-id method as `scripts/pull_points.py`):
+  envelope lon −94.30..−93.79, lat 46.97..47.18 over the STN
+  line bbox.
+- **Counts:** 5 Camping points in the bbox; **4 kept**
+  (Campsite, 0.08 km; Crown Lake Campsite, 0.04 km; Mabel Lake
+  National Forest Campground, 1.84 km — the chapter's group-camp
+  site, 7 miles west of Remer on Hwy 200; Old Pine Campsite,
+  0.07 km). **1 excluded** as beyond 2 km from the STN line:
+  Hazel Lake Campsite (−94.2873, 46.9987; 7.57 km — west of
+  MN-84, it serves the Itasca Moraine side, not the Star of the
+  North chunk). Names are carried exactly as published, including
+  the generic one ("Campsite"). Each kept point carries
+  `dist_trail_km`. Note: all 4 kept points carry no `chapter`
+  value in the source (null), so the popup omits the Chapter row
+  rather than showing one.
+- **Use here:** `data/points/ncta-points-stn.geojson` →
+  `site/data/campsites-stn.geojson` (built by
+  `scripts/build_site_data.py`), the "Camping — Star of the
+  North" layer: deep-green discs with a "C", same treatment as
+  the chapter's own Camping layer, OFF by default and LAZY.
+
+## DNR state forest campgrounds — Minnesota DNR inventory (added 2026-11-18, Paul)
+
+- **What:** The Minnesota DNR's state forest campground inventory
+  within 2 miles of the statewide trail line — **2 sites**.
+- **Source:** Minnesota DNR,
+  `struc_state_forest_campgrounds/FeatureServer`, layer 0
+  (points), "State Forest Campgrounds And Day Use Areas" —
+  enterprise GIS service:
+  https://enterprise.gisdata.mn.gov/aghost/rest/services/us_mn_state_dnr/struc_state_forest_campgrounds/FeatureServer/0.
+  Pulled by `scripts/pull_dnr_campgrounds.py` (2026-11-18). DNR
+  data used under the Minnesota DNR General Geographic Data
+  License Agreement. Graded in
+  docs/research-useful-layers-2026-11-11.md §2.1 (Grade A public /
+  C management) and in
+  docs/uofm-arrowhead-data-sources-audit-2026-11-18.md (verdict:
+  Use — authoritative, absent from the viewer).
+- **Counts:** 60 features statewide in the service. **2 kept** in
+  the 2-mile corridor: McFarland Lake Campground (Campground,
+  Grand Portage State Forest, Cook Co., 0.01 km from the trail)
+  and Gulch Lake Campground and Day Use Area (State Forest
+  Campground and Day Use Area, Paul Bunyan State Forest, Hubbard
+  Co., 1.02 km). **6 excluded by site type** — day-use-only
+  areas, no camping: Pelican Beach, Shafer Lake, Remote Lake
+  Solitude, Dago Lake, Hay Creek, McCormick Lake Day Use Areas.
+  **52 excluded by distance** (>2 mi from the trail). Note: the
+  Nov 11 note's "6 in the working extent" was an envelope (bbox)
+  count, not a corridor count — the corridor count is 2.
+- **Method / judgments:** [JUDGMENT] site-type filter — the
+  service mixes campgrounds and day-use areas in one layer
+  (field `site_type_gdrs`); included 'Campground', 'Horse
+  Campground', 'State Forest Campground and Day Use Area';
+  excluded 'State Forest Day Use Area' (day use only, no
+  camping). Corridor is the 2-mile buffer around
+  `site/data/trail-minnesota.geojson`, the same corridor as the
+  timber layer and the motorized clip; distance computed in UTM
+  15N and recorded as `dist_trail_km`. Fields carried: `name`
+  (`facilty_name_gdrs`, as published — note the DNR spelling),
+  `site_type`, `state_forest`, `county`, `admin_unit`
+  (`pat_admin_unit_gdrs`), `dnr_region`. The service carries NO
+  amenity or capacity fields — a DNR state forest campground is
+  rustic, first-come, minimal facilities; that note is carried
+  on the popup instead of invented fields.
+- **Overlap (kept separate, never merged):** Gulch Lake
+  Campground and Day Use Area sits 9 m from the chapter's own
+  Gulch Lakes Campground (`chapter-places.geojson`) — the same
+  site in two managers' records. Both are drawn; the popup states
+  the manager. No other DNR campground falls within 100 m of an
+  existing campsite point.
+- **Not built:** public water accesses
+  (`struc_water_access_sites`) — Paul, Nov 18, 2026: no-go; not
+  pulled.
+- **Use here:** `data/points/dnr-campgrounds.geojson` →
+  `site/data/dnr-campgrounds.geojson` (built by
+  `scripts/build_site_data.py`), the "DNR state forest
+  campgrounds" layer: deep-green discs with a "D" (DNR),
+  distinct from the "C" of the NCTA/chapter campsites, OFF by
+  default and LAZY.
+
+## Bridge inventory — crossing opportunities (added 2026-11-18, Paul)
+
+- **What:** Existing highway bridges that might carry the trail —
+  crossing opportunities, pairing with the right-of-way work
+  around the Ely bottleneck. **80 structures**, in two tiers.
+- **Source:** FHWA National Bridge Inventory (NBI) 2025,
+  all-records delimited file
+  (`2025AllRecordsDelimitedAllStates.txt`, from
+  `2025allstatesallrecsdel.zip`, 56 MB):
+  https://www.fhwa.dot.gov/bridge/nbi/2025allstatesallrecsdel.zip.
+  Minnesota (state code 27) = 16,503 records. Pulled by
+  `scripts/pull_nbi_bridges.py` (2026-11-18). Code values decoded
+  per the FHWA Recording and Coding Guide FHWA-PD-96-001
+  (Items 21/22 owner and maintenance, 41 open/posted/closed, 42
+  type of service, 43 structure kind).
+- **Source substitution — read this before re-pulling:** the
+  intended source was the MnDOT bridge inventory `trans-bridges`
+  (Minnesota Geospatial Commons; audited in
+  docs/uofm-arrowhead-data-sources-audit-2026-11-18.md, verdict:
+  Use — the students filtered it to pedestrian/mixed-use only).
+  It could NOT be pulled on 2026-11-18: the MnGeo enterprise
+  host FeatureServer returns 499 Token Required; the GDRS
+  download paths (GeoPackage / shapefile / metadata under
+  `resources.gisdata.mn.gov/pub/gdrs/data/pub/us_mn_state_dot/trans_bridges/`)
+  all return 404; MnDOT's own `mndotgis.dot.state.mn.us` is
+  unreachable from this VM (connection fails, DNS resolves); no
+  ArcGIS Online copy was found; the DNR Bridges Cartegraph
+  service (which carries pedestrian-use flags) also 404s —
+  apparently retired/moved. NBI is the federal inventory fed by
+  the states from their own inspection systems (MnDOT's SIMS for
+  Minnesota), so the structures and bridge numbers are the same
+  inventory — but it is NOT the MnDOT service. FOLLOW-UP: re-pull
+  from `trans-bridges` when MnDOT access is sorted (live browser
+  or token); the bridge number is the join key. The all-records
+  file is used, not the highway-only file (`MN25.txt`, 13,551
+  bridges), because pedestrian-only bridges (service on = 3) are
+  non-highway records and are absent from the highway file.
+- **Counts:** 16,503 MN records → **13,795 distinct structures**
+  (dedupe by `STRUCTURE_NUMBER_008`; one record per structure,
+  preferring record type 1, route on the structure — service-on
+  is consistent within a structure, verified: 0 of 13,795 carry
+  >1 distinct service-on code). **80 kept** in the corridor:
+  Tier 1 **30** (28 Highway-pedestrian + 2 Pedestrian-bicycle),
+  Tier 2 **50** (Highway within 400 m). By county: Itasca 25,
+  St. Louis 24, Otter Tail 18, Becker 4, Cook 3, Cass 2, Lake 2,
+  Wilkin 2. Status: 73 open, 7 posted for load; 1 structure
+  within the corridor dropped as closed/not-yet-open.
+  The two pure pedestrian bridges: 5342 (PEDESTRIAN over US 169,
+  Itasca Co., built 1928, 0.01 km from the trail — the Grand
+  Rapids pedestrian bridge) and 03514 (PEDESTRIAN over CSAH 10,
+  Becker Co., built 2021, 3.0 km). The Ely bottleneck crossings
+  are in here: the twin MN 169 bridges over the Shagawa River
+  (97320/97321) sit on the trail line itself (0.0–0.02 km).
+- **Method / judgments:** Corridor is the 2-mile buffer around
+  the statewide trail line (`site/data/trail-minnesota.geojson`)
+  PLUS the Star of the North line
+  (`data/segments/trail-stn.geojson` — not yet merged into
+  trail-minnesota.geojson; Remer sits 7.0 km from the nearest
+  line in that file), the same corridor as the timber, motorized,
+  and campgrounds layers; distance computed in UTM 15N (STRtree
+  over the line pieces) and recorded as `dist_trail_km`. NBI
+  coordinates are DDMMSS.ss (`LAT_016`/`LONG_017`) converted to
+  decimal degrees. Tier 1: service on in {3 Pedestrian-bicycle,
+  5 Highway-pedestrian}, within 2 mi. [JUDGMENT] Tier 2:
+  service on = 1 Highway, within 0.25 mi (400 m) of the trail —
+  a vehicular bridge the trail route actually passes is one a
+  hiker could use as a crossing without a detour; a 2-mi
+  vehicular net would be every county-road bridge in the
+  corridor and unreadable as a crossing-opportunities layer.
+  Excluded in both tiers: K = bridge closed to all traffic, G =
+  new structure not yet open. Blank open/closed codes are KEPT:
+  the field does not apply to non-highway records, so a blank is
+  not a closed bridge. Not carried: service on 2 Railroad (rail
+  bridges are not crossings a hiker can use), 4
+  Highway-railroad, 6/7/8 interchange levels, 9 Building/plaza,
+  0 Other. Fields carried: `bridge_number`, `facility_carried`,
+  `features_crossed`, `location` (all as published; NBI text
+  fields arrive single-quoted and the quotes are stripped),
+  `county` (FIPS code decoded — note the "Saint Louis" quirk:
+  FIPS sorts "St. Louis" as "Saint Louis", so St. Louis is 137,
+  before Scott 139), `district`, `owner` / `maintenance`
+  (decoded agency type), `year_built`, `year_reconstructed`,
+  `structure_len_m`, `deck_width_m`, `sidewalk_left_m` /
+  `sidewalk_right_m` (Item 50 curb/sidewalk widths — the
+  pedestrian accommodation on the structure; 28 of the 30 Tier 1
+  bridges carry a nonzero sidewalk), `service_on` /
+  `service_under`, `open_closed`, `structure_kind`,
+  `structure_type`, `tier`, `dist_trail_km`, `nbi_records`
+  (records merged for the structure).
+- **Corrections caught at the pull (not in the first draft):**
+  (1) the seconds in NBI DDMMSS.ss coordinates were first read
+  as a plain float ('28.32' as 2832 seconds), shifting every
+  point up to ~0.8 deg — caught by the Arrowhead diagnostic
+  (zero Arrowhead bridges in the first cut) and fixed before
+  wiring; (2) the county decode first had 137 = Scott — FIPS
+  27137 is St. Louis County, 27139 is Scott — caught by the same
+  check (24 "Scott" bridges sitting on the Iron Range) and
+  fixed; (3) the first pull's whole-union distance loop plus the
+  corridor buffer OOM-killed the script (6 GB VM) — the pull
+  now indexes the line pieces (STRtree) and never builds the
+  buffer.
+- **Use here:** `data/points/nbi-bridges.geojson` →
+  `site/data/nbi-bridges.geojson` (built by
+  `scripts/build_site_data.py`), the "Bridges — crossing
+  opportunities" layer: "B" discs, OFF by default and LAZY, in
+  the "Around the trail" group. Tier 1 popups say the bridge is
+  a crossing a hiker can use; Tier 2 popups say to check on the
+  ground whether the trail uses it.
+
+## MnDOT highway right-of-way — RWMM (NOT WIRED — service blocked, added 2026-11-18, Paul)
+
+- **What:** MnDOT's Right of Way Mapping and Monitoring (RWMM) —
+  the audit's best planning lead (U of M report §VI, p. 10; audit
+  row 15, verdict: Use): where the trail could run alongside or
+  inside highway right-of-way, most relevant at the Ely
+  bottleneck. **No geometry is drawn from this source yet — the
+  layer is not in the viewer.** The reason is access, not a
+  judgment about the data (see "Blocked" below).
+- **The service (verified live, then blocked):** the operational
+  service the RWMM web app itself reads —
+  `https://webgis.dot.state.mn.us/65agsf1/rest/services/olm/MNDOT_RWMM_OPERATIONAL/MapServer`
+  (SR 26915, maxRecordCount 2000). Found via the RWMM Experience
+  Builder app's own data config (item
+  `8571b65ffb394613aa3582510d105d64`). Landing page:
+  `https://www.dot.state.mn.us/maps/gisweb/row/`.
+- **Layers in the service (read from the service root JSON
+  2026-11-18, before the block):** 0 Right of Way & Railroad Map
+  Footprint Group; 1 Railroad Station Plat (point); 2 DGN/PDF -
+  Right of Way, static (polyline); 3 TIF/PDF - Right of Way,
+  static (polyline); 4 Railroad (polygon); 5 Historic Railroad
+  Right of Way Plats (polygon); 6 Right of Way Line Group;
+  8 **Approximate Right of Way Line** (polyline); 10 Access
+  Control Line, limited data (polyline); 12 Commissioner's Order
+  & Plat Group; 13 Plat, 14 Graphic, 15 Narrative (polylines);
+  16 R/W Boundary Corner Group; 17 Plat B-Point, 18 B-Point Label
+  (points); 19 Land Intake & Parcel Shapes Group; 20 Parcel -
+  Archived, 21 All Parcels, **41 Parcel - Current** (polygons);
+  23 State Project; 25 Truck Station; 26 Tower Site; 27 Scenic
+  Group; 28 Area; 29 Easement; 30 Land Disposal Group; 31
+  Conveyance; 32 Turnback; 39 Freeway Design & Special
+  Conditions (polyline); 40 All Right of Way Footprint (polyline).
+- **The two layers that matter for the trail (fields + statewide
+  counts, read 2026-11-18):**
+  - Layer 8 Approximate Right of Way Line — **35,175 features
+    statewide.** Fields: OBJECTID, CONTROL_SECTION, ROUTE_NUMBER,
+    ROUTE_SYSTEM, DISTRICT, COUNTY, STATUS, LAYER, ACCURACY,
+    SOURCE, SOURCE_FORMAT, OFFSET, COMMENTS, EDIT_DATE. LAYER
+    values: RW / RW INP / Excess Land / D.O.T. Specific Interest.
+    **No ROW width field exists** — the class (LAYER) is the
+    only width-like attribute; the popup would carry route,
+    route system, control section, county, district, class,
+    status, accuracy, source. The display field CADD_DOCNAME is
+    NOT queryable (service returns 400), so the map-sheet
+    document name cannot be pulled per feature.
+  - Layer 41 Parcel - Current — **32,236 features statewide.**
+    MnDOT's current parcel interests: parcel polygons are
+    MnDOT's current interests and the index to the maps, plats
+    and descriptions behind them (MnDOT solicitation 1063806
+    Q&A, Sep 2026). Fields (joined layer, table prefix
+    `ROW_ADMIN.MnDOT_Parcel_Polygons.*`): DOCNAME, PARCEL_NUMBER,
+    PARCELNUM, DESCRIPTION4, COMMENT_, ACQUISITION_CATEGORY,
+    PLAN_INFO_ID, STATE_PROJECT, STATUS, PARCEL_ORIGIN,
+    ACQUISITION_AREA_TYPE, SHAPE.AREA, SHAPE.LEN.
+- **How much is in the corridor (probe, before the block):** in
+  the trail bbox (lon -96.716..-89.933, lat 46.253..48.102),
+  4,653 ROW-line IDs and 11,258 current-parcel IDs
+  (returnIdsOnly queries, 2026-11-18). The corridor pull would
+  clip both to the 2-mile buffer around the statewide trail
+  line, same as timber / motorized / campgrounds.
+- **Blocked (the reason nothing is drawn):** the webgis host
+  answered normally until ~18:47 UTC on 2026-11-18, then every
+  request — service root, layer metadata, queries — returned
+  HTTP 200 with an HTML "Request Rejected" page ("Please
+  consult with your administrator", support ID
+  14928902036401554593), continuously through the last probe at
+  19:11 UTC. A pull with escalating backoff (10s → 10min, 5
+  tries) failed on its first query after ~19 minutes of
+  retries. This is the host's WAF deciding the client is too
+  chatty after the probe burst; it is not a login wall and not
+  a 404 — the service is up, the requests are refused. The
+  older egis12 service
+  (`OLM/MNDOT_RWMM_AGOL_OPERATIONAL_LAYERS` on
+  `mndotgis.dot.state.mn.us` / `dotapp9.dot.state.mn.us`) is
+  not a fallback from here: this environment's egress proxy
+  drops those connections outright.
+- **To finish this layer later:** run
+  `python3 scripts/pull_mndot_row.py` — it is written and
+  ready (two-pass fetch copied from
+  `pull-motorized-mn-corridor.py`: id list for the corridor
+  bbox, then fetch by objectIds; clip to the 2-mile corridor in
+  UTM 15N; writes `data/row/mndot-row-lines.geojson` and
+  `data/row/mndot-row-parcels.geojson` with metadata). Two
+  things it already learned the hard way, recorded in the
+  script: fetch by objectIds must be POST, not GET (a 500-ID
+  GET returns a non-JSON error page from this server), and
+  requests must be paced with backoff (the host WAFs bursts).
+  If the block persists, the alternatives are: the live browser
+  (the RWMM app works interactively), or requesting shapefiles
+  from MnDOT's LIS & RW Mapping unit
+  (LISRWMAP.dot@state.mn.us — per the MnDOT FAQ, shapefiles
+  are available by special arrangement).
+- **NOT used (recorded, not silently dropped):** the historic
+  ROW maps themselves are TIF/DGN/PDF — not georeferenced for
+  our purposes (TFW world files no longer downloadable;
+  shapefiles only by special arrangement per the MnDOT FAQ) —
+  no geometry is drawn from them. Layer 10 Access Control Line
+  ("limited data" per MnDOT's own label), layer 39 Freeway
+  Design (80 features statewide, freeway design segments, not
+  ROW limits), layer 40 All Right of Way Footprint (footprints
+  of map SHEETS — an index to the PDF/TIF/DGN maps, not ROW
+  geometry), and the Plat/Graphic/Narrative/B-Point/footprint
+  layers (survey and map-sheet artefacts, not ROW limits) are
+  not pulled.
+- **Caveats to carry when this IS wired [JUDGMENT / MnDOT's own
+  words]:** the Approximate Right of Way Line "visually displays
+  an approximation of MnDOT's highway right of way" and "is used
+  as a general index to identify official documents and other
+  records"; ROW maps are no longer being updated (as of 2023)
+  and do not include recent project information. These lines are
+  a planning pointer, not a boundary survey — never present them
+  as the surveyed ROW edge. Parcel - Current coverage is
+  INCOMPLETE statewide: MnDOT's parcel-mapping project is
+  ongoing (100,000+ parcels remain to be mapped per
+  solicitation 1063806, Sep 2026); absence of a parcel here
+  does not prove MnDOT holds nothing there.
 
 ## Road walk — T07 western segments + Arrowhead road pieces (added 2026-11-18, Paul)
 
@@ -771,6 +2074,97 @@ neither mileage reckoning above.
   Seg 7 (Fergus Falls urban, 30) and Seg 14 (US-10 crossing, 65).
   The Mesabi Trail bike path (surface "paved", 114.9 mi) is NOT
   road walk and is not drawn.
+- **Shoulders (T07 Leg 2; checked 2026-11-18):** no as-built
+  shoulder width is published for any of the 15 western segments.
+  MnDOT TCDS omits shoulder widths in public station views, so
+  every segment in T07's "Shoulder Width / Edge Condition" column
+  reads "Not published in MnDOT TCDS" (Segs 3 and 8 have no TCDS
+  station at all). The layer therefore carries NO numeric
+  `shoulder_width_ft` for any segment — the key is absent, not
+  zero and not a design-table value. What it carries per segment
+  is `shoulder_quality` + `shoulder_source` on the western line
+  pieces and the speed badges.
+  - **References:** T07 Leg 2 table (output Doc
+    `nct-western-roadwalk-safety-2026-11-15`,
+    `1wHqDBbJxoU-k128QWiQkUa1DNPwBTZ0eFxn4C6qNJho`); Otter Tail
+    County Safety Action Plan (adopted May 26, 2026), Table 9
+    (p. 67: curve cross-section widths 28–34 ft, countywide
+    context only) and Table 10 (pp. 73–75: systemic-risk tiers
+    and Edge Risk 2S/3 deficiencies).
+  - **Interpretation method (reproducible):** `shoulder_quality`
+    is a DIRECT COPY of the T07 table cell for the segment,
+    lightly compressed (station lists dropped; the SAP tier /
+    Edge Risk clauses kept in substance). No width is inferred,
+    estimated or derived from any other source: where the cell
+    says "Not published", the field says so. The one wording
+    change is Seg 7: the cell reads "Concrete sidewalk" and the
+    row text adds "Concrete sidewalks along ~3.64 mi in NCTA
+    GIS" — the field renders that as "Concrete sidewalk along
+    ~3.64 mi (NCTA GIS); no shoulder — walkers on sidewalk".
+    The "no shoulder" clause is a wording summary [JUDGMENT:
+    the cell does not state it in those words; the sidewalk is
+    the documented edge condition for the segment]. Per-segment
+    edge condition carried: Seg 6 (CSAH 88 HIN 6.0, Tier 3);
+    Seg 9 (CSAH 1 segments 9, 15–20, Tier 3); Seg 10 (CSAH 3
+    segments 1–3, Tier 2 with Edge Risk 2S/3); Seg 12 (CSAH 41
+    Segments 1 & 2, Tier 1 with all 4 risk factors incl. Edge
+    Risk 2S/3; CSAH 4 in Vergas HIN 6.0, Tier 3).
+  - **Checked and rejected as as-built widths:** MN Rules
+    8820.9920 design table (required widths for new
+    construction / reconstruction by projected ADT — 1 ft at
+    0–49 ADT up to 6 ft at 1,500+, 8 ft minimum for minor /
+    principal arterials over 1,500 ADT — not measurements of
+    these roads); MnDOT Bikeways map (mnbikewaysmap.org, shows
+    per-road shoulder widths but is a JS app; the statewide
+    BIKEWAY FeatureServer
+    `webgis.dot.state.mn.us/65agsf1/rest/services/sdw_trans/BIKEWAY/FeatureServer`
+    is WAF-blocked to text fetch, and the Bikeways Data Standard
+    v1.0 (Jan 2022) carries no numeric shoulder-width field —
+    "shoulder" appears only as a separation-type value);
+    MnDOT District 4 shoulder-widening prioritization study
+    (exists — the District 8 study, Sept 2021, says it was
+    modeled on the District 4 pilot — but could not be located;
+    request from MnDOT District 4); MnDOT county bikeways maps
+    (classify roads "Paved Shoulder 4' or Wider", but per-road
+    values need a visual map read, not tried here).
+  - **Benchmark (guidance, not a measurement):** FHWA Proven
+    Safety Countermeasures guidance recommends a walkable
+    shoulder of at least 4 ft (stabilized or paved) on both
+    sides of rural highways routinely used by pedestrians (5 ft
+    cited in FHWA's Walking Along Roadway research as acceptable
+    along low-volume roads). The viewer does not score segments
+    against this benchmark — there is no measured width to
+    compare.
+- **Observed speeds (checked 2026-11-18):** none published per
+  segment, so the layer carries no observed-speed field and the
+  posted / statutory speeds stand alone. MnDOT's Speed Monitoring
+  Program (57 automated stations,
+  `dot.state.mn.us/trafficeng/speed_monitoring/speed_reports.html`)
+  reports the average 85th percentile speed aggregated by roadway
+  category only (five categories: urban freeway, rural freeway,
+  rural 2-lane/2-way highway, rural divided highway non-freeway,
+  urban divided highway non-freeway) and publishes no station
+  list, so no station can be tied to a road-walk segment.
+  **Interpretation rule:** the category-average 85th percentile
+  must NOT be substituted as a segment's speed. MnDOT speed
+  studies (engineering and traffic investigations under Minn.
+  Stat. § 169.14) DO exist for CSAH 1 (Tower Road, finalizing),
+  CSAH 1 in Weetown (complete — recommends raising 50 to 55 mph),
+  CSAH 4 & CSAH 60 in Vergas (complete — recommends no change in
+  40 mph), CSAH 35 by Dead Lake (complete — no change in 55 mph),
+  CSAH 41 by East & West Silent Lake (complete — no change in
+  55 mph) and CSAH 88 (Fir Avenue, finalizing) — Otter Tail County
+  Board minutes, Jan 3, 2023 — but only the recommendations are
+  public, not the measured 85th percentile speeds; the studies
+  themselves are a records request to MnDOT District 4 / Otter
+  Tail County Highway Dept. T07 contains no observed-speed data
+  at all (no 85th percentile values, no speed-study results, no
+  "speeding" mentions). No speed study was found for the Wilkin
+  or Becker segments or for the Arrowhead road pieces.
+  **Flagged, not resolved:** the Vergas 40 mph in those minutes
+  differs from T07's "30 mph in Vergas" (Seg 12) — different
+  streets or a changed limit; do not edit the badge on this
+  alone.
 - **Crash spots (T07 Leg 3, Otter Tail SAP pp. 60–64, Table 10):**
   CSAH 88 HIN 6.0 (Seg 6) + Tier 3; CSAH 4 in Vergas HIN 6.0
   (Seg 12) + Tier 3 (CSAH 41 in the same segment is Tier 1);
@@ -781,8 +2175,18 @@ neither mileage reckoning above.
   only (Wilkin / Otter Tail / Becker). No crash analysis and no
   verified per-segment speeds exist in the packet for the ITM or
   Arrowhead road walk, so the Arrowhead pieces (14 features,
-  25.0 mi) carry the line only — no speed badge, no crash icon.
-  Wilkin/Becker segment-level pedestrian/bicycle counts could not
+  25.0 mi) carry the line only — no speed badge, no crash icon,
+  no shoulder fields. **Star of the North: nothing was added to
+  this layer.** The gap lines hold no `surface` "road" pieces in
+  the STN extent (the Arrowhead gap line starts at lon −93.66,
+  east of the STN east end), and the 3 on-road connectors on the
+  official STN line (0.74 mi) are connectors, not road-walk
+  segments. The 16.3-mi Hwy 6 road walk (Remer to Cohasset,
+  official-line on-road features lon −93.847..−93.630, lat
+  47.10..47.23) is in NO viewer layer — neither this road-walk
+  layer nor the gap line covers it — and it is Arrowhead reroute
+  / Tioga Beach EA territory, NOT Star of the North. Needs Paul's
+  decision on whether and how to add it. Wilkin/Becker segment-level pedestrian/bicycle counts could not
   be resolved in T07 either (MnCMAT2 login-restricted; MNCrash
   upstream error; TCMAC gated).
 - **Use here:** `data/roadwalk.geojson` (74 features: 56 line
@@ -790,7 +2194,100 @@ neither mileage reckoning above.
   `site/data/roadwalk.geojson` (built by
   `scripts/build_site_data.py`), three layers in the "Road walk"
   group (Road walk / Speed limits / Accident-prone areas), all OFF
-  by default and LAZY.
+  by default and LAZY. The western line pieces and the speed
+  badges carry `shoulder_quality` + `shoulder_source` (shown in
+  both popups); the Arrowhead pieces carry neither.
+
+## Street View — Google Street View at trailheads, road crossings, road-walk points (added 2026-11-13; extended 2026-11-18, Paul)
+
+- **What:** One camera marker per spot at the panorama location
+  (where the photo was taken from); the link opens aimed at the
+  trail crossing / trailhead (heading in the data). Layer OFF by
+  default, in "Around the trail". Popup shows the spot name, the
+  imagery date, what the view faces, and the Street View link
+  (plus a photosphere note where the imagery is user-contributed
+  rather than Google car coverage — the east Hwy 113 spot).
+- **History / counts:** 11 spots Nov 13, 2026 (browser check —
+  11 of 19 candidate spots had imagery; the other 8 have none) +
+  13 trailhead parking spots the same day = 24. Extended Nov 18,
+  2026 by `scripts/build_streetview_extension.py`: +6 verified
+  road-walk points from the buildout gap file = **30**. Extended
+  again Nov 18, 2026 by `scripts/wire_streetview_26.py`: +26 verified
+  points from the 41-candidate browser check
+  (`docs/street-view-41-check-2026-11-18.md`) = **56**. The 15 that
+  failed stay out, including all 7 Priority 2 Walker–Hackensack
+  crossings (no Street View coverage there at all). Headings are the
+  check's confirmed/corrected values; imagery dates are year-only
+  (the check could read only the © YYYY watermark year).
+- **References:** Google Street View imagery (dates as published
+  in each pano: Oct 2024, Sep 2024, Jun 2026, Sep 2025, Jul 2024);
+  NCTA gap lines (`site/buildout/data/gap-arrowhead.geojson`,
+  `gap-western.geojson`); T07 segment ranges and road names;
+  `site/data/access-points.geojson` (trail/road crossings).
+- **Verification method (the rule):** a point enters the layer
+  only after a browser check opens its pano URL and confirms
+  Google Street View imagery actually exists there, recording the
+  imagery date and the heading that shows the trail. The Nov 13
+  check is the precedent (11 of 19 passed). No API key exists in
+  the repo and no keyless metadata check worked (a text fetch of
+  the pano URL returns no extractable content), so the browser
+  check is the only verification — it cannot be automated from
+  this repo.
+- **The 6 wired Nov 18 (all verified True in the gap file, with
+  pano dates and notes):** MN-135 just south of Tower, MN-135
+  Wahlsten area, MN-135 at Embarrass (all on the Arrowhead
+  road-walk line, pano Jun 2026); MN-169 / E. Sheridan St, Ely
+  (east end of the Mesabi Trail, where the NCT continues east on
+  Fernberg Rd, pano Sep 2024); CR-88 southeast of Rothsay
+  (pano Sep 2025) and CR-88 at Fergus Falls (pano Jul 2024),
+  both on the western road-walk line.
+- **Interpretation method for the 6 (reproducible):** converted
+  from the gap file's schema to the main-layer schema
+  (name / faces / heading / imagery / pano_lat / pano_lon /
+  trail_lat / trail_lon / url / photosphere, plus the gap file's
+  road / why / pano_note / verified carried as provenance).
+  `trail_lat`/`trail_lon` is the nearest point on the road or
+  trail line the point sits on (0 m for all 6, measured).
+  `heading` is COMPUTED, not observed [JUDGMENT]: the bearing of
+  that line at the nearest vertex, in route-travel direction
+  (stored coordinate order, verified south-to-north on MN-135
+  and northwest-to-southeast on CR-88; flipped eastward for the
+  Ely point, where the Mesabi Trail pieces are stored in mixed
+  order). A later browser check should confirm or correct each
+  computed heading.
+- **Checked and NOT wired:** ND-4 / Fort Abercrombie (verified
+  False — no pano on the highway; nearest pano is inside the
+  historic-site grounds; the note says do not present it as a
+  road view); MN-169 Eagles Nest, US-75 at Kent, US-59 Fergus
+  Falls, MN-210 E Fergus Falls (verified, but documentary
+  safety-case viewpoints 0.6–2.2 km off the trail line, not
+  intersections or access points — they stay in the buildout
+  file only).
+- **Verification queue (unverified — do not wire until checked):**
+  41 candidates derived Nov 18 by
+  `scripts/build_streetview_extension.py`, in
+  `site/buildout/data/streetview-candidates.geojson` and
+  `docs/streetview-verification-queue-2026-11-18.md` (each with
+  a pano URL to open): 30 priority-1 road-walk segment/piece
+  ends (western Seg 1–15 boundaries and on/off points, chained
+  in mile order, plus 9 Arrowhead road-piece ends), 7
+  priority-2 ITM trail/road crossings without coverage
+  (Sixth Lake Rd, 60th St, 30th Ave, Tower Rd, and three
+  Woodtick Trl crossings, all east of the existing points),
+  4 priority-3 interior breaks in the roadwalk line pieces
+  (confirm on the map whether each is a real on/off point or a
+  data gap). Derivation: piece-endpoint clustering within
+  40 m; segments chained in T07 mile order (longitude alone
+  mislabels north–south segments such as Seg 10); dedupe
+  150 m against existing coverage (main layer + the 6 wired).
+  **Limitation:** no mid-segment road intersections could be
+  derived — `site/data/simple-roads.geojson` covers only the
+  ITM extent (lon −95.679 to −94.111), not the western
+  (−96.716 to −95.645) or Arrowhead (−93.587 to −91.756)
+  road-walk corridors, so intersections there need the roads
+  data extended first or a map read.
+- **Use here:** `site/data/streetview.geojson` (30 features),
+  layer id `streetview`, OFF by default.
 
 ## Base-map tile & image services (map v2, added 2026-11-10)
 
@@ -1076,4 +2573,11 @@ the chapter, so the base was cut.
   (Google Earth format), to be converted to GeoJSON in
   `data/segments/`. Chapter property; no external attribution.
 - Asset inventory: chapter volunteers' photographs, processed by
-  the photo pipeline described in DESIGN.md.
+  the photo pipeline described in DESIGN.md. Batch 3 (Nov 18,
+  2026): 39 photos, 38 positioned on the chopped Nov 18 track,
+  18 new pins (102 total); each photo carries a facing direction
+  (`direction_deg`, `direction_ref` "track" when inferred from
+  the GPS track's bearing, "T"/"M" when read from EXIF) — front
+  photos face the direction of travel, back photos the opposite;
+  detail photos carry no direction. See
+  `data/assets/flags-report-batch3.md`.

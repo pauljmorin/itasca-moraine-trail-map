@@ -3470,6 +3470,1076 @@
     ],
     "note": "Board end slightly raised at the bend \u2014 see maintenance list."
    }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -94.5359929,
+     47.0146527
+    ]
+   },
+   "properties": {
+    "photo": "PXL_20261118_205026396.MP.jpg",
+    "datetime": "2026:11:18 14:50:26",
+    "photographer": "PJM",
+    "type": "UN",
+    "condition": null,
+    "drive_id": null,
+    "derivative": "pjm-pxl_20261118_205026396-mp.jpg",
+    "direction_deg": 240.9,
+    "direction_ref": "track",
+    "direction_compass": "WSW",
+    "gps_source": "gpx",
+    "gpx_offset_s": 5.0,
+    "gpx_file": "Nov_18,_2026,_2_47_32_PM-chopped.gpx",
+    "serial": null,
+    "sign_kind": null,
+    "chainage_mi": 56.47,
+    "section": "Chip-4",
+    "snap_m": 15.08,
+    "photos": [
+     {
+      "photo": "PXL_20261118_205026396.MP.jpg",
+      "derivative": "pjm-pxl_20261118_205026396-mp.jpg",
+      "datetime": "2026:11:18 14:50:26",
+      "drive_id": null,
+      "role": "front",
+      "photographer": "PJM",
+      "lat": 47.0146527,
+      "lon": -94.5359929,
+      "direction_deg": 240.9,
+      "direction_ref": "track",
+      "direction_compass": "WSW"
+     },
+     {
+      "photo": "PXL_20261118_205032380.MP.jpg",
+      "derivative": "pjm-pxl_20261118_205032380-mp.jpg",
+      "datetime": "2026:11:18 14:50:32",
+      "drive_id": null,
+      "role": "back",
+      "photographer": "PJM",
+      "lat": 47.0146438,
+      "lon": -94.5360164,
+      "direction_deg": 60.9,
+      "direction_ref": "track",
+      "direction_compass": "ENE"
+     },
+     {
+      "photo": "PXL_20261118_205035527.MP.jpg",
+      "derivative": "pjm-pxl_20261118_205035527-mp.jpg",
+      "datetime": "2026:11:18 14:50:35",
+      "drive_id": null,
+      "role": "detail",
+      "photographer": "PJM",
+      "lat": 47.0146394,
+      "lon": -94.5360281,
+      "direction_deg": null,
+      "direction_ref": null,
+      "direction_compass": null
+     }
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -94.5360515,
+     47.0146305
+    ]
+   },
+   "properties": {
+    "photo": "PXL_20261118_205041067.MP.jpg",
+    "datetime": "2026:11:18 14:50:41",
+    "photographer": "PJM",
+    "type": "UN",
+    "condition": null,
+    "drive_id": null,
+    "derivative": "pjm-pxl_20261118_205041067-mp.jpg",
+    "direction_deg": 240.9,
+    "direction_ref": "track",
+    "direction_compass": "WSW",
+    "gps_source": "gpx",
+    "gpx_offset_s": 10.0,
+    "gpx_file": "Nov_18,_2026,_2_47_32_PM-chopped.gpx",
+    "serial": null,
+    "sign_kind": null,
+    "chainage_mi": 56.47,
+    "section": "Chip-4",
+    "snap_m": 13.16,
+    "photos": [
+     {
+      "photo": "PXL_20261118_205041067.MP.jpg",
+      "derivative": "pjm-pxl_20261118_205041067-mp.jpg",
+      "datetime": "2026:11:18 14:50:41",
+      "drive_id": null,
+      "role": "front",
+      "photographer": "PJM",
+      "lat": 47.0146305,
+      "lon": -94.5360515,
+      "direction_deg": 240.9,
+      "direction_ref": "track",
+      "direction_compass": "WSW"
+     }
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -94.5411713,
+     47.0128492
+    ]
+   },
+   "properties": {
+    "photo": "PXL_20261118_205713911.MP.jpg",
+    "datetime": "2026:11:18 14:57:13",
+    "photographer": "PJM",
+    "type": "UN",
+    "condition": null,
+    "drive_id": null,
+    "derivative": "pjm-pxl_20261118_205713911-mp.jpg",
+    "direction_deg": 261.3,
+    "direction_ref": "track",
+    "direction_compass": "W",
+    "gps_source": "gpx",
+    "gpx_offset_s": 3.0,
+    "gpx_file": "Nov_18,_2026,_2_47_32_PM-chopped.gpx",
+    "serial": null,
+    "sign_kind": null,
+    "chainage_mi": 56.17,
+    "section": "Chip-4",
+    "snap_m": 4.83,
+    "photos": [
+     {
+      "photo": "PXL_20261118_205713911.MP.jpg",
+      "derivative": "pjm-pxl_20261118_205713911-mp.jpg",
+      "datetime": "2026:11:18 14:57:13",
+      "drive_id": null,
+      "role": "front",
+      "photographer": "PJM",
+      "lat": 47.0128492,
+      "lon": -94.5411713,
+      "direction_deg": 261.3,
+      "direction_ref": "track",
+      "direction_compass": "W"
+     }
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -94.5412375,
+     47.0128423
+    ]
+   },
+   "properties": {
+    "photo": "PXL_20261118_205723136.MP.jpg",
+    "datetime": "2026:11:18 14:57:23",
+    "photographer": "PJM",
+    "type": "UN",
+    "condition": null,
+    "drive_id": null,
+    "derivative": "pjm-pxl_20261118_205723136-mp.jpg",
+    "direction_deg": 261.3,
+    "direction_ref": "track",
+    "direction_compass": "W",
+    "gps_source": "gpx",
+    "gpx_offset_s": 6.0,
+    "gpx_file": "Nov_18,_2026,_2_47_32_PM-chopped.gpx",
+    "serial": null,
+    "sign_kind": null,
+    "chainage_mi": 56.17,
+    "section": "Chip-4",
+    "snap_m": 1.08,
+    "photos": [
+     {
+      "photo": "PXL_20261118_205723136.MP.jpg",
+      "derivative": "pjm-pxl_20261118_205723136-mp.jpg",
+      "datetime": "2026:11:18 14:57:23",
+      "drive_id": null,
+      "role": "front",
+      "photographer": "PJM",
+      "lat": 47.0128423,
+      "lon": -94.5412375,
+      "direction_deg": 261.3,
+      "direction_ref": "track",
+      "direction_compass": "W"
+     },
+     {
+      "photo": "PXL_20261118_205726388.jpg",
+      "derivative": "pjm-pxl_20261118_205726388.jpg",
+      "datetime": "2026:11:18 14:57:26",
+      "drive_id": null,
+      "role": "back",
+      "photographer": "PJM",
+      "lat": 47.0128402,
+      "lon": -94.5412573,
+      "direction_deg": 81.3,
+      "direction_ref": "track",
+      "direction_compass": "E"
+     }
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -94.5431591,
+     47.014516
+    ]
+   },
+   "properties": {
+    "photo": "PXL_20261118_210125408.MP.jpg",
+    "datetime": "2026:11:18 15:01:25",
+    "photographer": "PJM",
+    "type": "UN",
+    "condition": null,
+    "drive_id": null,
+    "derivative": "pjm-pxl_20261118_210125408-mp.jpg",
+    "direction_deg": 27.0,
+    "direction_ref": "track",
+    "direction_compass": "NNE",
+    "gps_source": "gpx",
+    "gpx_offset_s": 6.0,
+    "gpx_file": "Nov_18,_2026,_2_47_32_PM-chopped.gpx",
+    "serial": null,
+    "sign_kind": null,
+    "chainage_mi": 55.97,
+    "section": "Chip-4",
+    "snap_m": 2.32,
+    "photos": [
+     {
+      "photo": "PXL_20261118_210125408.MP.jpg",
+      "derivative": "pjm-pxl_20261118_210125408-mp.jpg",
+      "datetime": "2026:11:18 15:01:25",
+      "drive_id": null,
+      "role": "front",
+      "photographer": "PJM",
+      "lat": 47.014516,
+      "lon": -94.5431591,
+      "direction_deg": 27.0,
+      "direction_ref": "track",
+      "direction_compass": "NNE"
+     },
+     {
+      "photo": "PXL_20261118_210126134.jpg",
+      "derivative": "pjm-pxl_20261118_210126134.jpg",
+      "datetime": "2026:11:18 15:01:26",
+      "drive_id": null,
+      "role": "back",
+      "photographer": "PJM",
+      "lat": 47.0145193,
+      "lon": -94.5431566,
+      "direction_deg": 207.0,
+      "direction_ref": "track",
+      "direction_compass": "SSW"
+     }
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -94.5399301,
+     47.0240235
+    ]
+   },
+   "properties": {
+    "photo": "PXL_20261118_211955392.MP.jpg",
+    "datetime": "2026:11:18 15:19:55",
+    "photographer": "PJM",
+    "type": "UN",
+    "condition": null,
+    "drive_id": null,
+    "derivative": "pjm-pxl_20261118_211955392-mp.jpg",
+    "direction_deg": 2.7,
+    "direction_ref": "track",
+    "direction_compass": "N",
+    "gps_source": "gpx",
+    "gpx_offset_s": 8.0,
+    "gpx_file": "Nov_18,_2026,_2_47_32_PM-chopped.gpx",
+    "serial": null,
+    "sign_kind": null,
+    "chainage_mi": 55.19,
+    "section": "Chip-4",
+    "snap_m": 3.35,
+    "photos": [
+     {
+      "photo": "PXL_20261118_211955392.MP.jpg",
+      "derivative": "pjm-pxl_20261118_211955392-mp.jpg",
+      "datetime": "2026:11:18 15:19:55",
+      "drive_id": null,
+      "role": "front",
+      "photographer": "PJM",
+      "lat": 47.0240235,
+      "lon": -94.5399301,
+      "direction_deg": 2.7,
+      "direction_ref": "track",
+      "direction_compass": "N"
+     },
+     {
+      "photo": "PXL_20261118_212001297.jpg",
+      "derivative": "pjm-pxl_20261118_212001297.jpg",
+      "datetime": "2026:11:18 15:20:01",
+      "drive_id": null,
+      "role": "back",
+      "photographer": "PJM",
+      "lat": 47.0240464,
+      "lon": -94.5399285,
+      "direction_deg": 182.7,
+      "direction_ref": "track",
+      "direction_compass": "S"
+     }
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -94.5399868,
+     47.0240759
+    ]
+   },
+   "properties": {
+    "photo": "PXL_20261118_212021627.jpg",
+    "datetime": "2026:11:18 15:20:21",
+    "photographer": "PJM",
+    "type": "UN",
+    "condition": null,
+    "drive_id": null,
+    "derivative": "pjm-pxl_20261118_212021627.jpg",
+    "direction_deg": 258.0,
+    "direction_ref": "track",
+    "direction_compass": "WSW",
+    "gps_source": "gpx",
+    "gpx_offset_s": 10.0,
+    "gpx_file": "Nov_18,_2026,_2_47_32_PM-chopped.gpx",
+    "serial": null,
+    "sign_kind": null,
+    "chainage_mi": 55.19,
+    "section": "Chip-4",
+    "snap_m": 0.94,
+    "photos": [
+     {
+      "photo": "PXL_20261118_212021627.jpg",
+      "derivative": "pjm-pxl_20261118_212021627.jpg",
+      "datetime": "2026:11:18 15:20:21",
+      "drive_id": null,
+      "role": "front",
+      "photographer": "PJM",
+      "lat": 47.0240759,
+      "lon": -94.5399868,
+      "direction_deg": 258.0,
+      "direction_ref": "track",
+      "direction_compass": "WSW"
+     }
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -94.5403239,
+     47.0240479
+    ]
+   },
+   "properties": {
+    "photo": "PXL_20261118_212058590.jpg",
+    "datetime": "2026:11:18 15:20:58",
+    "photographer": "PJM",
+    "type": "UN",
+    "condition": null,
+    "drive_id": null,
+    "derivative": "pjm-pxl_20261118_212058590.jpg",
+    "direction_deg": 65.0,
+    "direction_ref": "track",
+    "direction_compass": "ENE",
+    "gps_source": "gpx",
+    "gpx_offset_s": 9.0,
+    "gpx_file": "Nov_18,_2026,_2_47_32_PM-chopped.gpx",
+    "serial": null,
+    "sign_kind": null,
+    "chainage_mi": 55.19,
+    "section": "Chip-4",
+    "snap_m": 26.18,
+    "photos": [
+     {
+      "photo": "PXL_20261118_212058590.jpg",
+      "derivative": "pjm-pxl_20261118_212058590.jpg",
+      "datetime": "2026:11:18 15:20:58",
+      "drive_id": null,
+      "role": "front",
+      "photographer": "PJM",
+      "lat": 47.0240479,
+      "lon": -94.5403239,
+      "direction_deg": 65.0,
+      "direction_ref": "track",
+      "direction_compass": "ENE"
+     },
+     {
+      "photo": "PXL_20261118_212114251.MP.jpg",
+      "derivative": "pjm-pxl_20261118_212114251-mp.jpg",
+      "datetime": "2026:11:18 15:21:14",
+      "drive_id": null,
+      "role": "back",
+      "photographer": "PJM",
+      "lat": 47.0240662,
+      "lon": -94.5402664,
+      "direction_deg": 245.0,
+      "direction_ref": "track",
+      "direction_compass": "WSW"
+     }
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -94.5397741,
+     47.0240849
+    ]
+   },
+   "properties": {
+    "photo": "PXL_20261118_212151064.MP.jpg",
+    "datetime": "2026:11:18 15:21:51",
+    "photographer": "PJM",
+    "type": "UN",
+    "condition": null,
+    "drive_id": null,
+    "derivative": "pjm-pxl_20261118_212151064-mp.jpg",
+    "direction_deg": 60.2,
+    "direction_ref": "track",
+    "direction_compass": "ENE",
+    "gps_source": "gpx",
+    "gpx_offset_s": 4.0,
+    "gpx_file": "Nov_18,_2026,_2_47_32_PM-chopped.gpx",
+    "serial": null,
+    "sign_kind": null,
+    "chainage_mi": 55.18,
+    "section": "Chip-4",
+    "snap_m": 3.44,
+    "photos": [
+     {
+      "photo": "PXL_20261118_212151064.MP.jpg",
+      "derivative": "pjm-pxl_20261118_212151064-mp.jpg",
+      "datetime": "2026:11:18 15:21:51",
+      "drive_id": null,
+      "role": "front",
+      "photographer": "PJM",
+      "lat": 47.0240849,
+      "lon": -94.5397741,
+      "direction_deg": 60.2,
+      "direction_ref": "track",
+      "direction_compass": "ENE"
+     },
+     {
+      "photo": "PXL_20261118_212156937.MP.jpg",
+      "derivative": "pjm-pxl_20261118_212156937-mp.jpg",
+      "datetime": "2026:11:18 15:21:56",
+      "drive_id": null,
+      "role": "back",
+      "photographer": "PJM",
+      "lat": 47.024095,
+      "lon": -94.5397485,
+      "direction_deg": 240.2,
+      "direction_ref": "track",
+      "direction_compass": "WSW"
+     },
+     {
+      "photo": "PXL_20261118_212201475.MP.jpg",
+      "derivative": "pjm-pxl_20261118_212201475-mp.jpg",
+      "datetime": "2026:11:18 15:22:01",
+      "drive_id": null,
+      "role": "detail",
+      "photographer": "PJM",
+      "lat": 47.024105,
+      "lon": -94.5397228,
+      "direction_deg": null,
+      "direction_ref": null,
+      "direction_compass": null
+     }
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -94.5398081,
+     47.0244259
+    ]
+   },
+   "properties": {
+    "photo": "PXL_20261118_212234802.jpg",
+    "datetime": "2026:11:18 15:22:34",
+    "photographer": "PJM",
+    "type": "UN",
+    "condition": null,
+    "drive_id": null,
+    "derivative": "pjm-pxl_20261118_212234802.jpg",
+    "direction_deg": 327.2,
+    "direction_ref": "track",
+    "direction_compass": "NNW",
+    "gps_source": "gpx",
+    "gpx_offset_s": 5.0,
+    "gpx_file": "Nov_18,_2026,_2_47_32_PM-chopped.gpx",
+    "serial": null,
+    "sign_kind": null,
+    "chainage_mi": 55.15,
+    "section": "Chip-4",
+    "snap_m": 2.7,
+    "photos": [
+     {
+      "photo": "PXL_20261118_212234802.jpg",
+      "derivative": "pjm-pxl_20261118_212234802.jpg",
+      "datetime": "2026:11:18 15:22:34",
+      "drive_id": null,
+      "role": "front",
+      "photographer": "PJM",
+      "lat": 47.0244259,
+      "lon": -94.5398081,
+      "direction_deg": 327.2,
+      "direction_ref": "track",
+      "direction_compass": "NNW"
+     }
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -94.5461785,
+     47.0308224
+    ]
+   },
+   "properties": {
+    "photo": "PXL_20261118_213637385.MP.jpg",
+    "datetime": "2026:11:18 15:36:37",
+    "photographer": "PJM",
+    "type": "UN",
+    "condition": null,
+    "drive_id": null,
+    "derivative": "pjm-pxl_20261118_213637385-mp.jpg",
+    "direction_deg": 278.2,
+    "direction_ref": "track",
+    "direction_compass": "W",
+    "gps_source": "gpx",
+    "gpx_offset_s": 10.0,
+    "gpx_file": "Nov_18,_2026,_2_47_32_PM-chopped.gpx",
+    "serial": null,
+    "sign_kind": null,
+    "chainage_mi": 54.46,
+    "section": "Chip-4",
+    "snap_m": 17.67,
+    "photos": [
+     {
+      "photo": "PXL_20261118_213637385.MP.jpg",
+      "derivative": "pjm-pxl_20261118_213637385-mp.jpg",
+      "datetime": "2026:11:18 15:36:37",
+      "drive_id": null,
+      "role": "front",
+      "photographer": "PJM",
+      "lat": 47.0308224,
+      "lon": -94.5461785,
+      "direction_deg": 278.2,
+      "direction_ref": "track",
+      "direction_compass": "W"
+     },
+     {
+      "photo": "PXL_20261118_213646643.MP.jpg",
+      "derivative": "pjm-pxl_20261118_213646643-mp.jpg",
+      "datetime": "2026:11:18 15:36:46",
+      "drive_id": null,
+      "role": "back",
+      "photographer": "PJM",
+      "lat": 47.0308277,
+      "lon": -94.5462328,
+      "direction_deg": 98.2,
+      "direction_ref": "track",
+      "direction_compass": "E"
+     }
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -94.5464171,
+     47.0312727
+    ]
+   },
+   "properties": {
+    "photo": "PXL_20261118_213742891.jpg",
+    "datetime": "2026:11:18 15:37:42",
+    "photographer": "PJM",
+    "type": "UN",
+    "condition": null,
+    "drive_id": null,
+    "derivative": "pjm-pxl_20261118_213742891.jpg",
+    "direction_deg": 9.0,
+    "direction_ref": "track",
+    "direction_compass": "N",
+    "gps_source": "gpx",
+    "gpx_offset_s": 6.0,
+    "gpx_file": "Nov_18,_2026,_2_47_32_PM-chopped.gpx",
+    "serial": null,
+    "sign_kind": null,
+    "chainage_mi": 54.42,
+    "section": "Chip-4",
+    "snap_m": 32.8,
+    "photos": [
+     {
+      "photo": "PXL_20261118_213742891.jpg",
+      "derivative": "pjm-pxl_20261118_213742891.jpg",
+      "datetime": "2026:11:18 15:37:42",
+      "drive_id": null,
+      "role": "front",
+      "photographer": "PJM",
+      "lat": 47.0312727,
+      "lon": -94.5464171,
+      "direction_deg": 9.0,
+      "direction_ref": "track",
+      "direction_compass": "N"
+     },
+     {
+      "photo": "PXL_20261118_213747951.jpg",
+      "derivative": "pjm-pxl_20261118_213747951.jpg",
+      "datetime": "2026:11:18 15:37:47",
+      "drive_id": null,
+      "role": "back",
+      "photographer": "PJM",
+      "lat": 47.0312897,
+      "lon": -94.5464131,
+      "direction_deg": 189.0,
+      "direction_ref": "track",
+      "direction_compass": "S"
+     },
+     {
+      "photo": "PXL_20261118_213753891.jpg",
+      "derivative": "pjm-pxl_20261118_213753891.jpg",
+      "datetime": "2026:11:18 15:37:53",
+      "drive_id": null,
+      "role": "detail",
+      "photographer": "PJM",
+      "lat": 47.03131,
+      "lon": -94.5464084,
+      "direction_deg": null,
+      "direction_ref": null,
+      "direction_compass": null
+     }
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -94.5463866,
+     47.0313318
+    ]
+   },
+   "properties": {
+    "photo": "PXL_20261118_213807230.jpg",
+    "datetime": "2026:11:18 15:38:07",
+    "photographer": "PJM",
+    "type": "UN",
+    "condition": null,
+    "drive_id": null,
+    "derivative": "pjm-pxl_20261118_213807230.jpg",
+    "direction_deg": 99.7,
+    "direction_ref": "track",
+    "direction_compass": "E",
+    "gps_source": "gpx",
+    "gpx_offset_s": 7.0,
+    "gpx_file": "Nov_18,_2026,_2_47_32_PM-chopped.gpx",
+    "serial": null,
+    "sign_kind": null,
+    "chainage_mi": 54.41,
+    "section": "Chip-4",
+    "snap_m": 26.75,
+    "photos": [
+     {
+      "photo": "PXL_20261118_213807230.jpg",
+      "derivative": "pjm-pxl_20261118_213807230.jpg",
+      "datetime": "2026:11:18 15:38:07",
+      "drive_id": null,
+      "role": "front",
+      "photographer": "PJM",
+      "lat": 47.0313318,
+      "lon": -94.5463866,
+      "direction_deg": 99.7,
+      "direction_ref": "track",
+      "direction_compass": "E"
+     },
+     {
+      "photo": "PXL_20261118_213812076.jpg",
+      "derivative": "pjm-pxl_20261118_213812076.jpg",
+      "datetime": "2026:11:18 15:38:12",
+      "drive_id": null,
+      "role": "back",
+      "photographer": "PJM",
+      "lat": 47.0313304,
+      "lon": -94.546375,
+      "direction_deg": 279.7,
+      "direction_ref": "track",
+      "direction_compass": "W"
+     },
+     {
+      "photo": "PXL_20261118_213823991.jpg",
+      "derivative": "pjm-pxl_20261118_213823991.jpg",
+      "datetime": "2026:11:18 15:38:23",
+      "drive_id": null,
+      "role": "detail",
+      "photographer": "PJM",
+      "lat": 47.0313274,
+      "lon": -94.5463495,
+      "direction_deg": null,
+      "direction_ref": null,
+      "direction_compass": null
+     },
+     {
+      "photo": "PXL_20261118_213835377.jpg",
+      "derivative": "pjm-pxl_20261118_213835377.jpg",
+      "datetime": "2026:11:18 15:38:35",
+      "drive_id": null,
+      "role": "detail",
+      "photographer": "PJM",
+      "lat": 47.0313242,
+      "lon": -94.5463216,
+      "direction_deg": null,
+      "direction_ref": null,
+      "direction_compass": null
+     }
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -94.5463123,
+     47.0313231
+    ]
+   },
+   "properties": {
+    "photo": "PXL_20261118_213839852.jpg",
+    "datetime": "2026:11:18 15:38:39",
+    "photographer": "PJM",
+    "type": "UN",
+    "condition": null,
+    "drive_id": null,
+    "derivative": "pjm-pxl_20261118_213839852.jpg",
+    "direction_deg": 99.7,
+    "direction_ref": "track",
+    "direction_compass": "E",
+    "gps_source": "gpx",
+    "gpx_offset_s": 13.0,
+    "gpx_file": "Nov_18,_2026,_2_47_32_PM-chopped.gpx",
+    "serial": null,
+    "sign_kind": null,
+    "chainage_mi": 54.42,
+    "section": "Chip-4",
+    "snap_m": 23.27,
+    "photos": [
+     {
+      "photo": "PXL_20261118_213839852.jpg",
+      "derivative": "pjm-pxl_20261118_213839852.jpg",
+      "datetime": "2026:11:18 15:38:39",
+      "drive_id": null,
+      "role": "front",
+      "photographer": "PJM",
+      "lat": 47.0313231,
+      "lon": -94.5463123,
+      "direction_deg": 99.7,
+      "direction_ref": "track",
+      "direction_compass": "E"
+     },
+     {
+      "photo": "PXL_20261118_213845460.jpg",
+      "derivative": "pjm-pxl_20261118_213845460.jpg",
+      "datetime": "2026:11:18 15:38:45",
+      "drive_id": null,
+      "role": "back",
+      "photographer": "PJM",
+      "lat": 47.0313214,
+      "lon": -94.5462984,
+      "direction_deg": 279.7,
+      "direction_ref": "track",
+      "direction_compass": "W"
+     },
+     {
+      "photo": "PXL_20261118_213849432.jpg",
+      "derivative": "pjm-pxl_20261118_213849432.jpg",
+      "datetime": "2026:11:18 15:38:49",
+      "drive_id": null,
+      "role": "detail",
+      "photographer": "PJM",
+      "lat": 47.0313204,
+      "lon": -94.5462891,
+      "direction_deg": null,
+      "direction_ref": null,
+      "direction_compass": null
+     },
+     {
+      "photo": "PXL_20261118_213904730.jpg",
+      "derivative": "pjm-pxl_20261118_213904730.jpg",
+      "datetime": "2026:11:18 15:39:04",
+      "drive_id": null,
+      "role": "detail",
+      "photographer": "PJM",
+      "lat": 47.0313076,
+      "lon": -94.5462966,
+      "direction_deg": null,
+      "direction_ref": null,
+      "direction_compass": null
+     },
+     {
+      "photo": "PXL_20261118_213917911.MP.jpg",
+      "derivative": "pjm-pxl_20261118_213917911-mp.jpg",
+      "datetime": "2026:11:18 15:39:17",
+      "drive_id": null,
+      "role": "detail",
+      "photographer": "PJM",
+      "lat": 47.0312946,
+      "lon": -94.5463123,
+      "direction_deg": null,
+      "direction_ref": null,
+      "direction_compass": null
+     },
+     {
+      "photo": "PXL_20261118_213925652.jpg",
+      "derivative": "pjm-pxl_20261118_213925652.jpg",
+      "datetime": "2026:11:18 15:39:25",
+      "drive_id": null,
+      "role": "detail",
+      "photographer": "PJM",
+      "lat": 47.0312867,
+      "lon": -94.546322,
+      "direction_deg": null,
+      "direction_ref": null,
+      "direction_compass": null
+     }
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -94.5463402,
+     47.0312717
+    ]
+   },
+   "properties": {
+    "photo": "PXL_20261118_213940821.jpg",
+    "datetime": "2026:11:18 15:39:40",
+    "photographer": "PJM",
+    "type": "UN",
+    "condition": null,
+    "drive_id": null,
+    "derivative": "pjm-pxl_20261118_213940821.jpg",
+    "direction_deg": 219.6,
+    "direction_ref": "track",
+    "direction_compass": "SW",
+    "gps_source": "gpx",
+    "gpx_offset_s": 28.0,
+    "gpx_file": "Nov_18,_2026,_2_47_32_PM-chopped.gpx",
+    "serial": null,
+    "sign_kind": null,
+    "chainage_mi": 54.42,
+    "section": "Chip-4",
+    "snap_m": 27.35,
+    "photos": [
+     {
+      "photo": "PXL_20261118_213940821.jpg",
+      "derivative": "pjm-pxl_20261118_213940821.jpg",
+      "datetime": "2026:11:18 15:39:40",
+      "drive_id": null,
+      "role": "front",
+      "photographer": "PJM",
+      "lat": 47.0312717,
+      "lon": -94.5463402,
+      "direction_deg": 219.6,
+      "direction_ref": "track",
+      "direction_compass": "SW"
+     }
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -94.5463683,
+     47.0312144
+    ]
+   },
+   "properties": {
+    "photo": "PXL_20261118_214014094.MP.jpg",
+    "datetime": "2026:11:18 15:40:14",
+    "photographer": "PJM",
+    "type": "UN",
+    "condition": null,
+    "drive_id": null,
+    "derivative": "pjm-pxl_20261118_214014094-mp.jpg",
+    "direction_deg": 172.4,
+    "direction_ref": "track",
+    "direction_compass": "S",
+    "gps_source": "gpx",
+    "gpx_offset_s": 6.0,
+    "gpx_file": "Nov_18,_2026,_2_47_32_PM-chopped.gpx",
+    "serial": null,
+    "sign_kind": null,
+    "chainage_mi": 54.43,
+    "section": "Chip-4",
+    "snap_m": 31.44,
+    "photos": [
+     {
+      "photo": "PXL_20261118_214014094.MP.jpg",
+      "derivative": "pjm-pxl_20261118_214014094-mp.jpg",
+      "datetime": "2026:11:18 15:40:14",
+      "drive_id": null,
+      "role": "front",
+      "photographer": "PJM",
+      "lat": 47.0312144,
+      "lon": -94.5463683,
+      "direction_deg": 172.4,
+      "direction_ref": "track",
+      "direction_compass": "S"
+     },
+     {
+      "photo": "PXL_20261118_214020654.MP.jpg",
+      "derivative": "pjm-pxl_20261118_214020654-mp.jpg",
+      "datetime": "2026:11:18 15:40:20",
+      "drive_id": null,
+      "role": "back",
+      "photographer": "PJM",
+      "lat": 47.031185,
+      "lon": -94.5463625,
+      "direction_deg": 352.4,
+      "direction_ref": "track",
+      "direction_compass": "N"
+     }
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -94.5461939,
+     47.0306355
+    ]
+   },
+   "properties": {
+    "photo": "PXL_20261118_214121010.jpg",
+    "datetime": "2026:11:18 15:41:21",
+    "photographer": "PJM",
+    "type": "UN",
+    "condition": null,
+    "drive_id": null,
+    "derivative": "pjm-pxl_20261118_214121010.jpg",
+    "direction_deg": 344.9,
+    "direction_ref": "track",
+    "direction_compass": "NNW",
+    "gps_source": "gpx",
+    "gpx_offset_s": 5.0,
+    "gpx_file": "Nov_18,_2026,_2_47_32_PM-chopped.gpx",
+    "serial": null,
+    "sign_kind": null,
+    "chainage_mi": 54.46,
+    "section": "Chip-4",
+    "snap_m": 28.27,
+    "photos": [
+     {
+      "photo": "PXL_20261118_214121010.jpg",
+      "derivative": "pjm-pxl_20261118_214121010.jpg",
+      "datetime": "2026:11:18 15:41:21",
+      "drive_id": null,
+      "role": "front",
+      "photographer": "PJM",
+      "lat": 47.0306355,
+      "lon": -94.5461939,
+      "direction_deg": 344.9,
+      "direction_ref": "track",
+      "direction_compass": "NNW"
+     }
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -94.5432878,
+     47.02797
+    ]
+   },
+   "properties": {
+    "photo": "PXL_20261118_214753308.jpg",
+    "datetime": "2026:11:18 15:47:53",
+    "photographer": "PJM",
+    "type": "UN",
+    "condition": null,
+    "drive_id": null,
+    "derivative": "pjm-pxl_20261118_214753308.jpg",
+    "direction_deg": 53.4,
+    "direction_ref": "track",
+    "direction_compass": "NE",
+    "gps_source": "gpx",
+    "gpx_offset_s": 5.0,
+    "gpx_file": "Nov_18,_2026,_2_47_32_PM-chopped.gpx",
+    "serial": null,
+    "sign_kind": null,
+    "chainage_mi": 54.74,
+    "section": "Chip-4",
+    "snap_m": 5.88,
+    "photos": [
+     {
+      "photo": "PXL_20261118_214753308.jpg",
+      "derivative": "pjm-pxl_20261118_214753308.jpg",
+      "datetime": "2026:11:18 15:47:53",
+      "drive_id": null,
+      "role": "front",
+      "photographer": "PJM",
+      "lat": 47.02797,
+      "lon": -94.5432878,
+      "direction_deg": 53.4,
+      "direction_ref": "track",
+      "direction_compass": "NE"
+     }
+    ]
+   }
   }
  ]
 }

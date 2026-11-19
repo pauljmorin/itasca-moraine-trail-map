@@ -3,7 +3,9 @@
 
 Sources (see config/chapter.json and SOURCES.md):
   * "Parcels, Compiled from Opt-In Open Data Counties, Minnesota" -
-    MnGeo feature service (layer "Plan Parcels Open"). Covers Becker,
+    MnGeo feature service (layer 0, "Open Parcels In Minnesota";
+    layer numbers flipped in the Nov 9, 2026 refresh — was layer 1;
+    verified live 2026-11-13). Covers Becker,
     Cass and Clearwater of the counties the chapter's trail crosses.
   * Hubbard County is NOT in the state compilation (gac_open_approval
     is false there); its parcels come from the county's own open-data

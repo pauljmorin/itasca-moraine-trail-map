@@ -1,0 +1,110 @@
+{
+ "type": "FeatureCollection",
+ "metadata": {
+  "dataset": "NCTA public camping waypoints for the Star of the North trail, kept where within 2 km of the STN line",
+  "source_service": "https://services2.arcgis.com/UfGVyqUm4GHa2zrj/arcgis/rest/services/nct_public/FeatureServer",
+  "source_layer_id": 1,
+  "source_layer_name": "Point Data - Public",
+  "pulled_utc_date": "2026-11-18",
+  "extent_wgs84": {
+   "xmin": -94.3,
+   "ymin": 46.97,
+   "xmax": -93.79,
+   "ymax": 47.18
+  },
+  "clip_method": "Envelope selection (object-id fetch, chunk-verified); kept Camping points within 2.0 km of the Star of the North line (data/segments/trail-stn.geojson)",
+  "feature_count": 4,
+  "counts_by_chapter": {
+   "null": 4
+  },
+  "excluded_camping": [
+   {
+    "name": "Hazel Lake Campsite",
+    "coordinates": [
+     -94.287346,
+     46.998735
+    ],
+    "dist_trail_km": 7.57,
+    "reason": "beyond 2 km from the Star of the North line"
+   }
+  ]
+ },
+ "features": [
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -93.934142,
+     47.13348
+    ]
+   },
+   "properties": {
+    "name": "Campsite",
+    "type": "Camping",
+    "subtype": null,
+    "owner": null,
+    "description": null,
+    "chapter": null,
+    "dist_trail_km": 0.08
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -94.184333,
+     47.045166
+    ]
+   },
+   "properties": {
+    "name": "Crown Lake Campsite",
+    "type": "Camping",
+    "subtype": null,
+    "owner": null,
+    "description": null,
+    "chapter": null,
+    "dist_trail_km": 0.04
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -94.072106,
+     47.04893
+    ]
+   },
+   "properties": {
+    "name": "Mabel Lake National Forest Campground",
+    "type": "Camping",
+    "subtype": null,
+    "owner": null,
+    "description": null,
+    "chapter": null,
+    "dist_trail_km": 1.84
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -94.046567,
+     47.090395
+    ]
+   },
+   "properties": {
+    "name": "Old Pine Campsite",
+    "type": "Camping",
+    "subtype": null,
+    "owner": null,
+    "description": null,
+    "chapter": null,
+    "dist_trail_km": 0.07
+   }
+  }
+ ]
+}

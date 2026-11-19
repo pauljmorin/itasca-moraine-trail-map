@@ -1,0 +1,3205 @@
+{
+ "type": "FeatureCollection",
+ "features": [
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -93.61124444444444,
+     47.23553888888889
+    ]
+   },
+   "properties": {
+    "bridge_number": "31552",
+    "facility_carried": "CSAH 63",
+    "features_crossed": "POKEGAMA LKS OUTLET",
+    "location": "0.5 MI E OF JCT CSAH 62",
+    "county": "Itasca",
+    "county_code": "061",
+    "district": "01",
+    "owner": "County Highway Agency",
+    "owner_code": "02",
+    "maintenance": "County Highway Agency",
+    "maintenance_code": "02",
+    "year_built": 2005,
+    "year_reconstructed": null,
+    "structure_len_m": 49.4,
+    "deck_width_m": 20.8,
+    "sidewalk_left_m": 0.0,
+    "sidewalk_right_m": 3.7,
+    "service_on": "Highway-pedestrian",
+    "service_on_code": "5",
+    "service_under": "Waterway",
+    "open_closed": "Open, no restriction",
+    "open_closed_code": "A",
+    "structure_kind": "Prestressed concrete",
+    "structure_type": "02",
+    "tier": 1,
+    "dist_trail_km": 0.0,
+    "nbi_records": 1,
+    "source": "FHWA NBI 2025"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -93.42775555555556,
+     47.289825
+    ]
+   },
+   "properties": {
+    "bridge_number": "5293",
+    "facility_carried": "M 30",
+    "features_crossed": "MESABI TRAIL",
+    "location": "IN COLERAINE",
+    "county": "Itasca",
+    "county_code": "061",
+    "district": "01",
+    "owner": "City or Municipal Highway Agency",
+    "owner_code": "04",
+    "maintenance": "City or Municipal Highway Agency",
+    "maintenance_code": "04",
+    "year_built": 1918,
+    "year_reconstructed": null,
+    "structure_len_m": 9.7,
+    "deck_width_m": 9.8,
+    "sidewalk_left_m": 0.9,
+    "sidewalk_right_m": 1.5,
+    "service_on": "Highway-pedestrian",
+    "service_on_code": "5",
+    "service_under": "Pedestrian-bicycle",
+    "open_closed": "Posted for load",
+    "open_closed_code": "P",
+    "structure_kind": "Steel",
+    "structure_type": "02",
+    "tier": 1,
+    "dist_trail_km": 0.0,
+    "nbi_records": 1,
+    "source": "FHWA NBI 2025"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -92.44146666666667,
+     47.48204722222222
+    ]
+   },
+   "properties": {
+    "bridge_number": "69657",
+    "facility_carried": "LOC 3008",
+    "features_crossed": "CN RAILROAD",
+    "location": "IN GILBERT",
+    "county": "St. Louis",
+    "county_code": "137",
+    "district": "01",
+    "owner": "State Park, Forest, or Reservation Agency",
+    "owner_code": "11",
+    "maintenance": "State Park, Forest, or Reservation Agency",
+    "maintenance_code": "11",
+    "year_built": 2000,
+    "year_reconstructed": 2016,
+    "structure_len_m": 44.2,
+    "deck_width_m": 7.3,
+    "sidewalk_left_m": 0.0,
+    "sidewalk_right_m": 1.8,
+    "service_on": "Highway-pedestrian",
+    "service_on_code": "5",
+    "service_under": "Railroad",
+    "open_closed": "Open, no restriction",
+    "open_closed_code": "A",
+    "structure_kind": "Steel",
+    "structure_type": "10",
+    "tier": 1,
+    "dist_trail_km": 0.0,
+    "nbi_records": 1,
+    "source": "FHWA NBI 2025"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -93.23751111111112,
+     47.32991666666667
+    ]
+   },
+   "properties": {
+    "bridge_number": "5342",
+    "facility_carried": "PEDESTRIAN",
+    "features_crossed": "US 169",
+    "location": "1.8 MI SW OF S JCT TH 65",
+    "county": "Itasca",
+    "county_code": "061",
+    "district": "01",
+    "owner": "County Highway Agency",
+    "owner_code": "02",
+    "maintenance": "County Highway Agency",
+    "maintenance_code": "02",
+    "year_built": 1928,
+    "year_reconstructed": null,
+    "structure_len_m": 36.9,
+    "deck_width_m": 4.9,
+    "sidewalk_left_m": 0.0,
+    "sidewalk_right_m": 0.0,
+    "service_on": "Pedestrian-bicycle",
+    "service_on_code": "3",
+    "service_under": "Highway, with or without pedestrian",
+    "open_closed": "Open, no restriction",
+    "open_closed_code": "A",
+    "structure_kind": "Steel",
+    "structure_type": "03",
+    "tier": 1,
+    "dist_trail_km": 0.01,
+    "nbi_records": 2,
+    "source": "FHWA NBI 2025"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -96.07780555555556,
+     46.28650277777778
+    ]
+   },
+   "properties": {
+    "bridge_number": "5453",
+    "facility_carried": "MSAS 104",
+    "features_crossed": "OTV RAILROAD",
+    "location": "0.3 MI N OF LINCOLN AVE",
+    "county": "Otter Tail",
+    "county_code": "111",
+    "district": "04",
+    "owner": "City or Municipal Highway Agency",
+    "owner_code": "04",
+    "maintenance": "City or Municipal Highway Agency",
+    "maintenance_code": "04",
+    "year_built": 1939,
+    "year_reconstructed": null,
+    "structure_len_m": 37.9,
+    "deck_width_m": 16.8,
+    "sidewalk_left_m": 1.8,
+    "sidewalk_right_m": 1.8,
+    "service_on": "Highway-pedestrian",
+    "service_on_code": "5",
+    "service_under": "Railroad",
+    "open_closed": "Posted for load",
+    "open_closed_code": "P",
+    "structure_kind": "Concrete",
+    "structure_type": "01",
+    "tier": 1,
+    "dist_trail_km": 0.01,
+    "nbi_records": 1,
+    "source": "FHWA NBI 2025"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -96.04941666666666,
+     46.28485
+    ]
+   },
+   "properties": {
+    "bridge_number": "56518",
+    "facility_carried": "M 171",
+    "features_crossed": "OTTER TAIL RIVER",
+    "location": "0.6 MI E OF CONCORD ST",
+    "county": "Otter Tail",
+    "county_code": "111",
+    "district": "04",
+    "owner": "City or Municipal Highway Agency",
+    "owner_code": "04",
+    "maintenance": "City or Municipal Highway Agency",
+    "maintenance_code": "04",
+    "year_built": 1974,
+    "year_reconstructed": null,
+    "structure_len_m": 28.4,
+    "deck_width_m": 11.8,
+    "sidewalk_left_m": 1.5,
+    "sidewalk_right_m": 0.0,
+    "service_on": "Highway-pedestrian",
+    "service_on_code": "5",
+    "service_under": "Waterway",
+    "open_closed": "Open, no restriction",
+    "open_closed_code": "A",
+    "structure_kind": "Prestressed concrete",
+    "structure_type": "22",
+    "tier": 1,
+    "dist_trail_km": 0.01,
+    "nbi_records": 1,
+    "source": "FHWA NBI 2025"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -95.98975277777778,
+     46.387997222222225
+    ]
+   },
+   "properties": {
+    "bridge_number": "56526",
+    "facility_carried": "CSAH 3",
+    "features_crossed": "OTTER TAIL RIVER",
+    "location": "1.3 MI N OF JCT CSAH 10",
+    "county": "Otter Tail",
+    "county_code": "111",
+    "district": "04",
+    "owner": "County Highway Agency",
+    "owner_code": "02",
+    "maintenance": "County Highway Agency",
+    "maintenance_code": "02",
+    "year_built": 1996,
+    "year_reconstructed": null,
+    "structure_len_m": 83.9,
+    "deck_width_m": 17.5,
+    "sidewalk_left_m": 2.2,
+    "sidewalk_right_m": 2.2,
+    "service_on": "Highway-pedestrian",
+    "service_on_code": "5",
+    "service_under": "Waterway",
+    "open_closed": "Open, no restriction",
+    "open_closed_code": "A",
+    "structure_kind": "Prestressed concrete",
+    "structure_type": "02",
+    "tier": 1,
+    "dist_trail_km": 0.01,
+    "nbi_records": 1,
+    "source": "FHWA NBI 2025"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -96.07779722222222,
+     46.28205
+    ]
+   },
+   "properties": {
+    "bridge_number": "56532",
+    "facility_carried": "MSAS 104",
+    "features_crossed": "Ottertail River",
+    "location": "0.1 MI S OF LINCOLN AVE",
+    "county": "Otter Tail",
+    "county_code": "111",
+    "district": "04",
+    "owner": "City or Municipal Highway Agency",
+    "owner_code": "04",
+    "maintenance": "City or Municipal Highway Agency",
+    "maintenance_code": "04",
+    "year_built": 2002,
+    "year_reconstructed": null,
+    "structure_len_m": 38.4,
+    "deck_width_m": 25.1,
+    "sidewalk_left_m": 2.4,
+    "sidewalk_right_m": 2.4,
+    "service_on": "Highway-pedestrian",
+    "service_on_code": "5",
+    "service_under": "Waterway",
+    "open_closed": "Open, no restriction",
+    "open_closed_code": "A",
+    "structure_kind": "Prestressed concrete",
+    "structure_type": "02",
+    "tier": 1,
+    "dist_trail_km": 0.01,
+    "nbi_records": 1,
+    "source": "FHWA NBI 2025"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -93.4276888888889,
+     47.289652777777775
+    ]
+   },
+   "properties": {
+    "bridge_number": "31004",
+    "facility_carried": "M 30",
+    "features_crossed": "US 169",
+    "location": "6.0 MI NE OF E JCT TH 2",
+    "county": "Itasca",
+    "county_code": "061",
+    "district": "01",
+    "owner": "State Highway Agency",
+    "owner_code": "01",
+    "maintenance": "State Highway Agency",
+    "maintenance_code": "01",
+    "year_built": 1966,
+    "year_reconstructed": null,
+    "structure_len_m": 24.6,
+    "deck_width_m": 10.5,
+    "sidewalk_left_m": 1.6,
+    "sidewalk_right_m": 0.8,
+    "service_on": "Highway-pedestrian",
+    "service_on_code": "5",
+    "service_under": "Highway, with or without pedestrian",
+    "open_closed": "Open, no restriction",
+    "open_closed_code": "A",
+    "structure_kind": "Steel continuous",
+    "structure_type": "02",
+    "tier": 1,
+    "dist_trail_km": 0.02,
+    "nbi_records": 2,
+    "source": "FHWA NBI 2025"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -93.49789166666666,
+     47.285263888888885
+    ]
+   },
+   "properties": {
+    "bridge_number": "31586",
+    "facility_carried": "CSAH 61",
+    "features_crossed": "PRAIRIE RIVER",
+    "location": "1.7 MI E OF JCT TH 38",
+    "county": "Itasca",
+    "county_code": "061",
+    "district": "01",
+    "owner": "County Highway Agency",
+    "owner_code": "02",
+    "maintenance": "County Highway Agency",
+    "maintenance_code": "02",
+    "year_built": 2024,
+    "year_reconstructed": null,
+    "structure_len_m": 44.0,
+    "deck_width_m": 15.3,
+    "sidewalk_left_m": 3.0,
+    "sidewalk_right_m": 0.0,
+    "service_on": "Highway-pedestrian",
+    "service_on_code": "5",
+    "service_under": "Waterway",
+    "open_closed": "Open, no restriction",
+    "open_closed_code": "A",
+    "structure_kind": "Prestressed concrete",
+    "structure_type": "02",
+    "tier": 1,
+    "dist_trail_km": 0.05,
+    "nbi_records": 1,
+    "source": "FHWA NBI 2025"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -92.54100833333334,
+     47.52615
+    ]
+   },
+   "properties": {
+    "bridge_number": "69528",
+    "facility_carried": "MSAS 220",
+    "features_crossed": "SILVER CREEK",
+    "location": "0.3 MI S OF JCT TH 135",
+    "county": "St. Louis",
+    "county_code": "137",
+    "district": "01",
+    "owner": "City or Municipal Highway Agency",
+    "owner_code": "04",
+    "maintenance": "City or Municipal Highway Agency",
+    "maintenance_code": "04",
+    "year_built": 1980,
+    "year_reconstructed": null,
+    "structure_len_m": 14.5,
+    "deck_width_m": 20.6,
+    "sidewalk_left_m": 2.8,
+    "sidewalk_right_m": 2.8,
+    "service_on": "Highway-pedestrian",
+    "service_on_code": "5",
+    "service_under": "Waterway",
+    "open_closed": "Open, no restriction",
+    "open_closed_code": "A",
+    "structure_kind": "Prestressed concrete",
+    "structure_type": "04",
+    "tier": 1,
+    "dist_trail_km": 0.12,
+    "nbi_records": 1,
+    "source": "FHWA NBI 2025"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -96.07599722222221,
+     46.279377777777775
+    ]
+   },
+   "properties": {
+    "bridge_number": "5452",
+    "facility_carried": "MSAS 115",
+    "features_crossed": "OTV RAILROAD",
+    "location": "0.1 MI N OF JCT VERNON",
+    "county": "Otter Tail",
+    "county_code": "111",
+    "district": "04",
+    "owner": "City or Municipal Highway Agency",
+    "owner_code": "04",
+    "maintenance": "City or Municipal Highway Agency",
+    "maintenance_code": "04",
+    "year_built": 1938,
+    "year_reconstructed": null,
+    "structure_len_m": 25.8,
+    "deck_width_m": 17.7,
+    "sidewalk_left_m": 2.4,
+    "sidewalk_right_m": 2.4,
+    "service_on": "Highway-pedestrian",
+    "service_on_code": "5",
+    "service_under": "Railroad",
+    "open_closed": "Open, no restriction",
+    "open_closed_code": "A",
+    "structure_kind": "Concrete",
+    "structure_type": "03",
+    "tier": 1,
+    "dist_trail_km": 0.15,
+    "nbi_records": 1,
+    "source": "FHWA NBI 2025"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -96.07597222222222,
+     46.28223333333333
+    ]
+   },
+   "properties": {
+    "bridge_number": "56524",
+    "facility_carried": "MSAS 115",
+    "features_crossed": "OTTER TAIL RIVER",
+    "location": "0.3 MI N OF JCT VERNON",
+    "county": "Otter Tail",
+    "county_code": "111",
+    "district": "04",
+    "owner": "City or Municipal Highway Agency",
+    "owner_code": "04",
+    "maintenance": "City or Municipal Highway Agency",
+    "maintenance_code": "04",
+    "year_built": 1920,
+    "year_reconstructed": null,
+    "structure_len_m": 49.1,
+    "deck_width_m": 19.8,
+    "sidewalk_left_m": 1.8,
+    "sidewalk_right_m": 1.8,
+    "service_on": "Highway-pedestrian",
+    "service_on_code": "5",
+    "service_under": "Waterway",
+    "open_closed": "Open, no restriction",
+    "open_closed_code": "A",
+    "structure_kind": "Concrete",
+    "structure_type": "03",
+    "tier": 1,
+    "dist_trail_km": 0.15,
+    "nbi_records": 1,
+    "source": "FHWA NBI 2025"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -93.51792222222223,
+     47.23056666666667
+    ]
+   },
+   "properties": {
+    "bridge_number": "31514",
+    "facility_carried": "MSAS 119",
+    "features_crossed": "MISSISSIPPI RIVER",
+    "location": "0.2 MI S OF JCT TH 2",
+    "county": "Itasca",
+    "county_code": "061",
+    "district": "01",
+    "owner": "City or Municipal Highway Agency",
+    "owner_code": "04",
+    "maintenance": "City or Municipal Highway Agency",
+    "maintenance_code": "04",
+    "year_built": 1975,
+    "year_reconstructed": null,
+    "structure_len_m": 80.3,
+    "deck_width_m": 20.2,
+    "sidewalk_left_m": 1.8,
+    "sidewalk_right_m": 1.8,
+    "service_on": "Highway-pedestrian",
+    "service_on_code": "5",
+    "service_under": "Waterway",
+    "open_closed": "Open, no restriction",
+    "open_closed_code": "A",
+    "structure_kind": "Prestressed concrete",
+    "structure_type": "02",
+    "tier": 1,
+    "dist_trail_km": 0.2,
+    "nbi_records": 1,
+    "source": "FHWA NBI 2025"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -93.52840555555555,
+     47.23217777777778
+    ]
+   },
+   "properties": {
+    "bridge_number": "5122",
+    "facility_carried": "US 169",
+    "features_crossed": "MISSISSIPPI RIVER",
+    "location": "0.2 MI S OF W JCT TH 2",
+    "county": "Itasca",
+    "county_code": "061",
+    "district": "01",
+    "owner": "State Highway Agency",
+    "owner_code": "01",
+    "maintenance": "State Highway Agency",
+    "maintenance_code": "01",
+    "year_built": 1932,
+    "year_reconstructed": null,
+    "structure_len_m": 48.8,
+    "deck_width_m": 24.2,
+    "sidewalk_left_m": 2.0,
+    "sidewalk_right_m": 2.0,
+    "service_on": "Highway-pedestrian",
+    "service_on_code": "5",
+    "service_under": "Waterway",
+    "open_closed": "Open, no restriction",
+    "open_closed_code": "A",
+    "structure_kind": "Concrete",
+    "structure_type": "11",
+    "tier": 1,
+    "dist_trail_km": 0.21,
+    "nbi_records": 1,
+    "source": "FHWA NBI 2025"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -96.07421111111111,
+     46.28214166666667
+    ]
+   },
+   "properties": {
+    "bridge_number": "56512",
+    "facility_carried": "MSAS 116",
+    "features_crossed": "OTTER TAIL RIVER",
+    "location": "0.3 MI N OF JCT VERNON",
+    "county": "Otter Tail",
+    "county_code": "111",
+    "district": "04",
+    "owner": "City or Municipal Highway Agency",
+    "owner_code": "04",
+    "maintenance": "City or Municipal Highway Agency",
+    "maintenance_code": "04",
+    "year_built": 1908,
+    "year_reconstructed": null,
+    "structure_len_m": 34.3,
+    "deck_width_m": 22.8,
+    "sidewalk_left_m": 3.7,
+    "sidewalk_right_m": 3.7,
+    "service_on": "Highway-pedestrian",
+    "service_on_code": "5",
+    "service_under": "Waterway",
+    "open_closed": "Open, no restriction",
+    "open_closed_code": "A",
+    "structure_kind": "Concrete",
+    "structure_type": "11",
+    "tier": 1,
+    "dist_trail_km": 0.29,
+    "nbi_records": 1,
+    "source": "FHWA NBI 2025"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -95.69734166666667,
+     46.725258333333336
+    ]
+   },
+   "properties": {
+    "bridge_number": "03505",
+    "facility_carried": "CSAH 30",
+    "features_crossed": "OTTER TAIL RIVER",
+    "location": "0.2 MI SE OF JCT TH 87",
+    "county": "Becker",
+    "county_code": "005",
+    "district": "04",
+    "owner": "County Highway Agency",
+    "owner_code": "02",
+    "maintenance": "County Highway Agency",
+    "maintenance_code": "02",
+    "year_built": 1978,
+    "year_reconstructed": null,
+    "structure_len_m": 27.7,
+    "deck_width_m": 16.6,
+    "sidewalk_left_m": 2.0,
+    "sidewalk_right_m": 0.0,
+    "service_on": "Highway-pedestrian",
+    "service_on_code": "5",
+    "service_under": "Waterway",
+    "open_closed": "Open, no restriction",
+    "open_closed_code": "A",
+    "structure_kind": "Prestressed concrete",
+    "structure_type": "02",
+    "tier": 1,
+    "dist_trail_km": 0.4,
+    "nbi_records": 1,
+    "source": "FHWA NBI 2025"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -96.07241944444444,
+     46.282783333333334
+    ]
+   },
+   "properties": {
+    "bridge_number": "7001",
+    "facility_carried": "MSAS 145",
+    "features_crossed": "OTTER TAIL RIVER",
+    "location": "0.3 MI N OF JCT VERNON",
+    "county": "Otter Tail",
+    "county_code": "111",
+    "district": "04",
+    "owner": "City or Municipal Highway Agency",
+    "owner_code": "04",
+    "maintenance": "City or Municipal Highway Agency",
+    "maintenance_code": "04",
+    "year_built": 1955,
+    "year_reconstructed": null,
+    "structure_len_m": 46.6,
+    "deck_width_m": 19.2,
+    "sidewalk_left_m": 1.5,
+    "sidewalk_right_m": 1.5,
+    "service_on": "Highway-pedestrian",
+    "service_on_code": "5",
+    "service_under": "Waterway",
+    "open_closed": "Open, no restriction",
+    "open_closed_code": "A",
+    "structure_kind": "Steel",
+    "structure_type": "02",
+    "tier": 1,
+    "dist_trail_km": 0.43,
+    "nbi_records": 1,
+    "source": "FHWA NBI 2025"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -93.29576944444445,
+     47.318250000000006
+    ]
+   },
+   "properties": {
+    "bridge_number": "88246",
+    "facility_carried": "CSAH 80",
+    "features_crossed": "BNSF RR",
+    "location": "0.1 MI N OF JCT TH 169",
+    "county": "Itasca",
+    "county_code": "061",
+    "district": "01",
+    "owner": "County Highway Agency",
+    "owner_code": "02",
+    "maintenance": "County Highway Agency",
+    "maintenance_code": "02",
+    "year_built": 1971,
+    "year_reconstructed": null,
+    "structure_len_m": 32.1,
+    "deck_width_m": 12.6,
+    "sidewalk_left_m": 1.5,
+    "sidewalk_right_m": 1.5,
+    "service_on": "Highway-pedestrian",
+    "service_on_code": "5",
+    "service_under": "Railroad",
+    "open_closed": "Posted for load",
+    "open_closed_code": "P",
+    "structure_kind": "Wood or Timber",
+    "structure_type": "02",
+    "tier": 1,
+    "dist_trail_km": 0.46,
+    "nbi_records": 1,
+    "source": "FHWA NBI 2025"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -96.06990833333333,
+     46.28330277777778
+    ]
+   },
+   "properties": {
+    "bridge_number": "56533",
+    "facility_carried": "MSAS 109",
+    "features_crossed": "OTTER TAIL RIVER",
+    "location": "0.1 MI E JCT CSAH 1",
+    "county": "Otter Tail",
+    "county_code": "111",
+    "district": "04",
+    "owner": "City or Municipal Highway Agency",
+    "owner_code": "04",
+    "maintenance": "City or Municipal Highway Agency",
+    "maintenance_code": "04",
+    "year_built": 2005,
+    "year_reconstructed": null,
+    "structure_len_m": 38.1,
+    "deck_width_m": 15.4,
+    "sidewalk_left_m": 0.0,
+    "sidewalk_right_m": 2.4,
+    "service_on": "Highway-pedestrian",
+    "service_on_code": "5",
+    "service_under": "Waterway",
+    "open_closed": "Open, no restriction",
+    "open_closed_code": "A",
+    "structure_kind": "Concrete continuous",
+    "structure_type": "01",
+    "tier": 1,
+    "dist_trail_km": 0.62,
+    "nbi_records": 1,
+    "source": "FHWA NBI 2025"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -92.54680555555555,
+     47.52153055555556
+    ]
+   },
+   "properties": {
+    "bridge_number": "69642",
+    "facility_carried": "MSAS 219",
+    "features_crossed": "SILVER CREEK",
+    "location": "0.04 MI S OF JCT 1ST ST",
+    "county": "St. Louis",
+    "county_code": "137",
+    "district": "01",
+    "owner": "City or Municipal Highway Agency",
+    "owner_code": "04",
+    "maintenance": "City or Municipal Highway Agency",
+    "maintenance_code": "04",
+    "year_built": 2003,
+    "year_reconstructed": null,
+    "structure_len_m": 7.3,
+    "deck_width_m": 19.9,
+    "sidewalk_left_m": 2.4,
+    "sidewalk_right_m": 2.4,
+    "service_on": "Highway-pedestrian",
+    "service_on_code": "5",
+    "service_under": "Waterway",
+    "open_closed": "Open, no restriction",
+    "open_closed_code": "A",
+    "structure_kind": "Concrete",
+    "structure_type": "01",
+    "tier": 1,
+    "dist_trail_km": 0.63,
+    "nbi_records": 1,
+    "source": "FHWA NBI 2025"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -93.48686944444445,
+     47.24543888888889
+    ]
+   },
+   "properties": {
+    "bridge_number": "31015",
+    "facility_carried": "US 169",
+    "features_crossed": "PRAIRIE RIVER",
+    "location": "1.8 MI NE OF E JCT TH 2",
+    "county": "Itasca",
+    "county_code": "061",
+    "district": "01",
+    "owner": "State Highway Agency",
+    "owner_code": "01",
+    "maintenance": "State Highway Agency",
+    "maintenance_code": "01",
+    "year_built": 1993,
+    "year_reconstructed": null,
+    "structure_len_m": 96.0,
+    "deck_width_m": 15.6,
+    "sidewalk_left_m": 2.4,
+    "sidewalk_right_m": 0.0,
+    "service_on": "Highway-pedestrian",
+    "service_on_code": "5",
+    "service_under": "Waterway",
+    "open_closed": "Open, no restriction",
+    "open_closed_code": "A",
+    "structure_kind": "Prestressed concrete",
+    "structure_type": "02",
+    "tier": 1,
+    "dist_trail_km": 0.85,
+    "nbi_records": 1,
+    "source": "FHWA NBI 2025"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -96.00888055555555,
+     46.31119444444444
+    ]
+   },
+   "properties": {
+    "bridge_number": "56523",
+    "facility_carried": "CSAH 1",
+    "features_crossed": "OTTER TAIL RIVER",
+    "location": "1.2 MI S OF JCT CSAH 18",
+    "county": "Otter Tail",
+    "county_code": "111",
+    "district": "04",
+    "owner": "County Highway Agency",
+    "owner_code": "02",
+    "maintenance": "County Highway Agency",
+    "maintenance_code": "02",
+    "year_built": 1981,
+    "year_reconstructed": null,
+    "structure_len_m": 30.9,
+    "deck_width_m": 17.1,
+    "sidewalk_left_m": 0.0,
+    "sidewalk_right_m": 2.8,
+    "service_on": "Highway-pedestrian",
+    "service_on_code": "5",
+    "service_under": "Waterway",
+    "open_closed": "Open, no restriction",
+    "open_closed_code": "A",
+    "structure_kind": "Prestressed concrete",
+    "structure_type": "04",
+    "tier": 1,
+    "dist_trail_km": 0.85,
+    "nbi_records": 1,
+    "source": "FHWA NBI 2025"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -96.061775,
+     46.283274999999996
+    ]
+   },
+   "properties": {
+    "bridge_number": "56540",
+    "facility_carried": "MSAS 121",
+    "features_crossed": "OTTER TAIL RIVER",
+    "location": "0.15 MI S OF MSAS 102",
+    "county": "Otter Tail",
+    "county_code": "111",
+    "district": "04",
+    "owner": "City or Municipal Highway Agency",
+    "owner_code": "04",
+    "maintenance": "City or Municipal Highway Agency",
+    "maintenance_code": "04",
+    "year_built": 2009,
+    "year_reconstructed": null,
+    "structure_len_m": 28.2,
+    "deck_width_m": 16.6,
+    "sidewalk_left_m": 2.4,
+    "sidewalk_right_m": 0.0,
+    "service_on": "Highway-pedestrian",
+    "service_on_code": "5",
+    "service_under": "Waterway",
+    "open_closed": "Open, no restriction",
+    "open_closed_code": "A",
+    "structure_kind": "Concrete continuous",
+    "structure_type": "01",
+    "tier": 1,
+    "dist_trail_km": 0.94,
+    "nbi_records": 1,
+    "source": "FHWA NBI 2025"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -92.5615611111111,
+     47.51918888888889
+    ]
+   },
+   "properties": {
+    "bridge_number": "69035",
+    "facility_carried": "US 169",
+    "features_crossed": "US 53",
+    "location": "AT THE JCT TH 169; 53",
+    "county": "St. Louis",
+    "county_code": "137",
+    "district": "01",
+    "owner": "State Highway Agency",
+    "owner_code": "01",
+    "maintenance": "State Highway Agency",
+    "maintenance_code": "01",
+    "year_built": 1969,
+    "year_reconstructed": 2017,
+    "structure_len_m": 62.3,
+    "deck_width_m": 27.0,
+    "sidewalk_left_m": 2.1,
+    "sidewalk_right_m": 2.3,
+    "service_on": "Highway-pedestrian",
+    "service_on_code": "5",
+    "service_under": "Highway, with or without pedestrian",
+    "open_closed": "Open, no restriction",
+    "open_closed_code": "A",
+    "structure_kind": "Prestressed concrete",
+    "structure_type": "02",
+    "tier": 1,
+    "dist_trail_km": 1.23,
+    "nbi_records": 2,
+    "source": "FHWA NBI 2025"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -92.56275277777777,
+     47.51909722222222
+    ]
+   },
+   "properties": {
+    "bridge_number": "69034",
+    "facility_carried": "US 169",
+    "features_crossed": "DWP RY",
+    "location": "0.1 MI W OF S JCT TH 53",
+    "county": "St. Louis",
+    "county_code": "137",
+    "district": "01",
+    "owner": "State Highway Agency",
+    "owner_code": "01",
+    "maintenance": "State Highway Agency",
+    "maintenance_code": "01",
+    "year_built": 1970,
+    "year_reconstructed": null,
+    "structure_len_m": 43.5,
+    "deck_width_m": 28.6,
+    "sidewalk_left_m": 0.0,
+    "sidewalk_right_m": 1.8,
+    "service_on": "Highway-pedestrian",
+    "service_on_code": "5",
+    "service_under": "Railroad",
+    "open_closed": "Open, no restriction",
+    "open_closed_code": "A",
+    "structure_kind": "Steel continuous",
+    "structure_type": "02",
+    "tier": 1,
+    "dist_trail_km": 1.24,
+    "nbi_records": 1,
+    "source": "FHWA NBI 2025"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -96.10243333333332,
+     46.27983611111111
+    ]
+   },
+   "properties": {
+    "bridge_number": "56539",
+    "facility_carried": "CSAH 1",
+    "features_crossed": "PISGAH RESERVOIR",
+    "location": "0.5 MI NE JCT ISTH 94",
+    "county": "Otter Tail",
+    "county_code": "111",
+    "district": "04",
+    "owner": "County Highway Agency",
+    "owner_code": "02",
+    "maintenance": "County Highway Agency",
+    "maintenance_code": "02",
+    "year_built": 2011,
+    "year_reconstructed": null,
+    "structure_len_m": 140.5,
+    "deck_width_m": 16.8,
+    "sidewalk_left_m": 0.0,
+    "sidewalk_right_m": 3.7,
+    "service_on": "Highway-pedestrian",
+    "service_on_code": "5",
+    "service_under": "Waterway",
+    "open_closed": "Open, no restriction",
+    "open_closed_code": "A",
+    "structure_kind": "Prestressed concrete",
+    "structure_type": "02",
+    "tier": 1,
+    "dist_trail_km": 1.89,
+    "nbi_records": 1,
+    "source": "FHWA NBI 2025"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -93.62284722222222,
+     47.26232777777778
+    ]
+   },
+   "properties": {
+    "bridge_number": "31510",
+    "facility_carried": "CSAH 62",
+    "features_crossed": "MISSISSIPPI RIVER",
+    "location": "0.1 MI S OF JCT TH 2",
+    "county": "Itasca",
+    "county_code": "061",
+    "district": "01",
+    "owner": "County Highway Agency",
+    "owner_code": "02",
+    "maintenance": "County Highway Agency",
+    "maintenance_code": "02",
+    "year_built": 1971,
+    "year_reconstructed": null,
+    "structure_len_m": 92.4,
+    "deck_width_m": 13.1,
+    "sidewalk_left_m": 0.0,
+    "sidewalk_right_m": 1.2,
+    "service_on": "Highway-pedestrian",
+    "service_on_code": "5",
+    "service_under": "Waterway",
+    "open_closed": "Open, no restriction",
+    "open_closed_code": "A",
+    "structure_kind": "Prestressed concrete",
+    "structure_type": "02",
+    "tier": 1,
+    "dist_trail_km": 2.73,
+    "nbi_records": 1,
+    "source": "FHWA NBI 2025"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -92.94135277777778,
+     47.40015833333333
+    ]
+   },
+   "properties": {
+    "bridge_number": "69565",
+    "facility_carried": "CSAH 57",
+    "features_crossed": "US 169",
+    "location": "1.0 MI E OF S JCT TH 73",
+    "county": "St. Louis",
+    "county_code": "137",
+    "district": "01",
+    "owner": "State Highway Agency",
+    "owner_code": "01",
+    "maintenance": "State Highway Agency",
+    "maintenance_code": "01",
+    "year_built": 1987,
+    "year_reconstructed": null,
+    "structure_len_m": 76.4,
+    "deck_width_m": 16.0,
+    "sidewalk_left_m": 0.0,
+    "sidewalk_right_m": 2.1,
+    "service_on": "Highway-pedestrian",
+    "service_on_code": "5",
+    "service_under": "Highway, with or without pedestrian",
+    "open_closed": "Open, no restriction",
+    "open_closed_code": "A",
+    "structure_kind": "Steel continuous",
+    "structure_type": "02",
+    "tier": 1,
+    "dist_trail_km": 2.99,
+    "nbi_records": 2,
+    "source": "FHWA NBI 2025"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -95.7462,
+     46.73805277777778
+    ]
+   },
+   "properties": {
+    "bridge_number": "03514",
+    "facility_carried": "PEDESTRIAN",
+    "features_crossed": "CSAH 10",
+    "location": "260 FT NE OF JCT US 10",
+    "county": "Becker",
+    "county_code": "005",
+    "district": "04",
+    "owner": "State Park, Forest, or Reservation Agency",
+    "owner_code": "11",
+    "maintenance": "State Park, Forest, or Reservation Agency",
+    "maintenance_code": "11",
+    "year_built": 2021,
+    "year_reconstructed": null,
+    "structure_len_m": 109.9,
+    "deck_width_m": 4.3,
+    "sidewalk_left_m": 0.0,
+    "sidewalk_right_m": 0.0,
+    "service_on": "Pedestrian-bicycle",
+    "service_on_code": "3",
+    "service_under": "Highway, with or without pedestrian",
+    "open_closed": "Open, no restriction",
+    "open_closed_code": "A",
+    "structure_kind": "Steel",
+    "structure_type": "10",
+    "tier": 1,
+    "dist_trail_km": 3.0,
+    "nbi_records": 2,
+    "source": "FHWA NBI 2025"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -94.11030555555556,
+     47.04454444444444
+    ]
+   },
+   "properties": {
+    "bridge_number": "11006",
+    "facility_carried": "MN 200",
+    "features_crossed": "BOY RIVER",
+    "location": "9.0 MI W OF JCT TH 6",
+    "county": "Cass",
+    "county_code": "021",
+    "district": "03",
+    "owner": "State Highway Agency",
+    "owner_code": "01",
+    "maintenance": "State Highway Agency",
+    "maintenance_code": "01",
+    "year_built": 1987,
+    "year_reconstructed": null,
+    "structure_len_m": 42.2,
+    "deck_width_m": 14.1,
+    "sidewalk_left_m": 0.0,
+    "sidewalk_right_m": 0.0,
+    "service_on": "Highway",
+    "service_on_code": "1",
+    "service_under": "Waterway",
+    "open_closed": "Open, no restriction",
+    "open_closed_code": "A",
+    "structure_kind": "Prestressed concrete",
+    "structure_type": "02",
+    "tier": 2,
+    "dist_trail_km": 0.0,
+    "nbi_records": 1,
+    "source": "FHWA NBI 2025"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -94.59623611111111,
+     47.03077777777778
+    ]
+   },
+   "properties": {
+    "bridge_number": "11514",
+    "facility_carried": "CSAH 50",
+    "features_crossed": "SHINGOBEE CREEK",
+    "location": "2.3 MI S OF JCT TH 34",
+    "county": "Cass",
+    "county_code": "021",
+    "district": "03",
+    "owner": "County Highway Agency",
+    "owner_code": "02",
+    "maintenance": "County Highway Agency",
+    "maintenance_code": "02",
+    "year_built": 1988,
+    "year_reconstructed": null,
+    "structure_len_m": 18.9,
+    "deck_width_m": 10.4,
+    "sidewalk_left_m": 0.0,
+    "sidewalk_right_m": 1.5,
+    "service_on": "Highway",
+    "service_on_code": "1",
+    "service_under": "Waterway",
+    "open_closed": "Open, no restriction",
+    "open_closed_code": "A",
+    "structure_kind": "Wood or Timber",
+    "structure_type": "01",
+    "tier": 2,
+    "dist_trail_km": 0.0,
+    "nbi_records": 1,
+    "source": "FHWA NBI 2025"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -90.77183055555555,
+     48.093447222222224
+    ]
+   },
+   "properties": {
+    "bridge_number": "16524",
+    "facility_carried": "UT 46",
+    "features_crossed": "CROSS RIVER",
+    "location": "0.8 MI N OF JCT CSAH 12",
+    "county": "Cook",
+    "county_code": "031",
+    "district": "01",
+    "owner": "County Highway Agency",
+    "owner_code": "02",
+    "maintenance": "County Highway Agency",
+    "maintenance_code": "02",
+    "year_built": 2022,
+    "year_reconstructed": null,
+    "structure_len_m": 26.2,
+    "deck_width_m": 6.7,
+    "sidewalk_left_m": 0.0,
+    "sidewalk_right_m": 0.0,
+    "service_on": "Highway",
+    "service_on_code": "1",
+    "service_under": "Waterway",
+    "open_closed": "Open, no restriction",
+    "open_closed_code": "A",
+    "structure_kind": "Wood or Timber",
+    "structure_type": "01",
+    "tier": 2,
+    "dist_trail_km": 0.0,
+    "nbi_records": 1,
+    "source": "FHWA NBI 2025"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -89.93479166666667,
+     47.98783888888889
+    ]
+   },
+   "properties": {
+    "bridge_number": "16J12",
+    "facility_carried": "SFR 216",
+    "features_crossed": "SWAMP RIVER",
+    "location": "4.0 MI E OF JCT CSAH 16",
+    "county": "Cook",
+    "county_code": "031",
+    "district": "01",
+    "owner": "State Park, Forest, or Reservation Agency",
+    "owner_code": "11",
+    "maintenance": "State Park, Forest, or Reservation Agency",
+    "maintenance_code": "11",
+    "year_built": 2003,
+    "year_reconstructed": null,
+    "structure_len_m": 7.7,
+    "deck_width_m": 0.0,
+    "sidewalk_left_m": 0.0,
+    "sidewalk_right_m": 0.0,
+    "service_on": "Highway",
+    "service_on_code": "1",
+    "service_under": "Waterway",
+    "open_closed": "Open, no restriction",
+    "open_closed_code": "A",
+    "structure_kind": "Concrete",
+    "structure_type": "19",
+    "tier": 2,
+    "dist_trail_km": 0.0,
+    "nbi_records": 1,
+    "source": "FHWA NBI 2025"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -93.7720638888889,
+     47.18695833333333
+    ]
+   },
+   "properties": {
+    "bridge_number": "508",
+    "facility_carried": "MN 6",
+    "features_crossed": "STREAM",
+    "location": "11.8 MI NE OF REMER",
+    "county": "Itasca",
+    "county_code": "061",
+    "district": "03",
+    "owner": "State Highway Agency",
+    "owner_code": "01",
+    "maintenance": "State Highway Agency",
+    "maintenance_code": "01",
+    "year_built": 1936,
+    "year_reconstructed": null,
+    "structure_len_m": 6.8,
+    "deck_width_m": 0.0,
+    "sidewalk_left_m": 0.0,
+    "sidewalk_right_m": 0.0,
+    "service_on": "Highway",
+    "service_on_code": "1",
+    "service_under": "Waterway",
+    "open_closed": "Open, no restriction",
+    "open_closed_code": "A",
+    "structure_kind": "Concrete",
+    "structure_type": "19",
+    "tier": 2,
+    "dist_trail_km": 0.0,
+    "nbi_records": 1,
+    "source": "FHWA NBI 2025"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -96.02535277777778,
+     46.318775
+    ]
+   },
+   "properties": {
+    "bridge_number": "56535",
+    "facility_carried": "T 1023",
+    "features_crossed": "OTTER TAIL RIVER",
+    "location": "0.3 MI E JCT CR 111",
+    "county": "Otter Tail",
+    "county_code": "111",
+    "district": "04",
+    "owner": "Town or Township Highway Agency",
+    "owner_code": "03",
+    "maintenance": "Town or Township Highway Agency",
+    "maintenance_code": "03",
+    "year_built": 2006,
+    "year_reconstructed": null,
+    "structure_len_m": 46.6,
+    "deck_width_m": 12.9,
+    "sidewalk_left_m": 1.8,
+    "sidewalk_right_m": 0.0,
+    "service_on": "Highway",
+    "service_on_code": "1",
+    "service_under": "Waterway",
+    "open_closed": "Open, no restriction",
+    "open_closed_code": "A",
+    "structure_kind": "Prestressed concrete",
+    "structure_type": "02",
+    "tier": 2,
+    "dist_trail_km": 0.0,
+    "nbi_records": 1,
+    "source": "FHWA NBI 2025"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -93.762275,
+     47.20417777777778
+    ]
+   },
+   "properties": {
+    "bridge_number": "602",
+    "facility_carried": "MN 6",
+    "features_crossed": "STREAM",
+    "location": "13.0 MI NE OF REMER",
+    "county": "Itasca",
+    "county_code": "061",
+    "district": "03",
+    "owner": "State Highway Agency",
+    "owner_code": "01",
+    "maintenance": "State Highway Agency",
+    "maintenance_code": "01",
+    "year_built": 1936,
+    "year_reconstructed": null,
+    "structure_len_m": 10.0,
+    "deck_width_m": 0.0,
+    "sidewalk_left_m": 0.0,
+    "sidewalk_right_m": 0.0,
+    "service_on": "Highway",
+    "service_on_code": "1",
+    "service_under": "Waterway",
+    "open_closed": "Open, no restriction",
+    "open_closed_code": "A",
+    "structure_kind": "Concrete",
+    "structure_type": "19",
+    "tier": 2,
+    "dist_trail_km": 0.0,
+    "nbi_records": 1,
+    "source": "FHWA NBI 2025"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -92.24343055555556,
+     47.626025
+    ]
+   },
+   "properties": {
+    "bridge_number": "6492",
+    "facility_carried": "MN 135",
+    "features_crossed": "EMBARRASS RIVER",
+    "location": "7.5 MI N OF AURORA",
+    "county": "St. Louis",
+    "county_code": "137",
+    "district": "01",
+    "owner": "State Highway Agency",
+    "owner_code": "01",
+    "maintenance": "State Highway Agency",
+    "maintenance_code": "01",
+    "year_built": 1950,
+    "year_reconstructed": null,
+    "structure_len_m": 34.1,
+    "deck_width_m": 12.0,
+    "sidewalk_left_m": 0.0,
+    "sidewalk_right_m": 0.0,
+    "service_on": "Highway",
+    "service_on_code": "1",
+    "service_under": "Waterway",
+    "open_closed": "Open, no restriction",
+    "open_closed_code": "A",
+    "structure_kind": "Prestressed concrete",
+    "structure_type": "02",
+    "tier": 2,
+    "dist_trail_km": 0.0,
+    "nbi_records": 1,
+    "source": "FHWA NBI 2025"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -92.35603333333333,
+     47.523941666666666
+    ]
+   },
+   "properties": {
+    "bridge_number": "69025",
+    "facility_carried": "MN 135",
+    "features_crossed": "DM&IR RY",
+    "location": "9.5 MI E OF S JCT TH53",
+    "county": "St. Louis",
+    "county_code": "137",
+    "district": "01",
+    "owner": "State Highway Agency",
+    "owner_code": "01",
+    "maintenance": "State Highway Agency",
+    "maintenance_code": "01",
+    "year_built": 1971,
+    "year_reconstructed": null,
+    "structure_len_m": 54.6,
+    "deck_width_m": 14.7,
+    "sidewalk_left_m": 0.0,
+    "sidewalk_right_m": 0.0,
+    "service_on": "Highway",
+    "service_on_code": "1",
+    "service_under": "Railroad",
+    "open_closed": "Open, no restriction",
+    "open_closed_code": "A",
+    "structure_kind": "Prestressed concrete",
+    "structure_type": "02",
+    "tier": 2,
+    "dist_trail_km": 0.0,
+    "nbi_records": 1,
+    "source": "FHWA NBI 2025"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -92.85415555555555,
+     47.47474722222223
+    ]
+   },
+   "properties": {
+    "bridge_number": "69076",
+    "facility_carried": "US 169",
+    "features_crossed": "MESABI TRAIL",
+    "location": "2.3 MI E OF N JCT TH 73",
+    "county": "St. Louis",
+    "county_code": "137",
+    "district": "01",
+    "owner": "State Highway Agency",
+    "owner_code": "01",
+    "maintenance": "State Highway Agency",
+    "maintenance_code": "01",
+    "year_built": 1979,
+    "year_reconstructed": null,
+    "structure_len_m": 74.7,
+    "deck_width_m": 13.5,
+    "sidewalk_left_m": 0.0,
+    "sidewalk_right_m": 0.0,
+    "service_on": "Highway",
+    "service_on_code": "1",
+    "service_under": "Pedestrian-bicycle",
+    "open_closed": "Open, no restriction",
+    "open_closed_code": "A",
+    "structure_kind": "Prestressed concrete",
+    "structure_type": "02",
+    "tier": 2,
+    "dist_trail_km": 0.0,
+    "nbi_records": 1,
+    "source": "FHWA NBI 2025"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -92.278825,
+     47.803916666666666
+    ]
+   },
+   "properties": {
+    "bridge_number": "69A27",
+    "facility_carried": "M 4",
+    "features_crossed": "EAST TWO RIVER",
+    "location": "0.1 MI E OF JCT TH135",
+    "county": "St. Louis",
+    "county_code": "137",
+    "district": "01",
+    "owner": "City or Municipal Highway Agency",
+    "owner_code": "04",
+    "maintenance": "City or Municipal Highway Agency",
+    "maintenance_code": "04",
+    "year_built": 2017,
+    "year_reconstructed": null,
+    "structure_len_m": 23.5,
+    "deck_width_m": 13.7,
+    "sidewalk_left_m": 1.9,
+    "sidewalk_right_m": 1.9,
+    "service_on": "Highway",
+    "service_on_code": "1",
+    "service_under": "Waterway",
+    "open_closed": "Open, no restriction",
+    "open_closed_code": "A",
+    "structure_kind": "Prestressed concrete",
+    "structure_type": "05",
+    "tier": 2,
+    "dist_trail_km": 0.0,
+    "nbi_records": 1,
+    "source": "FHWA NBI 2025"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -91.76048333333334,
+     47.928711111111106
+    ]
+   },
+   "properties": {
+    "bridge_number": "7065",
+    "facility_carried": "CSAH 18",
+    "features_crossed": "GARDEN LAKE",
+    "location": "0.3 MI E OF JCT TH 169",
+    "county": "Lake",
+    "county_code": "075",
+    "district": "01",
+    "owner": "County Highway Agency",
+    "owner_code": "02",
+    "maintenance": "County Highway Agency",
+    "maintenance_code": "02",
+    "year_built": 1952,
+    "year_reconstructed": null,
+    "structure_len_m": 86.6,
+    "deck_width_m": 8.7,
+    "sidewalk_left_m": 0.0,
+    "sidewalk_right_m": 0.0,
+    "service_on": "Highway",
+    "service_on_code": "1",
+    "service_under": "Waterway",
+    "open_closed": "Posted for load",
+    "open_closed_code": "P",
+    "structure_kind": "Steel continuous",
+    "structure_type": "02",
+    "tier": 2,
+    "dist_trail_km": 0.0,
+    "nbi_records": 1,
+    "source": "FHWA NBI 2025"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -90.05750277777777,
+     48.054138888888886
+    ]
+   },
+   "properties": {
+    "bridge_number": "7620",
+    "facility_carried": "UT 74",
+    "features_crossed": "PINE RIVER",
+    "location": "1.2 MI N OF JCT CSAH 16",
+    "county": "Cook",
+    "county_code": "031",
+    "district": "01",
+    "owner": "County Highway Agency",
+    "owner_code": "02",
+    "maintenance": "County Highway Agency",
+    "maintenance_code": "02",
+    "year_built": 1960,
+    "year_reconstructed": null,
+    "structure_len_m": 8.5,
+    "deck_width_m": 7.4,
+    "sidewalk_left_m": 1.5,
+    "sidewalk_right_m": 1.5,
+    "service_on": "Highway",
+    "service_on_code": "1",
+    "service_under": "Waterway",
+    "open_closed": "Posted for load",
+    "open_closed_code": "P",
+    "structure_kind": "Wood or Timber",
+    "structure_type": "02",
+    "tier": 2,
+    "dist_trail_km": 0.0,
+    "nbi_records": 1,
+    "source": "FHWA NBI 2025"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -96.67778055555556,
+     46.44031944444444
+    ]
+   },
+   "properties": {
+    "bridge_number": "84005",
+    "facility_carried": "US 75",
+    "features_crossed": "WHISKEY CREEK",
+    "location": "IN KENT",
+    "county": "Wilkin",
+    "county_code": "167",
+    "district": "04",
+    "owner": "State Highway Agency",
+    "owner_code": "01",
+    "maintenance": "State Highway Agency",
+    "maintenance_code": "01",
+    "year_built": 2016,
+    "year_reconstructed": null,
+    "structure_len_m": 44.7,
+    "deck_width_m": 13.4,
+    "sidewalk_left_m": 0.0,
+    "sidewalk_right_m": 0.0,
+    "service_on": "Highway",
+    "service_on_code": "1",
+    "service_under": "Waterway",
+    "open_closed": "Open, no restriction",
+    "open_closed_code": "A",
+    "structure_kind": "Prestressed concrete",
+    "structure_type": "02",
+    "tier": 2,
+    "dist_trail_km": 0.0,
+    "nbi_records": 1,
+    "source": "FHWA NBI 2025"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -91.80098055555555,
+     47.92402222222222
+    ]
+   },
+   "properties": {
+    "bridge_number": "97321",
+    "facility_carried": "MN 169",
+    "features_crossed": "SHAGAWA RIVER",
+    "location": "0.1 MI W OF E CO LINE",
+    "county": "St. Louis",
+    "county_code": "137",
+    "district": "01",
+    "owner": "State Highway Agency",
+    "owner_code": "01",
+    "maintenance": "State Highway Agency",
+    "maintenance_code": "01",
+    "year_built": 1992,
+    "year_reconstructed": null,
+    "structure_len_m": 8.5,
+    "deck_width_m": 0.0,
+    "sidewalk_left_m": 0.0,
+    "sidewalk_right_m": 0.0,
+    "service_on": "Highway",
+    "service_on_code": "1",
+    "service_under": "Waterway",
+    "open_closed": "Open, no restriction",
+    "open_closed_code": "A",
+    "structure_kind": "Concrete",
+    "structure_type": "19",
+    "tier": 2,
+    "dist_trail_km": 0.0,
+    "nbi_records": 1,
+    "source": "FHWA NBI 2025"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -95.71692777777778,
+     46.71993611111111
+    ]
+   },
+   "properties": {
+    "bridge_number": "03006",
+    "facility_carried": "MN 87",
+    "features_crossed": "US 10",
+    "location": "AT THE JCT TH 87(FRAZEE)",
+    "county": "Becker",
+    "county_code": "005",
+    "district": "04",
+    "owner": "State Highway Agency",
+    "owner_code": "01",
+    "maintenance": "State Highway Agency",
+    "maintenance_code": "01",
+    "year_built": 1976,
+    "year_reconstructed": null,
+    "structure_len_m": 84.6,
+    "deck_width_m": 15.3,
+    "sidewalk_left_m": 0.0,
+    "sidewalk_right_m": 0.0,
+    "service_on": "Highway",
+    "service_on_code": "1",
+    "service_under": "Highway, with or without pedestrian",
+    "open_closed": "Open, no restriction",
+    "open_closed_code": "A",
+    "structure_kind": "Prestressed concrete",
+    "structure_type": "02",
+    "tier": 2,
+    "dist_trail_km": 0.01,
+    "nbi_records": 2,
+    "source": "FHWA NBI 2025"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -96.11698055555554,
+     46.336875
+    ]
+   },
+   "properties": {
+    "bridge_number": "56J01",
+    "facility_carried": "CSAH 88",
+    "features_crossed": "PELICAN RIVER",
+    "location": "0.5 MI SE OF JCT TH 59",
+    "county": "Otter Tail",
+    "county_code": "111",
+    "district": "04",
+    "owner": "County Highway Agency",
+    "owner_code": "02",
+    "maintenance": "County Highway Agency",
+    "maintenance_code": "02",
+    "year_built": 1996,
+    "year_reconstructed": null,
+    "structure_len_m": 12.2,
+    "deck_width_m": 0.0,
+    "sidewalk_left_m": 0.0,
+    "sidewalk_right_m": 0.0,
+    "service_on": "Highway",
+    "service_on_code": "1",
+    "service_under": "Waterway",
+    "open_closed": "Open, no restriction",
+    "open_closed_code": "A",
+    "structure_kind": "Concrete",
+    "structure_type": "19",
+    "tier": 2,
+    "dist_trail_km": 0.01,
+    "nbi_records": 1,
+    "source": "FHWA NBI 2025"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -92.31411666666666,
+     47.536427777777774
+    ]
+   },
+   "properties": {
+    "bridge_number": "69047",
+    "facility_carried": "MN 135",
+    "features_crossed": "EMBARRASS RIVER",
+    "location": "0.19 MI W OF CSAH 138",
+    "county": "St. Louis",
+    "county_code": "137",
+    "district": "01",
+    "owner": "State Highway Agency",
+    "owner_code": "01",
+    "maintenance": "State Highway Agency",
+    "maintenance_code": "01",
+    "year_built": 2005,
+    "year_reconstructed": null,
+    "structure_len_m": 27.6,
+    "deck_width_m": 14.5,
+    "sidewalk_left_m": 0.0,
+    "sidewalk_right_m": 0.0,
+    "service_on": "Highway",
+    "service_on_code": "1",
+    "service_under": "Waterway",
+    "open_closed": "Open, no restriction",
+    "open_closed_code": "A",
+    "structure_kind": "Prestressed concrete",
+    "structure_type": "02",
+    "tier": 2,
+    "dist_trail_km": 0.01,
+    "nbi_records": 1,
+    "source": "FHWA NBI 2025"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -92.8543611111111,
+     47.474980555555554
+    ]
+   },
+   "properties": {
+    "bridge_number": "69075",
+    "facility_carried": "US 169",
+    "features_crossed": "MESABI TRAIL",
+    "location": "2.3 MI E OF N JCT TH 73",
+    "county": "St. Louis",
+    "county_code": "137",
+    "district": "01",
+    "owner": "State Highway Agency",
+    "owner_code": "01",
+    "maintenance": "State Highway Agency",
+    "maintenance_code": "01",
+    "year_built": 1972,
+    "year_reconstructed": null,
+    "structure_len_m": 74.8,
+    "deck_width_m": 15.3,
+    "sidewalk_left_m": 0.0,
+    "sidewalk_right_m": 0.0,
+    "service_on": "Highway",
+    "service_on_code": "1",
+    "service_under": "Pedestrian-bicycle",
+    "open_closed": "Open, no restriction",
+    "open_closed_code": "A",
+    "structure_kind": "Prestressed concrete",
+    "structure_type": "02",
+    "tier": 2,
+    "dist_trail_km": 0.01,
+    "nbi_records": 1,
+    "source": "FHWA NBI 2025"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -96.71610277777778,
+     46.44421388888888
+    ]
+   },
+   "properties": {
+    "bridge_number": "84511",
+    "facility_carried": "CSAH 22",
+    "features_crossed": "RED RIVER OF THE NORTH",
+    "location": "2.0 MI W OF JCT TH 75",
+    "county": "Wilkin",
+    "county_code": "167",
+    "district": "04",
+    "owner": "County Highway Agency",
+    "owner_code": "02",
+    "maintenance": "County Highway Agency",
+    "maintenance_code": "02",
+    "year_built": 1981,
+    "year_reconstructed": null,
+    "structure_len_m": 97.5,
+    "deck_width_m": 13.0,
+    "sidewalk_left_m": 0.0,
+    "sidewalk_right_m": 0.0,
+    "service_on": "Highway",
+    "service_on_code": "1",
+    "service_under": "Waterway",
+    "open_closed": "Open, no restriction",
+    "open_closed_code": "A",
+    "structure_kind": "Steel continuous",
+    "structure_type": "02",
+    "tier": 2,
+    "dist_trail_km": 0.01,
+    "nbi_records": 1,
+    "source": "FHWA NBI 2025"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -92.53851944444445,
+     47.530541666666664
+    ]
+   },
+   "properties": {
+    "bridge_number": "91261",
+    "facility_carried": "MSAS 225",
+    "features_crossed": "SILVER CREEK",
+    "location": "0.4 MI E OF JCT 9 AVE",
+    "county": "St. Louis",
+    "county_code": "137",
+    "district": "01",
+    "owner": "City or Municipal Highway Agency",
+    "owner_code": "04",
+    "maintenance": "City or Municipal Highway Agency",
+    "maintenance_code": "04",
+    "year_built": 1972,
+    "year_reconstructed": null,
+    "structure_len_m": 11.0,
+    "deck_width_m": 0.0,
+    "sidewalk_left_m": 0.0,
+    "sidewalk_right_m": 0.0,
+    "service_on": "Highway",
+    "service_on_code": "1",
+    "service_under": "Waterway",
+    "open_closed": "Open, no restriction",
+    "open_closed_code": "A",
+    "structure_kind": "Concrete",
+    "structure_type": "19",
+    "tier": 2,
+    "dist_trail_km": 0.01,
+    "nbi_records": 1,
+    "source": "FHWA NBI 2025"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -96.1326,
+     46.340275000000005
+    ]
+   },
+   "properties": {
+    "bridge_number": "9691",
+    "facility_carried": "I 94",
+    "features_crossed": "CSAH 88",
+    "location": "3.6 MI NW OF JCT TH 210",
+    "county": "Otter Tail",
+    "county_code": "111",
+    "district": "04",
+    "owner": "State Highway Agency",
+    "owner_code": "01",
+    "maintenance": "State Highway Agency",
+    "maintenance_code": "01",
+    "year_built": 1964,
+    "year_reconstructed": 2016,
+    "structure_len_m": 46.8,
+    "deck_width_m": 13.0,
+    "sidewalk_left_m": 0.0,
+    "sidewalk_right_m": 0.0,
+    "service_on": "Highway",
+    "service_on_code": "1",
+    "service_under": "Highway, with or without pedestrian",
+    "open_closed": "Open, no restriction",
+    "open_closed_code": "A",
+    "structure_kind": "Steel continuous",
+    "structure_type": "02",
+    "tier": 2,
+    "dist_trail_km": 0.01,
+    "nbi_records": 2,
+    "source": "FHWA NBI 2025"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -96.1330861111111,
+     46.34028611111111
+    ]
+   },
+   "properties": {
+    "bridge_number": "9692",
+    "facility_carried": "I 94",
+    "features_crossed": "CSAH 88",
+    "location": "3.6 MI NW OF JCT TH 210",
+    "county": "Otter Tail",
+    "county_code": "111",
+    "district": "04",
+    "owner": "State Highway Agency",
+    "owner_code": "01",
+    "maintenance": "State Highway Agency",
+    "maintenance_code": "01",
+    "year_built": 1964,
+    "year_reconstructed": 2016,
+    "structure_len_m": 46.9,
+    "deck_width_m": 13.0,
+    "sidewalk_left_m": 0.0,
+    "sidewalk_right_m": 0.0,
+    "service_on": "Highway",
+    "service_on_code": "1",
+    "service_under": "Highway, with or without pedestrian",
+    "open_closed": "Open, no restriction",
+    "open_closed_code": "A",
+    "structure_kind": "Steel continuous",
+    "structure_type": "02",
+    "tier": 2,
+    "dist_trail_km": 0.01,
+    "nbi_records": 2,
+    "source": "FHWA NBI 2025"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -92.88758055555556,
+     47.44500277777777
+    ]
+   },
+   "properties": {
+    "bridge_number": "69002",
+    "facility_carried": "US 169",
+    "features_crossed": "DM;IR RY",
+    "location": "3.7 MI S OF N JCT TH 73",
+    "county": "St. Louis",
+    "county_code": "137",
+    "district": "01",
+    "owner": "State Highway Agency",
+    "owner_code": "01",
+    "maintenance": "State Highway Agency",
+    "maintenance_code": "01",
+    "year_built": 1961,
+    "year_reconstructed": null,
+    "structure_len_m": 45.1,
+    "deck_width_m": 20.6,
+    "sidewalk_left_m": 0.0,
+    "sidewalk_right_m": 0.0,
+    "service_on": "Highway",
+    "service_on_code": "1",
+    "service_under": "Railroad",
+    "open_closed": "Open, no restriction",
+    "open_closed_code": "A",
+    "structure_kind": "Steel continuous",
+    "structure_type": "02",
+    "tier": 2,
+    "dist_trail_km": 0.02,
+    "nbi_records": 1,
+    "source": "FHWA NBI 2025"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -91.79705,
+     47.92431944444444
+    ]
+   },
+   "properties": {
+    "bridge_number": "97320",
+    "facility_carried": "MN 169",
+    "features_crossed": "SHAGAWA RIVER",
+    "location": "0.1 MI E OF W CO LINE",
+    "county": "Lake",
+    "county_code": "075",
+    "district": "01",
+    "owner": "State Highway Agency",
+    "owner_code": "01",
+    "maintenance": "State Highway Agency",
+    "maintenance_code": "01",
+    "year_built": 1992,
+    "year_reconstructed": null,
+    "structure_len_m": 8.5,
+    "deck_width_m": 0.0,
+    "sidewalk_left_m": 0.0,
+    "sidewalk_right_m": 0.0,
+    "service_on": "Highway",
+    "service_on_code": "1",
+    "service_under": "Waterway",
+    "open_closed": "Open, no restriction",
+    "open_closed_code": "A",
+    "structure_kind": "Concrete",
+    "structure_type": "19",
+    "tier": 2,
+    "dist_trail_km": 0.02,
+    "nbi_records": 1,
+    "source": "FHWA NBI 2025"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -92.52259722222222,
+     47.51585277777778
+    ]
+   },
+   "properties": {
+    "bridge_number": "69129",
+    "facility_carried": "US 53",
+    "features_crossed": "ROUCHLEAU PIT",
+    "location": "1.0 MI N OF JCT TH 135",
+    "county": "St. Louis",
+    "county_code": "137",
+    "district": "01",
+    "owner": "State Highway Agency",
+    "owner_code": "01",
+    "maintenance": "State Highway Agency",
+    "maintenance_code": "01",
+    "year_built": 2017,
+    "year_reconstructed": null,
+    "structure_len_m": 345.1,
+    "deck_width_m": 28.0,
+    "sidewalk_left_m": 4.3,
+    "sidewalk_right_m": 0.0,
+    "service_on": "Highway",
+    "service_on_code": "1",
+    "service_under": "Other",
+    "open_closed": "Open, no restriction",
+    "open_closed_code": "A",
+    "structure_kind": "Steel continuous",
+    "structure_type": "02",
+    "tier": 2,
+    "dist_trail_km": 0.04,
+    "nbi_records": 1,
+    "source": "FHWA NBI 2025"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -93.16655833333334,
+     47.371075
+    ]
+   },
+   "properties": {
+    "bridge_number": "31022S",
+    "facility_carried": "US 169",
+    "features_crossed": "ST",
+    "location": "0.3 MI E OF JCT TH 65",
+    "county": "Itasca",
+    "county_code": "061",
+    "district": "01",
+    "owner": "State Highway Agency",
+    "owner_code": "01",
+    "maintenance": "State Highway Agency",
+    "maintenance_code": "01",
+    "year_built": 1976,
+    "year_reconstructed": null,
+    "structure_len_m": 305.3,
+    "deck_width_m": 13.5,
+    "sidewalk_left_m": 0.0,
+    "sidewalk_right_m": 0.0,
+    "service_on": "Highway",
+    "service_on_code": "1",
+    "service_under": "Highway, with or without pedestrian",
+    "open_closed": "Open, no restriction",
+    "open_closed_code": "A",
+    "structure_kind": "Prestressed concrete",
+    "structure_type": "02",
+    "tier": 2,
+    "dist_trail_km": 0.05,
+    "nbi_records": 2,
+    "source": "FHWA NBI 2025"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -92.43413611111112,
+     47.48705555555556
+    ]
+   },
+   "properties": {
+    "bridge_number": "69023",
+    "facility_carried": "MN 135",
+    "features_crossed": "DM;IR RY",
+    "location": "1.4 MI S OF JCT TH 37",
+    "county": "St. Louis",
+    "county_code": "137",
+    "district": "01",
+    "owner": "State Highway Agency",
+    "owner_code": "01",
+    "maintenance": "State Highway Agency",
+    "maintenance_code": "01",
+    "year_built": 1970,
+    "year_reconstructed": null,
+    "structure_len_m": 86.5,
+    "deck_width_m": 14.7,
+    "sidewalk_left_m": 0.0,
+    "sidewalk_right_m": 0.0,
+    "service_on": "Highway",
+    "service_on_code": "1",
+    "service_under": "Railroad",
+    "open_closed": "Open, no restriction",
+    "open_closed_code": "A",
+    "structure_kind": "Steel continuous",
+    "structure_type": "02",
+    "tier": 2,
+    "dist_trail_km": 0.05,
+    "nbi_records": 1,
+    "source": "FHWA NBI 2025"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -92.31425555555555,
+     47.537025
+    ]
+   },
+   "properties": {
+    "bridge_number": "L8794",
+    "facility_carried": "UNDETERMINED RD",
+    "features_crossed": "CREEK",
+    "location": "IN BIWABIK",
+    "county": "St. Louis",
+    "county_code": "137",
+    "district": "01",
+    "owner": "City or Municipal Highway Agency",
+    "owner_code": "04",
+    "maintenance": "County Highway Agency",
+    "maintenance_code": "02",
+    "year_built": 1921,
+    "year_reconstructed": null,
+    "structure_len_m": 7.3,
+    "deck_width_m": 0.0,
+    "sidewalk_left_m": 0.0,
+    "sidewalk_right_m": 0.0,
+    "service_on": "Highway",
+    "service_on_code": "1",
+    "service_under": "Waterway",
+    "open_closed": "Posted for load",
+    "open_closed_code": "P",
+    "structure_kind": "Concrete",
+    "structure_type": "19",
+    "tier": 2,
+    "dist_trail_km": 0.05,
+    "nbi_records": 1,
+    "source": "FHWA NBI 2025"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -93.16644166666667,
+     47.370955555555554
+    ]
+   },
+   "properties": {
+    "bridge_number": "31022N",
+    "facility_carried": "US 169",
+    "features_crossed": "ST",
+    "location": "0.3 MI E OF JCT TH 65",
+    "county": "Itasca",
+    "county_code": "061",
+    "district": "01",
+    "owner": "State Highway Agency",
+    "owner_code": "01",
+    "maintenance": "State Highway Agency",
+    "maintenance_code": "01",
+    "year_built": 1976,
+    "year_reconstructed": null,
+    "structure_len_m": 273.9,
+    "deck_width_m": 13.5,
+    "sidewalk_left_m": 0.0,
+    "sidewalk_right_m": 0.0,
+    "service_on": "Highway",
+    "service_on_code": "1",
+    "service_under": "Highway, with or without pedestrian",
+    "open_closed": "Open, no restriction",
+    "open_closed_code": "A",
+    "structure_kind": "Prestressed concrete",
+    "structure_type": "02",
+    "tier": 2,
+    "dist_trail_km": 0.06,
+    "nbi_records": 2,
+    "source": "FHWA NBI 2025"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -93.17834444444445,
+     47.36296388888889
+    ]
+   },
+   "properties": {
+    "bridge_number": "31023",
+    "facility_carried": "US 169",
+    "features_crossed": "TRAIL",
+    "location": "0.6 MI SW OF N JCT TH 65",
+    "county": "Itasca",
+    "county_code": "061",
+    "district": "01",
+    "owner": "State Highway Agency",
+    "owner_code": "01",
+    "maintenance": "State Highway Agency",
+    "maintenance_code": "01",
+    "year_built": 1976,
+    "year_reconstructed": null,
+    "structure_len_m": 73.9,
+    "deck_width_m": 13.5,
+    "sidewalk_left_m": 0.0,
+    "sidewalk_right_m": 0.0,
+    "service_on": "Highway",
+    "service_on_code": "1",
+    "service_under": "Pedestrian-bicycle",
+    "open_closed": "Open, no restriction",
+    "open_closed_code": "A",
+    "structure_kind": "Steel continuous",
+    "structure_type": "02",
+    "tier": 2,
+    "dist_trail_km": 0.06,
+    "nbi_records": 1,
+    "source": "FHWA NBI 2025"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -93.23294722222222,
+     47.3312
+    ]
+   },
+   "properties": {
+    "bridge_number": "3360",
+    "facility_carried": "CR 561",
+    "features_crossed": "SNOWBALL CREEK",
+    "location": "0.1 MI E OF JCT US 169",
+    "county": "Itasca",
+    "county_code": "061",
+    "district": "01",
+    "owner": "County Highway Agency",
+    "owner_code": "02",
+    "maintenance": "County Highway Agency",
+    "maintenance_code": "02",
+    "year_built": 1920,
+    "year_reconstructed": 1932,
+    "structure_len_m": 6.7,
+    "deck_width_m": 13.7,
+    "sidewalk_left_m": 0.0,
+    "sidewalk_right_m": 0.0,
+    "service_on": "Highway",
+    "service_on_code": "1",
+    "service_under": "Waterway",
+    "open_closed": "Posted for load",
+    "open_closed_code": "P",
+    "structure_kind": "Concrete",
+    "structure_type": "01",
+    "tier": 2,
+    "dist_trail_km": 0.06,
+    "nbi_records": 1,
+    "source": "FHWA NBI 2025"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -93.17772777777778,
+     47.36304722222222
+    ]
+   },
+   "properties": {
+    "bridge_number": "31024",
+    "facility_carried": "US 169",
+    "features_crossed": "TRAIL",
+    "location": "0.6 MI SW OF N JCT TH 65",
+    "county": "Itasca",
+    "county_code": "061",
+    "district": "01",
+    "owner": "State Highway Agency",
+    "owner_code": "01",
+    "maintenance": "State Highway Agency",
+    "maintenance_code": "01",
+    "year_built": 1974,
+    "year_reconstructed": null,
+    "structure_len_m": 73.9,
+    "deck_width_m": 13.5,
+    "sidewalk_left_m": 0.0,
+    "sidewalk_right_m": 0.0,
+    "service_on": "Highway",
+    "service_on_code": "1",
+    "service_under": "Pedestrian-bicycle",
+    "open_closed": "Open, no restriction",
+    "open_closed_code": "A",
+    "structure_kind": "Steel continuous",
+    "structure_type": "02",
+    "tier": 2,
+    "dist_trail_km": 0.09,
+    "nbi_records": 1,
+    "source": "FHWA NBI 2025"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -92.28192222222222,
+     47.67543333333333
+    ]
+   },
+   "properties": {
+    "bridge_number": "69552",
+    "facility_carried": "CR 303",
+    "features_crossed": "PIKE RIVER",
+    "location": "0.1 MI W OF JCT TH 135",
+    "county": "St. Louis",
+    "county_code": "137",
+    "district": "01",
+    "owner": "County Highway Agency",
+    "owner_code": "02",
+    "maintenance": "County Highway Agency",
+    "maintenance_code": "02",
+    "year_built": 1990,
+    "year_reconstructed": null,
+    "structure_len_m": 35.2,
+    "deck_width_m": 9.8,
+    "sidewalk_left_m": 0.0,
+    "sidewalk_right_m": 0.0,
+    "service_on": "Highway",
+    "service_on_code": "1",
+    "service_under": "Waterway",
+    "open_closed": "Open, no restriction",
+    "open_closed_code": "A",
+    "structure_kind": "Prestressed concrete",
+    "structure_type": "04",
+    "tier": 2,
+    "dist_trail_km": 0.11,
+    "nbi_records": 1,
+    "source": "FHWA NBI 2025"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -95.69486111111111,
+     46.73042777777778
+    ]
+   },
+   "properties": {
+    "bridge_number": "03013",
+    "facility_carried": "MN 87",
+    "features_crossed": "OTTER TAIL RIVER",
+    "location": "1.3 MI E OF JCT TH 10",
+    "county": "Becker",
+    "county_code": "005",
+    "district": "04",
+    "owner": "State Highway Agency",
+    "owner_code": "01",
+    "maintenance": "State Highway Agency",
+    "maintenance_code": "01",
+    "year_built": 2021,
+    "year_reconstructed": null,
+    "structure_len_m": 25.3,
+    "deck_width_m": 14.3,
+    "sidewalk_left_m": 0.0,
+    "sidewalk_right_m": 0.0,
+    "service_on": "Highway",
+    "service_on_code": "1",
+    "service_under": "Waterway",
+    "open_closed": "Open, no restriction",
+    "open_closed_code": "A",
+    "structure_kind": "Prestressed concrete",
+    "structure_type": "02",
+    "tier": 2,
+    "dist_trail_km": 0.16,
+    "nbi_records": 1,
+    "source": "FHWA NBI 2025"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -93.003575,
+     47.39615555555555
+    ]
+   },
+   "properties": {
+    "bridge_number": "69063",
+    "facility_carried": "US 169",
+    "features_crossed": "BNSF RR",
+    "location": "1.9 MI W OF JCT TH 73",
+    "county": "St. Louis",
+    "county_code": "137",
+    "district": "01",
+    "owner": "State Highway Agency",
+    "owner_code": "01",
+    "maintenance": "State Highway Agency",
+    "maintenance_code": "01",
+    "year_built": 1971,
+    "year_reconstructed": null,
+    "structure_len_m": 52.4,
+    "deck_width_m": 13.5,
+    "sidewalk_left_m": 0.0,
+    "sidewalk_right_m": 0.0,
+    "service_on": "Highway",
+    "service_on_code": "1",
+    "service_under": "Railroad",
+    "open_closed": "Open, no restriction",
+    "open_closed_code": "A",
+    "structure_kind": "Prestressed concrete",
+    "structure_type": "02",
+    "tier": 2,
+    "dist_trail_km": 0.16,
+    "nbi_records": 1,
+    "source": "FHWA NBI 2025"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -93.00355833333333,
+     47.395802777777774
+    ]
+   },
+   "properties": {
+    "bridge_number": "69064",
+    "facility_carried": "US 169",
+    "features_crossed": "BNSF RR",
+    "location": "1.9 MI W OF JCT TH 73",
+    "county": "St. Louis",
+    "county_code": "137",
+    "district": "01",
+    "owner": "State Highway Agency",
+    "owner_code": "01",
+    "maintenance": "State Highway Agency",
+    "maintenance_code": "01",
+    "year_built": 1971,
+    "year_reconstructed": null,
+    "structure_len_m": 52.4,
+    "deck_width_m": 13.6,
+    "sidewalk_left_m": 0.0,
+    "sidewalk_right_m": 0.0,
+    "service_on": "Highway",
+    "service_on_code": "1",
+    "service_under": "Railroad",
+    "open_closed": "Open, no restriction",
+    "open_closed_code": "A",
+    "structure_kind": "Prestressed concrete",
+    "structure_type": "02",
+    "tier": 2,
+    "dist_trail_km": 0.18,
+    "nbi_records": 1,
+    "source": "FHWA NBI 2025"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -92.28241666666666,
+     47.80368055555555
+    ]
+   },
+   "properties": {
+    "bridge_number": "69682",
+    "facility_carried": "MN 1",
+    "features_crossed": "EAST TWO RIVERS",
+    "location": "0.2 MI W OF TOWER",
+    "county": "St. Louis",
+    "county_code": "137",
+    "district": "01",
+    "owner": "State Highway Agency",
+    "owner_code": "01",
+    "maintenance": "State Highway Agency",
+    "maintenance_code": "01",
+    "year_built": 2011,
+    "year_reconstructed": null,
+    "structure_len_m": 24.3,
+    "deck_width_m": 19.0,
+    "sidewalk_left_m": 2.4,
+    "sidewalk_right_m": 2.4,
+    "service_on": "Highway",
+    "service_on_code": "1",
+    "service_under": "Waterway",
+    "open_closed": "Open, no restriction",
+    "open_closed_code": "A",
+    "structure_kind": "Prestressed concrete",
+    "structure_type": "02",
+    "tier": 2,
+    "dist_trail_km": 0.18,
+    "nbi_records": 1,
+    "source": "FHWA NBI 2025"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -96.02441388888889,
+     46.31683055555556
+    ]
+   },
+   "properties": {
+    "bridge_number": "56J12",
+    "facility_carried": "T 1022",
+    "features_crossed": "DITCH",
+    "location": "1.3 MI N OF JCT CSAH 1",
+    "county": "Otter Tail",
+    "county_code": "111",
+    "district": "04",
+    "owner": "Private (other than railroad)",
+    "owner_code": "26",
+    "maintenance": "Private (other than railroad)",
+    "maintenance_code": "26",
+    "year_built": 2004,
+    "year_reconstructed": null,
+    "structure_len_m": 6.6,
+    "deck_width_m": 0.0,
+    "sidewalk_left_m": 0.0,
+    "sidewalk_right_m": 0.0,
+    "service_on": "Highway",
+    "service_on_code": "1",
+    "service_under": "Waterway",
+    "open_closed": "Open, no restriction",
+    "open_closed_code": "A",
+    "structure_kind": "Concrete",
+    "structure_type": "19",
+    "tier": 2,
+    "dist_trail_km": 0.22,
+    "nbi_records": 1,
+    "source": "FHWA NBI 2025"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -93.10630833333333,
+     47.38794722222222
+    ]
+   },
+   "properties": {
+    "bridge_number": "31019",
+    "facility_carried": "US 169",
+    "features_crossed": "TRAIL",
+    "location": "1.8 MI W OF JCT CSAH 16",
+    "county": "Itasca",
+    "county_code": "061",
+    "district": "01",
+    "owner": "State Highway Agency",
+    "owner_code": "01",
+    "maintenance": "State Highway Agency",
+    "maintenance_code": "01",
+    "year_built": 1976,
+    "year_reconstructed": null,
+    "structure_len_m": 76.1,
+    "deck_width_m": 13.5,
+    "sidewalk_left_m": 0.0,
+    "sidewalk_right_m": 0.0,
+    "service_on": "Highway",
+    "service_on_code": "1",
+    "service_under": "Pedestrian-bicycle",
+    "open_closed": "Open, no restriction",
+    "open_closed_code": "A",
+    "structure_kind": "Prestressed concrete",
+    "structure_type": "02",
+    "tier": 2,
+    "dist_trail_km": 0.23,
+    "nbi_records": 1,
+    "source": "FHWA NBI 2025"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -93.43171666666667,
+     47.28686388888889
+    ]
+   },
+   "properties": {
+    "bridge_number": "31003",
+    "facility_carried": "US 169",
+    "features_crossed": "CSAH 61",
+    "location": "5.7 MI NE OF E JCT TH 2",
+    "county": "Itasca",
+    "county_code": "061",
+    "district": "01",
+    "owner": "State Highway Agency",
+    "owner_code": "01",
+    "maintenance": "State Highway Agency",
+    "maintenance_code": "01",
+    "year_built": 1966,
+    "year_reconstructed": null,
+    "structure_len_m": 37.5,
+    "deck_width_m": 20.0,
+    "sidewalk_left_m": 0.0,
+    "sidewalk_right_m": 0.0,
+    "service_on": "Highway",
+    "service_on_code": "1",
+    "service_under": "Highway, with or without pedestrian",
+    "open_closed": "Open, no restriction",
+    "open_closed_code": "A",
+    "structure_kind": "Prestressed concrete",
+    "structure_type": "02",
+    "tier": 2,
+    "dist_trail_km": 0.25,
+    "nbi_records": 2,
+    "source": "FHWA NBI 2025"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -92.28979444444444,
+     47.54926388888889
+    ]
+   },
+   "properties": {
+    "bridge_number": "69577",
+    "facility_carried": "CSAH 138",
+    "features_crossed": "EMBARRASS RIVER",
+    "location": "1.5 MI N OF JCT TH 135",
+    "county": "St. Louis",
+    "county_code": "137",
+    "district": "01",
+    "owner": "County Highway Agency",
+    "owner_code": "02",
+    "maintenance": "County Highway Agency",
+    "maintenance_code": "02",
+    "year_built": 1987,
+    "year_reconstructed": null,
+    "structure_len_m": 70.3,
+    "deck_width_m": 12.0,
+    "sidewalk_left_m": 0.0,
+    "sidewalk_right_m": 0.0,
+    "service_on": "Highway",
+    "service_on_code": "1",
+    "service_under": "Waterway",
+    "open_closed": "Open, no restriction",
+    "open_closed_code": "A",
+    "structure_kind": "Prestressed concrete",
+    "structure_type": "02",
+    "tier": 2,
+    "dist_trail_km": 0.26,
+    "nbi_records": 1,
+    "source": "FHWA NBI 2025"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -93.10617222222221,
+     47.387547222222224
+    ]
+   },
+   "properties": {
+    "bridge_number": "31020",
+    "facility_carried": "US 169",
+    "features_crossed": "MINE RD",
+    "location": "1.8 MI W OF JCT CSAH 16",
+    "county": "Itasca",
+    "county_code": "061",
+    "district": "01",
+    "owner": "State Highway Agency",
+    "owner_code": "01",
+    "maintenance": "State Highway Agency",
+    "maintenance_code": "01",
+    "year_built": 1976,
+    "year_reconstructed": null,
+    "structure_len_m": 78.7,
+    "deck_width_m": 13.5,
+    "sidewalk_left_m": 0.0,
+    "sidewalk_right_m": 0.0,
+    "service_on": "Highway",
+    "service_on_code": "1",
+    "service_under": "Pedestrian-bicycle",
+    "open_closed": "Open, no restriction",
+    "open_closed_code": "A",
+    "structure_kind": "Prestressed concrete",
+    "structure_type": "02",
+    "tier": 2,
+    "dist_trail_km": 0.27,
+    "nbi_records": 1,
+    "source": "FHWA NBI 2025"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -93.01694444444445,
+     47.39366944444444
+    ]
+   },
+   "properties": {
+    "bridge_number": "2112",
+    "facility_carried": "M 277",
+    "features_crossed": "WEST SWAN",
+    "location": "2.6 MI E OF COUNTY LINE",
+    "county": "St. Louis",
+    "county_code": "137",
+    "district": "01",
+    "owner": "City or Municipal Highway Agency",
+    "owner_code": "04",
+    "maintenance": "City or Municipal Highway Agency",
+    "maintenance_code": "04",
+    "year_built": 1932,
+    "year_reconstructed": null,
+    "structure_len_m": 6.9,
+    "deck_width_m": 0.0,
+    "sidewalk_left_m": 0.0,
+    "sidewalk_right_m": 0.0,
+    "service_on": "Highway",
+    "service_on_code": "1",
+    "service_under": "Waterway",
+    "open_closed": "Open, no restriction",
+    "open_closed_code": "A",
+    "structure_kind": "Concrete",
+    "structure_type": "19",
+    "tier": 2,
+    "dist_trail_km": 0.28,
+    "nbi_records": 1,
+    "source": "FHWA NBI 2025"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -93.09110277777778,
+     47.393855555555554
+    ]
+   },
+   "properties": {
+    "bridge_number": "31009",
+    "facility_carried": "US 169",
+    "features_crossed": "BNSF RR SPUR",
+    "location": "1.1 MI W OF E. CO. LINE",
+    "county": "Itasca",
+    "county_code": "061",
+    "district": "01",
+    "owner": "State Highway Agency",
+    "owner_code": "01",
+    "maintenance": "State Highway Agency",
+    "maintenance_code": "01",
+    "year_built": 1971,
+    "year_reconstructed": null,
+    "structure_len_m": 49.4,
+    "deck_width_m": 13.6,
+    "sidewalk_left_m": 0.0,
+    "sidewalk_right_m": 0.0,
+    "service_on": "Highway",
+    "service_on_code": "1",
+    "service_under": "Railroad",
+    "open_closed": "Open, no restriction",
+    "open_closed_code": "A",
+    "structure_kind": "Prestressed concrete",
+    "structure_type": "02",
+    "tier": 2,
+    "dist_trail_km": 0.28,
+    "nbi_records": 1,
+    "source": "FHWA NBI 2025"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -93.07896388888888,
+     47.39306388888889
+    ]
+   },
+   "properties": {
+    "bridge_number": "31011",
+    "facility_carried": "US 169",
+    "features_crossed": "BNSF RR; ST",
+    "location": "0.5 MI W OF E COUNTY LIN",
+    "county": "Itasca",
+    "county_code": "061",
+    "district": "01",
+    "owner": "State Highway Agency",
+    "owner_code": "01",
+    "maintenance": "State Highway Agency",
+    "maintenance_code": "01",
+    "year_built": 1971,
+    "year_reconstructed": null,
+    "structure_len_m": 64.0,
+    "deck_width_m": 13.6,
+    "sidewalk_left_m": 0.0,
+    "sidewalk_right_m": 0.0,
+    "service_on": "Highway",
+    "service_on_code": "1",
+    "service_under": "Highway-railroad",
+    "open_closed": "Open, no restriction",
+    "open_closed_code": "A",
+    "structure_kind": "Prestressed concrete",
+    "structure_type": "02",
+    "tier": 2,
+    "dist_trail_km": 0.28,
+    "nbi_records": 2,
+    "source": "FHWA NBI 2025"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -96.12877777777777,
+     46.33766666666667
+    ]
+   },
+   "properties": {
+    "bridge_number": "9688",
+    "facility_carried": "US 59",
+    "features_crossed": "I 94",
+    "location": "3.4 MI N OF JCT TH 210",
+    "county": "Otter Tail",
+    "county_code": "111",
+    "district": "04",
+    "owner": "State Highway Agency",
+    "owner_code": "01",
+    "maintenance": "State Highway Agency",
+    "maintenance_code": "01",
+    "year_built": 1960,
+    "year_reconstructed": null,
+    "structure_len_m": 51.5,
+    "deck_width_m": 8.4,
+    "sidewalk_left_m": 0.0,
+    "sidewalk_right_m": 0.0,
+    "service_on": "Highway",
+    "service_on_code": "1",
+    "service_under": "Highway, with or without pedestrian",
+    "open_closed": "Open, no restriction",
+    "open_closed_code": "A",
+    "structure_kind": "Prestressed concrete",
+    "structure_type": "02",
+    "tier": 2,
+    "dist_trail_km": 0.28,
+    "nbi_records": 2,
+    "source": "FHWA NBI 2025"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -93.09103333333333,
+     47.393505555555556
+    ]
+   },
+   "properties": {
+    "bridge_number": "31010",
+    "facility_carried": "US 169",
+    "features_crossed": "BNSF RR SPUR",
+    "location": "1.1 MI W OF E. CO. LINE",
+    "county": "Itasca",
+    "county_code": "061",
+    "district": "01",
+    "owner": "State Highway Agency",
+    "owner_code": "01",
+    "maintenance": "State Highway Agency",
+    "maintenance_code": "01",
+    "year_built": 1971,
+    "year_reconstructed": null,
+    "structure_len_m": 49.4,
+    "deck_width_m": 13.6,
+    "sidewalk_left_m": 0.0,
+    "sidewalk_right_m": 0.0,
+    "service_on": "Highway",
+    "service_on_code": "1",
+    "service_under": "Railroad",
+    "open_closed": "Open, no restriction",
+    "open_closed_code": "A",
+    "structure_kind": "Prestressed concrete",
+    "structure_type": "02",
+    "tier": 2,
+    "dist_trail_km": 0.31,
+    "nbi_records": 1,
+    "source": "FHWA NBI 2025"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -93.07931388888889,
+     47.39277777777778
+    ]
+   },
+   "properties": {
+    "bridge_number": "31012",
+    "facility_carried": "US 169",
+    "features_crossed": "BNSF RR; ST",
+    "location": "0.5 MI W OF E CO LINE",
+    "county": "Itasca",
+    "county_code": "061",
+    "district": "01",
+    "owner": "State Highway Agency",
+    "owner_code": "01",
+    "maintenance": "State Highway Agency",
+    "maintenance_code": "01",
+    "year_built": 1971,
+    "year_reconstructed": null,
+    "structure_len_m": 64.0,
+    "deck_width_m": 13.6,
+    "sidewalk_left_m": 0.0,
+    "sidewalk_right_m": 0.0,
+    "service_on": "Highway",
+    "service_on_code": "1",
+    "service_under": "Highway-railroad",
+    "open_closed": "Open, no restriction",
+    "open_closed_code": "A",
+    "structure_kind": "Prestressed concrete",
+    "structure_type": "02",
+    "tier": 2,
+    "dist_trail_km": 0.31,
+    "nbi_records": 2,
+    "source": "FHWA NBI 2025"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -93.07116666666666,
+     47.39924722222222
+    ]
+   },
+   "properties": {
+    "bridge_number": "6283",
+    "facility_carried": "CSAH 82",
+    "features_crossed": "WELCOME CREEK",
+    "location": "0.1 MI W OFCOUNTY LINE",
+    "county": "Itasca",
+    "county_code": "061",
+    "district": "01",
+    "owner": "County Highway Agency",
+    "owner_code": "02",
+    "maintenance": "County Highway Agency",
+    "maintenance_code": "02",
+    "year_built": 1932,
+    "year_reconstructed": null,
+    "structure_len_m": 7.6,
+    "deck_width_m": 0.0,
+    "sidewalk_left_m": 0.0,
+    "sidewalk_right_m": 0.0,
+    "service_on": "Highway",
+    "service_on_code": "1",
+    "service_under": "Waterway",
+    "open_closed": "Open, no restriction",
+    "open_closed_code": "A",
+    "structure_kind": "Concrete",
+    "structure_type": "19",
+    "tier": 2,
+    "dist_trail_km": 0.33,
+    "nbi_records": 1,
+    "source": "FHWA NBI 2025"
+   }
+  }
+ ]
+}
