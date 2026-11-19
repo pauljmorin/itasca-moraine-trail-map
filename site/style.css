@@ -1472,53 +1472,150 @@ body.base-imagery.gap-chip .gap-label span {
   height: 100vh;
 }
 
-.leaflet-popup-content { font-size: 0.88rem; line-height: 1.45; }
-.leaflet-popup-content h3 {
-  margin: 0 0 4px; font-size: 15px; font-weight: 600; color: var(--ink);
-}
-.leaflet-popup-content table { border-collapse: collapse; }
-.leaflet-popup-content td { padding: 1px 8px 1px 0; vertical-align: top; }
-.leaflet-popup-content td.k {
-  color: var(--ink-soft); white-space: nowrap;
-  font-size: 10.5px; text-transform: uppercase; letter-spacing: 0.05em;
-  padding-top: 3px;
-}
+/* ---- Popups (DESIGN-REVIEW §6, redesigned Nov 19, 2026):
+   one visual language across every popup. Header = kicker +
+   title; facts = hairline table; notes = tinted callout;
+   footer = source line + "About this layer" link; actions =
+   real pill buttons. The popup is a card, not a bare Leaflet
+   box. ---- */
 .leaflet-popup-content-wrapper {
-  border-radius: 10px;
+  background: #fffefa;
   border: 1px solid var(--paper-line);
+  border-radius: 12px;
+  box-shadow: 0 10px 30px rgba(28, 42, 30, 0.28);
 }
-.leaflet-popup-content .pop-note { margin: 4px 0 0; font-size: 12.5px; }
-.leaflet-popup-content .pop-source { margin: 4px 0 0; font-size: 12.5px; }
-.leaflet-popup-content .alert-desc { margin: 6px 0 0; }
-.leaflet-popup-content .chapter-desc { margin: 6px 0 0; }
-.leaflet-popup-content .chapter-closed {
-  margin: 6px 0 2px;
-  padding: 4px 8px;
-  background: #fdf0ec;
-  border: 1px solid #eec5bb;
-  border-radius: 6px;
-  color: #b2182b;
+.leaflet-popup-tip { background: #fffefa; }
+.leaflet-popup-content {
+  font-size: 14px;
+  line-height: 1.5;
+  margin: 14px 16px 12px;
+}
+.leaflet-popup-content .pop-kicker {
+  margin: 0 0 2px;
+  font-size: 10.5px;
   font-weight: 700;
-  letter-spacing: 0.06em;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  color: var(--trail-deep);
+}
+.leaflet-popup-content h3 {
+  margin: 0 0 8px;
+  padding-bottom: 8px;
+  font-size: 16.5px;
+  line-height: 1.25;
+  font-weight: 700;
+  color: var(--ink);
+  border-bottom: 1px solid var(--paper-line);
+}
+.leaflet-popup-content table {
+  border-collapse: collapse;
+  width: 100%;
+}
+.leaflet-popup-content td {
+  padding: 5px 8px 5px 0;
+  vertical-align: top;
+}
+.leaflet-popup-content tr + tr td { border-top: 1px solid #eceadf; }
+.leaflet-popup-content td.k {
+  color: var(--ink-soft);
+  white-space: nowrap;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  padding-top: 7px;
+  width: 34%;
+}
+.leaflet-popup-content p a {
+  color: var(--trail-deep);
+  font-weight: 600;
+}
+.leaflet-popup-content .pop-note {
+  margin: 10px 0 0;
+  padding: 8px 10px;
+  font-size: 13px;
+  line-height: 1.45;
+  background: var(--header-tint);
+  border-left: 3px solid var(--trail);
+  border-radius: 0 6px 6px 0;
+}
+.leaflet-popup-content .pop-source {
+  margin: 10px 0 0;
+  padding-top: 8px;
+  border-top: 1px solid var(--paper-line);
+  font-size: 12px;
+  color: var(--ink-soft);
+  line-height: 1.45;
+}
+.leaflet-popup-content .pop-source a {
+  color: var(--trail-deep);
+  font-weight: 600;
+}
+.leaflet-popup-content .pop-foot {
+  margin: 8px 0 0;
+  font-size: 12.5px;
+}
+.leaflet-popup-content .pop-foot a {
+  color: var(--trail-deep);
+  font-weight: 600;
+  text-decoration: none;
+}
+.leaflet-popup-content .pop-foot a:hover { text-decoration: underline; }
+.leaflet-popup-content .pop-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 12px;
+  padding-top: 10px;
+  border-top: 1px solid var(--paper-line);
 }
 .leaflet-popup-content .pop-door {
-  background: none; border: none; padding: 0;
-  margin-top: 6px;
-  color: var(--trail-deep); font-size: 13px; font-weight: 600;
+  background: var(--trail-deep);
+  color: #fff;
+  border: none;
+  border-radius: 999px;
+  padding: 7px 13px;
+  font-size: 13px;
+  font-weight: 600;
   cursor: pointer;
+  margin-top: 0;
 }
-.leaflet-popup-content .pop-door:hover { text-decoration: underline; }
-.leaflet-popup-content .pop-actions { margin-top: 6px; }
-.leaflet-popup-content .pop-actions .pop-door { margin-top: 0; }
-.leaflet-popup-content .pop-directions {
-  color: var(--trail-deep); font-size: 13px; font-weight: 600;
-  text-decoration: none; margin-left: 12px;
+.leaflet-popup-content .pop-door:hover {
+  background: #0e3d20;
+  text-decoration: none;
 }
-.leaflet-popup-content .pop-actions .pop-directions:first-child {
+.leaflet-popup-content .pop-directions,
+.leaflet-popup-content .pop-link {
+  display: inline-block;
+  border: 1px solid var(--trail-deep);
+  color: var(--trail-deep);
+  background: transparent;
+  border-radius: 999px;
+  padding: 6px 12px;
+  font-size: 13px;
+  font-weight: 600;
+  text-decoration: none;
   margin-left: 0;
 }
-.leaflet-popup-content .pop-directions:hover {
-  text-decoration: underline;
+.leaflet-popup-content .pop-directions:hover,
+.leaflet-popup-content .pop-link:hover {
+  background: var(--header-tint);
+  text-decoration: none;
+}
+.leaflet-popup-content .pop-classify { margin: 10px 0 0; }
+.leaflet-popup-content .pop-record-link {
+  display: inline-block;
+  border: 1px solid var(--trail-deep);
+  color: var(--trail-deep);
+  border-radius: 999px;
+  padding: 6px 12px;
+  font-size: 13px;
+  font-weight: 600;
+  text-decoration: none;
+}
+.leaflet-popup-content .pop-record-link:hover {
+  background: var(--header-tint);
+  text-decoration: none;
 }
 
 /* ---------------------------------------------------------- mobile */
@@ -1534,6 +1631,7 @@ body.base-imagery.gap-chip .gap-label span {
     border-bottom: 1px solid var(--paper-line);
   }
   #map { margin-left: 0; margin-top: 38vh; height: 62dvh; }
+  .leaflet-popup-content-wrapper { max-width: calc(100vw - 32px); }
   /* Masthead compresses, never stacks (design-notes §1.5). */
   .masthead { padding-bottom: 6px; margin-bottom: 6px; gap: 10px; }
   .masthead-logo { height: 32px; max-width: 96px; }
@@ -1971,15 +2069,22 @@ body.base-white .leaflet-container { background: #ffffff; }
   margin: 0 0 6px;
 }
 .pop-face, .pop-faces-all {
-  padding: 2px 8px;
-  border: 1px solid #999;
-  border-radius: 10px;
+  padding: 5px 11px;
+  border: 1px solid var(--paper-line);
+  border-radius: 999px;
   background: #fff;
   cursor: pointer;
   font: inherit;
-  font-size: 0.85rem;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--ink);
 }
-.pop-face.active { background: #ddd; font-weight: 700; }
+.pop-face.active {
+  background: var(--trail-deep);
+  color: #fff;
+  border-color: var(--trail-deep);
+  font-weight: 700;
+}
 .pop-face-grid {
   display: none;
   flex-wrap: wrap;
@@ -1996,40 +2101,42 @@ body.base-white .leaflet-container { background: #ffffff; }
    condition, photographer and note, saved through the itm-save
    Worker. Labels stack; the Save button matches the face pills. --- */
 .leaflet-popup-content .pop-cls {
-  border-top: 1px solid #ddd;
-  margin: 8px 0 2px;
-  padding-top: 6px;
+  border-top: 1px solid var(--paper-line);
+  margin: 12px 0 2px;
+  padding-top: 10px;
 }
 .leaflet-popup-content .pop-cls h4 {
   margin: 0 0 4px;
-  font-size: 0.9rem;
+  font-size: 13px;
 }
 .leaflet-popup-content .pop-cls label {
   display: block;
-  font-size: 0.85rem;
-  margin: 3px 0;
+  font-size: 13px;
+  margin: 6px 0 2px;
 }
 .leaflet-popup-content .pop-cls select,
 .leaflet-popup-content .pop-cls input[type="text"] {
   font: inherit;
-  font-size: 0.85rem;
-  padding: 2px 4px;
-  border: 1px solid #999;
-  border-radius: 4px;
+  font-size: 13px;
+  padding: 6px 8px;
+  border: 1px solid var(--paper-line);
+  border-radius: 6px;
   background: #fff;
   max-width: 100%;
   box-sizing: border-box;
 }
 .leaflet-popup-content .pop-cls input[type="text"] { width: 100%; }
 .pop-cls-save {
-  padding: 2px 10px;
-  margin-top: 4px;
-  border: 1px solid #999;
-  border-radius: 10px;
-  background: #fff;
+  padding: 7px 14px;
+  margin-top: 8px;
+  border: none;
+  border-radius: 999px;
+  background: var(--trail-deep);
+  color: #fff;
   cursor: pointer;
   font: inherit;
-  font-size: 0.85rem;
+  font-size: 13px;
+  font-weight: 600;
 }
 .pop-cls-save:disabled { opacity: 0.6; cursor: default; }
 .leaflet-popup-content .pop-cls-msg {
@@ -2046,8 +2153,8 @@ body.base-white .leaflet-container { background: #ffffff; }
    click-to-enlarge; the record link and the Save button read as
    real actions. --- */
 .leaflet-popup-content .pop-head {
-  margin: 0 -24px 8px -20px;
-  padding: 8px 24px 8px 20px;
+  margin: -14px -16px 10px;
+  padding: 10px 16px 8px;
   background: #fff;
   border-bottom: 1px solid var(--paper-line);
   display: flex;
@@ -2055,7 +2162,11 @@ body.base-white .leaflet-container { background: #ffffff; }
   justify-content: space-between;
   gap: 10px;
 }
-.leaflet-popup-content .pop-head h3 { margin: 0; }
+.leaflet-popup-content .pop-head h3 {
+  margin: 0;
+  border-bottom: none;
+  padding-bottom: 0;
+}
 .leaflet-popup-content .pop-head .pop-sub { margin: 2px 0 0; }
 /* The body scrolls inside the popup while the header stays put
    (Paul, Nov 13, 2026). The cap keeps the whole popup under

@@ -1236,10 +1236,10 @@ function govOwnedPopup(f) {
       + "government-owned service — this is the DNR statutory boundary, "
       + "which includes private inholdings; see Parcels."]);
   }
-  return "<h3>" + (esc(p.entity) || "Government-owned land") + "</h3>"
+  return popKicker("Government-owned land") + "<h3>" + (esc(p.entity) || "Government-owned land") + "</h3>"
     + kvTable(rows)
     + "<p class='pop-note'>Ownership-class coverage, not a parcel record — "
-    + "for the owner of a specific parcel, see the Parcels layer.</p>";
+    + "for the owner of a specific parcel, see the Parcels layer.</p>" + popDataLink("gov-owned");
 }
 
 /* Adopted stretches (§2.3, v7): amber #e08214 at opacity 1,
@@ -1333,9 +1333,22 @@ function kvTable(rows) {
 
 /* Every retained popup gets the same guard (UX P9): internal scroll
    past 70 vh and breathing room from the panel/controls. */
+/* Popup design pass (Nov 19, 2026 — look + actionability only):
+   popKicker names the card's layer in the header; popDataLink is
+   the "what next" footer — the data-sources page section that
+   documents this layer's source and interpretation method.
+   Neither changes any popup's words. */
+function popKicker(text) {
+  return "<p class='pop-kicker'>" + esc(text) + "</p>";
+}
+function popDataLink(anchor) {
+  return "<div class='pop-foot'><a href='data-sources.html#" + anchor +
+    "' target='_blank' rel='noopener'>About this layer &mdash; " +
+    "data sources</a></div>";
+}
 function bindPop(layer, html, maxWidth) {
   layer.bindPopup(html, {
-    maxWidth: maxWidth || 300,
+    maxWidth: maxWidth || 340,
     maxHeight: Math.round(window.innerHeight * 0.7),
     autoPanPadding: [24, 24],
   });
@@ -1651,11 +1664,11 @@ function trailPopup(f) {
   var p = f.properties;
   var title = esc(p.seg_name) || "North Country Trail";
   var kind = p.trail_stat === "NCT (on-road)" ? "On-road section" : "Off-road trail";
-  return "<h3>" + title + "</h3>" + kvTable([
+  return popKicker("Trail section") + "<h3>" + title + "</h3>" + kvTable([
     ["Chapter", CHAPTER_NAMES[p.chapter] || p.chapter],
     ["Type", kind + (p.trail_type ? " (" + p.trail_type + ")" : "")],
     ["Source", "North Country Trail Association — official trail line"],
-  ]);
+  ]) + popDataLink("nct-all-minnesota");
 }
 
 /* Parcel land-class labels (Paul, Nov 17, 2026 — the county
@@ -1746,13 +1759,13 @@ function parcelLandClassLabel(raw) {
 
 function parcelPopup(f) {
   var p = f.properties;
-  return "<h3>Parcel " + (esc(p.parcel_id) || "—") + "</h3>" + kvTable([
+  return popKicker("Parcel") + "<h3>Parcel " + (esc(p.parcel_id) || "—") + "</h3>" + kvTable([
     ["County", p.county],
     ["Land class", parcelLandClassLabel(p.land_class)],
     ["Acres", p.acres],
     ["Owner", p.owner],
     ["Source", "County parcel records — public record"],
-  ]);
+  ]) + popDataLink("parcels");
 }
 
 /* Driftless parcels (Paul, Nov 16, 2026): Iowa County (WI)
@@ -1768,7 +1781,7 @@ function driftlessParcelPopup(f) {
   var owner = [p.OWNERNME1, p.OWNERNME2].filter(function (x) {
     return x;
   }).join(" / ");
-  return "<h3>Parcel " + (esc(p.PARCELID) || "—") + "</h3>" + kvTable([
+  return popKicker("Parcel — Driftless") + "<h3>Parcel " + (esc(p.PARCELID) || "—") + "</h3>" + kvTable([
     ["County", p.county],
     ["Acres", p.GISACRES],
     ["Owner", owner || null],
@@ -1776,7 +1789,7 @@ function driftlessParcelPopup(f) {
     ["Parcel ID", p.TAXPARCELID],
     ["Source", "Wisconsin Statewide Parcel Map Database V12 " +
       "(2026) — public record"],
-  ]);
+  ]) + popDataLink("parcels-driftless");
 }
 
 /* Leech Lake Reservation: name the nation and the source, give the
@@ -1790,14 +1803,14 @@ function leechLakePopup(f) {
       "inside the reservation (" +
       (p.trail_sections_inside || []).join(", ") + ")"
     : null;
-  return "<h3>Leech Lake Reservation</h3>" + kvTable([
+  return popKicker("Reservation") + "<h3>Leech Lake Reservation</h3>" + kvTable([
     ["Nation", p.band],
     ["Boundary", p.source],
     ["Vintage", p.vintage],
     ["Area", p.area_acres != null
       ? Number(p.area_acres).toLocaleString("en-US") + " acres" : null],
     ["Trail inside", trail],
-  ]) + "<p class='pop-note'>" + esc(p.note) + "</p>";
+  ]) + "<p class='pop-note'>" + esc(p.note) + "</p>" + popDataLink("leech-lake");
 }
 /* White Earth Reservation: the same shape as leechLakePopup
    above — name the nation and the source, give the trail fact
@@ -1813,14 +1826,14 @@ function whiteEarthPopup(f) {
       "inside the reservation (" +
       (p.trail_sections_inside || []).join(", ") + ")"
     : null;
-  return "<h3>White Earth Reservation</h3>" + kvTable([
+  return popKicker("Reservation") + "<h3>White Earth Reservation</h3>" + kvTable([
     ["Nation", p.band],
     ["Boundary", p.source],
     ["Vintage", p.vintage],
     ["Area", p.area_acres != null
       ? Number(p.area_acres).toLocaleString("en-US") + " acres" : null],
     ["Trail inside", trail],
-  ]) + "<p class='pop-note'>" + esc(p.note) + "</p>";
+  ]) + "<p class='pop-note'>" + esc(p.note) + "</p>" + popDataLink("white-earth");
 }
 /* Logging and burns (Phase 3, Nov 12, 2026): three layers from
    the county / DNR / federal pull in working/logging-burns/ —
@@ -1896,7 +1909,7 @@ function logFimPopup(f) {
   var trs = [p.township, p.range, p.section].filter(function (v) {
     return v != null;
   }).join(" / ");
-  return "<h3>" + esc(p.name || "Forest stand") + "</h3>" + kvTable([
+  return popKicker("Forest stand") + "<h3>" + esc(p.name || "Forest stand") + "</h3>" + kvTable([
     ["Cover type", p.cover_type],
     ["Acres", p.acres],
     ["Stand age", age],
@@ -1906,7 +1919,7 @@ function logFimPopup(f) {
     ["Township / Range / Section", trs || null],
   ]) + "<p class='pop-note'>Forest inventory stand, not a sale.</p>" +
     popSourceLine(SRC_CASS_FIM,
-      "Cass County Forestry Web Map — FIM Stands (Current), layer 63");
+      "Cass County Forestry Web Map — FIM Stands (Current), layer 63") + popDataLink("forest-stands");
 }
 /* Statewide timber, past / planned split (Paul, Nov 16, 2026):
    every feature in timber-sales-minnesota.geojson carries a
@@ -2112,7 +2125,7 @@ function logStatewidePopup(f) {
       "a sale; not every examined stand becomes one."
     : "Sold / completed — historical context. The year is the " +
       "sale year.";
-  var out = "<h3>" + esc(seller + " — " +
+  var out = popKicker("Timber sale") + "<h3>" + esc(seller + " — " +
     (upcomingSale ? "Identified for sale" :
       planned ? "Examined for future sale" : "Past")) + "</h3>" + kvTable(rows) +
     "<p class='pop-note'>" + note + "</p>";
@@ -2139,6 +2152,7 @@ function logStatewidePopup(f) {
     out += popSourceLine(SRC_CLEARWATER_TIMBER,
       "Clearwater County Forestry — PreRX Appraisals, layer 0");
   }
+  out += popDataLink("timber-statewide");
   return out;
 }
 /* NWI wetlands, classified for trail routing (Paul, Nov 18, 2026 —
@@ -2254,7 +2268,7 @@ function wetlandPopup(f) {
     ["County", p.county],
     ["Region", p.region],
   ];
-  var out = "<h3>Wetland — " + (nogo ? "NO-GO" : "MAYBE") + "</h3>" +
+  var out = popKicker("Wetland") + "<h3>Wetland — " + (nogo ? "NO-GO" : "MAYBE") + "</h3>" +
     kvTable(rows) +
     "<p class='pop-note'>" + esc(entry.structure) + " " + esc(note) +
     "</p>" +
@@ -2267,6 +2281,7 @@ function wetlandPopup(f) {
   out += popSourceLine(SRC_NWI,
     "USFWS National Wetlands Inventory — USA_Wetlands FeatureServer " +
     "(Minnesota content: DNR June 2019 update)");
+  out += popDataLink("wetlands");
   return out;
 }
 /* Conservation easements (Nov 12, 2026): BWSR RIM Reserve
@@ -2288,10 +2303,10 @@ function easementsPopup(f) {
   if (p.status === "expired" && p.expires) {
     rows.splice(6, 0, ["Expired", p.expires]);
   }
-  return "<h3>" + esc(p.name || "Conservation easement") + "</h3>" +
+  return popKicker("Conservation easement") + "<h3>" + esc(p.name || "Conservation easement") + "</h3>" +
     kvTable(rows) +
     popSourceLine(SRC_EASEMENTS,
-      "BWSR RIM Reserve Easements, MapServer layer 0");
+      "BWSR RIM Reserve Easements, MapServer layer 0") + popDataLink("easements");
 }
 /* Forest health + blowdown (Paul, Nov 13, 2026): DNR forest
    health survey 2025, 123 polygons in the corridor. The survey
@@ -2305,13 +2320,13 @@ function forestHealthPopup(f) {
   if (p.host) { rows.push(["Host", p.host]); }
   if (p.acres != null) { rows.push(["Acres", p.acres]); }
   if (p.notes) { rows.push(["Notes", p.notes]); }
-  return "<h3>" + esc(p.name || "Forest health survey") + "</h3>" +
+  return popKicker("Forest health") + "<h3>" + esc(p.name || "Forest health survey") + "</h3>" +
     kvTable(rows) +
     "<p class='pop-note'>DNR forest health survey — damage mapped " +
     "in the survey year; the map shows where damage was recorded, " +
     "not current condition.</p>" +
     popSourceLine(SRC_FOREST_HEALTH,
-      "DNR Forest Health Survey 2025, FeatureServer layer 0");
+      "DNR Forest Health Survey 2025, FeatureServer layer 0") + popDataLink("forest-health");
 }
 /* Invasive species sightings (Paul, Nov 13, 2026): DNR invasive
    terrestrial observations — reported sightings, not a
@@ -2327,14 +2342,14 @@ function invasivesPopup(f) {
   ];
   if (p.reporter) { rows.push(["Reporter", p.reporter]); }
   if (p.record_source) { rows.push(["Record source", p.record_source]); }
-  return "<h3>" + esc(p.name || "Invasive species sighting") + "</h3>" +
+  return popKicker("Invasive species") + "<h3>" + esc(p.name || "Invasive species sighting") + "</h3>" +
     kvTable(rows) +
     "<p class='pop-note'>Reported sightings — observer reports " +
     "(largely iNaturalist), not a systematic survey. A species " +
     "missing from this map is not proof it is absent on the " +
     "ground.</p>" +
     popSourceLine(SRC_INVASIVES,
-      "DNR Invasive Terrestrial Observations, FeatureServer");
+      "DNR Invasive Terrestrial Observations, FeatureServer") + popDataLink("invasives");
 }
 /* Chippewa National Forest Land Management Plan areas (Paul,
    Nov 13, 2026): the 2004 plan's management areas. The summary
@@ -2350,13 +2365,13 @@ function chippewaPlanPopup(f) {
     ["Acres", p.gis_acres],
   ];
   if (p.summary) { rows.push(["Summary", p.summary]); }
-  return "<h3>" + esc(p.name || "Chippewa Forest Plan area") + "</h3>" +
+  return popKicker("Forest plan") + "<h3>" + esc(p.name || "Chippewa Forest Plan area") + "</h3>" +
     kvTable(rows) +
     "<p class='pop-note'>Chippewa National Forest Land Management " +
     "Plan (2004) management areas — the plan's desired " +
     "conditions, not a harvest schedule.</p>" +
     popSourceLine(SRC_CHIPPEWA_PLAN,
-      "Chippewa NF — Land Management Planning (EDW), MapServer");
+      "Chippewa NF — Land Management Planning (EDW), MapServer") + popDataLink("chippewa-plan");
 }
 
 
@@ -2390,7 +2405,7 @@ function alertDateText(p) {
 
 function alertPopup(f) {
   var p = f.properties;
-  var html = "<h3>" + (esc(p.title) || "Trail alert") + "</h3>" +
+  var html = popKicker("Trail alert") + "<h3>" + (esc(p.title) || "Trail alert") + "</h3>" +
     kvTable([
       ["Date", alertDateText(p)],
       ["Location", p.location],
@@ -2400,6 +2415,7 @@ function alertPopup(f) {
   }
   html += "<p class='pop-note'><em>Trail alert from the North " +
     "Country Trail Association.</em></p>";
+  html += popDataLink("trail-alerts");
   return html;
 }
 
@@ -2435,7 +2451,7 @@ function chapterPopupHtml(f) {
     ? p.source : p.place_source;
   var seeded = !!source && source.indexOf("seeded from NCTA") === 0;
   var closed = p.status === "closed";
-  var html = "<h3>" + (esc(p.name) || "Chapter place") + "</h3>";
+  var html = popKicker("Chapter place") + "<h3>" + (esc(p.name) || "Chapter place") + "</h3>";
   if (closed) html += "<p class='chapter-closed'>CLOSED</p>";
   var rows = [
     ["Kind", p.kind],
@@ -2468,13 +2484,14 @@ function chapterPopupHtml(f) {
       "record to be confirmed.</em></p>"
     : "<p class='pop-note'><em>Chapter record — Itasca Moraine " +
       "Chapter.</em></p>";
+  html += popDataLink("chapter-places");
   return html;
 }
 
 function accessPopup(f) {
   var p = f.properties;
   var s = ACCESS_STYLES[p.source_type];
-  var html = "<h3>" + (esc(p.name) || (s ? s.label : "Access line")) + "</h3>" +
+  var html = popKicker("Access") + "<h3>" + (esc(p.name) || (s ? s.label : "Access line")) + "</h3>" +
     kvTable([
       ["Kind", s ? s.label : p.source_type],
       ["Length", p.miles ? p.miles + " mi" : null],
@@ -2485,13 +2502,14 @@ function accessPopup(f) {
     html += "<p class='pop-note'>Kept whole — a connector that " +
       "crosses the trail</p>";
   }
+  html += popDataLink("access");
   return html;
 }
 
 function roadPopup(f) {
   var p = f.properties;
   var s = ROAD_CLASS_STYLES[p.road_class];
-  var html = "<h3>" + (esc(p.name) || (s ? s.label : "Road")) + "</h3>" +
+  var html = popKicker("Road") + "<h3>" + (esc(p.name) || (s ? s.label : "Road")) + "</h3>" +
     kvTable([
       ["Class", s ? s.label : p.road_class],
       ["Source", p.dataset],
@@ -2501,6 +2519,7 @@ function roadPopup(f) {
     html += "<p class='pop-note'>Kept whole — a connector that " +
       "crosses the trail</p>";
   }
+  html += popDataLink("roads");
   return html;
 }
 
@@ -2695,12 +2714,12 @@ function assetPopup(f, savedMsg) {
     /* R5: a pin we cannot name says so — never a guessed
        type. The note (what the classifier could see) is the
        description; the walk-through is the next step. */
-    html += "<h3>Not yet identified</h3>" +
+    html += popKicker("Trail asset") + "<h3>Not yet identified</h3>" +
       "<p class='pop-sub'>Needs a walk-through — we don't know " +
       "what this is yet.</p>";
     if (where) html += "<p class='pop-sub'>" + where + "</p>";
   } else {
-    html += "<h3>" + esc(typeName) + "</h3>";
+    html += popKicker("Trail asset") + "<h3>" + esc(typeName) + "</h3>";
     if (where) html += "<p class='pop-sub'>" + where + "</p>";
   }
   html += "</div>" + condChip + "</div>";
@@ -4210,6 +4229,7 @@ function sectionInspectorHtml(item) {
   }
   html += printNoteHtml();
   html += "</div>" + inspProv() + "</div>";
+  html += popDataLink("trail-assets");
   return html;
 }
 
@@ -4815,7 +4835,7 @@ function atvVehicles(p) {
 }
 function atvPopup(f) {
   var p = f.properties;
-  var h = "<h3>ATV &mdash; " + esc(p.trail_name || "Trail") + "</h3>";
+  var h = popKicker("ATV trail") + "<h3>ATV &mdash; " + esc(p.trail_name || "Trail") + "</h3>";
   h += kvTable([
     ["Segment", p.segment_name],
     ["Vehicles", atvVehicles(p)],
@@ -4825,17 +4845,19 @@ function atvPopup(f) {
       ? p.miles + " mi (DNR service)" : null],
   ]);
   if (p.web_site) {
-    h += "<p><a href=\"" + esc(p.web_site) +
-      "\" target=\"_blank\" rel=\"noopener\">DNR trail page</a></p>";
+    h += "<div class='pop-actions'><a class='pop-link' href=\"" +
+      esc(p.web_site) + "\" target=\"_blank\" rel=\"noopener\">" +
+      "DNR trail page</a></div>";
   }
   h += "<p class='pop-note'>Minnesota DNR OHV Trails, 2026 season, " +
     "via the MnGeo FeatureServer. Full state — every DNR ATV " +
     "trail in Minnesota, not just the ones near the NCT.</p>";
+  h += popDataLink("atv-trails");
   return h;
 }
 function ohmPopup(f) {
   var p = f.properties;
-  var h = "<h3>Dirt bike &mdash; " + esc(p.trail_name || "Trail") +
+  var h = popKicker("Dirt bike trail") + "<h3>Dirt bike &mdash; " + esc(p.trail_name || "Trail") +
     "</h3>";
   h += kvTable([
     ["Segment", p.segment_name],
@@ -4846,19 +4868,21 @@ function ohmPopup(f) {
       ? p.miles + " mi (DNR service)" : null],
   ]);
   if (p.web_site) {
-    h += "<p><a href=\"" + esc(p.web_site) +
-      "\" target=\"_blank\" rel=\"noopener\">DNR trail page</a></p>";
+    h += "<div class='pop-actions'><a class='pop-link' href=\"" +
+      esc(p.web_site) + "\" target=\"_blank\" rel=\"noopener\">" +
+      "DNR trail page</a></div>";
   }
   h += "<p class='pop-note'>Minnesota DNR OHV Trails (dirt bike / " +
     "off-highway motorcycle), 2026 season, via the MnGeo " +
     "FeatureServer. Full state — every DNR dirt-bike trail in " +
     "Minnesota. A trail that also allows ATVs appears on the " +
     "ATV layer too.</p>";
+  h += popDataLink("dirt-bike-trails");
   return h;
 }
 function snowPopup(f) {
   var p = f.properties;
-  var h = "<h3>Snowmobile &mdash; " + esc(p.trail_name || "Trail") +
+  var h = popKicker("Snowmobile trail") + "<h3>Snowmobile &mdash; " + esc(p.trail_name || "Trail") +
     "</h3>";
   h += kvTable([
     ["Segment", p.segment_name],
@@ -4873,6 +4897,7 @@ function snowPopup(f) {
     "full state, via the MnGeo FeatureServer. Groomed corridors " +
     "run 20&ndash;26 ft wide (32&ndash;36 ft at crossings), " +
     "groomers up to 17,000 lb.</p>";
+  h += popDataLink("snowmobile-trails");
   return h;
 }
 /* Bike trails (Paul, Nov 18, 2026): DNR state trails with
@@ -4903,7 +4928,7 @@ function bikePopup(f) {
     var t = (v == null ? "" : String(v)).trim();
     return t === "" ? null : t;
   }
-  var h = "<h3>Bike &mdash; " + esc(p.trail_name || "Trail") + "</h3>";
+  var h = popKicker("Bike trail") + "<h3>Bike &mdash; " + esc(p.trail_name || "Trail") + "</h3>";
   h += kvTable([
     ["Surface", s(p.surfacetyp || p.surface)],
     ["Width", s(p.width)],
@@ -4932,11 +4957,12 @@ function bikePopup(f) {
       "biking — Paul Bunyan, Heartland, David Dill&ndash;" +
       "Taconite, Gitchi-Gami and 25 more.</p>";
   }
+  h += popDataLink("bike-trails");
   return h;
 }
 function shtPopup(f) {
   var p = f.properties;
-  var h = "<h3>Superior Hiking Trail</h3>";
+  var h = popKicker("Superior Hiking Trail") + "<h3>Superior Hiking Trail</h3>";
   h += kvTable([
     ["This segment", p.lengthmile != null
       ? roundMi(p.lengthmile) + " mi (DNR service)" : null],
@@ -4947,6 +4973,7 @@ function shtPopup(f) {
     "the trail is not in that service. It meets the North " +
     "Country Trail only at its northern terminus, at the " +
     "270&deg; Overlook near Grand Portage.</p>";
+  h += popDataLink("sht");
   return h;
 }
 /* Inventoried trail (Paul, Nov 18, 2026): the trail that has
@@ -4959,7 +4986,7 @@ function shtPopup(f) {
    data/inventoried-trail.geojson. */
 function inventoriedPopup(f) {
   var p = f.properties;
-  var h = "<h3>Inventoried trail</h3>";
+  var h = popKicker("Inventoried trail") + "<h3>Inventoried trail</h3>";
   var walked = "";
   if (p.total_miles != null) walked += roundMi(p.total_miles) + " mi";
   if (p.total_points != null) {
@@ -4975,6 +5002,7 @@ function inventoriedPopup(f) {
     "inventorying the trail — not the published trail line. " +
     "The Nov 18 car tail (driving, tracker left on) was cut " +
     "before this layer was built.</p>";
+  h += popDataLink("inventoried-trail");
   return h;
 }
 /* TrailNFS names arrive ALL-CAPS ("CARIBOU ROCK", "BRT-SOCK LAKE
@@ -4992,7 +5020,7 @@ function trailName(raw) {
 }
 function brtPopup(f) {
   var p = f.properties;
-  var h = "<h3>Border Route Trail</h3>";
+  var h = popKicker("Border Route Trail") + "<h3>Border Route Trail</h3>";
   h += kvTable([
     ["This segment", p.gis_miles != null
       ? p.gis_miles + " mi (USFS service)" : null],
@@ -5009,6 +5037,7 @@ function brtPopup(f) {
     "surveys of the same tread and sit up to ~350 m apart in " +
     "places. USDA Forest Service, National Forest System " +
     "Trails (public domain).</p>";
+  h += popDataLink("brt");
   return h;
 }
 /* Driftless Hiking Trail (Paul, Nov 16, 2026): the built pieces
@@ -5026,7 +5055,7 @@ function brtPopup(f) {
    and LAZY. */
 function driftlessPopup(f) {
   var p = f.properties;
-  var h = "<h3>Driftless Hiking Trail</h3>";
+  var h = popKicker("Driftless Hiking Trail") + "<h3>Driftless Hiking Trail</h3>";
   h += kvTable([
     ["Segment", p.name],
     ["This segment", p.length_mi != null ? roundMi(p.length_mi) + " mi" : null],
@@ -5047,6 +5076,7 @@ function driftlessPopup(f) {
     "built but is in neither OpenStreetMap nor any published " +
     "map, so it is not drawn either. &copy; OpenStreetMap " +
     "contributors (ODbL), pull date Nov 16, 2026.</p>";
+  h += popDataLink("driftless-trail");
   return h;
 }
 /* Type + meeting-point tables for the near-BRT/SHT layer (Nov 16,
@@ -5091,7 +5121,7 @@ function nearMeets(name) {
 function nearPopup(f) {
   var p = f.properties;
   var name = p.trail_name || "";
-  var h = "<h3>" + esc(trailName(name)) + "</h3>";
+  var h = popKicker("Nearby trail") + "<h3>" + esc(trailName(name)) + "</h3>";
   h += kvTable([
     ["Type", nearType(name)],
     ["This segment", p.gis_miles != null
@@ -5103,11 +5133,12 @@ function nearPopup(f) {
     "near the Border Route Trail and Superior Hiking Trail, " +
     "Superior National Forest. USDA Forest Service, National " +
     "Forest System Trails (public domain).</p>";
+  h += popDataLink("near-brt-sht");
   return h;
 }
 function portagePopup(f) {
   var p = f.properties;
-  var h = "<h3>" + esc(trailName(p.trail_name)) + "</h3>";
+  var h = popKicker("Portage") + "<h3>" + esc(trailName(p.trail_name)) + "</h3>";
   h += kvTable([
     ["This portage", p.gis_miles != null
       ? p.gis_miles + " mi (USFS service)" : null],
@@ -5116,6 +5147,7 @@ function portagePopup(f) {
   h += "<p class='pop-note'>BWCAW lake-to-lake portage or " +
     "campsite spur along the Border Route tread. USDA Forest " +
     "Service, National Forest System Trails (public domain).</p>";
+  h += popDataLink("portages");
   return h;
 }
 
@@ -5730,7 +5762,7 @@ var LAYERS = [
         lineCap: "round",
       }, function (f) {
         var p = f.properties;
-        var h = "<h3>" + esc(p.name) + "</h3>" +
+        var h = popKicker("Chapter loop") + "<h3>" + esc(p.name) + "</h3>" +
           kvTable([
             ["Length", p.length_mi != null
               ? roundMi(p.length_mi) + " mi" : null],
@@ -5740,6 +5772,7 @@ var LAYERS = [
         if (p.alltrails) h += "<p class='pop-note'><a href='" +
           esc(p.alltrails) + "' target='_blank' rel='noopener'>" +
           "View on AllTrails</a> &mdash; reviews, photos, directions</p>";
+        h += popDataLink("chapter-loops");
         return h;
       });
     },
@@ -7015,7 +7048,7 @@ var LAYERS = [
         },
         onEachFeature: function (f, l) {
           var p = f.properties;
-          bindPop(l, "<h3>" + esc(p.name || "Campsite") + "</h3>" +
+          bindPop(l, popKicker("Campsite") + "<h3>" + esc(p.name || "Campsite") + "</h3>" +
             kvTable([
               ["Type", p.subtype || p.type],
               ["Managing authority", p.owner],
@@ -7023,7 +7056,7 @@ var LAYERS = [
               ["Distance from the trail", p.dist_trail_km != null
                 ? p.dist_trail_km + " km" : null],
               ["Description", p.description],
-            ]) + "<p class='pop-note'>NCTA public waypoint (Point Data — Public); one of the campsites within 2 km of the Arrowhead gap line.</p>");
+            ]) + "<p class='pop-note'>NCTA public waypoint (Point Data — Public); one of the campsites within 2 km of the Arrowhead gap line.</p>" + "<div class='pop-actions'>" + directionsHtml(f) + "</div>" + popDataLink("ncta-places"));
           registerSpiderfyPin("campsites-arrowhead", l, f);
         },
       });
@@ -7061,7 +7094,7 @@ var LAYERS = [
         },
         onEachFeature: function (f, l) {
           var p = f.properties;
-          bindPop(l, "<h3>" + esc(p.name || "Campsite") + "</h3>" +
+          bindPop(l, popKicker("Campsite") + "<h3>" + esc(p.name || "Campsite") + "</h3>" +
             kvTable([
               ["Type", p.subtype || p.type],
               ["Managing authority", p.owner],
@@ -7069,7 +7102,7 @@ var LAYERS = [
               ["Distance from the trail", p.dist_trail_km != null
                 ? p.dist_trail_km + " km" : null],
               ["Description", p.description],
-            ]) + "<p class='pop-note'>NCTA public waypoint (Point Data — Public); one of the campsites within 2 km of the Star of the North trail.</p>");
+            ]) + "<p class='pop-note'>NCTA public waypoint (Point Data — Public); one of the campsites within 2 km of the Star of the North trail.</p>" + "<div class='pop-actions'>" + directionsHtml(f) + "</div>" + popDataLink("ncta-places"));
           registerSpiderfyPin("campsites-stn", l, f);
         },
       });
@@ -7107,7 +7140,7 @@ var LAYERS = [
         },
         onEachFeature: function (f, l) {
           var p = f.properties;
-          bindPop(l, "<h3>" + esc(p.name || "Campground") + "</h3>" +
+          bindPop(l, popKicker("Campground") + "<h3>" + esc(p.name || "Campground") + "</h3>" +
             kvTable([
               ["Type", p.site_type],
               ["State forest", p.state_forest],
@@ -7116,7 +7149,7 @@ var LAYERS = [
               ["DNR region", p.dnr_region],
               ["Distance from the trail", p.dist_trail_km != null
                 ? p.dist_trail_km + " km" : null],
-            ]) + "<p class='pop-note'>Minnesota DNR state forest campground — rustic, first-come, no reservations; minimal facilities. A different manager with different rules from the NCTA/chapter campsites.</p>");
+            ]) + "<p class='pop-note'>Minnesota DNR state forest campground — rustic, first-come, no reservations; minimal facilities. A different manager with different rules from the NCTA/chapter campsites.</p>" + "<div class='pop-actions'>" + directionsHtml(f) + "</div>" + popDataLink("dnr-campgrounds"));
           registerSpiderfyPin("dnr-campgrounds", l, f);
         },
       });
@@ -7178,7 +7211,7 @@ var LAYERS = [
           var note = p.tier === 1
             ? "Pedestrian or mixed-use bridge — a crossing a hiker can use."
             : "Highway bridge the trail passes within 400 m — check on the ground whether the trail uses it.";
-          bindPop(l, "<h3>Bridge " + esc(p.bridge_number || "?") +
+          bindPop(l, popKicker("Bridge") + "<h3>Bridge " + esc(p.bridge_number || "?") +
             " — " + esc(p.facility_carried || "") + "</h3>" +
             kvTable([
               ["Crosses", p.features_crossed],
@@ -7201,7 +7234,7 @@ var LAYERS = [
                 ? p.dist_trail_km + " km" : null],
             ]) + "<p class='pop-note'>" + note +
             " FHWA National Bridge Inventory 2025; bridge number " +
-            esc(p.bridge_number || "") + ".</p>");
+            esc(p.bridge_number || "") + ".</p>" + "<div class='pop-actions'>" + directionsHtml(f) + "</div>" + popDataLink("bridges"));
           registerSpiderfyPin("nbi-bridges", l, f);
         },
       });
@@ -7245,7 +7278,7 @@ var LAYERS = [
     build: function (gj) {
       return boldLine(gj, "#428a13", function (f) {
         var p = f.properties;
-        var h = "<h3>" + esc(p.name) + "</h3>" +
+        var h = popKicker("AllTrails page") + "<h3>" + esc(p.name) + "</h3>" +
           kvTable([
             ["Length", p.length_mi != null
               ? roundMi(p.length_mi) + " mi" : null],
@@ -7254,6 +7287,7 @@ var LAYERS = [
         if (p.alltrails) h += "<p class='pop-note'><a href='" +
           esc(p.alltrails) + "' target='_blank' rel='noopener'>" +
           "View on AllTrails</a> &mdash; reviews, photos, directions</p>";
+        h += popDataLink("alltrails");
         return h;
       });
     },
@@ -7326,7 +7360,7 @@ var LAYERS = [
           var note = isWestern
             ? "The trail follows a public road here. Speeds and crash spots are separate toggles in this group."
             : "The trail follows a public road here. No speed or crash data is published for the Arrowhead road pieces.";
-          bindPop(l, "<h3>Road walk — " +
+          bindPop(l, popKicker("Road walk") + "<h3>Road walk — " +
             (isWestern ? esc(p.segment) : "Arrowhead") + "</h3>" +
             kvTable(rows) + "<p class='pop-note'>" + note + "</p>");
         },
@@ -7369,7 +7403,7 @@ var LAYERS = [
         },
         onEachFeature: function (f, l) {
           var p = f.properties;
-          bindPop(l, "<h3>" + esc(p.segment) + " — " + esc(p.road) + "</h3>" +
+          bindPop(l, popKicker("Speed limit") + "<h3>" + esc(p.segment) + " — " + esc(p.road) + "</h3>" +
             kvTable([
               ["Speed limit", p.speed_mph + " mph"],
               ["Miles", p.miles],
@@ -7413,7 +7447,7 @@ var LAYERS = [
         },
         onEachFeature: function (f, l) {
           var p = f.properties;
-          bindPop(l, "<h3>High-Injury Network — " + esc(p.road) + "</h3>" +
+          bindPop(l, popKicker("Accident-prone area") + "<h3>High-Injury Network — " + esc(p.road) + "</h3>" +
             kvTable([
               ["HIN score", p.hin_score],
               ["Segment", p.segment],
@@ -8368,15 +8402,20 @@ var LAYERS = [
         },
         onEachFeature: function (f, l) {
           var p = f.properties;
-          var html = "<strong>" + esc(p.name) + "</strong><br>" +
-            "Google Street View &mdash; imagery " + esc(p.imagery) +
-            "<br>View faces " + esc(p.faces) +
+          var html = popKicker("Street View") +
+            "<h3>" + esc(p.name) + "</h3>" +
+            kvTable([
+              ["Service", "Google Street View"],
+              ["Imagery", p.imagery],
+              ["View faces", p.faces],
+            ]) +
             (p.photosphere
-              ? "<br><em>User-contributed photosphere, not " +
-                "Google car coverage.</em>"
+              ? "<p class='pop-note'>User-contributed photosphere, not " +
+                "Google car coverage.</p>"
               : "") +
-            "<br><a href='" + p.url + "' target='_blank' " +
-            "rel='noopener'>Open Street View</a>";
+            "<div class='pop-actions'><a class='pop-link' href='" +
+            p.url + "' target='_blank' rel='noopener'>" +
+            "Open Street View</a></div>";
           bindPop(l, html);
           registerSpiderfyPin("streetview", l, f);
         },
@@ -9479,7 +9518,7 @@ function gazPopupHtml(f) {
       "depicted point ≈ " + (p.snap_m / 1000).toFixed(1) + " km"]);
   }
   rows.push(["Description", p.description]);
-  var html = "<h3>" + (esc(p.name) || "Place") + "</h3>" + kvTable(rows);
+  var html = popKicker("Place") + "<h3>" + (esc(p.name) || "Place") + "</h3>" + kvTable(rows);
   /* The door (§5): the section is opened, not named in a row. A
      point on a section boundary names both — the first that
      resolves to a walk item is the door. */
@@ -9497,6 +9536,7 @@ function gazPopupHtml(f) {
   }
   actions += directionsHtml(f);
   if (actions) html += "<div class='pop-actions'>" + actions + "</div>";
+  html += popDataLink("ncta-places");
   return html;
 }
 
