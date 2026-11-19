@@ -658,12 +658,14 @@ LAYERS = [
      "site/data/trail-minnesota.geojson", "trail", TRAIL_KEEP),
     ("data/parcels/parcels-corridor.geojson",
      "site/data/parcels.geojson", "parcels", map_parcel),
-    # Arrowhead reroute corridor parcels (Paul, Nov 18, 2026):
-    # same mapping as the chapter parcels; source is
-    # scripts/pull_parcels_arrowhead.py (in-polygon foot trail,
-    # crossed + one adjoining ring; no parcels along the Mesabi
-    # Trail bike path or the road walk).
-    ("data/parcels/parcels-arrowhead.geojson",
+    # Arrowhead reroute corridor parcels (Paul, Nov 19, 2026:
+    # whole-polygon set — every compiled parcel intersecting
+    # the 2004 corridor polygon; source is
+    # scripts/pull_parcels_arrowhead_polygon.py, 44,708 parcels.
+    # Supersedes the Nov 18 corridor set (crossed + one adjoining
+    # ring along the in-polygon foot trail, 347 parcels), whose
+    # working file is kept at data/parcels/parcels-arrowhead.geojson.)
+    ("data/parcels/parcels-arrowhead-polygon.geojson",
      "site/data/parcels-arrowhead.geojson", "parcels_arrowhead",
      map_arrowhead_parcel),
     # Star of the North trail parcels (Paul, Nov 18, 2026):

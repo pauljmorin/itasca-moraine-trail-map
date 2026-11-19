@@ -16,17 +16,24 @@ line and a different selection rule (Paul, Nov 18, 2026):
   * Line: the Arrowhead gap line,
     site/buildout/data/gap-arrowhead.geojson (the NCTA-service
     line for the Grand Rapids-to-Ely gap, 152.8 mi).
-  * Selection rule (Paul's reroute-polygon rule, Nov 18, 2026):
+  * Selection rule (Paul's reroute-polygon rule, Nov 18, 2026;
+    WIDENED Nov 19, 2026, Paul: parcels cropped for the polygon):
     the reroute polygon (the 2004 NPS preferred-alternative
     corridor, site/buildout/data/corridor-2004.geojson) contains
-    ALL parcels shown, and NO parcel polygons are drawn along
-    the bike path or the road walk. Implemented as: only line
-    segments that lie INSIDE the 2004 polygon AND are not
-    bike-path (surface "paved", the Mesabi Trail) or road-walk
-    (surface "road") segments take part in the crossed/adjoining
-    selection. The paved/road segments fall outside the polygon
-    for the most part, and the surface filter excludes the rest,
-    so no parcel is selected along them.
+    ALL parcels shown. Implemented as: every line segment that
+    lies INSIDE the 2004 polygon takes part in the
+    crossed/adjoining selection, whatever its surface — foot,
+    other, bike-path (surface "paved", the Mesabi Trail) and
+    road-walk (surface "road") alike. The Nov 18 version excluded
+    the paved/road segments, which left only 12.9 mi of foot
+    trail (all at Grand Rapids) and 347 Itasca-only parcels.
+    In-polygon alignment is 54.5 mi (foot 1.4 + other 11.4 +
+    paved 30.2 + road 11.4); 98.3 mi of the alignment falls
+    outside the polygon and still takes no part. (Same day,
+    Paul chose the whole-polygon set instead: see
+    scripts/pull_parcels_arrowhead_polygon.py. The widened
+    corridor set is kept here as a tool; the published layer
+    is the polygon set.)
   * crossed / adjoining: exactly as in pull_parcels_corridor.py
     (line crosses/touches the parcel or passes within 1 m;
     adjoining = boundary within 3 m of a crossed parcel).
@@ -123,31 +130,26 @@ def main():
     poly_geom = poly_fc["features"][0]["geometry"]
     gap_fc = json.loads(GAP_LINE.read_text())
 
-    # In-polygon, non-excluded line segments (the foot trail inside
-    # the reroute polygon) + the mileage accounting.
+    # In-polygon line segments, any surface (Paul, Nov 19, 2026:
+    # parcels cropped for the polygon — the Nov 18 surface
+    # exclusion is lifted) + the mileage accounting.
     trail_segments = []
     in_miles = 0.0
     out_miles = 0.0
-    excluded_miles = 0.0
     for feat in gap_fc["features"]:
         props = feat.get("properties") or {}
-        surface = props.get("surface")
         length = props.get("len_miles") or 0.0
         segs = list(iter_line_segments(feat.get("geometry")))
         inside = all(
             point_in_geometry(p, poly_geom) for s in segs for p in s
         )
-        if surface in EXCLUDED_SURFACES:
-            excluded_miles += length
-            continue
         if not inside:
             out_miles += length
             continue
         in_miles += length
         trail_segments.extend(segs)
-    print(f"Gap line: {in_miles:.1f} mi in-polygon foot trail; "
-          f"{excluded_miles:.1f} mi bike-path/road-walk (excluded); "
-          f"{out_miles:.1f} mi foot trail outside the polygon (excluded)")
+    print(f"Gap line: {in_miles:.1f} mi in-polygon (any surface); "
+          f"{out_miles:.1f} mi outside the polygon (excluded)")
     print(f"Selection segments: {len(trail_segments)}")
 
     seg_index, seg_bboxes = build_segment_index(trail_segments)

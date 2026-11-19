@@ -85,9 +85,9 @@
     }
    },
    "hub_url": "https://gis.data.mn.gov/datasets/minnesota::parcels-compiled-from-opt-inopen-data-counes-minnesota-2",
-   "layer_id": 1,
-   "layer_name": "Plan Parcels Open",
-   "metadata_layer_id": 0,
+   "layer_id": 0,
+   "layer_name": "Open Parcels In Minnesota",
+   "metadata_layer_id": 1,
    "name": "Parcels, Compiled from Opt-In Open Data Counties, Minnesota (MnGeo)",
    "service_root": "https://enterprise.gisdata.mn.gov/aghost/rest/services/us_mn_state_mngeo/plan_parcels_open/FeatureServer"
   },

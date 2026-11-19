@@ -5561,9 +5561,10 @@ var LAYERS = [
        data/arrowhead-reroute-polygon.geojson so this viewer
        stays self-contained. The polygon is the container for
        the Arrowhead parcels (Paul's reroute-polygon rule: it
-       contains ALL parcels shown, and no parcels are drawn
-       along the bike path or the road walk, which fall outside
-       it). Style matches the build-out viewer: blue #2166ac,
+       contains ALL parcels shown; since Nov 19, 2026 the
+       parcels are the whole-polygon set — every compiled
+       parcel inside it, including along the bike path and the
+       road walk where they fall inside the polygon). Style matches the build-out viewer: blue #2166ac,
        weight 1.5, fill 0.08. OFF by default and LAZY. */
     id: "reroute-arrowhead", label: "Arrowhead reroute polygon",
     title: "The congressionally approved planning corridor for the Arrowhead reroute (2004)",
@@ -5580,7 +5581,7 @@ var LAYERS = [
         onEachFeature: function (f, l) {
           bindPop(l, "<h3>2004 approved corridor</h3>" +
             "<p>The congressionally approved planning corridor for the Arrowhead reroute (NPS Draft Route Assessment &amp; Environmental Assessment, 2004; authorized by Congress March 2019, Dingell Act, P.L. 116-9). The Act authorizes the route; it appropriates no construction money.</p>" +
-            "<p class='pop-note'>The polygon contains the Arrowhead parcels: no parcels are drawn along the bike path or the road walk, which fall outside it.</p>");
+            "<p class='pop-note'>The polygon contains the Arrowhead parcels: every parcel inside it is shown, including along the bike path and the road walk where they fall inside the polygon.</p>");
         },
       });
     },
@@ -6369,21 +6370,21 @@ var LAYERS = [
     },
   },
   {
-    /* Parcels — Arrowhead (Paul, Nov 18, 2026): the Arrowhead
-       reroute corridor parcels — parcels the in-polygon foot
-       trail crosses, plus the adjoining ring one parcel deep,
-       pulled by scripts/pull_parcels_arrowhead.py from the same
+    /* Parcels — Arrowhead (Paul, Nov 19, 2026): the whole-
+       polygon set — every compiled parcel intersecting the
+       2004 corridor polygon (44,708 working, 44,649 published
+       after simplification), pulled by
+       scripts/pull_parcels_arrowhead_polygon.py from the same
        MnGeo compilation as the chapter parcels (Itasca, St.
        Louis, Lake, Aitkin and Cass Counties, all opt-in; Cook
        County is not crossed by the corridor). Same fence as the
        chapter parcels: published county records only, owner
        name + mailing address as published (chapter ruling Nov
        10, 2026), taxpayer fields never carried. The reroute
-       polygon contains ALL parcels shown; none is drawn along
-       the Mesabi Trail bike path or the road walk. OFF by
+       polygon contains ALL parcels shown. OFF by
        default and LAZY like parcels. */
     id: "parcels-arrowhead", label: "Parcels — Arrowhead",
-    title: "Parcels along the Arrowhead reroute corridor (in-polygon foot trail)",
+    title: "Parcels in the Arrowhead reroute corridor (whole polygon)",
     file: "data/parcels-arrowhead.geojson",
     onByDefault: false, group: "Land ownership",
     swatch: { kind: "fill", color: "#fdbb84", border: "#b35806" },
