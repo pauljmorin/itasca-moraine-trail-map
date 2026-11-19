@@ -636,7 +636,8 @@ def map_roadwalk(p):
     keep = ["kind", "area", "segment", "road", "miles", "speed_mph",
             "speed_text", "aadt", "position_note", "source", "hin_score",
             "extent", "tier", "note", "caveat", "shoulder_quality",
-            "shoulder_source"]
+            "shoulder_source", "length_mi", "from_name", "to_name",
+            "hin_extent", "hin_note"]
     out = {}
     for k in keep:
         v = p.get(k)

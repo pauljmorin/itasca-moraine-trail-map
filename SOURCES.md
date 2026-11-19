@@ -28,6 +28,27 @@ pulled.
   to the chapter working extent in `config/chapter.json`
   (84 features retained; see the file metadata in
   `data/segments/official-line-chapter-extent.geojson`).
+- **Mileage (Paul, Nov 19, 2026 — the pins decide):** mileage on
+  this map comes from the chapter's own segment pins
+  (`docs/segment-gap-analysis.md`): 73 miles adopted, 76 miles
+  chained into one continuous line (78 miles stored in the official
+  file), with a 3-mile unadopted gap. Do NOT chase any outside
+  published figure — NCTA's totals, the chapter's old "about 100
+  miles", or any 80- or 117-mile figure. Audit Nov 19, 2026: no
+  80- or 117-mile figure for the chapter's trail appears anywhere
+  in the viewer (80 appears only as a bridge count and in km; 117
+  nowhere); the only competing figure was "about 100 miles" in the
+  data-sources intro and `about.html`, now aligned to the pins'
+  numbers.
+- **Rounding (Paul, Nov 19, 2026):** mileage is rounded to the
+  nearest whole mile everywhere in the viewer, the panel and the
+  sources page — no decimals on mileage figures. NCTA mile-marker
+  numbers (MN-123.5) and T07 segment ranges (MN-81.5–86.5) are
+  positions, not lengths, and keep their half-mile values. Sub-mile
+  feature lengths (access lines, parcel trail-inside) keep one
+  decimal — rounding them to 0 would be false. Precise measured
+  values stay in the analysis record (`docs/segment-gap-analysis.md`:
+  73.23 / 76.15 / 78.19 mi) and in quoted research figures.
 - **Fallback source (if the service is ever unavailable):** NPS
   DataStore, https://irma.nps.gov/DataStore/ — unit NOCO geospatial
   datasets. Not used to date.
@@ -44,7 +65,7 @@ pulled.
   `scripts/build_site_data.py` with the same `TRAIL_KEEP` list and
   10 m tolerance as the chapter line (348 features, 252 KB, 0
   dropped in simplification).
-- **Contents:** 348 features, 566.12 mi (geodesic, full geometry),
+- **Contents:** 348 features, 566 mi (geodesic, full geometry),
   lon −96.72 to −89.93, lat 46.25 to 48.10 — North Dakota border
   (Fargo) to the Border Route Trail junction (Grand Portage).
   Chapters west to east: MWP (Minnesota Waters and Prairie) 86,
@@ -64,18 +85,18 @@ pulled.
   (https://northcountrytrail.org/trail/minnesota/stn/): "from
   Minnesota 84 to Highway 6, northeast of Remer" — about 30
   miles of trail. The extent is NOT taken from the official
-  line's `chapter` attribute: it tags only 2 features / 10.2 mi
+  line's `chapter` attribute: it tags only 2 features / 10 mi
   as STN; the rest of the same continuous trail is tagged ARW.
   **Interpretation method:** the 12 official-line features
   between the two crossings were chained end-to-end (150 m
-  endpoint tolerance, no breaks), 30.59 mi total, then clipped
+  endpoint tolerance, no breaks), 31 mi total, then clipped
   at the west end. **West cut [JUDGMENT J1]:** the MN-84
   crossing is placed at lon −94.21, from the OSM "State Highway
   84" line's northern terminus (−94.209, 46.981) and Longville
-  (−94.207); good to ~0.3 mi. The OSM road extract in the repo
+  (−94.207); good to about a third of a mile. The OSM road extract in the repo
   ends at lat 46.98 and the MnDOT centerlines service carries no
   usable route number for MN-84 here, so the crossing is by
-  longitude, not measured against a road survey. The 3.87 mi of
+  longitude, not measured against a road survey. The 4 mi of
   footpath west of the cut is Itasca Moraine territory per the
   chapter definition and is already covered by the chapter
   parcels, so the cut loses nothing and draws no parcel twice.
@@ -83,12 +104,12 @@ pulled.
   ~5 mi NE of Remer, where the footpath meets the Highway 6 road
   walk; the chain ends exactly at the junction, so no clip is
   needed there. **Result:** `data/segments/trail-stn.geojson`
-  (built by `scripts/build_stn_line.py`): 12 features, 26.67 mi
-  clipped (25.93 mi foot path + 0.74 mi on-road connectors), all
+  (built by `scripts/build_stn_line.py`): 12 features, 27 mi
+  clipped (26 mi foot path + 1 mi on-road connectors), all
   in Cass County (verified against the MnGeo county boundaries
   service: only Cass intersects the slice bbox). Note the
-  chapter's "30 miles" counts the full 30.59-mi chain from the
-  Itasca Moraine boundary; the clipped STN line is 26.67 mi.
+  chapter's "30 miles" counts the full 31-mi chain from the
+  Itasca Moraine boundary; the clipped STN line is 27 mi.
   **Trail styling (changed Nov 19, 2026, Paul):** the STN chunk is
   now its own published layer — `site/data/trail-stn.geojson` plus
   the `trail-stn` layer def, drawn like the chapter line over the
@@ -100,7 +121,7 @@ pulled.
   3,784 m east of the published feature's start — exactly the
   MN-84 clip, since the drawn line continues unclipped to the
   Itasca Moraine boundary). **Open question for Paul:** the J1 crossing
-  placement (±0.3 mi) and the "30 miles" vs 26.67 mi difference
+  placement (± about a third of a mile) and the "30 miles" vs 27 mi difference
   are recorded here; if the chapter's maintained section in fact
   starts at the Itasca Moraine boundary rather than at MN-84,
   the clip (and the 3.87-mi piece's parcels) moves to the STN
@@ -172,17 +193,17 @@ pulled.
 - **Sources (chapter property, in `data/inventoried-trail.geojson`
   properties):**
   - Nov 11, 2026: `Nov_11,_2026,_10_36_12_AM.gpx`, 1,038 points,
-    6.42 mi. No car tail: longest run above 15 mph is 0
+    6 mi. No car tail: longest run above 15 mph is 0
     consecutive segments under the same rule used for Nov 18.
   - Nov 18, 2026: `Nov_18,_2026,_2_47_32_PM-chopped.gpx`, 729
-    points, 4.50 mi. The car tail was cut before this layer was
+    points, 5 mi. The car tail was cut before this layer was
     built: the tracker stayed on for the drive home — walking
     ~3.5 mph until 22:24:30 UTC, then sustained 50–70 mph (max
     89 mph) to the end of the track. Rule: first index where the
     next 30 consecutive segments are all above 15 mph, then back
     to the last point at or under 5 mph. Cut after 22:25:29 UTC
-    (47.01664, −94.53610): 323 points, 5.22 mi removed from
-    1,052 points / 9.72 mi. The chopped GPX is kept at
+    (47.01664, −94.53610): 323 points, 5 mi removed from
+    1,052 points / 10 mi. The chopped GPX is kept at
     `working/photos-inbox-2026-11-18/` alongside the original.
   - New tracks are appended as new lines in the same file (and
     its `site/data/` copy) as the inventory grows.
@@ -281,14 +302,14 @@ pulled.
   polygons are drawn along the bike path or the road walk.
   Implemented as: only gap-line segments that lie INSIDE the
   2004 polygon AND are not bike-path (`surface` "paved", the
-  Mesabi Trail, 114.9 mi) or road-walk (`surface` "road", 25.0 mi)
+  Mesabi Trail, 115 mi) or road-walk (`surface` "road", 25 mi)
   segments take part in the crossed/adjoining selection. The
   in-polygon foot trail is the gap-line mileage inside the polygon
-  with the bike-path and road-walk surfaces removed: **12.9 mi**
+  with the bike-path and road-walk surfaces removed: **13 mi**
   (25 features, all in the Grand Rapids area, Itasca County — the
   rest of the gap line east of Grand Rapids is Mesabi Trail bike
-  path and road walk, with no foot trail at all). 54.5 mi of the
-  152.8-mi gap line lies inside the polygon across all surfaces.
+  path and road walk, with no foot trail at all). 55 mi of the
+  153-mi gap line lies inside the polygon across all surfaces.
   "All parcels inside the polygon" is NOT published: 45,793
   parcels intersect the 1,255-sq-mi polygon (Itasca 25,586; St.
   Louis 18,241; Lake 1,458; Aitkin 80; Cass 428) — a ~22 MB file
@@ -299,7 +320,7 @@ pulled.
   2026-11-18 by `scripts/pull_parcels_arrowhead.py`: **347 parcels
   (108 crossed + 239 adjoining), all Itasca County** — the
   in-polygon foot trail is the Grand Rapids-area pieces only
-  (12.9 mi), so no St. Louis / Lake / Aitkin / Cass parcel is
+  (13 mi), so no St. Louis / Lake / Aitkin / Cass parcel is
   selected. (First build was 355; a Nov 18 verification pass
   found 8 adjoining parcels 4–22 m from the nearest crossed
   parcel — admitted by a false "intersect" in the shared
@@ -346,8 +367,8 @@ pulled.
 - **Line:** `data/segments/trail-stn.geojson`, built by
   `scripts/build_stn_line.py` from the official NCTA line — the
   chapter's segment per NCTA's own chapter page ("from Minnesota
-  84 to Highway 6, northeast of Remer"), 26.67 mi clipped
-  (25.93 mi foot path + 0.74 mi on-road connectors). See the
+  84 to Highway 6, northeast of Remer"), 27 mi clipped
+  (26 mi foot path + 1 mi on-road connectors). See the
   "Star of the North extent" note under "Official trail line —
   Minnesota portion" for the chain, the MN-84 cut [JUDGMENT J1],
   and the open question on the west end.
@@ -367,8 +388,8 @@ pulled.
   so Paul's polygon rule does not apply — but the underlying
   principle does: NO parcel polygons are drawn along a road
   walk. Implemented as: only the `slice_role` "foot" features
-  (25.93 mi) take part in the selection; the 3 on-road
-  connectors (0.74 mi) are excluded.
+  (26 mi) take part in the selection; the 3 on-road
+  connectors (1 mi) are excluded.
 - **Cass County fields:** Cass's compiled records carry
   `owner_name` and `acres_deed` (`acres_poly` is null on all Cass
   records, so acres falls back to `acres_deed` — `map_parcel`
@@ -408,7 +429,7 @@ pulled.
   each broken into kinds. This is coverage, not per-parcel records:
   it overlaps the Parcels layer by design, and the popup says so.
 - **Corridor:** the same 2-mile buffer around
-  `site/data/trail-minnesota.geojson` (348 features, 566.12 mi) as
+  `site/data/trail-minnesota.geojson` (348 features, 566 mi) as
   timber — 4,973.7 km² (1,229,025 ac), all three chapters (ITM,
   Arrowhead, Star of the North). The 2004 reroute polygon is NOT
   used here; coverage is the trail buffer.
@@ -863,7 +884,7 @@ the services carry no per-service copyright text.
 
 - **What:** one layer, `site/data/bike-trails.geojson`, **437
   features, 745.95 GIS miles, full state** — every DNR state trail
-  that allows biking (364 features, 649.80 GIS miles, 29 named
+  that allows biking (364 features, 650 GIS miles, 29 named
   trails) plus the Mesabi Trail from OpenStreetMap (73 way
   features, 96.15 GIS miles). Wired in `site/app.js` as id
   `bike`, group "Other trails", right after the snowmobile layer,
@@ -883,16 +904,16 @@ the services carry no per-service copyright text.
     searches along the Grand Rapids–Ely corridor plus the OSM
     API (`/way/{id}/full`), 73 ways, 0 failed.
 - **Corridor trails in the layer:** Paul Bunyan State Trail
-  (41 features, 99.2 mi drawn), Heartland State Trail (14, 46.6
-  mi), David Dill–Taconite State Trail (1, 1.1 mi), Gitchi-Gami
-  State Trail (73, 33.5 mi), Taconite State Trail (2, 4.5 mi —
+  (41 features, 99 mi drawn), Heartland State Trail (14, 47
+  mi), David Dill–Taconite State Trail (1, 1 mi), Gitchi-Gami
+  State Trail (73, 34 mi), Taconite State Trail (2, 5 mi —
   only the bike-flagged pieces; most of the 165-mi Taconite
-  carries `use_bike = 0`), Mesabi Trail (73, 96.15 mi, OSM).
+  carries `use_bike = 0`), Mesabi Trail (73, 96 mi, OSM).
   The DNR's own published figures differ from the drawn miles
-  on Paul Bunyan (113 mi published vs 99.2 mi in the service)
+  on Paul Bunyan (113 mi published vs 99 mi in the service)
   — the difference is in the service, not a clip: the DNR
-  `lengthmile` field sums to 649.79 mi statewide against
-  649.80 mi drawn, so field and drawn agree to 0.01 mi.
+  `lengthmile` field sums to 650 mi statewide against
+  650 mi drawn, so field and drawn agree.
 - **How the layer was decided (interpretation method):** a
   feature is in the layer if and only if the DNR service flags
   it `use_bike = 1`, plus the Mesabi Trail, which is not in the
@@ -1099,17 +1120,17 @@ neither mileage reckoning above.
   publications. The Census file is preserved in git history
   (commit 91e3468) if the switch ever needs reversing.
 - **Trail overlap (measured 2026-11-11, UTM 15N against the
-  depicted chain):** 2.34 mi inside the reservation, all of
-  it on **Chip-12** (2.34 of its 3.98 mi); GAP-W and every
-  other section are outside. Census re-measures 2.27 mi by
-  the same method, so the switch adds 0.07 mi. The official
-  line gives 2.28 mi. **White Earth check (CORRECTED 2026-11-16):**
+  depicted chain):** 2 mi inside the reservation, all of
+  it on **Chip-12** (2 of its 4 mi); GAP-W and every
+  other section are outside. Census re-measures 2 mi by
+  the same method. The official
+  line gives 2 mi. **White Earth check (CORRECTED 2026-11-16):**
   the White Earth Reservation touches the map extent's western
   margin and no *depicted chapter* trail mileage falls inside
-  it (0.00 mi on the chapter line) — but the statewide NCT line
-  and the chapter line both put **19.15 mi inside White Earth,
+  it (no miles on the chapter line) — but the statewide NCT line
+  and the chapter line both put **19 mi inside White Earth,
   all LLC chapter** (geodesic and UTM 15N agreeing), and the
-  reservation survey independently measured the same 19.15 mi.
+  reservation survey independently measured the same 19 mi.
   The boundary layer is now built — see the White Earth section
   below.
 - **Use here:** Full unclipped geometry, pulled by
@@ -1152,10 +1173,10 @@ neither mileage reckoning above.
   Lake), so the boundary is the layer, not a map sheet.
 - **Trail overlap (measured 2026-11-16, geodesic + UTM 15N
   agreeing, against both the statewide NCT line and the chapter
-  line):** 19.15 mi inside the reservation, all of it LLC chapter
+  line):** 19 mi inside the reservation, all of it LLC chapter
   (Connector, Foot Path). The reservation survey independently
-  measured the same 19.15 mi. The largest single feature is
-  9.75 mi of a 9.96-mi feature. The chapter's stretches file does
+  measured the same 19 mi. The largest single feature is
+  10 mi of a 10-mi feature. The chapter's stretches file does
   not cover the LLC chapter, so no stretch name is recorded.
 - **Use here:** Full unclipped geometry, pulled by
   `scripts/pull_white_earth_reservation.py` into
@@ -1264,7 +1285,7 @@ neither mileage reckoning above.
   Hubbard / Becker / Clearwater + Chippewa EDW, corridor clip
   lon -95.6 to -93.9) extended statewide. 1,551 features,
   91,454.3 ac, in a 2-mile corridor around the statewide trail
-  line (348 features, 566.12 mi); a feature counts when its
+  line (348 features, 566 mi); a feature counts when its
   polygon intersects the buffer. Counties crossed: Wilkin,
   Otter Tail, Becker, Hubbard, Clearwater, Cass, Itasca,
   St. Louis, Carlton, Lake, Cook (11).
@@ -1379,9 +1400,41 @@ neither mileage reckoning above.
   watch list", OFF by default) and layer "logpast" ("Past timber
   sales", OFF by default, LAZY). Planned draws above past in
   the draw order. Popup first line names seller + timing
-  ("Cass County — Planned"); the rows carry unit, timing,
-  type, acres, year, county, region, prescription, plus
-  program extras and a per-program source line.
+  ("Cass County — Planned"); the rows carry unit, source level,
+  timing, type, permit (when not already in the unit name),
+  acres, year, county, region, prescription, plus program
+  extras and a per-program source line.
+- **Popup content rule (Paul, Nov 19, 2026 — content only; the
+  design pass restyles the look later):** every timber popup
+  names (1) the SOURCE level — Federal, State, or County, the
+  county named when county; (2) the facts — acres, year,
+  permit or identifying code, status where present; (3) a
+  human-readable decoding of every code — never a raw code
+  unexplained. The county `gis_id` GUID is never shown. The
+  decodings, verified Nov 19, 2026: sale_category C/H/P/M —
+  FACTS Data Dictionary ("the sale category indicates the
+  general type of sale: Historic, TIM Contract, Product Plan,
+  Multi Contract"; the dictionary's PURCHASER_NAME note calls
+  the second "Contract Sale", so C = Contract sale, H =
+  Historic sale, P = Product plan, M = Multi-contract sale);
+  land status (DNR 10-year exams) — DNR's own classes (WSU
+  SFRMP Table 1.4; STH report Table 3: Trust = School trust
+  land, U Trust = University trust land, Acquired = Acquired
+  land, ConCon = Consolidated conservation land, Volstead =
+  Volstead land); SFRMP plan code — DNR Section Forest Resource
+  Management Plan areas (STH report Fig. 4; MDLP = Minnesota
+  Drift and Lake Plains, NSU = Northern Superior Uplands, WSU =
+  Western Superior Uplands, NMOP = Northern Minnesota and
+  Ontario Peatlands, MNIAM = Minnesota and Northeast Iowa
+  Moraines). The DNR services carry no coded-value domains for
+  any of these fields (checked Nov 19 on the 10-year exam
+  service and the EDW service), so the decoding lives in
+  `site/app.js` (`SALE_CATEGORY_LABELS`,
+  `DNR_LAND_STATUS_LABELS`, `SFRMP_NAMES`) and an unknown code
+  is omitted from the popup, never shown raw. Timing is decoded
+  in the popup ("Examined for future sale", "Identified for
+  sale", "Past — sold / completed") — the raw `timing` value
+  never appears.
 - **Reading the map (Paul, Nov 16, 2026 — past / future only):
   ** one lime (#65a30d, edge #3f6212) for every seller — Paul
   corrected the first version, which colored sellers apart:
@@ -1424,7 +1477,7 @@ neither mileage reckoning above.
   Minnesota NCT, classified GO / MAYBE / NO-GO for trail routing.
   **91,479 polygons, 321,582.9 ac**, in the same 2-mile corridor
   around the statewide trail line as the timber layer (348
-  features, 566.12 mi); a wetland counts when its polygon
+  features, 566 mi); a wetland counts when its polygon
   intersects the buffer. By rating: **MAYBE 85,155 (181,967.4 ac)
   / NO-GO 6,324 (139,615.5 ac)**. There are NO GO features in the
   file: GO is absence of a polygon (rule W1 below). By rule:
@@ -2047,7 +2100,10 @@ neither mileage reckoning above.
 ## Road walk — T07 western segments + Arrowhead road pieces (added 2026-11-18, Paul)
 
 - **What:** The on-road line, one speed badge per western
-  road-walk segment, and the High-Injury Network crash markers.
+  road-walk segment except Seg 12 (badge removed Nov 19, 2026 —
+  Paul), and the High-Injury Network crash markers. Every line
+  feature carries its drawn length (`length_mi`) and the trail it
+  leaves and joins at each end (`from_name` / `to_name`).
 - **Sources:** T07 (Trail Research Brief T07 — Western Road Walk:
   The Safety Case, Segment by Segment, Nov 15, 2026; data
   retrieved Nov 16, 2026) for the 15 western segments, their
@@ -2071,11 +2127,40 @@ neither mileage reckoning above.
   midpoint (CSAH 88 at MN-39.5; CSAH 4 at MN-85.5 in Vergas;
   CSAH 1 / Tower Road at MN-56.5). Positions are approximate
   within ~1 mi and the popups say so.
+- **Endpoints + lengths (added 2026-11-19, Paul):** western
+  segments are enriched per SEGMENT (all pieces of a segment
+  share the values); Arrowhead pieces per PIECE. `length_mi` is
+  the drawn length measured from the geometry. `from_name` /
+  `to_name` are found by walking the ordered NCTA-service chain
+  outward from the segment's T07 mile range: a foot / paved /
+  sidewalk feature reached within 1 chain-mile is named (its
+  seg_name + kind, e.g. "Prairie Wetlands Learning Center (foot
+  tread)"); if the walk runs along road into the next T07
+  segment, the end reads "Road walk continues — Seg N"; if the
+  walk meets an untyped ("other") feature, or 1 mile passes with
+  no tread and no next segment, the end reads "No adjoining trail
+  identified in the map data". Chain ends are special: the west
+  end of Seg 1 is the Red River — the western end of the route;
+  the east end of Seg 15 runs past the end of the NCTA-service
+  chain (104.86 mi vs the T07 corridor 107.0 mi), so it is
+  checked against the statewide NCT line, which continues east
+  as footpath. Arrowhead piece ends take the nearest foot-tread
+  or paved multi-use path (gap-arrowhead foot/paved features, or
+  the bike-trails layer) within 500 m, by point-to-line
+  distance; nothing within 500 m leaves the field off. No
+  endpoint name is invented: a name comes only from an adjoining
+  feature's seg_name / trail_name, or the fixed fallback strings
+  above. Speed and HIN facts ride on the western line features
+  from the T07 table and HIN_SPOTS — except Seg 12, which
+  carries no speed fields (badge removed). Method lives in
+  `scripts/build_roadwalk.py` (`segment_end_name`,
+  `nearest_tread_name`).
 - **Speeds (T07 Leg 2):** statutory 55 mph rural / 30 mph urban /
   65 mph expressway (Minn. Stat. § 169.14), or the Otter Tail SAP
   "majority 55 mph" finding. Badge values: 55 everywhere except
   Seg 7 (Fergus Falls urban, 30) and Seg 14 (US-10 crossing, 65).
-  The Mesabi Trail bike path (surface "paved", 114.9 mi) is NOT
+  Seg 12 has no badge (removed Nov 19, 2026 — Paul; see below).
+  The Mesabi Trail bike path (surface "paved", 115 mi) is NOT
   road walk and is not drawn.
 - **Shoulders (T07 Leg 2; checked 2026-11-18):** no as-built
   shoulder width is published for any of the 15 western segments.
@@ -2164,10 +2249,12 @@ neither mileage reckoning above.
   at all (no 85th percentile values, no speed-study results, no
   "speeding" mentions). No speed study was found for the Wilkin
   or Becker segments or for the Arrowhead road pieces.
-  **Flagged, not resolved:** the Vergas 40 mph in those minutes
-  differs from T07's "30 mph in Vergas" (Seg 12) — different
-  streets or a changed limit; do not edit the badge on this
-  alone.
+  **Resolved Nov 19, 2026 by removal:** the Vergas 40 mph in those minutes
+  differs from T07's "30 mph in Vergas" (Seg 12) — Paul ordered the
+  badge removed rather than reconciling the discrepancy. The Seg 12
+  line and its HIN crash marker stay; the Seg 12 line popup carries
+  no speed row, and a rebuild does not resurrect the badge
+  (`scripts/build_roadwalk.py` skips Seg 12 in the badge loop).
 - **Crash spots (T07 Leg 3, Otter Tail SAP pp. 60–64, Table 10):**
   CSAH 88 HIN 6.0 (Seg 6) + Tier 3; CSAH 4 in Vergas HIN 6.0
   (Seg 12) + Tier 3 (CSAH 41 in the same segment is Tier 1);
@@ -2183,7 +2270,7 @@ neither mileage reckoning above.
   this layer.** The gap lines hold no `surface` "road" pieces in
   the STN extent (the Arrowhead gap line starts at lon −93.66,
   east of the STN east end), and the 3 on-road connectors on the
-  official STN line (0.74 mi) are connectors, not road-walk
+  official STN line (1 mi) are connectors, not road-walk
   segments. The 16.3-mi Hwy 6 road walk (Remer to Cohasset,
   official-line on-road features lon −93.847..−93.630, lat
   47.10..47.23) is in NO viewer layer — neither this road-walk

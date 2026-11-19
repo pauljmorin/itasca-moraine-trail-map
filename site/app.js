@@ -2004,6 +2004,59 @@ var STATEWIDE_REGION_LABELS = {
   central: "Central (Chippewa NF)",
   arrowhead: "Arrowhead (Superior NF)",
 };
+/* Popup content rule (Paul, Nov 19, 2026 — content only; the
+   design pass restyles the look later): every timber popup names
+   the SOURCE level (federal / state / county, county named), the
+   facts (acres, year, permit or identifying code, status where
+   present), and a human-readable decoding of every code — never
+   a raw code unexplained. gis_id (a county GUID) is never shown.
+   Decodings, all verified against the source dictionaries:
+   sale_category — FACTS Data Dictionary ("the sale category
+   indicates the general type of sale: Historic, TIM Contract,
+   Product Plan, Multi Contract"; the dictionary's PURCHASER_NAME
+   note calls the second "Contract Sale", so C = Contract sale);
+   land status — DNR's own land-status classes (WSU SFRMP Table
+   1.4 and the STH report Table 3: Trust = school trust,
+   U Trust = university trust, Acquired = acquired, ConCon =
+   consolidated conservation, Volstead = Volstead); sfrmp — DNR
+   Section Forest Resource Management Plan areas (DNR STH report
+   Fig. 4 and the SFRMP pages: MDLP = Minnesota Drift and Lake
+   Plains, NSU = Northern Superior Uplands, WSU = Western Superior
+   Uplands, NMOP = Northern Minnesota and Ontario Peatlands,
+   MNIAM = Minnesota and Northeast Iowa Moraines). An unknown code
+   is omitted from the popup, never shown raw. */
+var SALE_CATEGORY_LABELS = {
+  "C": "Contract sale (C)",
+  "H": "Historic sale (H)",
+  "P": "Product plan (P)",
+  "M": "Multi-contract sale (M)",
+};
+var DNR_LAND_STATUS_LABELS = {
+  "Trust": "School trust land",
+  "U Trust": "University trust land",
+  "Acquired": "Acquired land",
+  "ConCon": "Consolidated conservation land",
+  "Volstead": "Volstead land",
+};
+var SFRMP_NAMES = {
+  "MDLP": "Minnesota Drift and Lake Plains",
+  "NSU": "Northern Superior Uplands",
+  "WSU": "Western Superior Uplands",
+  "NMOP": "Northern Minnesota and Ontario Peatlands",
+  "MNIAM": "Minnesota and Northeast Iowa Moraines",
+  "MN IA Moraines": "Minnesota and Northeast Iowa Moraines",
+  "AP": "Aspen Parklands",
+  "PP": "Paleozoic Plateau",
+  "BRP": "Blufflands–Rochester Plateau",
+};
+function timberSourceLevel(p) {
+  if ((p.manager || "") === "USFS") {
+    return "Federal — USFS, " + (p.forest || "National Forest");
+  }
+  if ((p.manager || "") === "MN DNR") return "State — Minnesota DNR";
+  if (p.manager) return "County — " + p.manager;
+  return null;
+}
 function logStatewidePopup(f) {
   var p = f.properties;
   var planned = p.timing === "planned";
@@ -2012,29 +2065,40 @@ function logStatewidePopup(f) {
      by color — the map shows timing only. */
   var seller = timberSellerLabel(p);
   var upcomingSale = timberIsUpcomingSale(p);
+  /* Permit / identifying code, shown only when it is not already
+     in the Unit name: DNR stand numbers and county sale numbers
+     ride in the name already; the USFS permit does not. */
+  var permit = p.permit || null;
+  if (permit && p.name &&
+      String(p.name).indexOf(String(permit)) >= 0) permit = null;
   var rows = [
     ["Unit", p.name || (upcomingSale ? "Identified for sale" :
       planned ? "Examined for future sale" : "Timber sale")],
+    ["Source", timberSourceLevel(p)],
     ["Timing", upcomingSale ? "Identified for sale — upcoming" :
       planned ? "Examined for future sale — watch list" :
       "Past — sold / completed"],
-    ["Type", STATEWIDE_PROGRAM_LABELS[p.program] || p.program],
+    ["Type", STATEWIDE_PROGRAM_LABELS[p.program] || null],
+    ["Permit", permit],
     ["Acres", p.acres],
     ["Year", p.year],
     ["County", p.county],
-    ["Region", STATEWIDE_REGION_LABELS[p.region] || p.region],
+    ["Region", STATEWIDE_REGION_LABELS[p.region] || null],
     ["Prescription", p.prescrip_desc || p.pres_prelim],
   ];
   if (p.program === "usfs-edw-sale") {
     rows.push(["Forest", p.forest], ["District", p.district],
-      ["Revised", p.rev_date], ["Category", p.sale_category]);
+      ["Revised", p.rev_date],
+      ["Category", SALE_CATEGORY_LABELS[p.sale_category] || null]);
   } else if (p.program === "dnr-stand-exam-10yr") {
-    rows.push(["Exam year", p.se_year], ["Plan", p.sfrmp],
-      ["Admin", p.admin], ["Status", p.status]);
+    rows.push(["Exam year", p.se_year], ["Plan", SFRMP_NAMES[p.sfrmp] || null],
+      ["DNR division", p.admin],
+      ["Land status", DNR_LAND_STATUS_LABELS[p.status] || null]);
   } else if (p.program === "dnr-stand-exam-annual") {
     rows.push(["Plan year", p.plan_year], ["Area", p.area]);
   } else if (p.program === "county-sale") {
     if (p.status) rows.push(["Status", p.status]);
+    if (p.poly_num != null) rows.push(["County polygon no.", p.poly_num]);
     if (p.operator) rows.push(["Operator", p.operator]);
     if (p.closed) rows.push(["Closed", p.closed]);
   }
@@ -2380,9 +2444,9 @@ function chapterPopupHtml(f) {
     ["Capacity", p.capacity],
     ["Water", p.water_note],
     ["Chapter tracker mile",
-      p.nct_mile != null ? p.nct_mile : null],
+      p.nct_mile != null ? roundMi(p.nct_mile) : null],
     ["From the west end",
-      p.from_west_mi != null ? p.from_west_mi + " mi along the trail" : null],
+      p.from_west_mi != null ? roundMi(p.from_west_mi) + " mi along the trail" : null],
   ];
   if (p.off_chain) {
     rows.push(["Position", "Off the depicted chapter chain — nearest " +
@@ -2572,10 +2636,14 @@ var ITM_SAVE_URL = "https://itm-save.pauljmorin.workers.dev";
 
 /* Full-size photo URL (Paul, Nov 13, 2026): the lightbox opens the
    largest image we hold. When a photo carries a Drive file ID the
-   original opens from Drive; today every drive_id in
-   data/assets.geojson is null, so the lightbox opens the site's
-   1600 px derivative at native size. The Drive branch is live the
-   moment the pipeline records IDs — no code change needed then. */
+   original opens from Drive (thumbnail ?sz=w4000 — the full
+   resolution, not the 1600 px derivative). Nov 19, 2026: every
+   drive_id is populated (102 feature-level + 165 photo-level),
+   matched by exact filename against the shared Drive
+   photos-inbox; the 64 Nov 11 filenames that appear twice in the
+   inbox are byte-identical copies (same md5), so either copy is
+   the same original. A photo with no drive_id falls back to the
+   site derivative. */
 function photoFullUrl(ph) {
   if (ph && ph.drive_id) {
     return "https://drive.google.com/thumbnail?id=" +
@@ -3875,11 +3943,24 @@ function contentsHtml(sectionName) {
   return html + "</div>";
 }
 
+/* Mileage rounding (Paul, Nov 19, 2026 — the pins decide, §2.7):
+   mileage figures round to the nearest whole mile, no decimals.
+   A length under half a mile reads "<1", never "0 mi". Mile-marker
+   numbers (MN-123.5) and T07 segment ranges are positions, not
+   lengths, and are not passed through here. Sub-mile feature
+   lengths (access lines, parcel trail-inside) keep their decimals
+   and do not use this helper — rounding them to 0 would be false. */
+function roundMi(x) {
+  if (x == null || isNaN(+x)) return null;
+  var r = Math.round(+x);
+  return r < 1 ? "<1" : String(r);
+}
+
 function lengthText(r) {
-  var t = r.length_mi != null ? r.length_mi + " mi" : null;
+  var t = r.length_mi != null ? roundMi(r.length_mi) + " mi" : null;
   if (t && r.tracker_length_mi != null &&
       r.tracker_length_mi !== r.length_mi) {
-    t += " (tracker " + r.tracker_length_mi + ")";
+    t += " (tracker " + roundMi(r.tracker_length_mi) + ")";
   }
   return t;
 }
@@ -3895,11 +3976,11 @@ function sectionBrief(r) {
   var len = lengthText(r);
   if (len) bits.push("Length " + len);
   if (r.nct_mile_start != null && r.nct_mile_end != null) {
-    bits.push("Chapter tracker miles " + r.nct_mile_start + "–" +
-      r.nct_mile_end);
+    bits.push("Chapter tracker miles " + roundMi(r.nct_mile_start) + "–" +
+      roundMi(r.nct_mile_end));
   }
   if (r.from_west_mi != null) {
-    bits.push(r.from_west_mi + " mi from the west end");
+    bits.push(roundMi(r.from_west_mi) + " mi from the west end");
   }
   if (bits.length) lines.push(bits.join(" · "));
   var crew = [];
@@ -4061,8 +4142,8 @@ function sectionInspectorHtml(item) {
     var lenHtml = esc(len);
     if (r.tracker_length_mi != null &&
         r.tracker_length_mi !== r.length_mi) {
-      lenHtml = esc(r.length_mi + " mi") +
-        " <span class='muted'>(tracker " + r.tracker_length_mi +
+      lenHtml = esc(roundMi(r.length_mi) + " mi") +
+        " <span class='muted'>(tracker " + roundMi(r.tracker_length_mi) +
         ")</span>";
     }
     ks += "<div><div class='ks-label'>Length</div>" +
@@ -4070,8 +4151,8 @@ function sectionInspectorHtml(item) {
   }
   if (r.nct_mile_start != null && r.nct_mile_end != null) {
     ks += "<div><div class='ks-label'>Chapter tracker miles</div>" +
-      "<div class='ks-value'>" + r.nct_mile_start + "–" +
-      r.nct_mile_end + "</div></div>";
+      "<div class='ks-value'>" + roundMi(r.nct_mile_start) + "–" +
+      roundMi(r.nct_mile_end) + "</div></div>";
   }
   if (r.adopter_display && r.adopter_display.length) {
     ks += "<div><div class='ks-label'>Adopted by</div>" +
@@ -4305,7 +4386,7 @@ function chipNoteToken(p) {
 
 function chipFactTokens(p, isGap) {
   var toks = [];
-  if (p.length_mi != null) toks.push(p.length_mi + " mi");
+  if (p.length_mi != null) toks.push(roundMi(p.length_mi) + " mi");
   if (isGap) {
     toks.push("the chapter's recruiting gap");
     var gSheet = chipSheetToken(p);
@@ -4828,7 +4909,7 @@ function bikePopup(f) {
     ["Width", s(p.width)],
     ["Uses", bikeUses(p)],
     ["This segment", p.lengthmile != null
-      ? p.lengthmile + " mi (DNR service)" : null],
+      ? roundMi(p.lengthmile) + " mi (DNR service)" : null],
   ]);
   if (p.kind === "mesabi-osm") {
     h += "<p><a href=\"https://mesabitrail.com/\" target=\"_blank\" " +
@@ -4858,7 +4939,7 @@ function shtPopup(f) {
   var h = "<h3>Superior Hiking Trail</h3>";
   h += kvTable([
     ["This segment", p.lengthmile != null
-      ? p.lengthmile + " mi (DNR service)" : null],
+      ? roundMi(p.lengthmile) + " mi (DNR service)" : null],
   ]);
   h += "<p class='pop-note'>This layer shows the 208 miles of the " +
     "~310-mile trail that lie inside Minnesota state parks, as " +
@@ -4880,7 +4961,7 @@ function inventoriedPopup(f) {
   var p = f.properties;
   var h = "<h3>Inventoried trail</h3>";
   var walked = "";
-  if (p.total_miles != null) walked += p.total_miles + " mi";
+  if (p.total_miles != null) walked += roundMi(p.total_miles) + " mi";
   if (p.total_points != null) {
     walked += (walked ? " · " : "") + p.total_points + " GPS points";
   }
@@ -4948,7 +5029,7 @@ function driftlessPopup(f) {
   var h = "<h3>Driftless Hiking Trail</h3>";
   h += kvTable([
     ["Segment", p.name],
-    ["This segment", p.length_mi != null ? p.length_mi + " mi" : null],
+    ["This segment", p.length_mi != null ? roundMi(p.length_mi) + " mi" : null],
     ["Source", p.source],
   ]);
   if (p.accuracy === "approximate") {
@@ -5652,7 +5733,7 @@ var LAYERS = [
         var h = "<h3>" + esc(p.name) + "</h3>" +
           kvTable([
             ["Length", p.length_mi != null
-              ? p.length_mi + " mi" : null],
+              ? roundMi(p.length_mi) + " mi" : null],
             ["Source", p.source],
           ]) + "<p class='pop-note'>" + esc(p.gap_note || "") +
           "</p>";
@@ -6841,7 +6922,7 @@ var LAYERS = [
             kvTable([
               ["Status", p.trail_stat],
               ["Length", p.length_mi != null
-                ? p.length_mi + " mi" : null],
+                ? roundMi(p.length_mi) + " mi" : null],
               ["Property", p.property],
               ["Managing authority", p.managing_authority],
               ["Special regulations", p.special_regs],
@@ -7167,7 +7248,7 @@ var LAYERS = [
         var h = "<h3>" + esc(p.name) + "</h3>" +
           kvTable([
             ["Length", p.length_mi != null
-              ? p.length_mi + " mi" : null],
+              ? roundMi(p.length_mi) + " mi" : null],
             ["Source", p.source],
           ]) + "<p class='pop-note'>Listed on AllTrails.</p>";
         if (p.alltrails) h += "<p class='pop-note'><a href='" +
@@ -7180,14 +7261,17 @@ var LAYERS = [
   {
     /* Road walk (Paul, Nov 18, 2026): the on-road portions of
        the trail — the western T07 segments (Wilkin / Otter Tail
-       / Becker, 80.2 mi per T07) and the Arrowhead road pieces
-       (25.0 mi). Built by scripts/build_roadwalk.py from the
+       / Becker, 80 mi per T07) and the Arrowhead road pieces
+       (25 mi). Built by scripts/build_roadwalk.py from the
        NCTA gap lines; the western pieces are clipped to T07's
        segment ranges. The Mesabi Trail bike path is NOT road
-       walk and is not drawn here. Line popups carry the T07
-       shoulder / edge-condition note per western segment (no
-       as-built shoulder width exists for any segment — see
-       scripts/build_roadwalk.py). OFF by default and LAZY. */
+       walk and is not drawn here. Line popups state the extent
+       and what the road walk connects to at each end, the length
+       rounded to the nearest mile, and the planned facts (speed
+       limit, accident-prone areas, shoulder / edge condition
+       where known) — see scripts/build_roadwalk.py. No as-built
+       shoulder width exists for any segment. OFF by default and
+       LAZY. */
     id: "roadwalk", label: "Road walk",
     title: "Where the trail follows public roads — western T07 segments and Arrowhead road pieces",
     file: "data/roadwalk.geojson",
@@ -7203,14 +7287,48 @@ var LAYERS = [
         },
         onEachFeature: function (f, l) {
           var p = f.properties;
-          bindPop(l, "<h3>Road walk" + (p.segment
-            ? " — " + esc(p.segment) : "") + "</h3>" +
-            kvTable([
-              ["Area", p.area],
-              ["Shoulder", p.shoulder_quality],
-              ["Shoulder source", p.shoulder_source],
-              ["Source", p.source],
-            ]) + "<p class='pop-note'>The trail follows a public road here. Speeds and crash spots are separate toggles in this group.</p>");
+          /* Road-walk popup (Paul, Nov 19, 2026 — content only):
+             extent + what it connects to at each end, length
+             rounded to the nearest mile, then the planned facts:
+             speed limit, accident-prone areas, shoulder / edge
+             condition where known. Western popups are per SEGMENT
+             (every piece of a segment shows the segment);
+             Arrowhead popups are per PIECE. Seg 12 carries no
+             speed row — its badge was removed Nov 19, 2026
+             (Paul) and the disputed figure must not reappear
+             here. Endpoint names come from the adjoining
+             features' own names (scripts/build_roadwalk.py);
+             nothing is invented. */
+          var isWestern = p.area === "western";
+          var rows = [
+            ["Extent", isWestern
+              ? (p.road ? p.road + ", " : "") + p.miles : null],
+            ["Length", p.length_mi != null
+              ? roundMi(p.length_mi) + " mi" : null],
+            ["West end", p.from_name ||
+              "No adjoining trail identified in the map data"],
+            ["East end", p.to_name ||
+              "No adjoining trail identified in the map data"],
+          ];
+          if (p.speed_mph) {
+            rows.push(["Speed limit", p.speed_mph + " mph — " +
+              p.speed_text]);
+            if (p.aadt) rows.push(["Traffic (AADT)", p.aadt]);
+          }
+          if (p.hin_score) {
+            rows.push(["Accident-prone area", "HIN " + p.hin_score +
+              " — " + p.hin_extent +
+              (p.hin_note ? ". " + p.hin_note : "")]);
+          }
+          rows.push(["Shoulder", p.shoulder_quality],
+            ["Shoulder source", p.shoulder_source],
+            ["Source", p.source]);
+          var note = isWestern
+            ? "The trail follows a public road here. Speeds and crash spots are separate toggles in this group."
+            : "The trail follows a public road here. No speed or crash data is published for the Arrowhead road pieces.";
+          bindPop(l, "<h3>Road walk — " +
+            (isWestern ? esc(p.segment) : "Arrowhead") + "</h3>" +
+            kvTable(rows) + "<p class='pop-note'>" + note + "</p>");
         },
       });
     },
@@ -7219,7 +7337,9 @@ var LAYERS = [
     /* Speed limits (Paul, Nov 18, 2026): one badge per T07
        western road-walk segment, at the segment midpoint (Seg 14
        sits at the US-10 crossing instead — see
-       scripts/build_roadwalk.py). Values are T07's: statutory
+       scripts/build_roadwalk.py). Seg 12 has NO badge (removed
+       Nov 19, 2026 — Paul; the Vergas 40-vs-30 discrepancy is
+       not reconciled). Values are T07's: statutory
        55 rural / 30 urban / 65 expressway (Minn. Stat. § 169.14)
        or the Otter Tail SAP "majority 55 mph" finding. The badge
        shows the limit at the badge's spot; the popup carries the
@@ -9349,9 +9469,9 @@ function gazPopupHtml(f) {
   var rows = [
     ["Kind", p.kind],
     ["Chapter tracker mile",
-      p.nct_mile != null ? p.nct_mile : null],
+      p.nct_mile != null ? roundMi(p.nct_mile) : null],
     ["From the west end",
-      p.from_west_mi != null ? p.from_west_mi + " mi along the trail" : null],
+      p.from_west_mi != null ? roundMi(p.from_west_mi) + " mi along the trail" : null],
     ["Source", GAZ_SOURCE_LABELS[p.source] || p.source],
   ];
   if (p.off_chain) {
@@ -9431,14 +9551,14 @@ function gazResultSub(p) {
   var bits = [p.kind];
   if (p.kind === "Section") {
     if (p.nct_mile_start != null && p.nct_mile_end != null) {
-      bits.push("Tracker miles " + p.nct_mile_start + "–" +
-        p.nct_mile_end);
+      bits.push("Tracker miles " + roundMi(p.nct_mile_start) + "–" +
+        roundMi(p.nct_mile_end));
     } else if (p.nct_mile != null) {
-      bits.push("Tracker miles " + p.nct_mile);
+      bits.push("Tracker miles " + roundMi(p.nct_mile));
     }
-    if (p.length_mi != null) bits.push(p.length_mi + " mi");
+    if (p.length_mi != null) bits.push(roundMi(p.length_mi) + " mi");
   } else {
-    if (p.nct_mile != null) bits.push("Tracker miles " + p.nct_mile);
+    if (p.nct_mile != null) bits.push("Tracker miles " + roundMi(p.nct_mile));
     else if (p.off_chain) bits.push("off-chain");
     if (p.section) bits.push("in " + p.section);
     if (p.source === "chapter") {

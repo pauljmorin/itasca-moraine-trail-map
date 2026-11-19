@@ -91,6 +91,46 @@ Sources (all verified, nothing invented):
     observed-speed data at all (no 85th percentile values, no
     speed-study results, no "speeding" mentions).
 
+  * VERGAS SPEED BADGE REMOVED (Paul, Nov 19, 2026): the Seg 12
+    speed badge is NOT built. The county minutes (MnDOT speed
+    study, Otter Tail Board minutes Jan 3, 2023) say 40 mph in
+    Vergas; the brief (T07 / Otter Tail SAP p. 67) says 30 mph.
+    Paul: remove the badge, do not reconcile the discrepancy.
+    The Seg 12 LINE and its HIN crash marker stay — only the
+    badge goes, so a rebuild does not resurrect it. The Seg 12
+    line popup therefore carries no speed row.
+  * ENDPOINTS + LENGTHS (added 2026-11-19, Paul): every line
+    feature carries length_mi (drawn length, measured from the
+    geometry) and from_name / to_name — the trail the road walk
+    leaves and joins at each end. Western segments are enriched
+    per SEGMENT (all pieces of a segment share the values): the
+    endpoints are found by walking the ordered NCTA-service
+    chain outward from the segment's T07 mile range. A foot /
+    paved / sidewalk feature reached within 1 chain-mile is
+    named (its seg_name + kind, e.g. "Prairie Wetlands Learning
+    Center (foot tread)"); if the walk runs along road into the
+    next T07 segment, the end reads "Road walk continues — Seg N";
+    if the walk meets an untyped ("other") feature, or 1 mile
+    passes with no tread and no next segment, the end reads
+    "No adjoining trail identified in the map data". Chain ends
+    are special: the west end of Seg 1 is the Red River — the
+    western end of the route; the east end of Seg 15 runs past
+    the end of the NCTA-service chain (104.86 mi vs the T07
+    corridor 107.0 mi), so it is checked against the statewide
+    NCT line, which continues east as footpath. Arrowhead pieces
+    are enriched per PIECE: the nearest foot-tread or paved
+    multi-use path (gap-arrowhead foot/paved features, or the
+    bike-trails layer) within 500 m of the piece end, by
+    point-to-line distance; nothing within 500 m leaves the
+    field off and the popup falls back to "No adjoining trail
+    identified". No endpoint name is invented: a name comes only
+    from an adjoining feature's seg_name / trail_name, or the
+    fixed fallback strings above. Speed and HIN facts ride on
+    the western line features from the T07 table (speed_mph /
+    speed_text / aadt) and HIN_SPOTS (hin_score / hin_extent /
+    hin_note) — except Seg 12, which carries no speed fields
+    (badge removed).
+
 Output: data/roadwalk.geojson (working data) with a "kind"
 property per feature: "line" (the road-walk line), "speed"
 (one badge per T07 segment), "crash" (one marker per HIN
@@ -104,7 +144,7 @@ import sys
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from geo_util import iter_line_segments  # noqa: E402
+from geo_util import iter_line_segments, point_seg_dist_km  # noqa: E402
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
 GAP_WESTERN = REPO_ROOT / "site" / "buildout" / "data" / "gap-western.geojson"
@@ -422,6 +462,126 @@ def point_at_chain_mile(chain, mile):
     raise RuntimeError(f"mile {mile} is beyond the chain")
 
 
+def line_length_mi(coords):
+    """Drawn length of a LineString in miles (equirectangular)."""
+    total = 0.0
+    for a, b in zip(coords, coords[1:]):
+        total += dist_km(a, b)
+    return total / KM_PER_MILE
+
+
+ENDPOINT_FALLBACK = "No adjoining trail identified in the map data"
+TREAD_KINDS = {"foot": "foot tread", "paved": "paved multi-use path",
+               "sidewalk": "sidewalk"}
+
+
+def tread_display(props, walked_mi):
+    """Display name for an adjoining tread feature: its seg_name
+    plus the kind in words; a generic label when unnamed. A
+    distance clause is added only when the tread is not
+    immediately adjoining (walked > 0.05 mi), rounded to the
+    nearest mile per the viewer rule."""
+    surf = props.get("surface")
+    kind = TREAD_KINDS.get(surf, "trail")
+    name = (props.get("seg_name") or "").strip()
+    if name:
+        disp = f"{name} ({kind})"
+    else:
+        disp = {"foot": "NCT footpath",
+                "paved": "Paved multi-use path",
+                "sidewalk": "Sidewalk"}.get(surf, "Trail")
+    if walked_mi > 0.05:
+        disp += f", {round(walked_mi)} mi away"
+    return disp
+
+
+def segment_end_name(chain, total, seg_idx, direction, chain_end_name=None):
+    """Endpoint name for one end of a western T07 segment.
+    direction -1 = west end, +1 = east end. Walks the ordered
+    chain outward from the segment's T07 mile range (method in
+    the docstring). Returns the display string, or None when the
+    walk runs off the east end of the chain (the caller then
+    substitutes chain_end_name, the statewide-line check)."""
+    seg = T07_SEGMENTS[seg_idx]
+    boundary = seg[2] if direction < 0 else seg[3]
+    if direction < 0 and boundary <= 1e-9:
+        return "Red River — western end of the route"
+    if direction > 0 and boundary >= total - 1e-9:
+        return chain_end_name
+    # next T07 segment in this direction, if any
+    if direction < 0:
+        cands = [s for s in T07_SEGMENTS if s[3] <= boundary + 1e-9]
+        nxt = max(cands, key=lambda s: s[3]) if cands else None
+    else:
+        cands = [s for s in T07_SEGMENTS if s[2] >= boundary - 1e-9]
+        nxt = min(cands, key=lambda s: s[2]) if cands else None
+    pos = boundary
+    walked = 0.0
+    idxs = range(len(chain)) if direction > 0 else range(len(chain) - 1, -1, -1)
+    for i in idxs:
+        f, c, s, e = chain[i]
+        if direction > 0 and e <= pos + 1e-9:
+            continue
+        if direction < 0 and s >= pos - 1e-9:
+            continue
+        props = f.get("properties") or {}
+        surf = props.get("surface")
+        near = max(s, pos) if direction > 0 else min(e, pos)
+        gap = abs(near - pos)
+        if surf in ("foot", "paved", "sidewalk"):
+            if walked + gap <= 1.0:
+                return tread_display(props, walked + gap)
+            return ENDPOINT_FALLBACK
+        if surf == "road":
+            # does this road run into the next T07 segment?
+            if nxt is not None:
+                if direction > 0 and nxt[2] <= e + 1e-9:
+                    return f"Road walk continues — {nxt[0]}"
+                if direction < 0 and nxt[3] >= s - 1e-9:
+                    return f"Road walk continues — {nxt[0]}"
+            far = e if direction > 0 else s
+            walked += abs(far - pos)
+            pos = far
+            continue
+        # "other" (untyped) — the line leaves the road/tread system
+        return ENDPOINT_FALLBACK
+    return chain_end_name
+
+
+def nearest_tread_name(point, bike_features, gap_features):
+    """Nearest foot-tread or paved multi-use path to a point,
+    within 500 m by point-to-line distance, across the
+    bike-trails layer and the gap-arrowhead foot/paved features.
+    Returns the display string, or None when nothing is near."""
+    best = None  # (dist_km, kind, name)
+    for f in gap_features:
+        p = f.get("properties") or {}
+        if p.get("surface") not in ("paved", "foot"):
+            continue
+        kind = ("paved multi-use path" if p["surface"] == "paved"
+                else "foot tread")
+        for a, b in iter_line_segments(f.get("geometry")):
+            d = point_seg_dist_km(point, a, b)
+            if best is None or d < best[0]:
+                best = (d, kind, (p.get("seg_name") or "").strip())
+    for f in bike_features:
+        p = f.get("properties") or {}
+        name = (p.get("trail_name") or "").strip()
+        if not name:
+            continue
+        for a, b in iter_line_segments(f.get("geometry")):
+            d = point_seg_dist_km(point, a, b)
+            if best is None or d < best[0]:
+                best = (d, "bike path", name)
+    if best is None or best[0] * 1000.0 > 500.0:
+        return None
+    d, kind, name = best
+    if name:
+        return f"{name} ({kind})"
+    return {"foot tread": "NCT footpath",
+            "paved multi-use path": "Paved multi-use path"}.get(kind, "Trail")
+
+
 def main():
     gap_w = json.loads(GAP_WESTERN.read_text())
     gap_a = json.loads(GAP_ARROWHEAD.read_text())
@@ -439,6 +599,7 @@ def main():
 
     # --- western road-walk line: chain pieces clipped to T07 ranges
     west_pieces = 0
+    seg_lengths = {}
     for feat, coords, s, e in chain:
         if not in_roadwalk(s, e):
             continue
@@ -452,12 +613,17 @@ def main():
                 continue
             seg_name = next(
                 (sg[0] for sg in T07_SEGMENTS if sg[2] == rs), "")
+            row = next(sg for sg in T07_SEGMENTS if sg[0] == seg_name)
+            seg_lengths[seg_name] = (seg_lengths.get(seg_name, 0.0) +
+                                     line_length_mi(sub))
             features.append({
                 "type": "Feature",
                 "geometry": {"type": "LineString", "coordinates": sub},
                 "properties": {
                     "kind": "line", "area": "western",
                     "segment": seg_name,
+                    "road": row[1],
+                    "miles": f"MN-{rs:.1f} to MN-{re:.1f}",
                     "shoulder_quality": SHOULDER[seg_name][0],
                     "shoulder_source": SHOULDER[seg_name][1],
                     "source": "NCTA gap line clipped to the T07 segment range",
@@ -467,31 +633,115 @@ def main():
     print(f"Western road-walk line pieces: {west_pieces}")
 
     # --- Arrowhead road-walk line: surface == "road" features, whole
+    bike_path = REPO_ROOT / "site" / "data" / "bike-trails.geojson"
+    bike_features = json.loads(bike_path.read_text())["features"]
     ar_pieces = 0
     ar_miles = 0.0
     for feat in gap_a["features"]:
         props = feat.get("properties") or {}
         if props.get("surface") != "road":
             continue
-        ar_miles += props.get("len_miles") or 0.0
+        geom = feat.get("geometry") or {}
+        coords = geom.get("coordinates") or []
+        if geom.get("type") == "LineString":
+            lines = [coords]
+        elif geom.get("type") == "MultiLineString":
+            lines = coords
+        else:
+            lines = []
+        piece_len = sum(line_length_mi(c) for c in lines)
+        ar_miles += piece_len
+        start_pt = lines[0][0] if lines and lines[0] else None
+        end_pt = lines[-1][-1] if lines and lines[-1] else None
+        p = {
+            "kind": "line", "area": "arrowhead",
+            "segment": "Arrowhead road walk",
+            "length_mi": round(piece_len, 2),
+            "source": "NCTA gap line, surface = road (the Mesabi "
+                      "Trail bike path, surface = paved, is not road walk)",
+        }
+        if start_pt is not None:
+            name = nearest_tread_name(start_pt, bike_features,
+                                      gap_a["features"])
+            if name:
+                p["from_name"] = name
+        if end_pt is not None:
+            name = nearest_tread_name(end_pt, bike_features,
+                                      gap_a["features"])
+            if name:
+                p["to_name"] = name
         features.append({
             "type": "Feature",
             "geometry": feat.get("geometry"),
-            "properties": {
-                "kind": "line", "area": "arrowhead",
-                "segment": "Arrowhead road walk",
-                "source": "NCTA gap line, surface = road (the Mesabi "
-                          "Trail bike path, surface = paved, is not road walk)",
-            },
+            "properties": p,
         })
         ar_pieces += 1
     print(f"Arrowhead road-walk line pieces: {ar_pieces} ({ar_miles:.1f} mi)")
+
+    # --- western segment enrichment: length, endpoints, speed, HIN
+    # (per segment; every piece of a segment shares the values)
+    tm_path = REPO_ROOT / "site" / "data" / "trail-minnesota.geojson"
+    chain_end_name = None
+    try:
+        tm = json.loads(tm_path.read_text())
+        end_pt = chain[-1][1][-1]
+        best = None
+        for f in tm["features"]:
+            fp = f.get("properties") or {}
+            if fp.get("trail_type") != "Foot Path":
+                continue
+            for a, b in iter_line_segments(f.get("geometry")):
+                d = point_seg_dist_km(end_pt, a, b)
+                if best is None or d < best:
+                    best = d
+        if best is not None and best * 1000.0 <= 500.0:
+            chain_end_name = ("NCT footpath — the chapter line "
+                              "continues east")
+    except FileNotFoundError:
+        pass
+    seg_info = {}
+    for i, (seg, road, s, e, mph, wording, aadt) in enumerate(T07_SEGMENTS):
+        info = {
+            "length_mi": round(seg_lengths.get(seg, 0.0), 2),
+            "from_name": (segment_end_name(chain, total, i, -1,
+                                           chain_end_name)
+                          or ENDPOINT_FALLBACK),
+            "to_name": (segment_end_name(chain, total, i, +1,
+                                         chain_end_name)
+                        or ENDPOINT_FALLBACK),
+        }
+        if seg != "Seg 12":
+            # No speed fields on Seg 12 (Paul, Nov 19, 2026 — the
+            # Vergas badge is removed; the disputed figure must not
+            # reappear in the line popup either).
+            info["speed_mph"] = mph
+            info["speed_text"] = wording
+            info["aadt"] = aadt
+        for spot in HIN_SPOTS:
+            if spot["segment"].split(" (")[0] == seg:
+                info["hin_score"] = spot["hin"]
+                info["hin_extent"] = spot["extent"]
+                info["hin_note"] = spot["note"]
+        seg_info[seg] = info
+    for f in features:
+        p = f.get("properties") or {}
+        if p.get("kind") == "line" and p.get("area") == "western":
+            p.update(seg_info[p["segment"]])
+    for seg, info in sorted(seg_info.items()):
+        print(f"  {seg}: {info['length_mi']} mi, "
+              f"from {info['from_name']!r}, to {info['to_name']!r}")
 
     # --- speed badges: one per T07 segment, at the range midpoint
     # (Seg 14 is the exception: its midpoint falls in Frazee, but the
     # segment's expressway portion is the US-10 crossing at its west
     # end, so the badge sits at the crossing, chain mile 95.2.)
+    # Seg 12 has NO badge (Paul, Nov 19, 2026 — the Vergas badge is
+    # removed; the county-minutes 40 mph and the brief's 30 mph
+    # disagree and the discrepancy is not worth reconciling).
+    badges = 0
     for (seg, road, s, e, mph, wording, aadt) in T07_SEGMENTS:
+        if seg == "Seg 12":
+            continue
         mid = (s + e) / 2.0
         note = ("Segment midpoint by cumulative trail miles; position "
                 "approximate within ~1 mi")
@@ -518,7 +768,8 @@ def main():
                           "Otter Tail SAP, adopted May 26, 2026)",
             },
         })
-    print(f"Speed badges: {len(T07_SEGMENTS)}")
+        badges += 1
+    print(f"Speed badges: {badges} (Seg 12 removed, Paul Nov 19, 2026)")
 
     # --- crash markers: one per HIN corridor
     for spot in HIN_SPOTS:

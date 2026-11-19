@@ -16,7 +16,7 @@
     "photographer": "PJM",
     "type": "PN",
     "condition": "fair",
-    "drive_id": null,
+    "drive_id": "12UNWgZZF9qD6LzFgdQt9QVMNsQPT7EpR",
     "derivative": "pxl_20261111_173353595-mp.jpg",
     "direction_deg": null,
     "direction_ref": null,
@@ -34,13 +34,13 @@
       "photo": "PXL_20261111_173353595.MP.jpg",
       "derivative": "pxl_20261111_173353595-mp.jpg",
       "datetime": "2026:11:11 11:33:53",
-      "drive_id": null
+      "drive_id": "12UNWgZZF9qD6LzFgdQt9QVMNsQPT7EpR"
      },
      {
       "photo": "PXL_20261111_173403070.MP.jpg",
       "derivative": "pxl_20261111_173403070-mp.jpg",
       "datetime": "2026:11:11 11:34:03",
-      "drive_id": null
+      "drive_id": "159pq-56BO2E_sP7ZL9QqQGmOOSGYVKPO"
      }
     ]
    }
@@ -60,7 +60,7 @@
     "photographer": "PJM",
     "type": "CP",
     "condition": "new",
-    "drive_id": null,
+    "drive_id": "1lMf7OfYb6o08pkwSNAVOVH7tmOOznuGm",
     "derivative": "pxl_20261111_173622790-mp.jpg",
     "direction_deg": null,
     "direction_ref": null,
@@ -78,7 +78,7 @@
       "photo": "PXL_20261111_173622790.MP.jpg",
       "derivative": "pxl_20261111_173622790-mp.jpg",
       "datetime": "2026:11:11 11:36:22",
-      "drive_id": null
+      "drive_id": "1lMf7OfYb6o08pkwSNAVOVH7tmOOznuGm"
      }
     ]
    }
@@ -98,7 +98,7 @@
     "photographer": "PJM",
     "type": "CP",
     "condition": "worn",
-    "drive_id": null,
+    "drive_id": "1KRWVBhnpfxSwRoNqQMOxYQfrU1_5NVSu",
     "derivative": "pxl_20261111_173629309-mp.jpg",
     "direction_deg": null,
     "direction_ref": null,
@@ -116,7 +116,7 @@
       "photo": "PXL_20261111_173629309.MP.jpg",
       "derivative": "pxl_20261111_173629309-mp.jpg",
       "datetime": "2026:11:11 11:36:29",
-      "drive_id": null
+      "drive_id": "1KRWVBhnpfxSwRoNqQMOxYQfrU1_5NVSu"
      }
     ]
    }
@@ -136,7 +136,7 @@
     "photographer": "PJM",
     "type": "SG",
     "condition": "good",
-    "drive_id": null,
+    "drive_id": "1oKNBmejVssC90UJuecqzyBhDEP95NKUe",
     "derivative": "pxl_20261111_173702041.jpg",
     "direction_deg": null,
     "direction_ref": null,
@@ -154,7 +154,7 @@
       "photo": "PXL_20261111_173702041.jpg",
       "derivative": "pxl_20261111_173702041.jpg",
       "datetime": "2026:11:11 11:37:02",
-      "drive_id": null
+      "drive_id": "1oKNBmejVssC90UJuecqzyBhDEP95NKUe"
      }
     ]
    }
@@ -174,7 +174,7 @@
     "photographer": "PJM",
     "type": "PN",
     "condition": "fair",
-    "drive_id": null,
+    "drive_id": "1Uaa3o-l9_fFKJ9zrdmVfJi3fFsfrixrH",
     "derivative": "pxl_20261111_173733332.jpg",
     "direction_deg": null,
     "direction_ref": null,
@@ -192,7 +192,7 @@
       "photo": "PXL_20261111_173733332.jpg",
       "derivative": "pxl_20261111_173733332.jpg",
       "datetime": "2026:11:11 11:37:33",
-      "drive_id": null
+      "drive_id": "1Uaa3o-l9_fFKJ9zrdmVfJi3fFsfrixrH"
      }
     ]
    }
@@ -212,7 +212,7 @@
     "photographer": "PJM",
     "type": "CP",
     "condition": "new",
-    "drive_id": null,
+    "drive_id": "13sHgdGxc40Z0BwvImF-CsLZtneEHnpzV",
     "derivative": "pxl_20261111_173753460-mp.jpg",
     "direction_deg": null,
     "direction_ref": null,
@@ -230,13 +230,13 @@
       "photo": "PXL_20261111_173753460.MP.jpg",
       "derivative": "pxl_20261111_173753460-mp.jpg",
       "datetime": "2026:11:11 11:37:53",
-      "drive_id": null
+      "drive_id": "13sHgdGxc40Z0BwvImF-CsLZtneEHnpzV"
      },
      {
       "photo": "PXL_20261111_173758086.jpg",
       "derivative": "pxl_20261111_173758086.jpg",
       "datetime": "2026:11:11 11:37:58",
-      "drive_id": null
+      "drive_id": "1enmq-O2VAC70SrTrfi4CeQE8y5bWrbYP"
      }
     ]
    }
@@ -256,7 +256,7 @@
     "photographer": "PJM",
     "type": "PO",
     "condition": "poor",
-    "drive_id": null,
+    "drive_id": "1KrzbCA2YKtaan7GHUHXP-RiCFsBLOQez",
     "derivative": "pxl_20261111_173913740.jpg",
     "direction_deg": null,
     "direction_ref": null,
@@ -274,7 +274,7 @@
       "photo": "PXL_20261111_173913740.jpg",
       "derivative": "pxl_20261111_173913740.jpg",
       "datetime": "2026:11:11 11:39:13",
-      "drive_id": null
+      "drive_id": "1KrzbCA2YKtaan7GHUHXP-RiCFsBLOQez"
      }
     ]
    }
@@ -294,7 +294,7 @@
     "photographer": "PJM",
     "type": "CP",
     "condition": "worn",
-    "drive_id": null,
+    "drive_id": "1lLqY-cEf-pq8K_kbw9t6fHDZqyUzIUTD",
     "derivative": "pxl_20261111_174010010-mp.jpg",
     "direction_deg": null,
     "direction_ref": null,
@@ -312,13 +312,13 @@
       "photo": "PXL_20261111_174010010.MP.jpg",
       "derivative": "pxl_20261111_174010010-mp.jpg",
       "datetime": "2026:11:11 11:40:10",
-      "drive_id": null
+      "drive_id": "1lLqY-cEf-pq8K_kbw9t6fHDZqyUzIUTD"
      },
      {
       "photo": "PXL_20261111_174015462.jpg",
       "derivative": "pxl_20261111_174015462.jpg",
       "datetime": "2026:11:11 11:40:15",
-      "drive_id": null
+      "drive_id": "1HkhZMm_6iTXrmHL_73JS9PiD45MG3TNw"
      }
     ]
    }
@@ -338,7 +338,7 @@
     "photographer": "PJM",
     "type": "CP",
     "condition": "new",
-    "drive_id": null,
+    "drive_id": "1OOg-a92Z2bHATgK1vI3R0hBlXjrCgKEl",
     "derivative": "pxl_20261111_174226284-mp.jpg",
     "direction_deg": null,
     "direction_ref": null,
@@ -356,13 +356,13 @@
       "photo": "PXL_20261111_174226284.MP.jpg",
       "derivative": "pxl_20261111_174226284-mp.jpg",
       "datetime": "2026:11:11 11:42:26",
-      "drive_id": null
+      "drive_id": "1OOg-a92Z2bHATgK1vI3R0hBlXjrCgKEl"
      },
      {
       "photo": "PXL_20261111_174231414.MP.jpg",
       "derivative": "pxl_20261111_174231414-mp.jpg",
       "datetime": "2026:11:11 11:42:31",
-      "drive_id": null
+      "drive_id": "1S2umGJwIKgUa1Y-NmZJ0KUI6jh-DsYIy"
      }
     ]
    }
@@ -382,7 +382,7 @@
     "photographer": "PJM",
     "type": "CP",
     "condition": "worn",
-    "drive_id": null,
+    "drive_id": "1RuU6VKcf8X9FdVQ8DBthnKZwOH7lFKrh",
     "derivative": "pxl_20261111_174241507-mp.jpg",
     "direction_deg": null,
     "direction_ref": null,
@@ -400,13 +400,13 @@
       "photo": "PXL_20261111_174241507.MP.jpg",
       "derivative": "pxl_20261111_174241507-mp.jpg",
       "datetime": "2026:11:11 11:42:41",
-      "drive_id": null
+      "drive_id": "1RuU6VKcf8X9FdVQ8DBthnKZwOH7lFKrh"
      },
      {
       "photo": "PXL_20261111_174247047.jpg",
       "derivative": "pxl_20261111_174247047.jpg",
       "datetime": "2026:11:11 11:42:47",
-      "drive_id": null
+      "drive_id": "1sRYYHkWgYO3PESNNo03nOwqkoWjI27AI"
      }
     ]
    }
@@ -426,7 +426,7 @@
     "photographer": "PJM",
     "type": "CP",
     "condition": "worn",
-    "drive_id": null,
+    "drive_id": "1wHXlRuG9bQUptGt3JuUUAfgmEClq5xmz",
     "derivative": "pxl_20261111_174346399.jpg",
     "direction_deg": null,
     "direction_ref": null,
@@ -444,7 +444,7 @@
       "photo": "PXL_20261111_174346399.jpg",
       "derivative": "pxl_20261111_174346399.jpg",
       "datetime": "2026:11:11 11:43:46",
-      "drive_id": null
+      "drive_id": "1wHXlRuG9bQUptGt3JuUUAfgmEClq5xmz"
      }
     ],
     "note": "Decal wear could not be judged from the distance photo; re-photo for a final grade (Paul, Nov 11)."
@@ -465,7 +465,7 @@
     "photographer": "PJM",
     "type": "CP",
     "condition": "new",
-    "drive_id": null,
+    "drive_id": "16wda9tTNdqaNDJxojjC5hFkX0m-PqetD",
     "derivative": "pxl_20261111_174353567-mp.jpg",
     "direction_deg": null,
     "direction_ref": null,
@@ -483,7 +483,7 @@
       "photo": "PXL_20261111_174353567.MP.jpg",
       "derivative": "pxl_20261111_174353567-mp.jpg",
       "datetime": "2026:11:11 11:43:53",
-      "drive_id": null
+      "drive_id": "16wda9tTNdqaNDJxojjC5hFkX0m-PqetD"
      }
     ]
    }
@@ -503,7 +503,7 @@
     "photographer": "PJM",
     "type": "CP",
     "condition": "new",
-    "drive_id": null,
+    "drive_id": "1WbCuTVpiyKg0EoXVlNDu5nshp3Jfrw-l",
     "derivative": "pxl_20261111_174436059-mp.jpg",
     "direction_deg": null,
     "direction_ref": null,
@@ -521,7 +521,7 @@
       "photo": "PXL_20261111_174436059.MP.jpg",
       "derivative": "pxl_20261111_174436059-mp.jpg",
       "datetime": "2026:11:11 11:44:36",
-      "drive_id": null
+      "drive_id": "1WbCuTVpiyKg0EoXVlNDu5nshp3Jfrw-l"
      }
     ]
    }
@@ -541,7 +541,7 @@
     "photographer": "PJM",
     "type": "CP",
     "condition": "new",
-    "drive_id": null,
+    "drive_id": "1YY4ADhd1kqhyB28srAErJHD3P1XB0EB6",
     "derivative": "pxl_20261111_174441427-mp.jpg",
     "direction_deg": null,
     "direction_ref": null,
@@ -559,13 +559,13 @@
       "photo": "PXL_20261111_174441427.MP.jpg",
       "derivative": "pxl_20261111_174441427-mp.jpg",
       "datetime": "2026:11:11 11:44:41",
-      "drive_id": null
+      "drive_id": "1YY4ADhd1kqhyB28srAErJHD3P1XB0EB6"
      },
      {
       "photo": "PXL_20261111_174504243.jpg",
       "derivative": "pxl_20261111_174504243.jpg",
       "datetime": "2026:11:11 11:45:04",
-      "drive_id": null
+      "drive_id": "1xITolfBmLIhIyzrmJv5ZfWNgqBKXIWGA"
      }
     ]
    }
@@ -585,7 +585,7 @@
     "photographer": "PJM",
     "type": "CP",
     "condition": "new",
-    "drive_id": null,
+    "drive_id": "12_kM6ynfU8trEPpmsk5rPoEGzOyPXObj",
     "derivative": "pxl_20261111_174500064.jpg",
     "direction_deg": null,
     "direction_ref": null,
@@ -603,7 +603,7 @@
       "photo": "PXL_20261111_174500064.jpg",
       "derivative": "pxl_20261111_174500064.jpg",
       "datetime": "2026:11:11 11:45:00",
-      "drive_id": null
+      "drive_id": "12_kM6ynfU8trEPpmsk5rPoEGzOyPXObj"
      }
     ]
    }
@@ -623,7 +623,7 @@
     "photographer": "PJM",
     "type": "UN",
     "condition": null,
-    "drive_id": null,
+    "drive_id": "1QWmQKkhzegnS5ER24WgAHpsioHCvdGKO",
     "derivative": "pxl_20261111_174516833-mp.jpg",
     "direction_deg": null,
     "direction_ref": null,
@@ -641,13 +641,13 @@
       "photo": "PXL_20261111_174516833.MP.jpg",
       "derivative": "pxl_20261111_174516833-mp.jpg",
       "datetime": "2026:11:11 11:45:16",
-      "drive_id": null
+      "drive_id": "1QWmQKkhzegnS5ER24WgAHpsioHCvdGKO"
      },
      {
       "photo": "PXL_20261111_174522868.MP.jpg",
       "derivative": "pxl_20261111_174522868-mp.jpg",
       "datetime": "2026:11:11 11:45:22",
-      "drive_id": null
+      "drive_id": "1IwV4XENftJmNYYSHk9Giuz9ICyMI054P"
      }
     ]
    }
@@ -667,7 +667,7 @@
     "photographer": "PJM",
     "type": "UN",
     "condition": null,
-    "drive_id": null,
+    "drive_id": "1IFj-U6b8ILGiOyp_C4ahe-HQI2iYFYWP",
     "derivative": "pxl_20261111_174525449.jpg",
     "direction_deg": null,
     "direction_ref": null,
@@ -685,7 +685,7 @@
       "photo": "PXL_20261111_174525449.jpg",
       "derivative": "pxl_20261111_174525449.jpg",
       "datetime": "2026:11:11 11:45:25",
-      "drive_id": null
+      "drive_id": "1IFj-U6b8ILGiOyp_C4ahe-HQI2iYFYWP"
      }
     ]
    }
@@ -705,7 +705,7 @@
     "photographer": "PJM",
     "type": "SG",
     "condition": "good",
-    "drive_id": null,
+    "drive_id": "1d-rOZAvK2elYLafeXJvYPj9I1AE75u8u",
     "derivative": "pxl_20261111_174534700-mp.jpg",
     "direction_deg": null,
     "direction_ref": null,
@@ -723,7 +723,7 @@
       "photo": "PXL_20261111_174534700.MP.jpg",
       "derivative": "pxl_20261111_174534700-mp.jpg",
       "datetime": "2026:11:11 11:45:34",
-      "drive_id": null
+      "drive_id": "1d-rOZAvK2elYLafeXJvYPj9I1AE75u8u"
      }
     ]
    }
@@ -743,7 +743,7 @@
     "photographer": "PJM",
     "type": "unclassified",
     "condition": null,
-    "drive_id": null,
+    "drive_id": "1znB4RH2jbspK1TDWjuR4H8YjBa5nbbPK",
     "derivative": "pxl_20261111_174549876-mp.jpg",
     "direction_deg": null,
     "direction_ref": null,
@@ -761,7 +761,7 @@
       "photo": "PXL_20261111_174549876.MP.jpg",
       "derivative": "pxl_20261111_174549876-mp.jpg",
       "datetime": "2026:11:11 11:45:49",
-      "drive_id": null
+      "drive_id": "1znB4RH2jbspK1TDWjuR4H8YjBa5nbbPK"
      }
     ],
     "note": "Paper notice \u2014 wording unreadable; may be a temporary posting. Re-photo close enough to read it before it belongs in the inventory. Serial ITM-SG-007 is reserved for it in the registry."
@@ -782,7 +782,7 @@
     "photographer": "PJM",
     "type": "CP",
     "condition": "new",
-    "drive_id": null,
+    "drive_id": "1XbveAs7ossFpV9jJiQTXNZmqe9YY1koZ",
     "derivative": "pxl_20261111_175214905-mp.jpg",
     "direction_deg": null,
     "direction_ref": null,
@@ -800,13 +800,13 @@
       "photo": "PXL_20261111_175214905.MP.jpg",
       "derivative": "pxl_20261111_175214905-mp.jpg",
       "datetime": "2026:11:11 11:52:14",
-      "drive_id": null
+      "drive_id": "1XbveAs7ossFpV9jJiQTXNZmqe9YY1koZ"
      },
      {
       "photo": "PXL_20261111_175220214.MP.jpg",
       "derivative": "pxl_20261111_175220214-mp.jpg",
       "datetime": "2026:11:11 11:52:20",
-      "drive_id": null
+      "drive_id": "1iW2iMwvz_jip87KtQAyG_EpnGfZqeMnY"
      }
     ]
    }
@@ -826,7 +826,7 @@
     "photographer": "PJM",
     "type": "UN",
     "condition": null,
-    "drive_id": null,
+    "drive_id": "1fvrzy-0Z9XR-E-G1wuymUiBRTDwW20rg",
     "derivative": "pxl_20261111_175237802-mp.jpg",
     "direction_deg": null,
     "direction_ref": null,
@@ -844,13 +844,13 @@
       "photo": "PXL_20261111_175237802.MP.jpg",
       "derivative": "pxl_20261111_175237802-mp.jpg",
       "datetime": "2026:11:11 11:52:37",
-      "drive_id": null
+      "drive_id": "1fvrzy-0Z9XR-E-G1wuymUiBRTDwW20rg"
      },
      {
       "photo": "PXL_20261111_175240440.MP.jpg",
       "derivative": "pxl_20261111_175240440-mp.jpg",
       "datetime": "2026:11:11 11:52:40",
-      "drive_id": null
+      "drive_id": "1wgLmnjvoD9ingcqc3yOnMj59Q1y0iNma"
      }
     ]
    }
@@ -870,7 +870,7 @@
     "photographer": "PJM",
     "type": "CP",
     "condition": "new",
-    "drive_id": null,
+    "drive_id": "1Ef8L8nmeJSykYhqZPa8JzVyNzUQiFgAQ",
     "derivative": "pxl_20261111_175257178.jpg",
     "direction_deg": null,
     "direction_ref": null,
@@ -888,13 +888,13 @@
       "photo": "PXL_20261111_175257178.jpg",
       "derivative": "pxl_20261111_175257178.jpg",
       "datetime": "2026:11:11 11:52:57",
-      "drive_id": null
+      "drive_id": "1Ef8L8nmeJSykYhqZPa8JzVyNzUQiFgAQ"
      },
      {
       "photo": "PXL_20261111_175301449.MP.jpg",
       "derivative": "pxl_20261111_175301449-mp.jpg",
       "datetime": "2026:11:11 11:53:01",
-      "drive_id": null
+      "drive_id": "14zS7xVlxbeyFNcAA787qJC6y6oMhiSPE"
      }
     ]
    }
@@ -914,7 +914,7 @@
     "photographer": "PJM",
     "type": "CP",
     "condition": "worn",
-    "drive_id": null,
+    "drive_id": "1CxT41jcUWjIrFaI_3gBEpSefOWa0myv4",
     "derivative": "pxl_20261111_175510853-mp.jpg",
     "direction_deg": null,
     "direction_ref": null,
@@ -932,13 +932,13 @@
       "photo": "PXL_20261111_175510853.MP.jpg",
       "derivative": "pxl_20261111_175510853-mp.jpg",
       "datetime": "2026:11:11 11:55:10",
-      "drive_id": null
+      "drive_id": "1CxT41jcUWjIrFaI_3gBEpSefOWa0myv4"
      },
      {
       "photo": "PXL_20261111_175515605.MP.jpg",
       "derivative": "pxl_20261111_175515605-mp.jpg",
       "datetime": "2026:11:11 11:55:15",
-      "drive_id": null
+      "drive_id": "113pAcfpnYB4bJRPKrvtGWcnUo5AoCGRA"
      }
     ]
    }
@@ -958,7 +958,7 @@
     "photographer": "PJM",
     "type": "PN",
     "condition": "fair",
-    "drive_id": null,
+    "drive_id": "1iApz88iEkO422TLI4kieL6uwkCwsUHzd",
     "derivative": "pxl_20261111_175522531-mp.jpg",
     "direction_deg": null,
     "direction_ref": null,
@@ -976,7 +976,7 @@
       "photo": "PXL_20261111_175522531.MP.jpg",
       "derivative": "pxl_20261111_175522531-mp.jpg",
       "datetime": "2026:11:11 11:55:22",
-      "drive_id": null
+      "drive_id": "1iApz88iEkO422TLI4kieL6uwkCwsUHzd"
      }
     ]
    }
@@ -996,7 +996,7 @@
     "photographer": "PJM",
     "type": "SG",
     "condition": "good",
-    "drive_id": null,
+    "drive_id": "1d2TkMc2YA72D2HiA-IMVwsLYTzBS5rp7",
     "derivative": "pxl_20261111_175538767.jpg",
     "direction_deg": null,
     "direction_ref": null,
@@ -1014,7 +1014,7 @@
       "photo": "PXL_20261111_175538767.jpg",
       "derivative": "pxl_20261111_175538767.jpg",
       "datetime": "2026:11:11 11:55:38",
-      "drive_id": null
+      "drive_id": "1d2TkMc2YA72D2HiA-IMVwsLYTzBS5rp7"
      }
     ]
    }
@@ -1034,7 +1034,7 @@
     "photographer": "PJM",
     "type": "PN",
     "condition": "fair",
-    "drive_id": null,
+    "drive_id": "1uJo4ocSEDkJe1ZQK-vmOI9_h63WG4HLQ",
     "derivative": "pxl_20261111_175543842-mp.jpg",
     "direction_deg": null,
     "direction_ref": null,
@@ -1052,7 +1052,7 @@
       "photo": "PXL_20261111_175543842.MP.jpg",
       "derivative": "pxl_20261111_175543842-mp.jpg",
       "datetime": "2026:11:11 11:55:43",
-      "drive_id": null
+      "drive_id": "1uJo4ocSEDkJe1ZQK-vmOI9_h63WG4HLQ"
      }
     ]
    }
@@ -1072,7 +1072,7 @@
     "photographer": "PJM",
     "type": "SG",
     "condition": "fair",
-    "drive_id": null,
+    "drive_id": "13xNBf8GTamCrALO7EJ2y4Q9aGnad91kC",
     "derivative": "pxl_20261111_175603407-mp.jpg",
     "direction_deg": null,
     "direction_ref": null,
@@ -1090,7 +1090,7 @@
       "photo": "PXL_20261111_175603407.MP.jpg",
       "derivative": "pxl_20261111_175603407-mp.jpg",
       "datetime": "2026:11:11 11:56:03",
-      "drive_id": null
+      "drive_id": "13xNBf8GTamCrALO7EJ2y4Q9aGnad91kC"
      }
     ]
    }
@@ -1110,7 +1110,7 @@
     "photographer": "PJM",
     "type": "BN",
     "condition": "fair",
-    "drive_id": null,
+    "drive_id": "1e_ONlc80L8LrGr5cXz8ISdqIUvKsxkOA",
     "derivative": "pxl_20261111_175623584.jpg",
     "direction_deg": null,
     "direction_ref": null,
@@ -1128,7 +1128,7 @@
       "photo": "PXL_20261111_175623584.jpg",
       "derivative": "pxl_20261111_175623584.jpg",
       "datetime": "2026:11:11 11:56:23",
-      "drive_id": null
+      "drive_id": "1e_ONlc80L8LrGr5cXz8ISdqIUvKsxkOA"
      }
     ]
    }
@@ -1148,7 +1148,7 @@
     "photographer": "PJM",
     "type": "CS",
     "condition": "good",
-    "drive_id": null,
+    "drive_id": "1zdYKDZigZ0Ofki6i5OnQfhQ6DKIBe77W",
     "derivative": "pxl_20261111_175627395.jpg",
     "direction_deg": null,
     "direction_ref": null,
@@ -1166,13 +1166,13 @@
       "photo": "PXL_20261111_175627395.jpg",
       "derivative": "pxl_20261111_175627395.jpg",
       "datetime": "2026:11:11 11:56:27",
-      "drive_id": null
+      "drive_id": "1zdYKDZigZ0Ofki6i5OnQfhQ6DKIBe77W"
      },
      {
       "photo": "PXL_20261111_175647359.PANO.jpg",
       "derivative": "pxl_20261111_175647359-pano.jpg",
       "datetime": "2026:11:11 11:56:47",
-      "drive_id": null
+      "drive_id": "1RZo7iEDknYb44B7wQJahVfioEMGIsBLp"
      }
     ],
     "note": "Pano attached as a second photo of this campsite (documents the clearing, not a second item)."
@@ -1193,7 +1193,7 @@
     "photographer": "PJM",
     "type": "SG",
     "condition": "good",
-    "drive_id": null,
+    "drive_id": "1HICrGY6eNb21HIv3LJlJpjPyeXUoDiji",
     "derivative": "pxl_20261111_175802209.jpg",
     "direction_deg": null,
     "direction_ref": null,
@@ -1211,7 +1211,7 @@
       "photo": "PXL_20261111_175802209.jpg",
       "derivative": "pxl_20261111_175802209.jpg",
       "datetime": "2026:11:11 11:58:02",
-      "drive_id": null
+      "drive_id": "1HICrGY6eNb21HIv3LJlJpjPyeXUoDiji"
      }
     ]
    }
@@ -1231,7 +1231,7 @@
     "photographer": "PJM",
     "type": "LT",
     "condition": "good",
-    "drive_id": null,
+    "drive_id": "1ZX5XNZjxGt-s2p8wsX016nyvgBUOiZuu",
     "derivative": "pxl_20261111_175818113.jpg",
     "direction_deg": null,
     "direction_ref": null,
@@ -1249,19 +1249,19 @@
       "photo": "PXL_20261111_175818113.jpg",
       "derivative": "pxl_20261111_175818113.jpg",
       "datetime": "2026:11:11 11:58:18",
-      "drive_id": null
+      "drive_id": "1ZX5XNZjxGt-s2p8wsX016nyvgBUOiZuu"
      },
      {
       "photo": "PXL_20261111_175833666.MP.jpg",
       "derivative": "pxl_20261111_175833666-mp.jpg",
       "datetime": "2026:11:11 11:58:33",
-      "drive_id": null
+      "drive_id": "1RykPaZMfi-pMXq25fZa2gOZ3ROyyX6oc"
      },
      {
       "photo": "PXL_20261111_175841383.jpg",
       "derivative": "pxl_20261111_175841383.jpg",
       "datetime": "2026:11:11 11:58:41",
-      "drive_id": null
+      "drive_id": "1mWdtt4c0ZHdjqRYsN4jQLjFM1RnX7IFM"
      }
     ]
    }
@@ -1281,7 +1281,7 @@
     "photographer": "PJM",
     "type": "UN",
     "condition": null,
-    "drive_id": null,
+    "drive_id": "1Fo9VYjYFuggNVhYO2aoQVEKI6Ni2-ZOe",
     "derivative": "pxl_20261111_175830534-mp.jpg",
     "direction_deg": null,
     "direction_ref": null,
@@ -1299,7 +1299,7 @@
       "photo": "PXL_20261111_175830534.MP.jpg",
       "derivative": "pxl_20261111_175830534-mp.jpg",
       "datetime": "2026:11:11 11:58:30",
-      "drive_id": null
+      "drive_id": "1Fo9VYjYFuggNVhYO2aoQVEKI6Ni2-ZOe"
      }
     ]
    }
@@ -1319,7 +1319,7 @@
     "photographer": "PJM",
     "type": "CP",
     "condition": "new",
-    "drive_id": null,
+    "drive_id": "1c2AbjvgqjnowJhQglOfmE85aELw8XCz0",
     "derivative": "pxl_20261111_180047306-mp.jpg",
     "direction_deg": null,
     "direction_ref": null,
@@ -1337,13 +1337,13 @@
       "photo": "PXL_20261111_180047306.MP.jpg",
       "derivative": "pxl_20261111_180047306-mp.jpg",
       "datetime": "2026:11:11 12:00:47",
-      "drive_id": null
+      "drive_id": "1c2AbjvgqjnowJhQglOfmE85aELw8XCz0"
      },
      {
       "photo": "PXL_20261111_180052019.MP.jpg",
       "derivative": "pxl_20261111_180052019-mp.jpg",
       "datetime": "2026:11:11 12:00:52",
-      "drive_id": null
+      "drive_id": "177vDaGBR7D2k6akdn0dSIygWpFgTCotu"
      }
     ]
    }
@@ -1363,7 +1363,7 @@
     "photographer": "PJM",
     "type": "PN",
     "condition": "fair",
-    "drive_id": null,
+    "drive_id": "1xcw0Toyozkg50kJSURdfki_GFEQURSX1",
     "derivative": "pxl_20261111_180112137.jpg",
     "direction_deg": null,
     "direction_ref": null,
@@ -1381,7 +1381,7 @@
       "photo": "PXL_20261111_180112137.jpg",
       "derivative": "pxl_20261111_180112137.jpg",
       "datetime": "2026:11:11 12:01:12",
-      "drive_id": null
+      "drive_id": "1xcw0Toyozkg50kJSURdfki_GFEQURSX1"
      }
     ]
    }
@@ -1401,7 +1401,7 @@
     "photographer": "PJM",
     "type": "PN",
     "condition": "fair",
-    "drive_id": null,
+    "drive_id": "1RPqyTVm5J8PCQsYFNi0CzS5wxZgxbYqE",
     "derivative": "pxl_20261111_180143931-mp.jpg",
     "direction_deg": null,
     "direction_ref": null,
@@ -1419,31 +1419,31 @@
       "photo": "PXL_20261111_180143931.MP.jpg",
       "derivative": "pxl_20261111_180143931-mp.jpg",
       "datetime": "2026:11:11 12:01:43",
-      "drive_id": null
+      "drive_id": "1RPqyTVm5J8PCQsYFNi0CzS5wxZgxbYqE"
      },
      {
       "photo": "PXL_20261111_180153302.MP.jpg",
       "derivative": "pxl_20261111_180153302-mp.jpg",
       "datetime": "2026:11:11 12:01:53",
-      "drive_id": null
+      "drive_id": "1xviaxf4iZg0tUsXMykZ9V-1bD9n8C8U8"
      },
      {
       "photo": "PXL_20261111_180203346.MP.jpg",
       "derivative": "pxl_20261111_180203346-mp.jpg",
       "datetime": "2026:11:11 12:02:03",
-      "drive_id": null
+      "drive_id": "15x95uEyHwoeZthTzkBySHE03QzaUZrZE"
      },
      {
       "photo": "PXL_20261111_180218138.MP.jpg",
       "derivative": "pxl_20261111_180218138-mp.jpg",
       "datetime": "2026:11:11 12:02:18",
-      "drive_id": null
+      "drive_id": "17ATbz1nQtv9sQIv9wlco7DHr1L-stSbd"
      },
      {
       "photo": "PXL_20261111_180221380.jpg",
       "derivative": "pxl_20261111_180221380.jpg",
       "datetime": "2026:11:11 12:02:21",
-      "drive_id": null
+      "drive_id": "1ucqNlp2dNAz0yhDzdue2jjYao2ddV8x0"
      }
     ]
    }
@@ -1463,7 +1463,7 @@
     "photographer": "PJM",
     "type": "CP",
     "condition": "worn",
-    "drive_id": null,
+    "drive_id": "1HuSjBsuLRK9S1ajKCeptQD09KvYwIXh5",
     "derivative": "pxl_20261111_180231342-mp.jpg",
     "direction_deg": null,
     "direction_ref": null,
@@ -1481,13 +1481,13 @@
       "photo": "PXL_20261111_180231342.MP.jpg",
       "derivative": "pxl_20261111_180231342-mp.jpg",
       "datetime": "2026:11:11 12:02:31",
-      "drive_id": null
+      "drive_id": "1HuSjBsuLRK9S1ajKCeptQD09KvYwIXh5"
      },
      {
       "photo": "PXL_20261111_180237309.MP.jpg",
       "derivative": "pxl_20261111_180237309-mp.jpg",
       "datetime": "2026:11:11 12:02:37",
-      "drive_id": null
+      "drive_id": "1HNN0lReuiHGIaAoU20yG4hPfNBSvbTOb"
      }
     ]
    }
@@ -1507,7 +1507,7 @@
     "photographer": "PJM",
     "type": "CP",
     "condition": "new",
-    "drive_id": null,
+    "drive_id": "1G8Jo1X06aQtXW-hB3K4WJwHiVMBU7gwF",
     "derivative": "pxl_20261111_180318058.jpg",
     "direction_deg": null,
     "direction_ref": null,
@@ -1525,7 +1525,7 @@
       "photo": "PXL_20261111_180318058.jpg",
       "derivative": "pxl_20261111_180318058.jpg",
       "datetime": "2026:11:11 12:03:18",
-      "drive_id": null
+      "drive_id": "1G8Jo1X06aQtXW-hB3K4WJwHiVMBU7gwF"
      }
     ]
    }
@@ -1545,7 +1545,7 @@
     "photographer": "PJM",
     "type": "SG",
     "condition": "good",
-    "drive_id": null,
+    "drive_id": "1O9LkJi29E5CzF-yqx9UNbdR3B4FqRTJy",
     "derivative": "pxl_20261111_180334058-mp.jpg",
     "direction_deg": null,
     "direction_ref": null,
@@ -1563,7 +1563,7 @@
       "photo": "PXL_20261111_180334058.MP.jpg",
       "derivative": "pxl_20261111_180334058-mp.jpg",
       "datetime": "2026:11:11 12:03:34",
-      "drive_id": null
+      "drive_id": "1O9LkJi29E5CzF-yqx9UNbdR3B4FqRTJy"
      }
     ]
    }
@@ -1583,7 +1583,7 @@
     "photographer": "PJM",
     "type": "SG",
     "condition": "fair",
-    "drive_id": null,
+    "drive_id": "1hYwwJGZSEaMrD4UWQ7sF4KIzv_r6UEPt",
     "derivative": "pxl_20261111_181658786-mp.jpg",
     "direction_deg": null,
     "direction_ref": null,
@@ -1601,7 +1601,7 @@
       "photo": "PXL_20261111_181658786.MP.jpg",
       "derivative": "pxl_20261111_181658786-mp.jpg",
       "datetime": "2026:11:11 12:16:58",
-      "drive_id": null
+      "drive_id": "1hYwwJGZSEaMrD4UWQ7sF4KIzv_r6UEPt"
      }
     ]
    }
@@ -1621,7 +1621,7 @@
     "photographer": "PJM",
     "type": "SG",
     "condition": "good",
-    "drive_id": null,
+    "drive_id": "1gpVwJ54wwodQpQQopq5cu5tnkd2yPwpw",
     "derivative": "pxl_20261111_190009118.jpg",
     "direction_deg": null,
     "direction_ref": null,
@@ -1639,7 +1639,7 @@
       "photo": "PXL_20261111_190009118.jpg",
       "derivative": "pxl_20261111_190009118.jpg",
       "datetime": "2026:11:11 13:00:09",
-      "drive_id": null
+      "drive_id": "1gpVwJ54wwodQpQQopq5cu5tnkd2yPwpw"
      }
     ]
    }
@@ -1659,7 +1659,7 @@
     "photographer": "PJM",
     "type": "CP",
     "condition": "worn",
-    "drive_id": null,
+    "drive_id": "1F6-heVbs9kYPjPylWRNE0eH16OLeA5CN",
     "derivative": "pxl_20261111_190105129-mp.jpg",
     "direction_deg": null,
     "direction_ref": null,
@@ -1677,13 +1677,13 @@
       "photo": "PXL_20261111_190105129.MP.jpg",
       "derivative": "pxl_20261111_190105129-mp.jpg",
       "datetime": "2026:11:11 13:01:05",
-      "drive_id": null
+      "drive_id": "1F6-heVbs9kYPjPylWRNE0eH16OLeA5CN"
      },
      {
       "photo": "PXL_20261111_190109921.MP.jpg",
       "derivative": "pxl_20261111_190109921-mp.jpg",
       "datetime": "2026:11:11 13:01:09",
-      "drive_id": null
+      "drive_id": "1uOU4qv7lv9BbByXc4vLJRctklFDp5piY"
      }
     ]
    }
@@ -1703,7 +1703,7 @@
     "photographer": "PJM",
     "type": "SG",
     "condition": "good",
-    "drive_id": null,
+    "drive_id": "13KCwf9ri-Pg7BBepITRH5xhh_tQHVQtO",
     "derivative": "pxl_20261111_190120128.jpg",
     "direction_deg": null,
     "direction_ref": null,
@@ -1721,7 +1721,7 @@
       "photo": "PXL_20261111_190120128.jpg",
       "derivative": "pxl_20261111_190120128.jpg",
       "datetime": "2026:11:11 13:01:20",
-      "drive_id": null
+      "drive_id": "13KCwf9ri-Pg7BBepITRH5xhh_tQHVQtO"
      }
     ]
    }
@@ -1741,7 +1741,7 @@
     "photographer": "PJM",
     "type": "SG",
     "condition": "good",
-    "drive_id": null,
+    "drive_id": "11_0C59Qha_-SKGg7aAO9mFPEgtOyUdaS",
     "derivative": "pxl_20261111_190129466.jpg",
     "direction_deg": null,
     "direction_ref": null,
@@ -1759,7 +1759,7 @@
       "photo": "PXL_20261111_190129466.jpg",
       "derivative": "pxl_20261111_190129466.jpg",
       "datetime": "2026:11:11 13:01:29",
-      "drive_id": null
+      "drive_id": "11_0C59Qha_-SKGg7aAO9mFPEgtOyUdaS"
      }
     ]
    }
@@ -1779,7 +1779,7 @@
     "photographer": "PJM",
     "type": "SG",
     "condition": "good",
-    "drive_id": null,
+    "drive_id": "1THcELMhT2xPau-7lVZU4nJ1KesL1yKss",
     "derivative": "pxl_20261111_163632766-mp.jpg",
     "direction_deg": null,
     "direction_ref": null,
@@ -1797,7 +1797,7 @@
       "photo": "PXL_20261111_163632766.MP.jpg",
       "derivative": "pxl_20261111_163632766-mp.jpg",
       "datetime": "2026:11:11 10:36:32",
-      "drive_id": null
+      "drive_id": "1THcELMhT2xPau-7lVZU4nJ1KesL1yKss"
      }
     ]
    }
@@ -1817,7 +1817,7 @@
     "photographer": "PJM",
     "type": "CP",
     "condition": "new",
-    "drive_id": null,
+    "drive_id": "1JgnOhRIk4SGO6GEOaFACJnIbihlmFIWB",
     "derivative": "pxl_20261111_163653226-mp.jpg",
     "direction_deg": null,
     "direction_ref": null,
@@ -1835,13 +1835,13 @@
       "photo": "PXL_20261111_163653226.MP.jpg",
       "derivative": "pxl_20261111_163653226-mp.jpg",
       "datetime": "2026:11:11 10:36:53",
-      "drive_id": null
+      "drive_id": "1JgnOhRIk4SGO6GEOaFACJnIbihlmFIWB"
      },
      {
       "photo": "PXL_20261111_163700851.MP.jpg",
       "derivative": "pxl_20261111_163700851-mp.jpg",
       "datetime": "2026:11:11 10:37:00",
-      "drive_id": null
+      "drive_id": "1TMDnMPsgB_DJqvETU8jRjJ29WOceo8Pg"
      }
     ],
     "note": "Probably the back of the 163653226 post, photographed 7 s later from the lot side \u2014 the link is a judgment call; confirm on Paul's walk-through."
@@ -1862,7 +1862,7 @@
     "photographer": "PJM",
     "type": "CP",
     "condition": "new",
-    "drive_id": null,
+    "drive_id": "1Tz6QgAkV3mD8I_oaXcZ2IO5V9_m4U8ci",
     "derivative": "pxl_20261111_163739604-mp.jpg",
     "direction_deg": null,
     "direction_ref": null,
@@ -1880,7 +1880,7 @@
       "photo": "PXL_20261111_163739604.MP.jpg",
       "derivative": "pxl_20261111_163739604-mp.jpg",
       "datetime": "2026:11:11 10:37:39",
-      "drive_id": null
+      "drive_id": "1Tz6QgAkV3mD8I_oaXcZ2IO5V9_m4U8ci"
      }
     ],
     "note": "Decal set differs from the 163653226 post \u2014 treated as a second post at the trailhead; may be the same post's opposite face, confirm on Paul's walk-through."
@@ -1901,7 +1901,7 @@
     "photographer": "PJM",
     "type": "KI",
     "condition": "good",
-    "drive_id": null,
+    "drive_id": "1hFaND1JtK2uG--_Efh5divtVrom9Vs_V",
     "derivative": "pxl_20261111_163745163-mp.jpg",
     "direction_deg": null,
     "direction_ref": null,
@@ -1919,31 +1919,31 @@
       "photo": "PXL_20261111_163745163.MP.jpg",
       "derivative": "pxl_20261111_163745163-mp.jpg",
       "datetime": "2026:11:11 10:37:45",
-      "drive_id": null
+      "drive_id": "1hFaND1JtK2uG--_Efh5divtVrom9Vs_V"
      },
      {
       "photo": "PXL_20261111_163752972.MP.jpg",
       "derivative": "pxl_20261111_163752972-mp.jpg",
       "datetime": "2026:11:11 10:37:52",
-      "drive_id": null
+      "drive_id": "1fhWAKf2ZBvIdeptwnSTfSY-b9OWDICK0"
      },
      {
       "photo": "PXL_20261111_163756701.MP.jpg",
       "derivative": "pxl_20261111_163756701-mp.jpg",
       "datetime": "2026:11:11 10:37:56",
-      "drive_id": null
+      "drive_id": "12FfYnC5MzEVIuwfzT3V4I69OgQKojtis"
      },
      {
       "photo": "PXL_20261111_163800843.jpg",
       "derivative": "pxl_20261111_163800843.jpg",
       "datetime": "2026:11:11 10:38:00",
-      "drive_id": null
+      "drive_id": "1bMdgGEwQiEza4LfQynAY3Ym9kVZ64u9N"
      },
      {
       "photo": "PXL_20261111_163803941.MP.jpg",
       "derivative": "pxl_20261111_163803941-mp.jpg",
       "datetime": "2026:11:11 10:38:03",
-      "drive_id": null
+      "drive_id": "1RKx4rSoTr5BdfBT-IV4sulcECZ6H6rPw"
      }
     ],
     "note": "Needs Paul's walk-through \u2014 the leaning board is unidentified (a loose post? a kiosk panel?)."
@@ -1964,7 +1964,7 @@
     "photographer": "PJM",
     "type": "SG",
     "condition": "fair",
-    "drive_id": null,
+    "drive_id": "1U2-JWHeBZ1faNtqUisdUPAijTe5W3zb6",
     "derivative": "pxl_20261111_163956960.jpg",
     "direction_deg": null,
     "direction_ref": null,
@@ -1982,7 +1982,7 @@
       "photo": "PXL_20261111_163956960.jpg",
       "derivative": "pxl_20261111_163956960.jpg",
       "datetime": "2026:11:11 10:39:56",
-      "drive_id": null
+      "drive_id": "1U2-JWHeBZ1faNtqUisdUPAijTe5W3zb6"
      }
     ]
    }
@@ -2002,7 +2002,7 @@
     "photographer": "PJM",
     "type": "BR",
     "condition": "fair",
-    "drive_id": null,
+    "drive_id": "12-gQKz0jXauQivB0wfDZscTVGsD2KG_2",
     "derivative": "pxl_20261111_164010391.jpg",
     "direction_deg": null,
     "direction_ref": null,
@@ -2020,13 +2020,13 @@
       "photo": "PXL_20261111_164010391.jpg",
       "derivative": "pxl_20261111_164010391.jpg",
       "datetime": "2026:11:11 10:40:10",
-      "drive_id": null
+      "drive_id": "12-gQKz0jXauQivB0wfDZscTVGsD2KG_2"
      },
      {
       "photo": "PXL_20261111_164047581.jpg",
       "derivative": "pxl_20261111_164047581.jpg",
       "datetime": "2026:11:11 10:40:47",
-      "drive_id": null
+      "drive_id": "1XgfPomHZpRu_Yi7Hk5wNHNF_fu6k-TGZ"
      }
     ]
    }
@@ -2046,7 +2046,7 @@
     "photographer": "PJM",
     "type": "UN",
     "condition": null,
-    "drive_id": null,
+    "drive_id": "1bCx_eUJPi0LzK03BX-3EK-23lozXYla4",
     "derivative": "pxl_20261111_164102566-mp.jpg",
     "direction_deg": null,
     "direction_ref": null,
@@ -2064,7 +2064,7 @@
       "photo": "PXL_20261111_164102566.MP.jpg",
       "derivative": "pxl_20261111_164102566-mp.jpg",
       "datetime": "2026:11:11 10:41:02",
-      "drive_id": null
+      "drive_id": "1bCx_eUJPi0LzK03BX-3EK-23lozXYla4"
      }
     ]
    }
@@ -2084,7 +2084,7 @@
     "photographer": "PJM",
     "type": "PN",
     "condition": "fair",
-    "drive_id": null,
+    "drive_id": "1v49ApS7jybALukPLo8cgW8TPp33C2SrC",
     "derivative": "pxl_20261111_164114659-mp.jpg",
     "direction_deg": null,
     "direction_ref": null,
@@ -2102,7 +2102,7 @@
       "photo": "PXL_20261111_164114659.MP.jpg",
       "derivative": "pxl_20261111_164114659-mp.jpg",
       "datetime": "2026:11:11 10:41:14",
-      "drive_id": null
+      "drive_id": "1v49ApS7jybALukPLo8cgW8TPp33C2SrC"
      }
     ]
    }
@@ -2122,7 +2122,7 @@
     "photographer": "PJM",
     "type": "UN",
     "condition": null,
-    "drive_id": null,
+    "drive_id": "1jdlXid0MIZ_37ZR--RK14-hOHVdu2LP3",
     "derivative": "pxl_20261111_164249781.jpg",
     "direction_deg": null,
     "direction_ref": null,
@@ -2140,13 +2140,13 @@
       "photo": "PXL_20261111_164249781.jpg",
       "derivative": "pxl_20261111_164249781.jpg",
       "datetime": "2026:11:11 10:42:49",
-      "drive_id": null
+      "drive_id": "1jdlXid0MIZ_37ZR--RK14-hOHVdu2LP3"
      },
      {
       "photo": "PXL_20261111_164253208.jpg",
       "derivative": "pxl_20261111_164253208.jpg",
       "datetime": "2026:11:11 10:42:53",
-      "drive_id": null
+      "drive_id": "1edkgbpUnJ-t_BDStVucBKJSjrhrtHRCA"
      }
     ]
    }
@@ -2166,7 +2166,7 @@
     "photographer": "PJM",
     "type": "UN",
     "condition": null,
-    "drive_id": null,
+    "drive_id": "1XBj2p-Kn4ddOWpp5dcVKkV-nZChYP4kl",
     "derivative": "pxl_20261111_164303475.jpg",
     "direction_deg": null,
     "direction_ref": null,
@@ -2184,7 +2184,7 @@
       "photo": "PXL_20261111_164303475.jpg",
       "derivative": "pxl_20261111_164303475.jpg",
       "datetime": "2026:11:11 10:43:03",
-      "drive_id": null
+      "drive_id": "1XBj2p-Kn4ddOWpp5dcVKkV-nZChYP4kl"
      }
     ]
    }
@@ -2204,7 +2204,7 @@
     "photographer": "PJM",
     "type": "BR",
     "condition": "fair",
-    "drive_id": null,
+    "drive_id": "1tJfpAQuz2hF12JBLEl079yoNp2Q6RJrb",
     "derivative": "pxl_20261111_164313064.jpg",
     "direction_deg": null,
     "direction_ref": null,
@@ -2222,19 +2222,19 @@
       "photo": "PXL_20261111_164313064.jpg",
       "derivative": "pxl_20261111_164313064.jpg",
       "datetime": "2026:11:11 10:43:13",
-      "drive_id": null
+      "drive_id": "1tJfpAQuz2hF12JBLEl079yoNp2Q6RJrb"
      },
      {
       "photo": "PXL_20261111_164324579.MP.jpg",
       "derivative": "pxl_20261111_164324579-mp.jpg",
       "datetime": "2026:11:11 10:43:24",
-      "drive_id": null
+      "drive_id": "1qxeBRvgutOrhc4JGB4ymQ2GRh3iHgPRL"
      },
      {
       "photo": "PXL_20261111_164336858.MP.jpg",
       "derivative": "pxl_20261111_164336858-mp.jpg",
       "datetime": "2026:11:11 10:43:36",
-      "drive_id": null
+      "drive_id": "1BvIg0cE8OtQjdNwn8tEh-GA0VrTLBaW-"
      }
     ],
     "note": "Fallen limb across the deck \u2014 see maintenance list."
@@ -2255,7 +2255,7 @@
     "photographer": "PJM",
     "type": "BN",
     "condition": "fair",
-    "drive_id": null,
+    "drive_id": "10xnj7ZF3On9v7bzcsaDgdWOBuy5s2UQD",
     "derivative": "pxl_20261111_164418333.jpg",
     "direction_deg": null,
     "direction_ref": null,
@@ -2273,7 +2273,7 @@
       "photo": "PXL_20261111_164418333.jpg",
       "derivative": "pxl_20261111_164418333.jpg",
       "datetime": "2026:11:11 10:44:18",
-      "drive_id": null
+      "drive_id": "10xnj7ZF3On9v7bzcsaDgdWOBuy5s2UQD"
      }
     ]
    }
@@ -2293,7 +2293,7 @@
     "photographer": "PJM",
     "type": "PN",
     "condition": "fair",
-    "drive_id": null,
+    "drive_id": "1Qe-rXHww-MspzlcbPHRjmIpZK_VX_BE3",
     "derivative": "pxl_20261111_164807819-mp.jpg",
     "direction_deg": null,
     "direction_ref": null,
@@ -2311,13 +2311,13 @@
       "photo": "PXL_20261111_164807819.MP.jpg",
       "derivative": "pxl_20261111_164807819-mp.jpg",
       "datetime": "2026:11:11 10:48:07",
-      "drive_id": null
+      "drive_id": "1Qe-rXHww-MspzlcbPHRjmIpZK_VX_BE3"
      },
      {
       "photo": "PXL_20261111_164819427.MP.jpg",
       "derivative": "pxl_20261111_164819427-mp.jpg",
       "datetime": "2026:11:11 10:48:19",
-      "drive_id": null
+      "drive_id": "1FNj3B7Io_ZgZdXwerXXYsSdGb2BqX8-_"
      }
     ]
    }
@@ -2337,7 +2337,7 @@
     "photographer": "PJM",
     "type": "UN",
     "condition": null,
-    "drive_id": null,
+    "drive_id": "1vtuZZVkGisPaUr4rOGOcjAl-QzDSqIiE",
     "derivative": "pxl_20261111_164921068.jpg",
     "direction_deg": null,
     "direction_ref": null,
@@ -2355,7 +2355,7 @@
       "photo": "PXL_20261111_164921068.jpg",
       "derivative": "pxl_20261111_164921068.jpg",
       "datetime": "2026:11:11 10:49:21",
-      "drive_id": null
+      "drive_id": "1vtuZZVkGisPaUr4rOGOcjAl-QzDSqIiE"
      }
     ]
    }
@@ -2375,7 +2375,7 @@
     "photographer": "PJM",
     "type": "PN",
     "condition": "fair",
-    "drive_id": null,
+    "drive_id": "1LEEjj-rgzElMa0-xmiYzejBmCKmwHcnm",
     "derivative": "pxl_20261111_165030470-mp.jpg",
     "direction_deg": null,
     "direction_ref": null,
@@ -2393,25 +2393,25 @@
       "photo": "PXL_20261111_165030470.MP.jpg",
       "derivative": "pxl_20261111_165030470-mp.jpg",
       "datetime": "2026:11:11 10:50:30",
-      "drive_id": null
+      "drive_id": "1LEEjj-rgzElMa0-xmiYzejBmCKmwHcnm"
      },
      {
       "photo": "PXL_20261111_165039576.MP.jpg",
       "derivative": "pxl_20261111_165039576-mp.jpg",
       "datetime": "2026:11:11 10:50:39",
-      "drive_id": null
+      "drive_id": "1YrJCyxrXG1cOnVkARnfjOv86ufiGhZ91"
      },
      {
       "photo": "PXL_20261111_165046991.jpg",
       "derivative": "pxl_20261111_165046991.jpg",
       "datetime": "2026:11:11 10:50:46",
-      "drive_id": null
+      "drive_id": "1bvTjJqIR4iUtKF8Eh7todQoY-_r8rbYe"
      },
      {
       "photo": "PXL_20261111_165051063.MP.jpg",
       "derivative": "pxl_20261111_165051063-mp.jpg",
       "datetime": "2026:11:11 10:50:51",
-      "drive_id": null
+      "drive_id": "1CXelHPDomNGAe9ErT0shoU-ORv2aWrCt"
      }
     ],
     "note": "Loose plank beside the run \u2014 see maintenance list."
@@ -2432,7 +2432,7 @@
     "photographer": "PJM",
     "type": "BN",
     "condition": "fair",
-    "drive_id": null,
+    "drive_id": "1ZQN9ElTYR9R1zODrqeCzWeqMUzI_G5eb",
     "derivative": "pxl_20261111_165211781-mp.jpg",
     "direction_deg": null,
     "direction_ref": null,
@@ -2450,13 +2450,13 @@
       "photo": "PXL_20261111_165211781.MP.jpg",
       "derivative": "pxl_20261111_165211781-mp.jpg",
       "datetime": "2026:11:11 10:52:11",
-      "drive_id": null
+      "drive_id": "1ZQN9ElTYR9R1zODrqeCzWeqMUzI_G5eb"
      },
      {
       "photo": "PXL_20261111_165219463.MP.jpg",
       "derivative": "pxl_20261111_165219463-mp.jpg",
       "datetime": "2026:11:11 10:52:19",
-      "drive_id": null
+      "drive_id": "1bZAU4kYLJrgiETnsemG5oG47QNDxdTAH"
      }
     ]
    }
@@ -2476,7 +2476,7 @@
     "photographer": "PJM",
     "type": "SG",
     "condition": "good",
-    "drive_id": null,
+    "drive_id": "1V37phwnUodwUSBdryxgbD7ohu5P43-IE",
     "derivative": "pxl_20261111_165300884-mp.jpg",
     "direction_deg": null,
     "direction_ref": null,
@@ -2494,7 +2494,7 @@
       "photo": "PXL_20261111_165300884.MP.jpg",
       "derivative": "pxl_20261111_165300884-mp.jpg",
       "datetime": "2026:11:11 10:53:00",
-      "drive_id": null
+      "drive_id": "1V37phwnUodwUSBdryxgbD7ohu5P43-IE"
      }
     ]
    }
@@ -2514,7 +2514,7 @@
     "photographer": "PJM",
     "type": "CP",
     "condition": "new",
-    "drive_id": null,
+    "drive_id": "1mHOOVh5DgUQ3jVCozmJSaF03zPUMksvS",
     "derivative": "pxl_20261111_165313345-mp.jpg",
     "direction_deg": null,
     "direction_ref": null,
@@ -2532,7 +2532,7 @@
       "photo": "PXL_20261111_165313345.MP.jpg",
       "derivative": "pxl_20261111_165313345-mp.jpg",
       "datetime": "2026:11:11 10:53:13",
-      "drive_id": null
+      "drive_id": "1mHOOVh5DgUQ3jVCozmJSaF03zPUMksvS"
      }
     ]
    }
@@ -2552,7 +2552,7 @@
     "photographer": "PJM",
     "type": "SG",
     "condition": "good",
-    "drive_id": null,
+    "drive_id": "1ubWZODQRNEJO4loWvivpMQq6jKbdRI-1",
     "derivative": "pxl_20261111_165349317-mp.jpg",
     "direction_deg": null,
     "direction_ref": null,
@@ -2570,7 +2570,7 @@
       "photo": "PXL_20261111_165349317.MP.jpg",
       "derivative": "pxl_20261111_165349317-mp.jpg",
       "datetime": "2026:11:11 10:53:49",
-      "drive_id": null
+      "drive_id": "1ubWZODQRNEJO4loWvivpMQq6jKbdRI-1"
      }
     ]
    }
@@ -2590,7 +2590,7 @@
     "photographer": "PJM",
     "type": "UN",
     "condition": null,
-    "drive_id": null,
+    "drive_id": "1uF4ycXXfl0DdZgh3phNsCUVgvCUSK8RV",
     "derivative": "pxl_20261111_165354000-mp.jpg",
     "direction_deg": null,
     "direction_ref": null,
@@ -2608,7 +2608,7 @@
       "photo": "PXL_20261111_165354000.MP.jpg",
       "derivative": "pxl_20261111_165354000-mp.jpg",
       "datetime": "2026:11:11 10:53:54",
-      "drive_id": null
+      "drive_id": "1uF4ycXXfl0DdZgh3phNsCUVgvCUSK8RV"
      }
     ],
     "note": "Needs Paul's walk-through \u2014 the two stumps are unidentified (old sign or barrier posts?)."
@@ -2629,7 +2629,7 @@
     "photographer": "PJM",
     "type": "CP",
     "condition": "new",
-    "drive_id": null,
+    "drive_id": "1mt7nMJEoJStSYqxhoUxggIZheklq6h5N",
     "derivative": "pxl_20261111_165358082-mp.jpg",
     "direction_deg": null,
     "direction_ref": null,
@@ -2647,7 +2647,7 @@
       "photo": "PXL_20261111_165358082.MP.jpg",
       "derivative": "pxl_20261111_165358082-mp.jpg",
       "datetime": "2026:11:11 10:53:58",
-      "drive_id": null
+      "drive_id": "1mt7nMJEoJStSYqxhoUxggIZheklq6h5N"
      }
     ]
    }
@@ -2667,7 +2667,7 @@
     "photographer": "PJM",
     "type": "SG",
     "condition": "good",
-    "drive_id": null,
+    "drive_id": "1kT51fVn3CR1Z8GHsMTk2gZp4bj57JlvT",
     "derivative": "pxl_20261111_165402874.jpg",
     "direction_deg": null,
     "direction_ref": null,
@@ -2685,7 +2685,7 @@
       "photo": "PXL_20261111_165402874.jpg",
       "derivative": "pxl_20261111_165402874.jpg",
       "datetime": "2026:11:11 10:54:02",
-      "drive_id": null
+      "drive_id": "1kT51fVn3CR1Z8GHsMTk2gZp4bj57JlvT"
      }
     ],
     "note": "A MnDOT highway marker, not a trail sign \u2014 keep or drop from the inventory is Paul's call."
@@ -2706,7 +2706,7 @@
     "photographer": "PJM",
     "type": "CP",
     "condition": "worn",
-    "drive_id": null,
+    "drive_id": "13QutygrVZj04mxGOTsxLnRSUy4xDJYPL",
     "derivative": "pxl_20261111_165411693-mp.jpg",
     "direction_deg": null,
     "direction_ref": null,
@@ -2724,7 +2724,7 @@
       "photo": "PXL_20261111_165411693.MP.jpg",
       "derivative": "pxl_20261111_165411693-mp.jpg",
       "datetime": "2026:11:11 10:54:11",
-      "drive_id": null
+      "drive_id": "13QutygrVZj04mxGOTsxLnRSUy4xDJYPL"
      }
     ]
    }
@@ -2744,7 +2744,7 @@
     "photographer": "PJM",
     "type": "RG",
     "condition": "good",
-    "drive_id": null,
+    "drive_id": "1IT5EqKNGQG6AlfsX4QV1HL8qGJeWTLqG",
     "derivative": "pxl_20261111_165423776.jpg",
     "direction_deg": null,
     "direction_ref": null,
@@ -2762,19 +2762,19 @@
       "photo": "PXL_20261111_165423776.jpg",
       "derivative": "pxl_20261111_165423776.jpg",
       "datetime": "2026:11:11 10:54:23",
-      "drive_id": null
+      "drive_id": "1IT5EqKNGQG6AlfsX4QV1HL8qGJeWTLqG"
      },
      {
       "photo": "PXL_20261111_165459819.jpg",
       "derivative": "pxl_20261111_165459819.jpg",
       "datetime": "2026:11:11 10:54:59",
-      "drive_id": null
+      "drive_id": "1kKrLEwRykYX_laiPpdKLbh3HzbdalqLz"
      },
      {
       "photo": "PXL_20261111_165505534.jpg",
       "derivative": "pxl_20261111_165505534.jpg",
       "datetime": "2026:11:11 10:55:05",
-      "drive_id": null
+      "drive_id": "1JbgtJIi0XkUcjZFJWA-gbfQvTCv_ePZw"
      }
     ],
     "note": "Trail register box \u2014 type RG (register), code approved by Paul Nov 11, 2026. Notebook close-up (165431497) HELD BACK from the public map \u2014 legible hiker names; publish only on Paul's explicit word. Original kept in Drive + batch-2 working folder."
@@ -2795,7 +2795,7 @@
     "photographer": "PJM",
     "type": "UN",
     "condition": null,
-    "drive_id": null,
+    "drive_id": "1DiadXTBMTrdtcnJDLFRIEe4J7M2-ywg6",
     "derivative": "pxl_20261111_165750037.jpg",
     "direction_deg": null,
     "direction_ref": null,
@@ -2813,7 +2813,7 @@
       "photo": "PXL_20261111_165750037.jpg",
       "derivative": "pxl_20261111_165750037.jpg",
       "datetime": "2026:11:11 10:57:50",
-      "drive_id": null
+      "drive_id": "1DiadXTBMTrdtcnJDLFRIEe4J7M2-ywg6"
      }
     ]
    }
@@ -2833,7 +2833,7 @@
     "photographer": "PJM",
     "type": "UN",
     "condition": null,
-    "drive_id": null,
+    "drive_id": "1QJks5Zn63EEFAa4d9eMQW1aeZLL-tIeJ",
     "derivative": "pxl_20261111_170252322-mp.jpg",
     "direction_deg": null,
     "direction_ref": null,
@@ -2851,7 +2851,7 @@
       "photo": "PXL_20261111_170252322.MP.jpg",
       "derivative": "pxl_20261111_170252322-mp.jpg",
       "datetime": "2026:11:11 11:02:52",
-      "drive_id": null
+      "drive_id": "1QJks5Zn63EEFAa4d9eMQW1aeZLL-tIeJ"
      }
     ],
     "note": "Tree-mounted marker, not a freestanding sign \u2014 whether tree markers belong in the inventory is Paul's call."
@@ -2872,7 +2872,7 @@
     "photographer": "PJM",
     "type": "CP",
     "condition": "new",
-    "drive_id": null,
+    "drive_id": "1eK-4MuJas6Q4ANWmnkRXi0fN3ZsKAzws",
     "derivative": "pxl_20261111_171210593.jpg",
     "direction_deg": null,
     "direction_ref": null,
@@ -2890,7 +2890,7 @@
       "photo": "PXL_20261111_171210593.jpg",
       "derivative": "pxl_20261111_171210593.jpg",
       "datetime": "2026:11:11 11:12:10",
-      "drive_id": null
+      "drive_id": "1eK-4MuJas6Q4ANWmnkRXi0fN3ZsKAzws"
      }
     ]
    }
@@ -2910,7 +2910,7 @@
     "photographer": "PJM",
     "type": "SG",
     "condition": "poor",
-    "drive_id": null,
+    "drive_id": "1LmoRAgGhXOH6KAbWuArMV3qjsBjRYt8l",
     "derivative": "pxl_20261111_171222895.jpg",
     "direction_deg": null,
     "direction_ref": null,
@@ -2928,7 +2928,7 @@
       "photo": "PXL_20261111_171222895.jpg",
       "derivative": "pxl_20261111_171222895.jpg",
       "datetime": "2026:11:11 11:12:22",
-      "drive_id": null
+      "drive_id": "1LmoRAgGhXOH6KAbWuArMV3qjsBjRYt8l"
      }
     ],
     "note": "Sign face destroyed by gunfire \u2014 needs replacement; see maintenance list."
@@ -2949,7 +2949,7 @@
     "photographer": "PJM",
     "type": "CP",
     "condition": "new",
-    "drive_id": null,
+    "drive_id": "13i-i6JGPuJZKDp-tr58vN-XIZg3WL5IS",
     "derivative": "pxl_20261111_171236081.jpg",
     "direction_deg": null,
     "direction_ref": null,
@@ -2967,7 +2967,7 @@
       "photo": "PXL_20261111_171236081.jpg",
       "derivative": "pxl_20261111_171236081.jpg",
       "datetime": "2026:11:11 11:12:36",
-      "drive_id": null
+      "drive_id": "13i-i6JGPuJZKDp-tr58vN-XIZg3WL5IS"
      }
     ]
    }
@@ -2987,7 +2987,7 @@
     "photographer": "PJM",
     "type": "UN",
     "condition": null,
-    "drive_id": null,
+    "drive_id": "1t1YQ23mN9Jyf6vKuhEnsjhBQlM3haqJR",
     "derivative": "pxl_20261111_171417596-mp.jpg",
     "direction_deg": null,
     "direction_ref": null,
@@ -3005,7 +3005,7 @@
       "photo": "PXL_20261111_171417596.MP.jpg",
       "derivative": "pxl_20261111_171417596-mp.jpg",
       "datetime": "2026:11:11 11:14:17",
-      "drive_id": null
+      "drive_id": "1t1YQ23mN9Jyf6vKuhEnsjhBQlM3haqJR"
      }
     ],
     "note": "Blowdown across the trail \u2014 see maintenance list."
@@ -3026,7 +3026,7 @@
     "photographer": "PJM",
     "type": "UN",
     "condition": null,
-    "drive_id": null,
+    "drive_id": "1WSAnBH4H0ltvcJES7bYUeJVEqa0UbQX0",
     "derivative": "pxl_20261111_171622584-mp.jpg",
     "direction_deg": null,
     "direction_ref": null,
@@ -3044,7 +3044,7 @@
       "photo": "PXL_20261111_171622584.MP.jpg",
       "derivative": "pxl_20261111_171622584-mp.jpg",
       "datetime": "2026:11:11 11:16:22",
-      "drive_id": null
+      "drive_id": "1WSAnBH4H0ltvcJES7bYUeJVEqa0UbQX0"
      }
     ],
     "note": "Blowdown across the trail \u2014 see maintenance list."
@@ -3065,7 +3065,7 @@
     "photographer": "PJM",
     "type": "UN",
     "condition": null,
-    "drive_id": null,
+    "drive_id": "1sMR7tYITlW5N4bgcZaN08-nqdhXtQFoo",
     "derivative": "pxl_20261111_171633870.jpg",
     "direction_deg": null,
     "direction_ref": null,
@@ -3083,7 +3083,7 @@
       "photo": "PXL_20261111_171633870.jpg",
       "derivative": "pxl_20261111_171633870.jpg",
       "datetime": "2026:11:11 11:16:33",
-      "drive_id": null
+      "drive_id": "1sMR7tYITlW5N4bgcZaN08-nqdhXtQFoo"
      }
     ],
     "note": "Blowdown across the trail \u2014 see maintenance list."
@@ -3104,7 +3104,7 @@
     "photographer": "PJM",
     "type": "UN",
     "condition": null,
-    "drive_id": null,
+    "drive_id": "1v8Jn6WU10gXj9Sl-RXCUoXYV5-yHMqQy",
     "derivative": "pxl_20261111_171740292-mp.jpg",
     "direction_deg": null,
     "direction_ref": null,
@@ -3122,13 +3122,13 @@
       "photo": "PXL_20261111_171740292.MP.jpg",
       "derivative": "pxl_20261111_171740292-mp.jpg",
       "datetime": "2026:11:11 11:17:40",
-      "drive_id": null
+      "drive_id": "1v8Jn6WU10gXj9Sl-RXCUoXYV5-yHMqQy"
      },
      {
       "photo": "PXL_20261111_171741627.jpg",
       "derivative": "pxl_20261111_171741627.jpg",
       "datetime": "2026:11:11 11:17:41",
-      "drive_id": null
+      "drive_id": "15ELKt62PaO0zHDVJCE1aaipYbgqbyT8f"
      }
     ],
     "note": "Blowdown across the trail \u2014 see maintenance list."
@@ -3149,7 +3149,7 @@
     "photographer": "PJM",
     "type": "UN",
     "condition": null,
-    "drive_id": null,
+    "drive_id": "1zFtIwysz_sPTwIPylZ6vVtMqUFJsVssD",
     "derivative": "pxl_20261111_171840137-mp.jpg",
     "direction_deg": null,
     "direction_ref": null,
@@ -3167,7 +3167,7 @@
       "photo": "PXL_20261111_171840137.MP.jpg",
       "derivative": "pxl_20261111_171840137-mp.jpg",
       "datetime": "2026:11:11 11:18:40",
-      "drive_id": null
+      "drive_id": "1zFtIwysz_sPTwIPylZ6vVtMqUFJsVssD"
      }
     ],
     "note": "Blowdown across the trail \u2014 see maintenance list."
@@ -3188,7 +3188,7 @@
     "photographer": "PJM",
     "type": "CP",
     "condition": "new",
-    "drive_id": null,
+    "drive_id": "1idwyCqV4DbvayZ7UAbEDIgqpVq5IZMvB",
     "derivative": "pxl_20261111_172740854.jpg",
     "direction_deg": null,
     "direction_ref": null,
@@ -3206,13 +3206,13 @@
       "photo": "PXL_20261111_172740854.jpg",
       "derivative": "pxl_20261111_172740854.jpg",
       "datetime": "2026:11:11 11:27:40",
-      "drive_id": null
+      "drive_id": "1idwyCqV4DbvayZ7UAbEDIgqpVq5IZMvB"
      },
      {
       "photo": "PXL_20261111_172748035.MP.jpg",
       "derivative": "pxl_20261111_172748035-mp.jpg",
       "datetime": "2026:11:11 11:27:48",
-      "drive_id": null
+      "drive_id": "1PvDgBY7ki4AH20f5Pg4-gYEucAJPZKQV"
      }
     ]
    }
@@ -3232,7 +3232,7 @@
     "photographer": "PJM",
     "type": "CP",
     "condition": "new",
-    "drive_id": null,
+    "drive_id": "19PVXk1woHH4pKUcdOVnlXg6zrVrB4z8A",
     "derivative": "pxl_20261111_172839222.jpg",
     "direction_deg": null,
     "direction_ref": null,
@@ -3250,13 +3250,13 @@
       "photo": "PXL_20261111_172839222.jpg",
       "derivative": "pxl_20261111_172839222.jpg",
       "datetime": "2026:11:11 11:28:39",
-      "drive_id": null
+      "drive_id": "19PVXk1woHH4pKUcdOVnlXg6zrVrB4z8A"
      },
      {
       "photo": "PXL_20261111_172843438.jpg",
       "derivative": "pxl_20261111_172843438.jpg",
       "datetime": "2026:11:11 11:28:43",
-      "drive_id": null
+      "drive_id": "1GBx6WCUGniUFNsWzxz4csx3J5nmh4CD3"
      }
     ]
    }
@@ -3276,7 +3276,7 @@
     "photographer": "PJM",
     "type": "CP",
     "condition": "new",
-    "drive_id": null,
+    "drive_id": "1zAXG4kwZR7A180eNd_paM1B_ewx9uCq1",
     "derivative": "pxl_20261111_172906961-mp.jpg",
     "direction_deg": null,
     "direction_ref": null,
@@ -3294,13 +3294,13 @@
       "photo": "PXL_20261111_172906961.MP.jpg",
       "derivative": "pxl_20261111_172906961-mp.jpg",
       "datetime": "2026:11:11 11:29:06",
-      "drive_id": null
+      "drive_id": "1zAXG4kwZR7A180eNd_paM1B_ewx9uCq1"
      },
      {
       "photo": "PXL_20261111_172911827.jpg",
       "derivative": "pxl_20261111_172911827.jpg",
       "datetime": "2026:11:11 11:29:11",
-      "drive_id": null
+      "drive_id": "1K-rcO1VL-a8UzzBRJz9g7wzCoZ50VQRm"
      }
     ]
    }
@@ -3320,7 +3320,7 @@
     "photographer": "PJM",
     "type": "UN",
     "condition": null,
-    "drive_id": null,
+    "drive_id": "1tKRVwdF6nL73zkDUwUyoNfnpj05D0xVU",
     "derivative": "pxl_20261111_173247427-mp.jpg",
     "direction_deg": null,
     "direction_ref": null,
@@ -3338,7 +3338,7 @@
       "photo": "PXL_20261111_173247427.MP.jpg",
       "derivative": "pxl_20261111_173247427-mp.jpg",
       "datetime": "2026:11:11 11:32:47",
-      "drive_id": null
+      "drive_id": "1tKRVwdF6nL73zkDUwUyoNfnpj05D0xVU"
      }
     ],
     "note": "Tree-mounted marker, not a freestanding sign \u2014 whether tree markers belong in the inventory is Paul's call."
@@ -3359,7 +3359,7 @@
     "photographer": "PJM",
     "type": "CP",
     "condition": "new",
-    "drive_id": null,
+    "drive_id": "1lQpTTGwAo618lpErzKh_S4eSrBDPdE_4",
     "derivative": "pxl_20261111_173300772.jpg",
     "direction_deg": null,
     "direction_ref": null,
@@ -3377,7 +3377,7 @@
       "photo": "PXL_20261111_173300772.jpg",
       "derivative": "pxl_20261111_173300772.jpg",
       "datetime": "2026:11:11 11:33:00",
-      "drive_id": null
+      "drive_id": "1lQpTTGwAo618lpErzKh_S4eSrBDPdE_4"
      }
     ]
    }
@@ -3397,7 +3397,7 @@
     "photographer": "PJM",
     "type": "CP",
     "condition": "new",
-    "drive_id": null,
+    "drive_id": "1ElZPCBHXbV8eqMBd7yWCS5W1t1cGp_Oj",
     "derivative": "pxl_20261111_173306050-mp.jpg",
     "direction_deg": null,
     "direction_ref": null,
@@ -3415,7 +3415,7 @@
       "photo": "PXL_20261111_173306050.MP.jpg",
       "derivative": "pxl_20261111_173306050-mp.jpg",
       "datetime": "2026:11:11 11:33:06",
-      "drive_id": null
+      "drive_id": "1ElZPCBHXbV8eqMBd7yWCS5W1t1cGp_Oj"
      }
     ]
    }
@@ -3435,7 +3435,7 @@
     "photographer": "PJM",
     "type": "PN",
     "condition": "fair",
-    "drive_id": null,
+    "drive_id": "1b1BAt-5Hzp2f8v54PpYxrsrOXbX3v1dX",
     "derivative": "pxl_20261111_173331162.jpg",
     "direction_deg": null,
     "direction_ref": null,
@@ -3453,19 +3453,19 @@
       "photo": "PXL_20261111_173331162.jpg",
       "derivative": "pxl_20261111_173331162.jpg",
       "datetime": "2026:11:11 11:33:31",
-      "drive_id": null
+      "drive_id": "1b1BAt-5Hzp2f8v54PpYxrsrOXbX3v1dX"
      },
      {
       "photo": "PXL_20261111_173336771.MP.jpg",
       "derivative": "pxl_20261111_173336771-mp.jpg",
       "datetime": "2026:11:11 11:33:36",
-      "drive_id": null
+      "drive_id": "1HeTAXCG7rpaoOHUxe08-gw_ao84Mgjxx"
      },
      {
       "photo": "PXL_20261111_173347090.jpg",
       "derivative": "pxl_20261111_173347090.jpg",
       "datetime": "2026:11:11 11:33:47",
-      "drive_id": null
+      "drive_id": "1fwyJzi5xE2J68FTCD1L-PJm7lG93p8sH"
      }
     ],
     "note": "Board end slightly raised at the bend \u2014 see maintenance list."
@@ -3486,7 +3486,7 @@
     "photographer": "PJM",
     "type": "UN",
     "condition": null,
-    "drive_id": null,
+    "drive_id": "1ODSgsD7RO5UYDzHOp1qBrl8eFdnSRSkZ",
     "derivative": "pjm-pxl_20261118_205026396-mp.jpg",
     "direction_deg": 240.9,
     "direction_ref": "track",
@@ -3504,7 +3504,7 @@
       "photo": "PXL_20261118_205026396.MP.jpg",
       "derivative": "pjm-pxl_20261118_205026396-mp.jpg",
       "datetime": "2026:11:18 14:50:26",
-      "drive_id": null,
+      "drive_id": "1ODSgsD7RO5UYDzHOp1qBrl8eFdnSRSkZ",
       "role": "front",
       "photographer": "PJM",
       "lat": 47.0146527,
@@ -3517,7 +3517,7 @@
       "photo": "PXL_20261118_205032380.MP.jpg",
       "derivative": "pjm-pxl_20261118_205032380-mp.jpg",
       "datetime": "2026:11:18 14:50:32",
-      "drive_id": null,
+      "drive_id": "1KC7nKj1Ibquk823GN5XMT8EQIlH3VRH1",
       "role": "back",
       "photographer": "PJM",
       "lat": 47.0146438,
@@ -3530,7 +3530,7 @@
       "photo": "PXL_20261118_205035527.MP.jpg",
       "derivative": "pjm-pxl_20261118_205035527-mp.jpg",
       "datetime": "2026:11:18 14:50:35",
-      "drive_id": null,
+      "drive_id": "1ZiY-PNLThHOG7jA_rpdVzSBoWh7bjOZH",
       "role": "detail",
       "photographer": "PJM",
       "lat": 47.0146394,
@@ -3557,7 +3557,7 @@
     "photographer": "PJM",
     "type": "UN",
     "condition": null,
-    "drive_id": null,
+    "drive_id": "1f93NE1Fjp7sQbdoMb8MFv1zdwIKCcj1q",
     "derivative": "pjm-pxl_20261118_205041067-mp.jpg",
     "direction_deg": 240.9,
     "direction_ref": "track",
@@ -3575,7 +3575,7 @@
       "photo": "PXL_20261118_205041067.MP.jpg",
       "derivative": "pjm-pxl_20261118_205041067-mp.jpg",
       "datetime": "2026:11:18 14:50:41",
-      "drive_id": null,
+      "drive_id": "1f93NE1Fjp7sQbdoMb8MFv1zdwIKCcj1q",
       "role": "front",
       "photographer": "PJM",
       "lat": 47.0146305,
@@ -3602,7 +3602,7 @@
     "photographer": "PJM",
     "type": "UN",
     "condition": null,
-    "drive_id": null,
+    "drive_id": "1qzsA1Oh6LadmDAUPco-7vKNOy6wc1BML",
     "derivative": "pjm-pxl_20261118_205713911-mp.jpg",
     "direction_deg": 261.3,
     "direction_ref": "track",
@@ -3620,7 +3620,7 @@
       "photo": "PXL_20261118_205713911.MP.jpg",
       "derivative": "pjm-pxl_20261118_205713911-mp.jpg",
       "datetime": "2026:11:18 14:57:13",
-      "drive_id": null,
+      "drive_id": "1qzsA1Oh6LadmDAUPco-7vKNOy6wc1BML",
       "role": "front",
       "photographer": "PJM",
       "lat": 47.0128492,
@@ -3647,7 +3647,7 @@
     "photographer": "PJM",
     "type": "UN",
     "condition": null,
-    "drive_id": null,
+    "drive_id": "15ObCahIIxVa_k07Edy7lx_xR0K1ZGFrG",
     "derivative": "pjm-pxl_20261118_205723136-mp.jpg",
     "direction_deg": 261.3,
     "direction_ref": "track",
@@ -3665,7 +3665,7 @@
       "photo": "PXL_20261118_205723136.MP.jpg",
       "derivative": "pjm-pxl_20261118_205723136-mp.jpg",
       "datetime": "2026:11:18 14:57:23",
-      "drive_id": null,
+      "drive_id": "15ObCahIIxVa_k07Edy7lx_xR0K1ZGFrG",
       "role": "front",
       "photographer": "PJM",
       "lat": 47.0128423,
@@ -3678,7 +3678,7 @@
       "photo": "PXL_20261118_205726388.jpg",
       "derivative": "pjm-pxl_20261118_205726388.jpg",
       "datetime": "2026:11:18 14:57:26",
-      "drive_id": null,
+      "drive_id": "1ibQdeLEh6V7eFo7uNYqnxhojDYUTR6x0",
       "role": "back",
       "photographer": "PJM",
       "lat": 47.0128402,
@@ -3705,7 +3705,7 @@
     "photographer": "PJM",
     "type": "UN",
     "condition": null,
-    "drive_id": null,
+    "drive_id": "1As0d8vfBB6fsES-FemtWQgUWrbVTLlCc",
     "derivative": "pjm-pxl_20261118_210125408-mp.jpg",
     "direction_deg": 27.0,
     "direction_ref": "track",
@@ -3723,7 +3723,7 @@
       "photo": "PXL_20261118_210125408.MP.jpg",
       "derivative": "pjm-pxl_20261118_210125408-mp.jpg",
       "datetime": "2026:11:18 15:01:25",
-      "drive_id": null,
+      "drive_id": "1As0d8vfBB6fsES-FemtWQgUWrbVTLlCc",
       "role": "front",
       "photographer": "PJM",
       "lat": 47.014516,
@@ -3736,7 +3736,7 @@
       "photo": "PXL_20261118_210126134.jpg",
       "derivative": "pjm-pxl_20261118_210126134.jpg",
       "datetime": "2026:11:18 15:01:26",
-      "drive_id": null,
+      "drive_id": "14YBmiFgE5Qvqt08zW8ihPUKPeV7B0fcR",
       "role": "back",
       "photographer": "PJM",
       "lat": 47.0145193,
@@ -3763,7 +3763,7 @@
     "photographer": "PJM",
     "type": "UN",
     "condition": null,
-    "drive_id": null,
+    "drive_id": "1vQWfRyjceOmFTl2Ka5pdUUFGgCm6_zbf",
     "derivative": "pjm-pxl_20261118_211955392-mp.jpg",
     "direction_deg": 2.7,
     "direction_ref": "track",
@@ -3781,7 +3781,7 @@
       "photo": "PXL_20261118_211955392.MP.jpg",
       "derivative": "pjm-pxl_20261118_211955392-mp.jpg",
       "datetime": "2026:11:18 15:19:55",
-      "drive_id": null,
+      "drive_id": "1vQWfRyjceOmFTl2Ka5pdUUFGgCm6_zbf",
       "role": "front",
       "photographer": "PJM",
       "lat": 47.0240235,
@@ -3794,7 +3794,7 @@
       "photo": "PXL_20261118_212001297.jpg",
       "derivative": "pjm-pxl_20261118_212001297.jpg",
       "datetime": "2026:11:18 15:20:01",
-      "drive_id": null,
+      "drive_id": "1Rtr0mct0Xe90b5rCzl3ZiayBKZf83kmf",
       "role": "back",
       "photographer": "PJM",
       "lat": 47.0240464,
@@ -3821,7 +3821,7 @@
     "photographer": "PJM",
     "type": "UN",
     "condition": null,
-    "drive_id": null,
+    "drive_id": "1MDkFcYaBwvD_HcEKHE5OgBGnZJxC_kbo",
     "derivative": "pjm-pxl_20261118_212021627.jpg",
     "direction_deg": 258.0,
     "direction_ref": "track",
@@ -3839,7 +3839,7 @@
       "photo": "PXL_20261118_212021627.jpg",
       "derivative": "pjm-pxl_20261118_212021627.jpg",
       "datetime": "2026:11:18 15:20:21",
-      "drive_id": null,
+      "drive_id": "1MDkFcYaBwvD_HcEKHE5OgBGnZJxC_kbo",
       "role": "front",
       "photographer": "PJM",
       "lat": 47.0240759,
@@ -3866,7 +3866,7 @@
     "photographer": "PJM",
     "type": "UN",
     "condition": null,
-    "drive_id": null,
+    "drive_id": "1WtsQOhMDYmNI0hVF0uxjLdEHbnLmIWG6",
     "derivative": "pjm-pxl_20261118_212058590.jpg",
     "direction_deg": 65.0,
     "direction_ref": "track",
@@ -3884,7 +3884,7 @@
       "photo": "PXL_20261118_212058590.jpg",
       "derivative": "pjm-pxl_20261118_212058590.jpg",
       "datetime": "2026:11:18 15:20:58",
-      "drive_id": null,
+      "drive_id": "1WtsQOhMDYmNI0hVF0uxjLdEHbnLmIWG6",
       "role": "front",
       "photographer": "PJM",
       "lat": 47.0240479,
@@ -3897,7 +3897,7 @@
       "photo": "PXL_20261118_212114251.MP.jpg",
       "derivative": "pjm-pxl_20261118_212114251-mp.jpg",
       "datetime": "2026:11:18 15:21:14",
-      "drive_id": null,
+      "drive_id": "1WgVCuWXy5l4oiRvCYRjZ4SISbLpBbgQj",
       "role": "back",
       "photographer": "PJM",
       "lat": 47.0240662,
@@ -3924,7 +3924,7 @@
     "photographer": "PJM",
     "type": "UN",
     "condition": null,
-    "drive_id": null,
+    "drive_id": "1pJSQAmX4Z5LQtmC16l0r2YHEC2WH7OBd",
     "derivative": "pjm-pxl_20261118_212151064-mp.jpg",
     "direction_deg": 60.2,
     "direction_ref": "track",
@@ -3942,7 +3942,7 @@
       "photo": "PXL_20261118_212151064.MP.jpg",
       "derivative": "pjm-pxl_20261118_212151064-mp.jpg",
       "datetime": "2026:11:18 15:21:51",
-      "drive_id": null,
+      "drive_id": "1pJSQAmX4Z5LQtmC16l0r2YHEC2WH7OBd",
       "role": "front",
       "photographer": "PJM",
       "lat": 47.0240849,
@@ -3955,7 +3955,7 @@
       "photo": "PXL_20261118_212156937.MP.jpg",
       "derivative": "pjm-pxl_20261118_212156937-mp.jpg",
       "datetime": "2026:11:18 15:21:56",
-      "drive_id": null,
+      "drive_id": "1KSLfs6HJVbUj5XpmwNqVw_kmxLi0z53U",
       "role": "back",
       "photographer": "PJM",
       "lat": 47.024095,
@@ -3968,7 +3968,7 @@
       "photo": "PXL_20261118_212201475.MP.jpg",
       "derivative": "pjm-pxl_20261118_212201475-mp.jpg",
       "datetime": "2026:11:18 15:22:01",
-      "drive_id": null,
+      "drive_id": "1Qqx5ejZ4l9MBTevnGpSm0B9GD8c4XiA6",
       "role": "detail",
       "photographer": "PJM",
       "lat": 47.024105,
@@ -3995,7 +3995,7 @@
     "photographer": "PJM",
     "type": "UN",
     "condition": null,
-    "drive_id": null,
+    "drive_id": "1sfxDyiQy3Qk44ccthSq68cY7_g_XnAdA",
     "derivative": "pjm-pxl_20261118_212234802.jpg",
     "direction_deg": 327.2,
     "direction_ref": "track",
@@ -4013,7 +4013,7 @@
       "photo": "PXL_20261118_212234802.jpg",
       "derivative": "pjm-pxl_20261118_212234802.jpg",
       "datetime": "2026:11:18 15:22:34",
-      "drive_id": null,
+      "drive_id": "1sfxDyiQy3Qk44ccthSq68cY7_g_XnAdA",
       "role": "front",
       "photographer": "PJM",
       "lat": 47.0244259,
@@ -4040,7 +4040,7 @@
     "photographer": "PJM",
     "type": "UN",
     "condition": null,
-    "drive_id": null,
+    "drive_id": "1aVHyWvJMhgnRs8q_nfCDH0wznicj84RW",
     "derivative": "pjm-pxl_20261118_213637385-mp.jpg",
     "direction_deg": 278.2,
     "direction_ref": "track",
@@ -4058,7 +4058,7 @@
       "photo": "PXL_20261118_213637385.MP.jpg",
       "derivative": "pjm-pxl_20261118_213637385-mp.jpg",
       "datetime": "2026:11:18 15:36:37",
-      "drive_id": null,
+      "drive_id": "1aVHyWvJMhgnRs8q_nfCDH0wznicj84RW",
       "role": "front",
       "photographer": "PJM",
       "lat": 47.0308224,
@@ -4071,7 +4071,7 @@
       "photo": "PXL_20261118_213646643.MP.jpg",
       "derivative": "pjm-pxl_20261118_213646643-mp.jpg",
       "datetime": "2026:11:18 15:36:46",
-      "drive_id": null,
+      "drive_id": "1NW1vkxAJEZC6_kA1MEobQT_spzUeiR1U",
       "role": "back",
       "photographer": "PJM",
       "lat": 47.0308277,
@@ -4098,7 +4098,7 @@
     "photographer": "PJM",
     "type": "UN",
     "condition": null,
-    "drive_id": null,
+    "drive_id": "1nRTDoZIAXCkGkm0618nu_sCUBGfsKkLU",
     "derivative": "pjm-pxl_20261118_213742891.jpg",
     "direction_deg": 9.0,
     "direction_ref": "track",
@@ -4116,7 +4116,7 @@
       "photo": "PXL_20261118_213742891.jpg",
       "derivative": "pjm-pxl_20261118_213742891.jpg",
       "datetime": "2026:11:18 15:37:42",
-      "drive_id": null,
+      "drive_id": "1nRTDoZIAXCkGkm0618nu_sCUBGfsKkLU",
       "role": "front",
       "photographer": "PJM",
       "lat": 47.0312727,
@@ -4129,7 +4129,7 @@
       "photo": "PXL_20261118_213747951.jpg",
       "derivative": "pjm-pxl_20261118_213747951.jpg",
       "datetime": "2026:11:18 15:37:47",
-      "drive_id": null,
+      "drive_id": "1ARJOW4KQFvSzddYNg3LYj0-Nqs37c1hg",
       "role": "back",
       "photographer": "PJM",
       "lat": 47.0312897,
@@ -4142,7 +4142,7 @@
       "photo": "PXL_20261118_213753891.jpg",
       "derivative": "pjm-pxl_20261118_213753891.jpg",
       "datetime": "2026:11:18 15:37:53",
-      "drive_id": null,
+      "drive_id": "1pShSVkGdS6M9x9fHPjf01rmDgN7tQFx2",
       "role": "detail",
       "photographer": "PJM",
       "lat": 47.03131,
@@ -4169,7 +4169,7 @@
     "photographer": "PJM",
     "type": "UN",
     "condition": null,
-    "drive_id": null,
+    "drive_id": "1f90AbmbkCKyMUJZbBs5XJELg4EMqNDaW",
     "derivative": "pjm-pxl_20261118_213807230.jpg",
     "direction_deg": 99.7,
     "direction_ref": "track",
@@ -4187,7 +4187,7 @@
       "photo": "PXL_20261118_213807230.jpg",
       "derivative": "pjm-pxl_20261118_213807230.jpg",
       "datetime": "2026:11:18 15:38:07",
-      "drive_id": null,
+      "drive_id": "1f90AbmbkCKyMUJZbBs5XJELg4EMqNDaW",
       "role": "front",
       "photographer": "PJM",
       "lat": 47.0313318,
@@ -4200,7 +4200,7 @@
       "photo": "PXL_20261118_213812076.jpg",
       "derivative": "pjm-pxl_20261118_213812076.jpg",
       "datetime": "2026:11:18 15:38:12",
-      "drive_id": null,
+      "drive_id": "16OWBbmuq59OfE18SvR3pkBMWRIWtDlCr",
       "role": "back",
       "photographer": "PJM",
       "lat": 47.0313304,
@@ -4213,7 +4213,7 @@
       "photo": "PXL_20261118_213823991.jpg",
       "derivative": "pjm-pxl_20261118_213823991.jpg",
       "datetime": "2026:11:18 15:38:23",
-      "drive_id": null,
+      "drive_id": "1baGsEFDU5ltzGbb1k4WdupnmeslUtl8_",
       "role": "detail",
       "photographer": "PJM",
       "lat": 47.0313274,
@@ -4226,7 +4226,7 @@
       "photo": "PXL_20261118_213835377.jpg",
       "derivative": "pjm-pxl_20261118_213835377.jpg",
       "datetime": "2026:11:18 15:38:35",
-      "drive_id": null,
+      "drive_id": "1CSHcWkMbyB72t8X_d4kEsiSi0xNdrBpk",
       "role": "detail",
       "photographer": "PJM",
       "lat": 47.0313242,
@@ -4253,7 +4253,7 @@
     "photographer": "PJM",
     "type": "UN",
     "condition": null,
-    "drive_id": null,
+    "drive_id": "1wEFgBdh3wN-4l_PjR1pbx3mCmOiO0JgZ",
     "derivative": "pjm-pxl_20261118_213839852.jpg",
     "direction_deg": 99.7,
     "direction_ref": "track",
@@ -4271,7 +4271,7 @@
       "photo": "PXL_20261118_213839852.jpg",
       "derivative": "pjm-pxl_20261118_213839852.jpg",
       "datetime": "2026:11:18 15:38:39",
-      "drive_id": null,
+      "drive_id": "1wEFgBdh3wN-4l_PjR1pbx3mCmOiO0JgZ",
       "role": "front",
       "photographer": "PJM",
       "lat": 47.0313231,
@@ -4284,7 +4284,7 @@
       "photo": "PXL_20261118_213845460.jpg",
       "derivative": "pjm-pxl_20261118_213845460.jpg",
       "datetime": "2026:11:18 15:38:45",
-      "drive_id": null,
+      "drive_id": "13BXCxW6vJH3SYRDWFjr9EN4a8mK3GnIA",
       "role": "back",
       "photographer": "PJM",
       "lat": 47.0313214,
@@ -4297,7 +4297,7 @@
       "photo": "PXL_20261118_213849432.jpg",
       "derivative": "pjm-pxl_20261118_213849432.jpg",
       "datetime": "2026:11:18 15:38:49",
-      "drive_id": null,
+      "drive_id": "1zdoOmgOtDtY3AZ8ISDTa_owmhNXQ7Yj4",
       "role": "detail",
       "photographer": "PJM",
       "lat": 47.0313204,
@@ -4310,7 +4310,7 @@
       "photo": "PXL_20261118_213904730.jpg",
       "derivative": "pjm-pxl_20261118_213904730.jpg",
       "datetime": "2026:11:18 15:39:04",
-      "drive_id": null,
+      "drive_id": "1aIyTuI05acSDE7wU_B-CWlGfmdE82Ryi",
       "role": "detail",
       "photographer": "PJM",
       "lat": 47.0313076,
@@ -4323,7 +4323,7 @@
       "photo": "PXL_20261118_213917911.MP.jpg",
       "derivative": "pjm-pxl_20261118_213917911-mp.jpg",
       "datetime": "2026:11:18 15:39:17",
-      "drive_id": null,
+      "drive_id": "1UPhDj4yEqNXdNdY9qVjZRhGxOnVsKfiF",
       "role": "detail",
       "photographer": "PJM",
       "lat": 47.0312946,
@@ -4336,7 +4336,7 @@
       "photo": "PXL_20261118_213925652.jpg",
       "derivative": "pjm-pxl_20261118_213925652.jpg",
       "datetime": "2026:11:18 15:39:25",
-      "drive_id": null,
+      "drive_id": "1MWGKiNVEXb7HKj0ezF2rAhCaqxoejFIm",
       "role": "detail",
       "photographer": "PJM",
       "lat": 47.0312867,
@@ -4363,7 +4363,7 @@
     "photographer": "PJM",
     "type": "UN",
     "condition": null,
-    "drive_id": null,
+    "drive_id": "1UNRXklGUTw2WMHbausZg3ObjtxBENA0c",
     "derivative": "pjm-pxl_20261118_213940821.jpg",
     "direction_deg": 219.6,
     "direction_ref": "track",
@@ -4381,7 +4381,7 @@
       "photo": "PXL_20261118_213940821.jpg",
       "derivative": "pjm-pxl_20261118_213940821.jpg",
       "datetime": "2026:11:18 15:39:40",
-      "drive_id": null,
+      "drive_id": "1UNRXklGUTw2WMHbausZg3ObjtxBENA0c",
       "role": "front",
       "photographer": "PJM",
       "lat": 47.0312717,
@@ -4408,7 +4408,7 @@
     "photographer": "PJM",
     "type": "UN",
     "condition": null,
-    "drive_id": null,
+    "drive_id": "1F2LiGgpBV_c70NGMP0YbPdcVa0zLV23R",
     "derivative": "pjm-pxl_20261118_214014094-mp.jpg",
     "direction_deg": 172.4,
     "direction_ref": "track",
@@ -4426,7 +4426,7 @@
       "photo": "PXL_20261118_214014094.MP.jpg",
       "derivative": "pjm-pxl_20261118_214014094-mp.jpg",
       "datetime": "2026:11:18 15:40:14",
-      "drive_id": null,
+      "drive_id": "1F2LiGgpBV_c70NGMP0YbPdcVa0zLV23R",
       "role": "front",
       "photographer": "PJM",
       "lat": 47.0312144,
@@ -4439,7 +4439,7 @@
       "photo": "PXL_20261118_214020654.MP.jpg",
       "derivative": "pjm-pxl_20261118_214020654-mp.jpg",
       "datetime": "2026:11:18 15:40:20",
-      "drive_id": null,
+      "drive_id": "1lt9K0Iwy1t9L2VKvhYCsz4zqsNwkkO62",
       "role": "back",
       "photographer": "PJM",
       "lat": 47.031185,
@@ -4466,7 +4466,7 @@
     "photographer": "PJM",
     "type": "UN",
     "condition": null,
-    "drive_id": null,
+    "drive_id": "1iOXmT29mzjraG1wDRT4wCZso6aARlFeo",
     "derivative": "pjm-pxl_20261118_214121010.jpg",
     "direction_deg": 344.9,
     "direction_ref": "track",
@@ -4484,7 +4484,7 @@
       "photo": "PXL_20261118_214121010.jpg",
       "derivative": "pjm-pxl_20261118_214121010.jpg",
       "datetime": "2026:11:18 15:41:21",
-      "drive_id": null,
+      "drive_id": "1iOXmT29mzjraG1wDRT4wCZso6aARlFeo",
       "role": "front",
       "photographer": "PJM",
       "lat": 47.0306355,
@@ -4511,7 +4511,7 @@
     "photographer": "PJM",
     "type": "UN",
     "condition": null,
-    "drive_id": null,
+    "drive_id": "1qFESSmlhv2MAwaT6IItAXFTFFP-TedVU",
     "derivative": "pjm-pxl_20261118_214753308.jpg",
     "direction_deg": 53.4,
     "direction_ref": "track",
@@ -4529,7 +4529,7 @@
       "photo": "PXL_20261118_214753308.jpg",
       "derivative": "pjm-pxl_20261118_214753308.jpg",
       "datetime": "2026:11:18 15:47:53",
-      "drive_id": null,
+      "drive_id": "1qFESSmlhv2MAwaT6IItAXFTFFP-TedVU",
       "role": "front",
       "photographer": "PJM",
       "lat": 47.02797,
