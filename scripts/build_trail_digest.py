@@ -30,9 +30,9 @@ DATA = os.path.join(ROOT, "site", "data")
 OUT = os.path.join(DATA, "trail-digest.json")
 
 TYPE_NAMES = {
-    "BN": "Bench", "BO": "Bollard", "BR": "Bridge", "BW": "Boardwalk",
+    "BN": "Bench", "BO": "Bollard", "BR": "Bridge",
     "CP": "Carsonite post", "CS": "Campsite", "KI": "Kiosk",
-    "LT": "Latrine", "PK": "Parking area", "PO": "Post",
+    "LT": "Latrine", "PK": "Parking area", "PN": "Puncheon", "PO": "Post",
     "RG": "Register", "SG": "Sign", "SH": "Shelter",
     "UN": "Unclassified", "WT": "Water source",
 }

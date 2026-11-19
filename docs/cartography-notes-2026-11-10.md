@@ -356,11 +356,38 @@ scarcity is what makes them read as chapter furniture.
 
 ### 2.7 Section-name labels
 
-Keep: permanent tooltips, mid-section anchor, above/beside by
-bearing (`sectionLabelPlacement`), `--adopted-deep` on the paper
-halo, imagery flip to near-white on dark halo, font steps
-11/10/9/8 px, longest-first collision pass, ≥ 2 mi rule at z ≤ 9,
-no hiding at z ≥ 12. Changes:
+Keep: permanent tooltips, mid-section anchor, orientation-aware
+placement (`sectionLabelPlacement`, v9 rule below),
+`--adopted-deep` on the paper halo, imagery flip to near-white on
+dark halo, font steps 11/10/9/8 px, longest-first collision pass,
+≥ 2 mi rule at z ≤ 9, no hiding at z ≥ 12.
+
+**Standing rule (v9, Paul, Nov 19, 2026): label placement follows
+standard cartographic practice — the label goes above, below, or
+beside the line depending on the line's orientation and local
+context, never on the line, never colliding with the line or with
+other labels, and never by a single fixed offset.** In
+`sectionLabelPlacement`: the direction order follows the line's
+local bearing at the anchor (side placements first on a
+north-south run, above/below first on an east-west run);
+candidates walk outward (17, 26, 34 px standoff, fallback 44 px);
+clearance is measured against the line's full segments
+(rect-to-segment distance), not its vertices — a box far from
+every vertex can still straddle the run between two of them, which
+is how north-south names ended up on the tread under the old
+vertex-only test (and the old fixed top-first order put
+north-south names above the line with their edge on the tread).
+Label-vs-label collisions resolve by hiding the shorter label
+(longest first), never by shoving a label onto a line; the hide
+decision is measured on the computed placement box (+6 px slop),
+not the live element rect, so it is stable across re-layouts (a
+hidden element reads as a zero-size rect and used to re-show
+itself on the next run — West-1 over West-2 at z11). Verified
+Nov 19, 2026: 180 placements (30 sections × zooms 9–14), zero
+boxes inside the 4 px clearance; West-11 and Chip-1 sit beside
+the line at z11–13.
+
+Changes:
 
 - **One collision pass for all face text.** Today the pass knows
   only section names. Extend `layoutSectionLabels` into a single

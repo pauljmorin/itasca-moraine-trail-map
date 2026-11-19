@@ -305,19 +305,19 @@
   // Standing taxonomy (from data/assets/registry.json). Names are a fallback;
   // the page tries to read the registry itself and uses these if that fails.
   var TYPE_NAMES = {
-    CP: "Carsonite post", BW: "Boardwalk", SG: "Sign", BN: "Bench", BO: "Bollard",
+    CP: "Carsonite post", PN: "Puncheon", SG: "Sign", BN: "Bench", BO: "Bollard",
     CS: "Campsite", PO: "Post (other)", LT: "Latrine", BR: "Bridge",
     KI: "Kiosk", RG: "Register", PK: "Parking area", SH: "Shelter",
     WT: "Water source", UN: "Unclassified"
   };
-  var TYPE_ORDER = ["CP", "BW", "SG", "BN", "CS", "PO", "LT", "BR", "KI", "RG", "PK", "SH", "WT", "BO", "UN"];
+  var TYPE_ORDER = ["CP", "PN", "SG", "BN", "CS", "PO", "LT", "BR", "KI", "RG", "PK", "SH", "WT", "BO", "UN"];
   // One glyph per type, shown wherever the type appears. These are
   // the same inline SVG pictographs the map pins use (white on the
   // orange disc) — no emoji anywhere on this page.
   var TYPE_GLYPHS = {
     CP: "<svg viewBox=\"0 0 16 16\" aria-hidden=\"true\"><rect x=\"5\" y=\"1.5\" width=\"6\" height=\"4\" rx=\"0.8\" fill=\"#fff\"/><rect x=\"7\" y=\"5\" width=\"2\" height=\"9\" fill=\"#fff\"/></svg>",
     SG: "<svg viewBox=\"0 0 16 16\" aria-hidden=\"true\"><rect x=\"2\" y=\"2\" width=\"12\" height=\"6\" rx=\"1\" fill=\"#fff\"/><rect x=\"4\" y=\"4\" width=\"8\" height=\"1.2\" fill=\"#e6550d\"/><rect x=\"7\" y=\"8\" width=\"2\" height=\"6\" fill=\"#fff\"/></svg>",
-    BW: "<svg viewBox=\"0 0 16 16\" aria-hidden=\"true\"><rect x=\"2\" y=\"2.5\" width=\"12\" height=\"2.6\" rx=\"0.6\" fill=\"#fff\"/><rect x=\"2\" y=\"6.7\" width=\"12\" height=\"2.6\" rx=\"0.6\" fill=\"#fff\"/><rect x=\"2\" y=\"10.9\" width=\"12\" height=\"2.6\" rx=\"0.6\" fill=\"#fff\"/></svg>",
+    PN: "<svg viewBox=\"0 0 16 16\" aria-hidden=\"true\"><rect x=\"2\" y=\"2.5\" width=\"12\" height=\"2.6\" rx=\"0.6\" fill=\"#fff\"/><rect x=\"2\" y=\"6.7\" width=\"12\" height=\"2.6\" rx=\"0.6\" fill=\"#fff\"/><rect x=\"2\" y=\"10.9\" width=\"12\" height=\"2.6\" rx=\"0.6\" fill=\"#fff\"/></svg>",
     BN: "<svg viewBox=\"0 0 16 16\" aria-hidden=\"true\"><rect x=\"2\" y=\"2\" width=\"12\" height=\"2.2\" rx=\"0.6\" fill=\"#fff\"/><rect x=\"2\" y=\"6.5\" width=\"12\" height=\"2.2\" rx=\"0.6\" fill=\"#fff\"/><rect x=\"3.5\" y=\"8.7\" width=\"1.8\" height=\"5\" fill=\"#fff\"/><rect x=\"10.7\" y=\"8.7\" width=\"1.8\" height=\"5\" fill=\"#fff\"/></svg>",
     BR: "<svg viewBox=\"0 0 16 16\" aria-hidden=\"true\"><path d=\"M2 13 Q8 3 14 13\" fill=\"none\" stroke=\"#fff\" stroke-width=\"2\" stroke-linecap=\"round\"/><rect x=\"1\" y=\"13\" width=\"14\" height=\"1.6\" fill=\"#fff\"/></svg>",
     BO: "<svg viewBox=\"0 0 16 16\" aria-hidden=\"true\"><rect x=\"5\" y=\"3\" width=\"6\" height=\"11\" rx=\"1.5\" fill=\"#fff\"/></svg>",

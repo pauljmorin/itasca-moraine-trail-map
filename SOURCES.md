@@ -89,14 +89,17 @@ pulled.
   service: only Cass intersects the slice bbox). Note the
   chapter's "30 miles" counts the full 30.59-mi chain from the
   Itasca Moraine boundary; the clipped STN line is 26.67 mi.
-  **Trail styling:** the STN chunk needs no new layer — the
-  "NCT — all Minnesota" layer above already draws all 12
-  features (verified Nov 18: 11 match the published file at
-  0–1 m on both ends; the 12th is the clipped first feature,
-  whose end matches at 1 m and whose start is 3,784 m east of
-  the published feature's start — exactly the MN-84 clip, since
-  the drawn line continues unclipped to the Itasca Moraine
-  boundary). **Open question for Paul:** the J1 crossing
+  **Trail styling (changed Nov 19, 2026, Paul):** the STN chunk is
+  now its own published layer — `site/data/trail-stn.geojson` plus
+  the `trail-stn` layer def, drawn like the chapter line over the
+  state line — because the chapter-attribute view of the state line
+  showed only ~10 mi of STN tread. The state line still draws the
+  same 12 features underneath (verified Nov 18: 11 match the
+  published file at 0–1 m on both ends; the 12th is the clipped
+  first feature, whose end matches at 1 m and whose start is
+  3,784 m east of the published feature's start — exactly the
+  MN-84 clip, since the drawn line continues unclipped to the
+  Itasca Moraine boundary). **Open question for Paul:** the J1 crossing
   placement (±0.3 mi) and the "30 miles" vs 26.67 mi difference
   are recorded here; if the chapter's maintained section in fact
   starts at the Itasca Moraine boundary rather than at MN-84,

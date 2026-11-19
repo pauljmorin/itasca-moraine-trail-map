@@ -2443,8 +2443,8 @@ function roadPopup(f) {
 /* Type codes to display names (registry data/assets/registry.json).
    Shared by the popup title and the hover chip. */
 var ASSET_TYPE_NAMES = {
-  BN: "Bench", BO: "Bollard", BR: "Bridge", BW: "Boardwalk", CP: "Carsonite post",
-  CS: "Campsite", KI: "Kiosk", LT: "Latrine", PK: "Parking area",
+  BN: "Bench", BO: "Bollard", BR: "Bridge", CP: "Carsonite post",
+  CS: "Campsite", KI: "Kiosk", LT: "Latrine", PK: "Parking area", PN: "Puncheon",
   PO: "Post", RG: "Register", SG: "Sign", SH: "Shelter",
   UN: "Unclassified", WT: "Water source",
 };
@@ -2461,7 +2461,7 @@ function assetTypeName(code) {
    Nov 13) has no pins yet. Order is the brief's order —
    largest first, UN (the bucket) last. */
 var ASSET_TYPE_TOGGLES = [
-  ["CP", 30], ["SG", 16], ["BW", 10], ["BN", 3], ["BR", 2],
+  ["CP", 30], ["SG", 16], ["PN", 10], ["BN", 3], ["BR", 2],
   ["CS", 1], ["LT", 1], ["KI", 1], ["PO", 1], ["RG", 1], ["BO", 0],
   ["UN", 18],
 ];
@@ -2841,7 +2841,7 @@ var ASSET_GLYPHS = {
     "<rect x=\"2\" y=\"2\" width=\"12\" height=\"6\" rx=\"1\" fill=\"#fff\"/>" +
     "<rect x=\"4\" y=\"4\" width=\"8\" height=\"1.2\" fill=\"#e6550d\"/>" +
     "<rect x=\"7\" y=\"8\" width=\"2\" height=\"6\" fill=\"#fff\"/></svg>",
-  BW: "<svg viewBox=\"0 0 16 16\" aria-hidden=\"true\">" +
+  PN: "<svg viewBox=\"0 0 16 16\" aria-hidden=\"true\">" +
     "<rect x=\"2\" y=\"2.5\" width=\"12\" height=\"2.6\" rx=\"0.6\" fill=\"#fff\"/>" +
     "<rect x=\"2\" y=\"6.7\" width=\"12\" height=\"2.6\" rx=\"0.6\" fill=\"#fff\"/>" +
     "<rect x=\"2\" y=\"10.9\" width=\"12\" height=\"2.6\" rx=\"0.6\" fill=\"#fff\"/></svg>",
@@ -3051,23 +3051,30 @@ function gapEndAccess(p, which) {
    gazetteer as its Road/Trail crossing entries; the access-points
    data file and its builder remain in the repo.) */
 
-/* Where a section's name label sits (v6, Paul, Nov 10, 2026):
-   the label must NEVER touch the line. v3–v5 judged only the
-   segment direction at the length-centroid and offset by a fixed
-   few px, so on curving sections the name still landed on the
-   tread (West-5, 8a, 9, 11, 13, 14, 16). The rule now, for every
-   section: consider eight candidate boxes around the anchor —
-   the anchor is the point on the LINE nearest the section's
-   vertex-centroid — and pick the first box, in house preference
-   order, whose rectangle clears every vertex of the section's
-   own polyline by LABEL_CLEARANCE px. Candidates walk outward
-   (17, 26, 34 px standoff) before any fallback; the fallback
-   (anchor at an extreme bend) takes the least-bad box, pushed to
-   44 px. Deterministic: same data, same placement, every load.
-   The standoffs walked up a step with the labels themselves in
-   v8 (Paul, Nov 10, 2026 evening — names at 14 px / 700): the
-   boxes the pass measures are bigger, so the first candidate
-   starts further out to preserve the same clearance. */
+/* Where a section's name label sits (v9, Paul, Nov 19, 2026):
+   standard cartographic practice — the label goes above, below,
+   or beside the line depending on the line's orientation and local
+   context, never on the line, never colliding with the line or
+   with other labels, and never by a single fixed offset. v3–v5
+   judged only the segment direction at the length-centroid and
+   offset by a fixed few px, so on curving sections the name still
+   landed on the tread (West-5, 8a, 9, 11, 13, 14, 16). v6–v8
+   fixed the anchor (nearest point on the line to the vertex
+   centroid) and walked eight candidate boxes outward (17, 26, 34
+   px standoff), but judged clearance against the line's VERTICES
+   only — a box can sit far from every vertex and still straddle
+   the straight run between two of them — and the fixed top-first
+   order put north-south names above the line with their edge on
+   the tread. v9 judges clearance against the line's SEGMENTS
+   (rect-to-segment distance) and orders the directions by the
+   line's local bearing at the anchor: side placements first on a
+   north-south run, above/below first on an east-west run. The
+   fallback (anchor at an extreme bend) takes the least-bad box,
+   pushed to 44 px. Deterministic: same data, same placement,
+   every load. The standoffs walked up a step with the labels
+   themselves in v8 (Paul, Nov 10, 2026 evening — names at 14 px /
+   700): the boxes the pass measures are bigger, so the first
+   candidate starts further out to preserve the same clearance. */
 var LABEL_CLEARANCE = 4;
 function sectionLabelPlacement(f, name, mapRef) {
   var coords = (f.geometry && f.geometry.coordinates) || [];
@@ -3079,7 +3086,7 @@ function sectionLabelPlacement(f, name, mapRef) {
   var cx = 0, cy = 0;
   coords.forEach(function (c) { cx += c[0]; cy += c[1]; });
   cx /= coords.length; cy /= coords.length;
-  var anchor = null, bestD = Infinity;
+  var anchor = null, bestD = Infinity, anchorSeg = 1;
   for (var i = 1; i < coords.length; i++) {
     var ax = coords[i - 1][0], ay = coords[i - 1][1];
     var bx = coords[i][0], by = coords[i][1];
@@ -3089,7 +3096,7 @@ function sectionLabelPlacement(f, name, mapRef) {
     t = Math.max(0, Math.min(1, t));
     var px = ax + t * dx, py = ay + t * dy;
     var d = (cx - px) * (cx - px) + (cy - py) * (cy - py);
-    if (d < bestD) { bestD = d; anchor = [px, py]; }
+    if (d < bestD) { bestD = d; anchor = [px, py]; anchorSeg = i; }
   }
   if (!anchor) return fallback;
   var apt = mapRef.latLngToContainerPoint(
@@ -3112,18 +3119,70 @@ function sectionLabelPlacement(f, name, mapRef) {
     else if (dir === "bottomleft") { x -= dist * 0.7 + w; y += dist * 0.7; }
     return { x0: x, y0: y, x1: x + w, y1: y + h };
   }
-  function clearance(box) {
-    var worst = Infinity;
-    linePts.forEach(function (p) {
+  /* Clearance to the line's SEGMENTS (v9), not its vertices: a box
+     can sit far from every vertex and still straddle the straight
+     run between two of them. Rect-to-segment distance: 0 when the
+     segment touches or crosses the box, else the nearest
+     endpoint/corner distance. */
+  function ptSegDist(px, py, a, b) {
+    var dx = b.x - a.x, dy = b.y - a.y;
+    var len2 = dx * dx + dy * dy;
+    var t = len2 ? ((px - a.x) * dx + (py - a.y) * dy) / len2 : 0;
+    t = Math.max(0, Math.min(1, t));
+    return Math.hypot(px - (a.x + t * dx), py - (a.y + t * dy));
+  }
+  function segsCross(a, b, c, d) {
+    function o(p, q, r) {
+      var v = (q.y - p.y) * (r.x - q.x) - (q.x - p.x) * (r.y - q.y);
+      return v === 0 ? 0 : (v > 0 ? 1 : -1);
+    }
+    return o(a, b, c) !== o(a, b, d) && o(c, d, a) !== o(c, d, b);
+  }
+  function rectSegDist(box, a, b) {
+    function inBox(p) {
+      return p.x >= box.x0 && p.x <= box.x1 &&
+        p.y >= box.y0 && p.y <= box.y1;
+    }
+    if (inBox(a) || inBox(b)) return 0;
+    var corners = [
+      { x: box.x0, y: box.y0 }, { x: box.x1, y: box.y0 },
+      { x: box.x1, y: box.y1 }, { x: box.x0, y: box.y1 },
+    ];
+    for (var e = 0; e < 4; e++) {
+      if (segsCross(a, b, corners[e], corners[(e + 1) % 4])) return 0;
+    }
+    function ptBoxDist(p) {
       var dx = Math.max(box.x0 - p.x, 0, p.x - box.x1);
       var dy = Math.max(box.y0 - p.y, 0, p.y - box.y1);
-      var d = Math.sqrt(dx * dx + dy * dy);
-      if (d < worst) worst = d;
+      return Math.sqrt(dx * dx + dy * dy);
+    }
+    var d = Math.min(ptBoxDist(a), ptBoxDist(b));
+    corners.forEach(function (c) {
+      d = Math.min(d, ptSegDist(c.x, c.y, a, b));
     });
+    return d;
+  }
+  function clearance(box) {
+    var worst = Infinity;
+    for (var i = 1; i < linePts.length; i++) {
+      var d = rectSegDist(box, linePts[i - 1], linePts[i]);
+      if (d < worst) worst = d;
+    }
     return worst;
   }
-  var dirs = ["top", "right", "bottom", "left",
-    "topright", "topleft", "bottomright", "bottomleft"];
+  /* Direction order follows the line's local bearing at the anchor
+     (v9): a north-south run takes side placements first — the label
+     sits beside the line — and an east-west run takes above/below
+     first. The fixed top-first order put north-south names above
+     the line with their edge on the tread. */
+  var segA = linePts[Math.max(0, anchorSeg - 1)];
+  var segB = linePts[Math.min(linePts.length - 1, anchorSeg)];
+  var sdx = segB.x - segA.x, sdy = segB.y - segA.y;
+  var dirs = Math.abs(sdy) > Math.abs(sdx)
+    ? ["right", "left", "topright", "bottomright",
+       "topleft", "bottomleft", "top", "bottom"]
+    : ["top", "bottom", "topright", "topleft",
+       "bottomright", "bottomleft", "right", "left"];
   var dists = [17, 26, 34];
   var best = null;
   for (var di = 0; di < dists.length; di++) {
@@ -3317,11 +3376,17 @@ function layoutAnnotations() {
     tt.setLatLng(L.latLng(place.anchor[1], place.anchor[0]));
   });
   /* Pass 2: greedy label-vs-label deconfliction in the section's
-     length order, measured on the REAL rendered boxes (Leaflet
-     has now positioned them per pass 1): a label that would
-     overlap an already-placed one is hidden at this zoom, never
-     shoved onto a line. Shown labels reserve their box in the
-     shared pool at every zoom, so the lower classes can yield. */
+     length order, measured on the COMPUTED placement box pass 1
+     just produced (v9): a label that would overlap an
+     already-placed one is hidden at this zoom, never shoved onto
+     a line. The live element rect cannot be the measure — a label
+     hidden by an earlier layout reads as a zero-size rect and
+     passes every collision test, so the next layout re-showed
+     hidden names on top of each other (West-1 over West-2 at
+     z11). The placement box is the same geometry the tooltip
+     renders at, and it is stable across runs. Shown labels
+     reserve their box (with the house +6 px slop) in the shared
+     pool at every zoom, so the lower classes can yield. */
   sorted.forEach(function (it) {
     var tt = it.layer.getTooltip();
     var el = tt && tt.getElement();
@@ -3329,7 +3394,11 @@ function layoutAnnotations() {
     el.style.fontSize = font + "px";
     var show = true;
     if (z <= 9 && (it.len || 0) < 2) show = false;
-    var r = labelRectOf(el);
+    var pb = it.place && it.place.box;
+    var r = pb ? {
+      x0: pb.x0 - 6, y0: pb.y0 - 6,
+      x1: pb.x1 + 6, y1: pb.y1 + 6,
+    } : labelRectOf(el);
     if (show && z < 13) {
       if (placed.some(function (p) { return _boxesCollide(r, p); })) {
         show = false;
@@ -5393,6 +5462,53 @@ var LAYERS = [
       });
       trailCasingLayer = casing;
       trailCoreLayer = core;
+      var group = L.featureGroup([casing, core]);
+      group.bringToFront = function () {
+        casing.bringToFront(); core.bringToFront();
+      };
+      return group;
+    },
+  },
+  {
+    /* Star of the North trail line (Paul, Nov 19, 2026): the STN
+       chapter's built extent — Minnesota 84 (north of Longville)
+       to Highway 6 northeast of Remer — as its own published file
+       (site/data/trail-stn.geojson, built Nov 18, 2026 by
+       scripts/build_stn_line.py: 12 official-line features chained
+       end-to-end, clipped at MN-84, 26.67 mi measured). The
+       official line's `chapter` attribute tags only 2 of the 12
+       features STN (9.97 mi); the rest carry the Arrowhead tag, so
+       the chapter-attribute view of the published state line showed
+       only ~10 mi of STN tread. This layer draws the full built
+       extent, styled like the chapter line. ON by default: it is
+       trail tread, not context. Popups name the Star of the North
+       chapter (the file's own extent), not the per-feature tag. */
+    id: "trail-stn", label: "Star of the North Chapter trail",
+    title: "The Star of the North chapter's trail — MN-84 to Highway 6 NE of Remer (26.67 mi)",
+    file: "data/trail-stn.geojson",
+    onByDefault: true, group: "The trail",
+    swatch: { kind: "line", color: CHAPTER_COLORS.ITM },
+    build: function (gj) {
+      var casing = L.geoJSON(gj, {
+        renderer: canvasFor(), interactive: false,
+        style: trailCasingStyle,
+      });
+      var core = L.geoJSON(gj, {
+        renderer: canvasFor(),
+        style: trailStyle,
+        onEachFeature: function (f, l) {
+          var p = f.properties;
+          var title = esc(p.seg_name) || "North Country Trail";
+          var kind = p.trail_stat === "NCT (on-road)" ?
+            "On-road section" : "Off-road trail";
+          bindPop(l, "<h3>" + title + "</h3>" + kvTable([
+            ["Chapter", "Star of the North Chapter"],
+            ["Type", kind + (p.trail_type ? " (" + p.trail_type + ")" : "")],
+            ["Extent", "Minnesota 84 to Highway 6 NE of Remer — 26.67 mi built extent"],
+            ["Source", "North Country Trail Association — official trail line"],
+          ]));
+        },
+      });
       var group = L.featureGroup([casing, core]);
       group.bringToFront = function () {
         casing.bringToFront(); core.bringToFront();
@@ -8363,8 +8479,8 @@ function writeShareHash() {
    task, not by data source. The LAYERS array order is the build
    order; the PANEL order is this list, so a def's group decides
    where its toggle lands, not its position in the array. */
-var PANEL_GROUPS = ["The trail", "ITM inventory", "Agency Maps", "Other trails",
-                    "The land", "Land ownership", "Around the trail"];
+var PANEL_GROUPS = ["The trail", "Road walk", "ITM inventory", "Agency Maps",
+                    "Other trails", "The land", "Land ownership", "Around the trail"];
 LAYERS.forEach(function (def) {
   def.layer = null;
   def.loading = false;
@@ -8426,7 +8542,7 @@ LAYERS.forEach(function (def) {
   if (box.checked) ensureLayer(def, false);
 });
 /* Phase 2: lay the toggles out in panel (task) order. */
-var GROUP_PULLDOWNS = ["The trail", "ITM inventory", "Agency Maps", "Other trails", "The land",
+var GROUP_PULLDOWNS = ["The trail", "Road walk", "ITM inventory", "Agency Maps", "Other trails", "The land",
   "Land ownership", "Around the trail"]; /* Paul, Nov 13, 2026 — these groups are
   pull-downs: a disclosure on the heading, the layers hidden
   until opened. (The trail + Land ownership first; ITM inventory
@@ -8802,7 +8918,10 @@ function assertDrawOrder() {
        "parcels-stn"; "reroute-arrowhead" sits directly
        under "trail-minnesota" (the corridor fill under the trail
        lines); "roadwalk" sits directly over "trail" (the
-       on-road highlight over the tread); "campsites-arrowhead",
+       on-road highlight over the tread); "trail-stn" sits directly
+       after "trail" (Nov 19, 2026: the Star of the North chapter
+       line, drawn like the chapter line over the state line);
+       "campsites-arrowhead",
        "campsites-stn" and "dnr-campgrounds", "nbi-bridges",
        "roadwalk-speeds" and
        "roadwalk-crashes" sit with the
@@ -8835,7 +8954,7 @@ function assertDrawOrder() {
      "atv", "ohm", "snow", "sht", "brt", "driftless",
      "near-brt-sht", "bwca-portages",
      "reroute-arrowhead",
-     "trail-minnesota", "trail", "roadwalk", "alerts-mn-lines",
+     "trail-minnesota", "trail", "trail-stn", "roadwalk", "alerts-mn-lines",
      "stretches", "loops", "alltrails", "gaps",
      "boundaries", "termini", "milemarkers", "chainage", "contours",
      "places",

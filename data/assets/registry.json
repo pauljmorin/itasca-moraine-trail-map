@@ -387,75 +387,75 @@
    "next": 18,
    "retired": []
   },
-  "BW": {
+  "PN": {
    "next": 11,
    "issued": {
-    "ITM-BW-001": {
+    "ITM-PN-001": {
      "photo": "PXL_20261111_173353595.MP.jpg",
-     "type": "BW",
+     "type": "PN",
      "chainage_mi": 58.21,
      "section": "Chip-5",
      "assigned": "2026-11-11"
     },
-    "ITM-BW-002": {
+    "ITM-PN-002": {
      "photo": "PXL_20261111_173733332.jpg",
-     "type": "BW",
+     "type": "PN",
      "chainage_mi": 58.3,
      "section": "Chip-5",
      "assigned": "2026-11-11"
     },
-    "ITM-BW-003": {
+    "ITM-PN-003": {
      "photo": "PXL_20261111_175522531.MP.jpg",
-     "type": "BW",
+     "type": "PN",
      "chainage_mi": 59.07,
      "section": "Chip-6",
      "assigned": "2026-11-11"
     },
-    "ITM-BW-004": {
+    "ITM-PN-004": {
      "photo": "PXL_20261111_175543842.MP.jpg",
-     "type": "BW",
+     "type": "PN",
      "chainage_mi": 59.08,
      "section": "Chip-6",
      "assigned": "2026-11-11"
     },
-    "ITM-BW-005": {
+    "ITM-PN-005": {
      "photo": "PXL_20261111_180112137.jpg",
-     "type": "BW",
+     "type": "PN",
      "chainage_mi": 59.12,
      "section": "Chip-6",
      "assigned": "2026-11-11"
     },
-    "ITM-BW-006": {
+    "ITM-PN-006": {
      "photo": "PXL_20261111_180143931.MP.jpg",
-     "type": "BW",
+     "type": "PN",
      "chainage_mi": 59.13,
      "section": "Chip-6",
      "assigned": "2026-11-11"
     },
-    "ITM-BW-007": {
+    "ITM-PN-007": {
      "photo": "PXL_20261111_164807819.MP.jpg",
-     "type": "BW",
+     "type": "PN",
      "chainage_mi": 56.52,
      "section": "Chip-5",
      "assigned": "2026-11-11"
     },
-    "ITM-BW-008": {
+    "ITM-PN-008": {
      "photo": "PXL_20261111_165030470.MP.jpg",
-     "type": "BW",
+     "type": "PN",
      "chainage_mi": 56.54,
      "section": "Chip-5",
      "assigned": "2026-11-11"
     },
-    "ITM-BW-009": {
+    "ITM-PN-009": {
      "photo": "PXL_20261111_173331162.jpg",
-     "type": "BW",
+     "type": "PN",
      "chainage_mi": 58.21,
      "section": "Chip-5",
      "assigned": "2026-11-11"
     },
-    "ITM-BW-010": {
+    "ITM-PN-010": {
      "photo": "PXL_20261111_164114659.MP.jpg",
-     "type": "BW",
+     "type": "PN",
      "chainage_mi": null,
      "section": null,
      "assigned": "2026-11-11"
@@ -560,8 +560,8 @@
    "name": "bridge",
    "status": "proposed"
   },
-  "BW": {
-   "name": "boardwalk",
+  "PN": {
+   "name": "puncheon",
    "status": "proposed"
   },
   "CP": {
