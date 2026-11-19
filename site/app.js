@@ -1166,7 +1166,10 @@ function printAccessStyle(f, s) {
 
 /* §2.8 (v7): parcels restyled for the layer's return — re-enabled
    Nov 10, 2026 (evening) as an off-by-default, lazy-loaded layer;
-   styles apply only at Z3+. Nov 17, 2026 (Paul): the adjoining
+   styles apply only at Z3+. Nov 19, 2026 (Paul): below Z3 the
+   parcels were fully invisible, so a checked box showed nothing
+   at corridor scale (the Arrowhead demo problem) — low zoom now
+   gets a faint version of the same style instead. Nov 17, 2026 (Paul): the adjoining
    outline was 0.5px dashed — sub-pixel on the canvas renderer,
    so the fills showed with no visible edge. Adjoining is now a
    full 1px dashed line, still below the crossed parcels' 1px
@@ -1178,7 +1181,17 @@ function printAccessStyle(f, s) {
    on the canvas renderer to read as boundaries. Fills unchanged. */
 function parcelStyle(f) {
   if (currentBand < 3) {
-    return { color: "#a89a5b", weight: 0, opacity: 0, fillOpacity: 0 };
+    /* Faint at any zoom (Paul, Nov 19, 2026): same crossed/adjoining
+       distinction, muted — thin outline, light wash. Full style at Z3+. */
+    var crossedLow = f.properties.corridor === "crossed";
+    return {
+      color: crossedLow ? "#b35806" : "#a89a5b",
+      weight: 1,
+      opacity: crossedLow ? 0.5 : 0.35,
+      dashArray: crossedLow ? null : "3 3",
+      fillColor: crossedLow ? "#fdbb84" : "#e7e1c3",
+      fillOpacity: crossedLow ? 0.12 : 0.05,
+    };
   }
   var crossed = f.properties.corridor === "crossed";
   return {
