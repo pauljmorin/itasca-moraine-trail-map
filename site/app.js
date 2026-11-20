@@ -5536,6 +5536,24 @@ function buildFwsGeopdf(gj) {
   return group;
 }
 
+/* Shoulder widths (Paul, Nov 20, 2026): the class table shared by
+   the shoulder-segments and shoulder-points layers. A point stands
+   for the mile that starts at it; a stretch takes the class of its
+   starting point. Colors: red under the 4-ft FHWA benchmark, amber
+   where the 2-ft range straddles it, green at or above it. */
+function shoulderClassInfo(c) {
+  var t = {
+    below: ["Below 4 ft — under the FHWA benchmark", "#c0392b"],
+    marginal: ["Straddles 4 ft — range crosses the benchmark", "#d4a017"],
+    meets: ["Meets 4 ft — at or above the benchmark", "#1e8449"],
+    unmeasurable: ["Unmeasurable from this frame", "#7f8c8d"],
+    curbed: ["Curbed street — no shoulder to measure", "#5d6d7e"],
+    "no-frame": ["No frame captured", "#b0b0b0"],
+    skipped: ["Skipped — no straight stretch", "#b0b0b0"],
+  };
+  return t[c] || ["Unclassified", "#7f8c8d"];
+}
+
 var LAYERS = [
   {
     /* NCT — all Minnesota (Paul, Nov 13, 2026 — "get the trail in
@@ -7642,6 +7660,114 @@ var LAYERS = [
     },
   },
   {
+    /* Shoulder widths — road stretches (Paul, Nov 20, 2026):
+       the road-walk lines split at the 142 measured points; each
+       stretch takes the class of the mile that starts at it
+       (below red, marginal amber, meets green, unmeasurable grey,
+       curbed blue-grey, no-frame light grey). 183 stretches,
+       120.4 mi. The road-walk geometry is the road as drawn, so a
+       stretch follows the road, not a straight line between
+       points. OFF by default and LAZY, in the "Road walk" group
+       with the measured-points layer. Popup names the class, the
+       mile it starts at, and the road. */
+    id: "shoulder-segments", label: "Shoulder widths — road stretches",
+    title: "Shoulder width by mile — red under the 4-ft FHWA " +
+      "benchmark, amber straddles it, green meets it (west side, " +
+      "one point per mile)",
+    file: "data/shoulder-segments.geojson",
+    onByDefault: false, group: "Road walk",
+    swatch: { kind: "line", color: "#c0392b" },
+    build: function (gj) {
+      return hitLine(gj, function (f) {
+        var c = (f.properties || {}).class;
+        return {
+          color: shoulderClassInfo(c)[1],
+          weight: 5, opacity: 0.9, lineCap: "round",
+        };
+      }, function (f) {
+        var p = f.properties;
+        var info = shoulderClassInfo(p.class);
+        var stretch = p.from_point != null
+          ? "From point " + p.from_point + " (mi " + p.from_mi +
+            "), one measured mile"
+          : "Continuation of the previous measured mile";
+        return popKicker("Shoulder width") + "<h3>Shoulder — " +
+          esc(p.seg) + " — " + esc(p.road) + "</h3>" +
+          kvTable([
+            ["Shoulder class", info[0]],
+            ["Stretch", stretch],
+            ["Length", p.length_mi != null ? p.length_mi + " mi" : null],
+            ["Road", p.road],
+            ["Segment", p.seg],
+          ]) + "<p class='pop-note'>Each point stands for the mile " +
+          "that starts at it — the stretch takes that mile's class. " +
+          "Turn on \"Shoulder widths — measured points\" for the " +
+          "widths behind each mile.</p>" + popDataLink("shoulder");
+      });
+    },
+  },
+  {
+    /* Shoulder widths — measured points (Paul, Nov 20, 2026):
+       one dot per measured point (142; point 119 was skipped —
+       no straight stretch, no coordinates, no dot). 117 measured
+       (44 below the 4-ft benchmark, 35 straddling it, 32 meeting
+       it, 6 curbed city streets measured for sidewalk instead),
+       19 unmeasurable from their frame, 6 with no frame captured.
+       West side, 12-ft lane ruler only, 2-ft ranges. The popup
+       carries the paved + gravel widths, the imagery date, and a
+       link to the exact Street View that was analyzed (viewpoint
+       + heading + pitch 0, per the capture receipts). OFF by
+       default and LAZY, in the "Road walk" group. */
+    id: "shoulder-points", label: "Shoulder widths — measured points",
+    title: "Shoulder width at each measured point — paved + " +
+      "gravel widths, imagery date, Street View link (west side)",
+    file: "data/shoulder-points.geojson",
+    onByDefault: false, group: "Road walk",
+    swatch: { kind: "pin", color: "#7f8c8d" },
+    build: function (gj) {
+      return L.geoJSON(gj, {
+        pointToLayer: function (f, latlng) {
+          var c = (f.properties || {}).class;
+          var hollow = c === "no-frame" || c === "skipped";
+          return L.circleMarker(latlng, {
+            radius: 5,
+            color: hollow ? "#b0b0b0" : "#ffffff",
+            weight: hollow ? 2 : 1.5,
+            fillColor: shoulderClassInfo(c)[1],
+            fillOpacity: hollow ? 0 : 1,
+          });
+        },
+        onEachFeature: function (f, l) {
+          var p = f.properties;
+          var info = shoulderClassInfo(p.class);
+          var c = f.geometry && f.geometry.coordinates;
+          var sv = c ? "https://www.google.com/maps/@?api=1&map_action=pano&viewpoint=" +
+            c[1].toFixed(5) + "," + c[0].toFixed(5) +
+            (p.heading != null ? "&heading=" + p.heading : "") +
+            "&pitch=0" : null;
+          bindPop(l, popKicker("Shoulder width") + "<h3>Point " +
+            p.point + " — " + esc(p.seg) + ", mi " + p.mi + "</h3>" +
+            kvTable([
+              ["Shoulder class", info[0]],
+              ["Paved shoulder (west)", p.paved_ft ? p.paved_ft + " ft" : null],
+              ["Gravel shoulder", p.gravel_ft ? p.gravel_ft + " ft" : null],
+              ["Beyond gravel", p.beyond_gravel],
+              ["Sidewalk", p.sidewalk],
+              ["Imagery date", p.imagery],
+            ]) +
+            (p.notes ? "<p class='pop-note'>" + esc(p.notes) + "</p>" : "") +
+            (sv ? "<div class='pop-actions'><a class='pop-link' href='" + sv +
+              "' target='_blank' rel='noopener'>Open Street View here</a></div>" +
+              "<p class='pop-note'>Street View opens at this point's " +
+              "spot, facing the walk direction — the exact view that " +
+              "was measured. Coverage varies; some rural spots have " +
+              "no imagery and the link falls back to the map.</p>" : "") +
+            popDataLink("shoulder"));
+        },
+      });
+    },
+  },
+  {
     /* S4 NCTA Places (renamed from Places, Paul, Nov 13, 2026):
        the gazetteer's 78 NCTA waypoints (parking, water,
        shelters, POIs) as a map layer, Z3+ only. Camping is NOT
@@ -9264,7 +9390,9 @@ function assertDrawOrder() {
        "campsites-stn" and "dnr-campgrounds", "nbi-bridges",
        "roadwalk-speeds" and
        "roadwalk-crashes" sit with the
-       markers uppermost, after "chapterplaces", before "assets". The
+       markers uppermost, after "chapterplaces", before "assets" —
+       "shoulder-points" rides with them, and "shoulder-segments"
+       rides with the lines directly after "roadwalk". The
        35 DNR GeoPDF sheets (Nov 16, 2026) sit directly after
        "nctasheets" and before "atv", with the NCTA sheets. The
        six Forest Service MVUM panels sit directly after the
@@ -9293,13 +9421,13 @@ function assertDrawOrder() {
      "atv", "ohm", "snow", "sht", "brt", "driftless",
      "near-brt-sht", "bwca-portages",
      "reroute-arrowhead",
-     "trail-minnesota", "trail", "trail-stn", "roadwalk", "alerts-mn-lines",
+     "trail-minnesota", "trail", "trail-stn", "roadwalk", "shoulder-segments", "alerts-mn-lines",
      "stretches", "loops", "alltrails", "gaps",
      "boundaries", "termini", "milemarkers", "chainage", "contours",
      "places",
      "alerts", "chapterplaces", "campsites-arrowhead", "campsites-stn",
      "dnr-campgrounds", "nbi-bridges",
-     "roadwalk-speeds", "roadwalk-crashes", "assets"].forEach(function (id) {
+     "roadwalk-speeds", "roadwalk-crashes", "shoulder-points", "assets"].forEach(function (id) {
       var d = layerById(id);
       if (!d || !d.layer || !map.hasLayer(d.layer)) return;
       if (d.layer.bringToFront) { d.layer.bringToFront(); return; }

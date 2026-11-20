@@ -2474,12 +2474,126 @@ neither mileage reckoning above.
 - **Use here:** `data/roadwalk.geojson` (86 features: 61 line
   pieces, 22 speed badges, 3 crash markers) →
   `site/data/roadwalk.geojson` (built by
-  `scripts/build_site_data.py`), three layers in the "Road walk"
-  group (Road walk / Speed limits / Accident-prone areas), all OFF
-  by default and LAZY. The western line pieces and the speed
-  badges carry `shoulder_quality` + `shoulder_source` (shown in
-  both popups); the Arrowhead, Star of the North and Highway 6
-  pieces carry speed fields but no shoulder fields.
+  `scripts/build_site_data.py`), five layers in the "Road walk"
+  group (Road walk / Speed limits / Accident-prone areas / the two
+  Shoulder widths layers below), all OFF by default and LAZY. The
+  western line pieces and the speed badges carry
+  `shoulder_quality` + `shoulder_source` (shown in both popups);
+  the Arrowhead, Star of the North and Highway 6 pieces carry
+  speed fields but no shoulder fields. Measured shoulder widths
+  live in the Shoulder widths layers, not in this file.
+
+## Shoulder widths — measured, one point per mile (added 2026-11-20, Paul)
+
+- **What:** Two layers in the "Road walk" group, both OFF by
+  default and LAZY: `site/data/shoulder-segments.geojson` (183
+  stretches, 120.4 mi — the road-walk lines split at the measured
+  points, each stretch coloured by the class of the mile that
+  starts at it) and `site/data/shoulder-points.geojson` (142 dots,
+  one per point). Built by `scripts/build_shoulder_layer.py` from
+  the merged measurement sheet.
+- **Headline (measured, not quoted):** 44 of 111 shoulder miles
+  below the 4-ft FHWA walkable-shoulder benchmark, 35 straddling
+  it, 32 meeting it. The thin miles cluster in the western
+  segments (25 of 38 measured western points below) and on the
+  Arrowhead's unpaved stretches; the Highway 6 northern half
+  (miles 10–16) is the widest, mostly 6–10 ft. The pilot (MN 6,
+  east side, 20 points, 2 of 18 below) is superseded by the
+  rollout's west-side re-measurement and is not drawn.
+- **Coverage:** 143 points planned, one per mile — western
+  segments 1–15 (92), Highway 6 Remer–Cohasset (17), Arrowhead
+  (31), Star of the North (3). 142 dots: point 119 (CR 61, mile
+  3.60) was skipped — no straight stretch within 0.2 miles — so
+  it has no coordinates and no dot; its stretch takes the
+  preceding point's class. Of the 142, 117 measured (111 shoulder
+  widths + 6 curbed city streets measured for sidewalk instead),
+  19 unmeasurable from their frame, 6 with no frame captured.
+- **Interpretation method (how raw frames became widths):** each
+  point is a Google Street View Static API frame (640×640, pitch
+  0, heading facing the walk direction) at the point's
+  coordinates, captured November 20, 2026 (Google Cloud project
+  nct-shoulder-pilot; key restricted to the Street View Static API
+  — the key value appears in no file). Measurement side is the
+  **west** side (walker's left, facing traffic). The ruler is the
+  12-ft lane, measured in pixels at the same row as the white edge
+  line (centreline = yellow line, edge line = white line); paved
+  shoulder is white line to pavement edge, where the edge is the
+  point smooth asphalt gives way to rough gravel (9×9 texture
+  break, cross-checked against the colour break where brown dirt
+  or verge begins); gravel is pavement edge to grass verge. Every
+  width is a 2-ft range, never a decimal. Imagery date comes from
+  the API metadata endpoint at capture time, never from the image
+  (frames carry no date); dates run 2008-09 (one Tower junction
+  frame) to 2026-06, most 2024–2025. The lane-to-line cross-check
+  does NOT validate at 640 px — JPEG blooming inflates the white
+  line ~2×, so the foot numbers rest on the lane ruler only and do
+  not depend on the assumed 4-in line width; if the lanes are 11
+  ft rather than 12 ft, subtract ~8% from every figure. Curves
+  cannot be measured (the straight-road ruler does not apply) and
+  were moved to the nearest straight stretch within 0.2 miles
+  where one existed; 13 points moved ≤0.2 mi.
+- **Classification rules (what the colors mean):** `below` — the
+  paved range sits entirely under 4 ft, including 0-ft gravel
+  roads with no pavement at all and point 72, a town street with
+  no edge line. `marginal` — the range straddles 4 ft (e.g. 2–4
+  ft, 3–5 ft). `meets` — the range sits entirely at or above 4
+  ft. `unmeasurable` — the pavement edge cannot be seen in the
+  frame. `curbed` — a curbed city street where the shoulder
+  metric does not apply; the point is a sidewalk check instead
+  (Fergus Falls 46–49, Grand Rapids 113–114). `no-frame` — the
+  capture returned the "no imagery here" placeholder; a coverage
+  gap, recorded, not a measurement. A stretch from point i to
+  point i+1 takes point i's class — each point stands for the
+  mile that starts at it. Geometry: points projected onto the
+  road-walk lines in EPSG:26915 (UTM 15N); every measured point
+  sits within 1.6 m of its line; the split follows the drawn road,
+  not a straight line between points.
+- **Judgment calls (labeled as such):** the head of a road-walk
+  piece before its first measured point takes the class of the
+  preceding point in mile order within the same segment group
+  (the mile that stretch belongs to); 18 pieces carry no point of
+  their own (short pieces between mile marks, e.g. six Vergas
+  pieces) and take the class of the nearest point in their group.
+  Point 72 (town street, no edge line, paved 0) is counted
+  `below`, not `unmeasurable` — the pavement visibly ends at the
+  road edge. Gravel roads are counted `below` at 0 ft paved, not
+  excluded — a walker there has no paved shoulder. The 3–5 ft
+  ranges are `marginal`, not `meets` — the range crosses the
+  benchmark. The A1 chunk's pavement edge rests on the saturation
+  break (the pilot's texture rule failed on those frames);
+  cross-checked against the dirt edge and per-frame debug
+  annotations.
+- **Unmeasurable, by cause:** snow-covered user panos (points
+  5–10); curves (42, 82); junction aprons (73, 85, 135 — 135's
+  2008 frame is also too blurry); trail panos that are not the
+  road (115, 116, 118); an aerial construction shot (117); a
+  motorcyclist blocking the walker's side (136); glare (89);
+  edge off-frame (86).
+- **Sidewalks (urban points only):** Fergus Falls 46 absent both
+  sides, 47 east only (west not visible), 48 both, 49 east only
+  (west absent); Grand Rapids 113 absent both, 114 present right
+  only; Tower 135 unmeasurable; Seg 14 point 81 present west
+  side. No sidewalk anywhere on the rural points.
+- **NOT drawn (and why):** the pilot's east-side numbers — the
+  rollout re-measured the same road on the walking side; point
+  119 — no coordinates. No point is a field measurement: every
+  width is read off a Street View frame, and nothing here is an
+  as-built width — MnDOT publishes no as-built shoulder width
+  for these roads.
+- **Sources:** Google Street View Static API imagery, captured
+  November 20, 2026; frames filed as
+  `shoulder-rollout-frames/rollout-point-N.jpg` with per-frame
+  receipts (`receipts-a1/a2/b/c.csv`, imagery dates from the API
+  metadata endpoint at capture); measured widths in
+  `shoulder-rollout-measurements-merged.csv` (143 points; chunk
+  sheets a1, a2a, a2b, b, c in the same folder); method in
+  `shoulder-pilot-mn6-measurements-2026-11-20.md` and
+  `shoulder-rollout-plan-2026-11-20.md`; geometry is
+  `site/data/roadwalk.geojson` split at the measured points.
+  Work files in the trail-case workspace,
+  `~/workspace/goals/finish-the-north-country-trail-in-minnesota/analysis/`
+  (merged sheet + CSV, chunk sheets, receipts, frames,
+  `merge-shoulder-measurements.py`).
 
 ## Street View — Google Street View at trailheads, road crossings, road-walk points (added 2026-11-13; extended 2026-11-18, Paul)
 
