@@ -1539,6 +1539,21 @@ body.base-imagery.gap-chip .gap-label span {
   border-left: 3px solid var(--trail);
   border-radius: 0 6px 6px 0;
 }
+/* Live Street View thumbnail in shoulder point popups (Paul,
+   Nov 20, 2026): the 400x300 Static API frame, scaled to the
+   popup width, with Google's attribution under it. */
+.leaflet-popup-content .pop-thumb { margin: 0 0 10px; }
+.leaflet-popup-content .pop-thumb img {
+  display: block;
+  width: 100%;
+  height: auto;
+  border-radius: 6px;
+}
+.leaflet-popup-content .pop-thumb p {
+  margin: 4px 0 0;
+  font-size: 11px;
+  color: var(--ink-soft);
+}
 .leaflet-popup-content .pop-source {
   margin: 10px 0 0;
   padding-top: 8px;

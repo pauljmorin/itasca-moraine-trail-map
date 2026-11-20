@@ -5536,6 +5536,16 @@ function buildFwsGeopdf(gj) {
   return group;
 }
 
+/* Street View Static API key (Paul, Nov 20, 2026): the shoulder
+   point popups carry a live thumbnail from Google's Street View
+   Static API. The key belongs to the chapter's Google Cloud
+   project "nct-shoulder-pilot" (Static API only, referrer-locked
+   to pauljmorin.github.io) and is placed here by the coordinator
+   — it is EMPTY until then, and with it empty no thumbnail is
+   rendered: popups show the statistics + Street View link only.
+   Never commit a key for any other project here. */
+var STREETVIEW_API_KEY = "";
+
 /* Shoulder widths (Paul, Nov 20, 2026): the class table shared by
    the shoulder-segments and shoulder-points layers. A point stands
    for the mile that starts at it; a stretch takes the class of its
@@ -7745,8 +7755,22 @@ var LAYERS = [
             c[1].toFixed(5) + "," + c[0].toFixed(5) +
             (p.heading != null ? "&heading=" + p.heading : "") +
             "&pitch=0" : null;
+          /* Live thumbnail (Paul, Nov 20, 2026): the same viewpoint
+             + heading as the Street View link, via the Static API
+             (400x300, pitch 0). The <img> only enters the DOM when
+             the popup opens, so nothing is fetched until a dot is
+             tapped. Empty key → no thumbnail, statistics + link
+             only, as before. */
+          var thumb = (c && STREETVIEW_API_KEY) ?
+            "https://maps.googleapis.com/maps/api/streetview?size=400x300" +
+            "&location=" + c[1].toFixed(5) + "," + c[0].toFixed(5) +
+            (p.heading != null ? "&heading=" + p.heading : "") +
+            "&pitch=0&key=" + STREETVIEW_API_KEY : null;
           bindPop(l, popKicker("Shoulder width") + "<h3>Point " +
             p.point + " — " + esc(p.seg) + ", mi " + p.mi + "</h3>" +
+            (thumb ? "<div class='pop-thumb'><img src='" + thumb +
+              "' alt='Street View at this point' loading='lazy'>" +
+              "<p>Street View imagery &copy; Google</p></div>" : "") +
             kvTable([
               ["Shoulder class", info[0]],
               ["Paved shoulder (west)", p.paved_ft ? p.paved_ft + " ft" : null],
