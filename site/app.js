@@ -7832,7 +7832,12 @@ var LAYERS = [
        by a custom pointToLayer (vendored Leaflet 1.9.4 calls
        pointToLayer(feature, latlng) with no options). No custom
        panes (a canvas renderer in a custom pane stops receiving
-       clicks entirely — see the team note near assertDrawOrder). */
+       clicks entirely — see the team note near assertDrawOrder).
+       Hit circles (Nov 20, 2026): each dot also carries an
+       invisible radius-12 circle on the same renderer, drawn
+       last, so an ordinary click near a dot — not only a
+       dead-centre one — opens the point popup; the visible dot
+       stays radius 5. */
     id: "shoulder-points", label: "Shoulder widths — measured points",
     title: "Shoulder width at each measured point — paved + " +
       "gravel widths, imagery date, Street View link (west side); " +
@@ -7841,7 +7846,59 @@ var LAYERS = [
     onByDefault: false, group: "Road walk",
     swatch: { kind: "pin", color: "#7f8c8d" },
     build: function (gj) {
-      return L.geoJSON(gj, {
+      /* Popup HTML for one point, shared by the visible dot and
+         its hit circle below so both open the same card. */
+      function pointHtml(f) {
+        var p = f.properties;
+        var info = shoulderClassInfo(p.class);
+        var c = f.geometry && f.geometry.coordinates;
+        var sv = c ? "https://www.google.com/maps/@?api=1&map_action=pano&viewpoint=" +
+          c[1].toFixed(5) + "," + c[0].toFixed(5) +
+          (p.heading != null ? "&heading=" + p.heading : "") +
+          "&pitch=0" : null;
+        /* Live thumbnail (Paul, Nov 20, 2026): the same viewpoint
+           + heading as the Street View link, via the Static API
+           (400x300, pitch 0). The <img> only enters the DOM when
+           the popup opens, so nothing is fetched until a dot is
+           tapped. Empty key → no thumbnail, statistics + link
+           only, as before. */
+        var thumb = (c && STREETVIEW_API_KEY) ?
+          "https://maps.googleapis.com/maps/api/streetview?size=400x300" +
+          "&location=" + c[1].toFixed(5) + "," + c[0].toFixed(5) +
+          (p.heading != null ? "&heading=" + p.heading : "") +
+          "&pitch=0&key=" + STREETVIEW_API_KEY : null;
+        /* Plain-language note (Nov 20, 2026 — click-through
+           fix #4): the stored note is the measurer's working
+           text; cleanShoulderNote strips the pixel coordinates,
+           script rejections and row numbers. Null when nothing
+           plain survives, so the note line is dropped. */
+        var note = cleanShoulderNote(p.notes);
+        return popKicker("Shoulder width") + "<h3>Point " +
+          p.point + " — " + esc(p.seg) + ", mi " + p.mi + "</h3>" +
+          (thumb ? "<div class='pop-thumb'><img src='" + thumb +
+            "' alt='Street View at this point' loading='lazy'>" +
+            "<p>Street View imagery &copy; Google</p></div>" : "") +
+          kvTable([
+            ["Shoulder class", info[0]],
+            ["Paved shoulder (west)", shoulderWidth(p.paved_ft)],
+            ["Gravel shoulder", shoulderWidth(p.gravel_ft)],
+            ["Walkable grass", shoulderWidth(p.grass_ft)],
+            ["Grass flatness", p.grass_flatness],
+            ["Speed limit", p.speed_text ? p.speed_text : (p.speed_mph ? p.speed_mph + " mph" : null)],
+            ["Beyond gravel", p.beyond_gravel],
+            ["Sidewalk", p.sidewalk],
+            ["Imagery date", p.imagery],
+          ]) +
+          (note ? "<p class='pop-note'>" + esc(note) + "</p>" : "") +
+          (sv ? "<div class='pop-actions'><a class='pop-link' href='" + sv +
+            "' target='_blank' rel='noopener'>Open Street View here</a></div>" +
+            "<p class='pop-note'>Street View opens at this point's " +
+            "spot, facing the walk direction — the exact view that " +
+            "was measured. Coverage varies; some rural spots have " +
+            "no imagery and the link falls back to the map.</p>" : "") +
+          popDataLink("shoulder");
+      }
+      var layer = L.geoJSON(gj, {
         pointToLayer: function (f, latlng) {
           var c = (f.properties || {}).class;
           var hollow = c === "no-frame" || c === "skipped";
@@ -7855,56 +7912,37 @@ var LAYERS = [
           });
         },
         onEachFeature: function (f, l) {
-          var p = f.properties;
-          var info = shoulderClassInfo(p.class);
-          var c = f.geometry && f.geometry.coordinates;
-          var sv = c ? "https://www.google.com/maps/@?api=1&map_action=pano&viewpoint=" +
-            c[1].toFixed(5) + "," + c[0].toFixed(5) +
-            (p.heading != null ? "&heading=" + p.heading : "") +
-            "&pitch=0" : null;
-          /* Live thumbnail (Paul, Nov 20, 2026): the same viewpoint
-             + heading as the Street View link, via the Static API
-             (400x300, pitch 0). The <img> only enters the DOM when
-             the popup opens, so nothing is fetched until a dot is
-             tapped. Empty key → no thumbnail, statistics + link
-             only, as before. */
-          var thumb = (c && STREETVIEW_API_KEY) ?
-            "https://maps.googleapis.com/maps/api/streetview?size=400x300" +
-            "&location=" + c[1].toFixed(5) + "," + c[0].toFixed(5) +
-            (p.heading != null ? "&heading=" + p.heading : "") +
-            "&pitch=0&key=" + STREETVIEW_API_KEY : null;
-          /* Plain-language note (Nov 20, 2026 — click-through
-             fix #4): the stored note is the measurer's working
-             text; cleanShoulderNote strips the pixel coordinates,
-             script rejections and row numbers. Null when nothing
-             plain survives, so the note line is dropped. */
-          var note = cleanShoulderNote(p.notes);
-          bindPop(l, popKicker("Shoulder width") + "<h3>Point " +
-            p.point + " — " + esc(p.seg) + ", mi " + p.mi + "</h3>" +
-            (thumb ? "<div class='pop-thumb'><img src='" + thumb +
-              "' alt='Street View at this point' loading='lazy'>" +
-              "<p>Street View imagery &copy; Google</p></div>" : "") +
-            kvTable([
-              ["Shoulder class", info[0]],
-              ["Paved shoulder (west)", shoulderWidth(p.paved_ft)],
-              ["Gravel shoulder", shoulderWidth(p.gravel_ft)],
-              ["Walkable grass", shoulderWidth(p.grass_ft)],
-              ["Grass flatness", p.grass_flatness],
-              ["Speed limit", p.speed_text ? p.speed_text : (p.speed_mph ? p.speed_mph + " mph" : null)],
-              ["Beyond gravel", p.beyond_gravel],
-              ["Sidewalk", p.sidewalk],
-              ["Imagery date", p.imagery],
-            ]) +
-            (note ? "<p class='pop-note'>" + esc(note) + "</p>" : "") +
-            (sv ? "<div class='pop-actions'><a class='pop-link' href='" + sv +
-              "' target='_blank' rel='noopener'>Open Street View here</a></div>" +
-              "<p class='pop-note'>Street View opens at this point's " +
-              "spot, facing the walk direction — the exact view that " +
-              "was measured. Coverage varies; some rural spots have " +
-              "no imagery and the link falls back to the map.</p>" : "") +
-            popDataLink("shoulder"));
+          bindPop(l, pointHtml(f));
         },
       });
+      /* Hit circles (Nov 20, 2026 — click re-check: a dot's popup
+         only won on a dead-centre click, because the visible dot's
+         hit radius is 5 px + half its 1.5 px stroke. One invisible
+         circle per point, radius 12 px, on the same shared canvas
+         renderer, bound to the same popup. Canvas hit-testing is
+         purely geometric (vendored Leaflet 1.9.4: _containsPoint
+         is distance <= radius + click tolerance, opacity ignored),
+         and the click keeps the LAST hit in draw order — the hit
+         circles are added after the visible dots, so they are
+         drawn last and win over both the dot and the stretch
+         hit-line underneath. The visible dot is unchanged (radius
+         5). Added into this same GeoJSON layer so assertDrawOrder
+         keeps bringing dots and hit circles to the front together,
+         after the stretches. */
+      gj.features.forEach(function (f) {
+        var c = f.geometry && f.geometry.coordinates;
+        if (!c) return;
+        var hit = L.circleMarker([c[1], c[0]], {
+          renderer: canvasFor(),
+          radius: 12,
+          stroke: false,
+          fillOpacity: 0,
+          interactive: true,
+        });
+        bindPop(hit, pointHtml(f));
+        layer.addLayer(hit);
+      });
+      return layer;
     },
   },
   {
