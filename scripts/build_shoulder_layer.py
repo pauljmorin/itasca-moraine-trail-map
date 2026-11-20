@@ -24,6 +24,9 @@ point's class).
 
 Geometry: points are projected onto the roadwalk lines in EPSG:26915
 (UTM 15N); every measured point sits within ~1 m of its line.
+Speed: each point carries speed_mph + speed_text from the roadwalk
+piece it was assigned to (nearest line in its group); Seg 12 pieces
+carry no speed, so Seg 12 points get neither field.
 """
 import csv
 import json
@@ -123,9 +126,23 @@ def main():
     print(f"pieces with no assigned point: {len(empty_pieces)} "
           f"{[lines[i]['properties'].get('segment') + '/' + (lines[i]['properties'].get('road') or '')[:30] for i in empty_pieces]}")
 
+    # Speed join (Paul, Nov 20, 2026): each point takes speed_mph +
+    # speed_text from the roadwalk line piece it was assigned to
+    # (nearest line in its segment group). Pieces with no speed
+    # (Seg 12 — badge removed Nov 19, no reconciled figure) leave
+    # both fields null and the popup omits the row.
+    point_piece = {}
+    for i, cuts in assigned.items():
+        for s, r in cuts:
+            point_piece[int(r["point"])] = line_utm[i][0]
+
     # ---- points GeoJSON ----
     point_features = []
     for r in pts:
+        piece_props = {}
+        piece = point_piece.get(int(r["point"]))
+        if piece is not None:
+            piece_props = piece.get("properties", {})
         props = {
             "point": int(r["point"]),
             "seg": r["seg"],
@@ -135,6 +152,8 @@ def main():
             "gravel_ft": r["gravel_ft"] or None,
             "grass_ft": r["grass_ft"] or None,
             "grass_flatness": r["grass_flatness"] or None,
+            "speed_mph": piece_props.get("speed_mph") or None,
+            "speed_text": piece_props.get("speed_text") or None,
             "beyond_gravel": r["beyond_gravel"] or None,
             "sidewalk": r["sidewalk"] or None,
             "class": r["class"],

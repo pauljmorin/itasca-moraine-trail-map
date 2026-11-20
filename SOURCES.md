@@ -2492,6 +2492,15 @@ neither mileage reckoning above.
   starts at it) and `site/data/shoulder-points.geojson` (142 dots,
   one per point). Built by `scripts/build_shoulder_layer.py` from
   the merged measurement sheet.
+- **Speed limit in the popup (added 2026-11-20, Paul):** each point
+  carries `speed_mph` + `speed_text` from the road-walk line piece
+  it was assigned to (nearest line in its segment group), baked into
+  the points GeoJSON by the build script. Statutory limits, not
+  posted — the same figures as the speed badges. Seg 12 points
+  (68–73) carry no speed and the popup omits the row: the Vergas
+  speed figures were never reconciled (30 mph in the brief, 40 mph
+  in the MnDOT study) and Paul ordered the badge removed Nov 19
+  rather than picking one.
 - **Headline (measured, not quoted):** 28 of 111 shoulder miles
   below the 4-ft FHWA walkable-shoulder benchmark, 33 straddling
   it, 32 meeting it, and 18 walkable on flat grass with no paved

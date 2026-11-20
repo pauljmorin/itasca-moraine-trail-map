@@ -7729,10 +7729,12 @@ var LAYERS = [
        city streets measured for sidewalk instead),
        19 unmeasurable from their frame, 6 with no frame captured.
        West side, 12-ft lane ruler only, 2-ft ranges. The popup
-       carries the paved + gravel widths, the imagery date, and a
-       link to the exact Street View that was analyzed (viewpoint
-       + heading + pitch 0, per the capture receipts). OFF by
-       default and LAZY, in the "Road walk" group. */
+       carries the paved + gravel widths, the grass width +
+       flatness where assessed, the speed limit from the road-walk
+       layer, the imagery date, and a link to the exact Street View
+       that was analyzed (viewpoint + heading + pitch 0, per the
+       capture receipts). OFF by default and LAZY, in the "Road walk"
+       group. */
     id: "shoulder-points", label: "Shoulder widths — measured points",
     title: "Shoulder width at each measured point — paved + " +
       "gravel widths, imagery date, Street View link (west side)",
@@ -7782,6 +7784,7 @@ var LAYERS = [
               ["Gravel shoulder", p.gravel_ft ? p.gravel_ft + " ft" : null],
               ["Walkable grass", p.grass_ft ? p.grass_ft + " ft" : null],
               ["Grass flatness", p.grass_flatness],
+              ["Speed limit", p.speed_text ? p.speed_text : (p.speed_mph ? p.speed_mph + " mph" : null)],
               ["Beyond gravel", p.beyond_gravel],
               ["Sidewalk", p.sidewalk],
               ["Imagery date", p.imagery],
