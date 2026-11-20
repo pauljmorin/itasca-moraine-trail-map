@@ -2610,6 +2610,18 @@ neither mileage reckoning above.
   `~/workspace/goals/finish-the-north-country-trail-in-minnesota/analysis/`
   (merged sheet + CSV, chunk sheets, receipts, frames,
   `merge-shoulder-measurements.py`).
+- **Popup display, click fix (Nov 20, 2026):** the measured-points
+  dots draw on the shared canvas renderer (not the default SVG
+  one) so a dot's click wins over the stretch hit-line beneath it
+  — Leaflet 1.9.4 fires a canvas layer's click before an SVG
+  layer's. Widths show the unit only on numeric values
+  (`shoulderWidth`); popup notes are the measurer's working text
+  cleaned to plain language at display time
+  (`cleanShoulderNote` — pixel coordinates, script rejections
+  and row numbers dropped; a note that becomes empty is hidden,
+  not shown blank). Measured values, classes and imagery dates
+  are unchanged. The Legend carries the shoulder colours, drawn
+  from the same class table as the layers.
 
 ## Street View — Google Street View at trailheads, road crossings, road-walk points (added 2026-11-13; extended 2026-11-18, Paul)
 

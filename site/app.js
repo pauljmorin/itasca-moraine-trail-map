@@ -5567,6 +5567,86 @@ function shoulderClassInfo(c) {
   return t[c] || ["Unclassified", "#7f8c8d"];
 }
 
+/* Shoulder width display (Nov 20, 2026 — click-through fix #3):
+   the stored values mix numeric ranges ("2–4") with plain text
+   ("Gravel road — no paved shoulder", "—", "UNMEASURABLE").
+   The unit belongs on numeric values only; text values print
+   as-is. A trailing parenthetical qualifier keeps its place
+   after the unit ("8–10 (upper frame)" → "8–10 ft (upper frame)"). */
+function shoulderWidth(v) {
+  if (v === null || v === undefined || v === "") return null;
+  var s = String(v).trim();
+  if (s === "—") return "—";
+  var m = /^([0-9][0-9.,–\-+]*)\s*(\(.*\))?$/.exec(s);
+  if (m) return m[1] + " ft" + (m[2] ? " " + m[2] : "");
+  return s;
+}
+
+/* Shoulder note cleanup (Nov 20, 2026 — click-through fix #4):
+   the stored notes are the measurer's working text — pixel
+   coordinates, script rejections, row numbers, lane-ruler
+   arithmetic. The popup shows plain language only: surface,
+   obstacles, what is visible. Measured values live in the
+   table; the note never carries them. Returns null when nothing
+   plain-language survives, so the note line is dropped rather
+   than shown empty. Verified in Node against all 142 stored
+   notes: 5 vanish as pure method, 0 still carry jargon. */
+function cleanShoulderNote(note) {
+  if (!note) return null;
+  var s = " " + String(note) + " ";
+  /* Semicolons inside parentheses become commas, so the sentence
+     split below never breaks a parenthetical. */
+  s = s.replace(/\([^)]*\)/g, function (m) { return m.replace(/;/g, ","); });
+  /* Drop parentheticals carrying measurement mechanics. */
+  s = s.replace(/\([^)]*(?:[xy]\s*[≈=≥]\s*-?\d|≈|\b\d+\s*px\b|\bbr\s*\d|R-B\b|pixel|saturat|centreline\s*≈|centerline\s*≈|centreline\s+\d|centerline\s+\d|yellow centre\s+\d|lane\s*≈|white line\s*≈|white\s+\d|pavement edge\s*≈|\brows?\s+\d|rows paved|paved\s+[\d.]|plan §7|sat-based|dirt-based)[^)]*\)/gi, "");
+  /* "excl." is an abbreviation, not a sentence end. */
+  s = s.replace(/\bexcl\./gi, "excl");
+  /* Split into sentences; a period only ends one when followed
+     by space or end (decimal points in 0.21 don't split). */
+  var parts = s.split(/([.!?;])(?=\s|$)/);
+  var kept = [];
+  for (var i = 0; i < parts.length; i += 2) {
+    var seg = (parts[i] + (parts[i + 1] || "")).replace(/\s+/g, " ").trim();
+    if (!seg) continue;
+    /* Em-dash clauses: keep the head; keep later clauses only
+       when they carry no measurement mechanics — judged on the
+       RAW clause, before the inline stripping below. */
+    var dash = seg.split(/\s+—\s+/);
+    var tail = [];
+    for (var j = 1; j < dash.length; j++) {
+      if (!/y\s*[≈=]|x\s*[≈=]|\b\d+\s*px\b|script|pixel|\brows?\s+\d|ruler|residual|spot-check|saturat|R-B\b|centreline\s+\d|centerline\s+\d|road-width/.test(dash[j])) tail.push(dash[j]);
+    }
+    seg = tail.length ? dash[0] + " — " + tail.join(" — ") : dash[0];
+    /* Inline coordinate/method fragments. */
+    seg = seg.replace(/,?\s*confirmed by the parent'?s spot-check/gi, "");
+    seg = seg.replace(/\bat the standard y\s*[≈=]?\s*\d+(?:\/\d+)?\s*rows?/gi, "");
+    seg = seg.replace(/\bat (?:the|any) measurement rows?/gi, "");
+    seg = seg.replace(/\b(?:at|from)\s+the\s+y\s*[≈=]\s*\d+(?:\/\d+)?(?:[–-]\d+)?\s*rows?/gi, "");
+    seg = seg.replace(/\bthe\s+y\s*[≈=]\s*\d+(?:\/\d+)?(?:[–-]\d+)?\s*rows?/gi, "");
+    seg = seg.replace(/\bat\s+y\s*[≈=]\s*\d+(?:\/\d+)?(?:[–-]\d+)?/gi, "");
+    seg = seg.replace(/\by\s*[≈=≥]\s*\d+(?:\/\d+)?(?:[–-]\d+)?/gi, "");
+    seg = seg.replace(/\bx\s*[≈=]\s*-?\d+(?:[–-]\d+)?/gi, "");
+    /* Tidy dangling prepositions left behind. */
+    seg = seg.replace(/\s+(at|to|from|on|in|of)\s*([,.!?;])/g, "$2");
+    seg = seg.replace(/\s+/g, " ").trim().replace(/[;.]$/, "").trim();
+    if (!seg) continue;
+    /* Drop method-only / stub sentences. */
+    if (/^(white line|centreline|centerline|pavement edge|grass|gravel|road spans?|measured|the road|lane)\.?$/i.test(seg)) continue;
+    if (/^road spans?\b/i.test(seg)) continue;
+    if (/^rows?\b/i.test(seg)) continue;
+    if (/script|pixel|centreline fit|centerline fit|lane ruler|road-width ruler|12-ft ruler|plateau method|crop read|\bR-B\b|residual|outlier|spot-check|carries no speed|no speed on file|do not guess|flag the|confirmed visually by the parent|rows?\s+\d|measurement rows?|sat-based|dirt-based|dirt-corrected|rows disagree|saturation|mean scale used|scale used/i.test(seg)) continue;
+    if (/[xy]\s*[≈=≥]\s*-?\d|≈\s*\d|\b\d+\s*px\b/.test(seg)) continue;
+    kept.push(seg);
+  }
+  /* Capitalize each sentence start and join. */
+  var out = kept.map(function (t) {
+    return t.replace(/^([a-z])/, function (m) { return m.toUpperCase(); });
+  }).join(". ");
+  out = out.replace(/\s+([,.!?;:])/g, "$1").replace(/\s{2,}/g, " ").trim();
+  if (out && !/[.!?]$/.test(out)) out += ".";
+  return out || null;
+}
+
 var LAYERS = [
   {
     /* NCT — all Minnesota (Paul, Nov 13, 2026 — "get the trail in
@@ -7686,8 +7766,8 @@ var LAYERS = [
     id: "shoulder-segments", label: "Shoulder widths — road stretches",
     title: "Shoulder width by mile — red under the 4-ft FHWA " +
       "benchmark, amber straddles it, green meets it, sage green is " +
-      "flat walkable grass with no paved shoulder (west side, " +
-      "one point per mile)",
+      "flat walkable grass with no paved shoulder, grey is " +
+      "unmeasurable from its frame (west side, one point per mile)",
     file: "data/shoulder-segments.geojson",
     onByDefault: false, group: "Road walk",
     swatch: { kind: "line", color: "#c0392b" },
@@ -7734,10 +7814,26 @@ var LAYERS = [
        layer, the imagery date, and a link to the exact Street View
        that was analyzed (viewpoint + heading + pitch 0, per the
        capture receipts). OFF by default and LAZY, in the "Road walk"
-       group. */
+       group.
+       Click fix (Nov 20, 2026): the dots draw on the SHARED canvas
+       renderer (renderer: canvasFor() on the circleMarker), NOT
+       the default SVG one. The stretches are canvas hit-lines,
+       and in Leaflet 1.9.4 a canvas layer's click handler fires
+       before an SVG layer's — so with the default renderer the
+       stretch popup won every click on a dot. On the shared
+       canvas the dots are drawn after the stretches
+       (assertDrawOrder puts shoulder-points last) and Canvas
+       keeps the LAST hit in draw order, so the dot wins the
+       click. The renderer goes on the circleMarker itself: a
+       renderer option on L.geoJSON does NOT reach markers made
+       by a custom pointToLayer (vendored Leaflet 1.9.4 calls
+       pointToLayer(feature, latlng) with no options). No custom
+       panes (a canvas renderer in a custom pane stops receiving
+       clicks entirely — see the team note near assertDrawOrder). */
     id: "shoulder-points", label: "Shoulder widths — measured points",
     title: "Shoulder width at each measured point — paved + " +
-      "gravel widths, imagery date, Street View link (west side)",
+      "gravel widths, imagery date, Street View link (west side); " +
+      "grey dots are unmeasurable from their frame",
     file: "data/shoulder-points.geojson",
     onByDefault: false, group: "Road walk",
     swatch: { kind: "pin", color: "#7f8c8d" },
@@ -7747,6 +7843,7 @@ var LAYERS = [
           var c = (f.properties || {}).class;
           var hollow = c === "no-frame" || c === "skipped";
           return L.circleMarker(latlng, {
+            renderer: canvasFor(),
             radius: 5,
             color: hollow ? "#b0b0b0" : "#ffffff",
             weight: hollow ? 2 : 1.5,
@@ -7773,6 +7870,12 @@ var LAYERS = [
             "&location=" + c[1].toFixed(5) + "," + c[0].toFixed(5) +
             (p.heading != null ? "&heading=" + p.heading : "") +
             "&pitch=0&key=" + STREETVIEW_API_KEY : null;
+          /* Plain-language note (Nov 20, 2026 — click-through
+             fix #4): the stored note is the measurer's working
+             text; cleanShoulderNote strips the pixel coordinates,
+             script rejections and row numbers. Null when nothing
+             plain survives, so the note line is dropped. */
+          var note = cleanShoulderNote(p.notes);
           bindPop(l, popKicker("Shoulder width") + "<h3>Point " +
             p.point + " — " + esc(p.seg) + ", mi " + p.mi + "</h3>" +
             (thumb ? "<div class='pop-thumb'><img src='" + thumb +
@@ -7780,16 +7883,16 @@ var LAYERS = [
               "<p>Street View imagery &copy; Google</p></div>" : "") +
             kvTable([
               ["Shoulder class", info[0]],
-              ["Paved shoulder (west)", p.paved_ft ? p.paved_ft + " ft" : null],
-              ["Gravel shoulder", p.gravel_ft ? p.gravel_ft + " ft" : null],
-              ["Walkable grass", p.grass_ft ? p.grass_ft + " ft" : null],
+              ["Paved shoulder (west)", shoulderWidth(p.paved_ft)],
+              ["Gravel shoulder", shoulderWidth(p.gravel_ft)],
+              ["Walkable grass", shoulderWidth(p.grass_ft)],
               ["Grass flatness", p.grass_flatness],
               ["Speed limit", p.speed_text ? p.speed_text : (p.speed_mph ? p.speed_mph + " mph" : null)],
               ["Beyond gravel", p.beyond_gravel],
               ["Sidewalk", p.sidewalk],
               ["Imagery date", p.imagery],
             ]) +
-            (p.notes ? "<p class='pop-note'>" + esc(p.notes) + "</p>" : "") +
+            (note ? "<p class='pop-note'>" + esc(note) + "</p>" : "") +
             (sv ? "<div class='pop-actions'><a class='pop-link' href='" + sv +
               "' target='_blank' rel='noopener'>Open Street View here</a></div>" +
               "<p class='pop-note'>Street View opens at this point's " +
@@ -9585,6 +9688,18 @@ function legendHtml() {
     "W water, P parking, S shelter)");
   add("<span class='swatch chapterdisc closed'>C</span>",
     "Chapter place — CLOSED");
+  /* Shoulder widths (Paul, Nov 20, 2026 — click-through fix #5):
+     the Legend had no entry for the shoulder colours. Colours
+     come from shoulderClassInfo, the same table the layers draw
+     with, so the legend can never drift from the map. The dots
+     use the same colours as the stretches. */
+  add("", "<strong>Road walk — shoulder widths</strong>");
+  ["below", "marginal", "meets", "grass", "unmeasurable", "curbed"].forEach(function (c) {
+    add(line(shoulderClassInfo(c)[1], false, true),
+      shoulderClassInfo(c)[0]);
+  });
+  add(line(shoulderClassInfo("no-frame")[1], false, true),
+    "No frame captured / skipped — no dot");
   add("", "<strong>Other trails</strong>");
   add("", "<strong>Partner Trails</strong>");
   add(line("#b91c1c", false, true),
