@@ -17,7 +17,7 @@ point i's class — each point stands for the mile that starts at it.
 The head of a piece before its first point takes the class of the
 preceding point in mile order within the same segment group (the mile
 that stretch belongs to); a piece with no points takes the class of
-the nearest point in its group. Classes: below / marginal / meets /
+the nearest point in its group. Classes: below / marginal / meets / grass /
 unmeasurable / curbed / no-frame / skipped (skipped point 119 has no
 coordinates and gets no dot; its stretch is covered by the preceding
 point's class).
@@ -44,6 +44,7 @@ CLASS_COLOR = {
     "below": "#c0392b",        # red — under the 4-ft FHWA benchmark
     "marginal": "#d4a017",      # amber — range straddles 4 ft
     "meets": "#1e8449",         # green — at or above 4 ft
+    "grass": "#7fb069",         # sage green — walkable grass verge, no paved shoulder (Paul, Nov 20, 2026)
     "unmeasurable": "#7f8c8d",  # grey
     "curbed": "#5d6d7e",        # blue-grey — curbed city street
     "no-frame": "#b0b0b0",      # light grey hollow dot
@@ -132,6 +133,8 @@ def main():
             "imagery": r["imagery"] or None,
             "paved_ft": r["paved_ft"] or None,
             "gravel_ft": r["gravel_ft"] or None,
+            "grass_ft": r["grass_ft"] or None,
+            "grass_flatness": r["grass_flatness"] or None,
             "beyond_gravel": r["beyond_gravel"] or None,
             "sidewalk": r["sidewalk"] or None,
             "class": r["class"],

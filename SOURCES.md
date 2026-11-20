@@ -2492,10 +2492,12 @@ neither mileage reckoning above.
   starts at it) and `site/data/shoulder-points.geojson` (142 dots,
   one per point). Built by `scripts/build_shoulder_layer.py` from
   the merged measurement sheet.
-- **Headline (measured, not quoted):** 44 of 111 shoulder miles
-  below the 4-ft FHWA walkable-shoulder benchmark, 35 straddling
-  it, 32 meeting it. The thin miles cluster in the western
-  segments (25 of 38 measured western points below) and on the
+- **Headline (measured, not quoted):** 28 of 111 shoulder miles
+  below the 4-ft FHWA walkable-shoulder benchmark, 33 straddling
+  it, 32 meeting it, and 18 walkable on flat grass with no paved
+  shoulder at all. The thin miles cluster in the western
+  segments (13 of 38 measured western points in segments 1–8
+  below, after 14 were re-read as walkable grass) and on the
   Arrowhead's unpaved stretches; the Highway 6 northern half
   (miles 10–16) is the widest, mostly 6–10 ft. The pilot (MN 6,
   east side, 20 points, 2 of 18 below) is superseded by the
@@ -2538,7 +2540,12 @@ neither mileage reckoning above.
   no edge line. `marginal` — the range straddles 4 ft (e.g. 2–4
   ft, 3–5 ft). `meets` — the range sits entirely at or above 4
   ft. `unmeasurable` — the pavement edge cannot be seen in the
-  frame. `curbed` — a curbed city street where the shoulder
+  frame. `grass` — no paved shoulder at all, but flat walkable
+  grass at least 4 ft wide at the pavement edge, read off the same
+  frame (18 points, Nov 20, 2026; grass width + flatness in
+  `shoulder-grass-verge-assessment-2026-11-20.md`). Points 17 and
+  41 stay `below`: 17's frame is obstructed by a pickup bed, 41's
+  grass slopes up to a fenced hillside. `curbed` — a curbed city street where the shoulder
   metric does not apply; the point is a sidewalk check instead
   (Fergus Falls 46–49, Grand Rapids 113–114). `no-frame` — the
   capture returned the "no imagery here" placeholder; a coverage

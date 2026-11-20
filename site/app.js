@@ -5550,12 +5550,15 @@ var STREETVIEW_API_KEY = "";
    the shoulder-segments and shoulder-points layers. A point stands
    for the mile that starts at it; a stretch takes the class of its
    starting point. Colors: red under the 4-ft FHWA benchmark, amber
-   where the 2-ft range straddles it, green at or above it. */
+   where the 2-ft range straddles it, green at or above it, sage
+   green where there is no paved shoulder at all but flat walkable
+   grass 4+ ft wide (grass class, Nov 20, 2026). */
 function shoulderClassInfo(c) {
   var t = {
     below: ["Below 4 ft — under the FHWA benchmark", "#c0392b"],
     marginal: ["Straddles 4 ft — range crosses the benchmark", "#d4a017"],
     meets: ["Meets 4 ft — at or above the benchmark", "#1e8449"],
+    grass: ["Walkable grass verge — no paved shoulder, flat grass 4+ ft", "#7fb069"],
     unmeasurable: ["Unmeasurable from this frame", "#7f8c8d"],
     curbed: ["Curbed street — no shoulder to measure", "#5d6d7e"],
     "no-frame": ["No frame captured", "#b0b0b0"],
@@ -7673,16 +7676,17 @@ var LAYERS = [
     /* Shoulder widths — road stretches (Paul, Nov 20, 2026):
        the road-walk lines split at the 142 measured points; each
        stretch takes the class of the mile that starts at it
-       (below red, marginal amber, meets green, unmeasurable grey,
-       curbed blue-grey, no-frame light grey). 183 stretches,
-       120.4 mi. The road-walk geometry is the road as drawn, so a
-       stretch follows the road, not a straight line between
-       points. OFF by default and LAZY, in the "Road walk" group
-       with the measured-points layer. Popup names the class, the
-       mile it starts at, and the road. */
+       (below red, marginal amber, meets green, grass sage green,
+       unmeasurable grey, curbed blue-grey, no-frame light grey).
+       183 stretches, 120.4 mi. The road-walk geometry is the road
+       as drawn, so a stretch follows the road, not a straight line
+       between points. OFF by default and LAZY, in the "Road walk"
+       group with the measured-points layer. Popup names the class,
+       the mile it starts at, and the road. */
     id: "shoulder-segments", label: "Shoulder widths — road stretches",
     title: "Shoulder width by mile — red under the 4-ft FHWA " +
-      "benchmark, amber straddles it, green meets it (west side, " +
+      "benchmark, amber straddles it, green meets it, sage green is " +
+      "flat walkable grass with no paved shoulder (west side, " +
       "one point per mile)",
     file: "data/shoulder-segments.geojson",
     onByDefault: false, group: "Road walk",
@@ -7720,8 +7724,9 @@ var LAYERS = [
     /* Shoulder widths — measured points (Paul, Nov 20, 2026):
        one dot per measured point (142; point 119 was skipped —
        no straight stretch, no coordinates, no dot). 117 measured
-       (44 below the 4-ft benchmark, 35 straddling it, 32 meeting
-       it, 6 curbed city streets measured for sidewalk instead),
+       (28 below the 4-ft benchmark, 33 straddling it, 32 meeting
+       it, 18 walkable grass verge with no paved shoulder, 6 curbed
+       city streets measured for sidewalk instead),
        19 unmeasurable from their frame, 6 with no frame captured.
        West side, 12-ft lane ruler only, 2-ft ranges. The popup
        carries the paved + gravel widths, the imagery date, and a
@@ -7775,6 +7780,8 @@ var LAYERS = [
               ["Shoulder class", info[0]],
               ["Paved shoulder (west)", p.paved_ft ? p.paved_ft + " ft" : null],
               ["Gravel shoulder", p.gravel_ft ? p.gravel_ft + " ft" : null],
+              ["Walkable grass", p.grass_ft ? p.grass_ft + " ft" : null],
+              ["Grass flatness", p.grass_flatness],
               ["Beyond gravel", p.beyond_gravel],
               ["Sidewalk", p.sidewalk],
               ["Imagery date", p.imagery],
