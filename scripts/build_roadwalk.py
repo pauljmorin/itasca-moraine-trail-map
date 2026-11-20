@@ -34,16 +34,18 @@ Sources (all verified, nothing invented):
     on-road pieces of the Grand Rapids-to-Ely gap. The Mesabi
     Trail bike path (surface=="paved", 114.9 mi) is NOT road
     walk and is not drawn here.
-  * GAP (reported, not filled): T07's crash data covers the
-    WESTERN road walk only (Wilkin / Otter Tail / Becker).
-    No crash analysis exists in the packet for the ITM or
-    Arrowhead road walk, and no per-segment posted speeds were
-    verified for the Arrowhead road segments - so the Arrowhead
-    pieces carry the road-walk LINE only, no speed badge and no
-    crash icon. Wilkin/Becker segment-level pedestrian/bicycle
-    counts could not be resolved in T07 either (MnCMAT2
-    login-restricted; MNCrash upstream error; TCMAC gated) -
-    the layer does not claim them.
+  * GAP (reported, partly filled Nov 20, 2026 — Paul): T07's crash
+    data covers the WESTERN road walk only (Wilkin / Otter Tail /
+    Becker). No crash analysis exists in the packet for the ITM,
+    Arrowhead, Star of the North or Highway 6 road walk, so those
+    pieces carry no crash icon. The speed gap is FILLED Nov 20:
+    every Arrowhead, Star of the North and Highway 6 road-walk
+    piece now carries a statutory-default speed (see "SPEEDS —
+    ARROWHEAD / STN / HWY 6" below) and the Speed limits layer
+    covers the whole trail. Wilkin/Becker segment-level
+    pedestrian/bicycle counts could not be resolved in T07 either
+    (MnCMAT2 login-restricted; MNCrash upstream error; TCMAC
+    gated) - the layer does not claim them.
   * SHOULDERS (added 2026-11-18): no as-built shoulder width
     exists for any western segment in any reachable
     authoritative source. T07 Leg 2 ("Shoulder Width / Edge
@@ -99,6 +101,50 @@ Sources (all verified, nothing invented):
     The Seg 12 LINE and its HIN crash marker stay — only the
     badge goes, so a rebuild does not resurrect it. The Seg 12
     line popup therefore carries no speed row.
+  * SPEEDS — ARROWHEAD / STN / HWY 6 (added 2026-11-20, Paul:
+    "do it along the whole trail"). The Speed limits layer now
+    covers every road walk, not just the western T07 segments.
+    METHOD (same as T07): statutory defaults, Minn. Stat.
+    § 169.14 — 55 mph rural, 30 mph urban, 65 mph expressway —
+    with "unless posted" wording on rural pieces. These are
+    STATUTORY DEFAULTS, not field-verified posted limits: no
+    posted limit was verified for any Arrowhead, STN or Hwy 6
+    piece, and every popup, the SOURCES.md entry and the
+    data-sources page say so. ROAD IDENTIFICATION: every road
+    name comes from OpenStreetMap / Nominatim reverse-geocoding
+    of the piece midpoint (Nov 20, 2026; results filed in the
+    run notes), cross-checked at the piece endpoints where the
+    midpoint sat on a trail crossing, and confirmed against the
+    OSM API way data where Nominatim returned only a trail
+    (CR 61 / Prairie Lake Road for the two short Grand Rapids
+    connectors; MN 200 for the STN connector whose midpoint
+    returned "North Country Trail"). URBAN vs RURAL: from the
+    Nominatim address — inside Grand Rapids, Cohasset or Tower
+    city/village limits = urban (30); township / unincorporated
+    = rural (55). BADGE GROUPING (western precedent: one badge
+    per segment, cf. Seg 7 "Fergus Falls city streets"): one
+    badge per road or per contiguous same-setting run, at the
+    group's cumulative midpoint — Grand Rapids city streets
+    (4 pieces, 2.0 mi, 30); CR 61 / Prairie Lake Road (3 pieces,
+    3.6 mi, 55); Fernberg Road (2 pieces, 4.3 mi, 55); MN-135
+    (4 pieces, 15.0 mi, 55 rural with 30 in Tower); MN 200,
+    Tobique Road NE and Milton Lake Drive (STN, 0.25/0.26/0.23
+    mi, 55 each); MN 6 (16.3 mi, 55 rural with 30 in Cohasset).
+    Every LINE piece also carries its own road's speed fields,
+    so the line popup shows the piece's speed row (the 0.17-mi
+    MN-135 piece in Tower shows 30 while the MN-135 badge shows
+    the 55 majority). NO piece was left badge-less: every road
+    was identified. HWY 6 (added here, Paul Nov 20): the 16.3-mi
+    Remer–Cohasset road walk was in NO viewer layer; this build
+    adds its line (2 features from the NCT official line,
+    trail-minnesota.geojson, trail_type = Public Road) AND its
+    badge. The west end is rural (Deer Lake, Cass Co.) — NOT in
+    Remer — and the east end meets County Road 17 in Cohasset.
+    STN: the 3 on-road connectors (0.25/0.26/0.23 mi) from the
+    official STN line (trail-stn.geojson, trail_type = Public
+    Road) are added as line features + badges; their ends join
+    Chippewa National Forest footpath (the adjoining features in
+    file order).
   * ENDPOINTS + LENGTHS (added 2026-11-19, Paul): every line
     feature carries length_mi (drawn length, measured from the
     geometry) and from_name / to_name — the trail the road walk
@@ -133,8 +179,9 @@ Sources (all verified, nothing invented):
 
 Output: data/roadwalk.geojson (working data) with a "kind"
 property per feature: "line" (the road-walk line), "speed"
-(one badge per T07 segment), "crash" (one marker per HIN
-corridor). The published file is built by
+(one badge per T07 segment, plus one per Arrowhead road/run,
+one per STN connector, one for Highway 6), "crash" (one marker
+per HIN corridor, western only). The published file is built by
 scripts/build_site_data.py into site/data/roadwalk.geojson.
 """
 
@@ -229,6 +276,120 @@ HIN_SPOTS = [
 ]
 
 # ---------------------------------------------------------------- shoulders
+# (western T07 segments — see SHOULDER dict below)
+
+# ---------------------------------------------------------------- Arrowhead /
+# Star of the North / Highway 6 speeds (added 2026-11-20, Paul)
+# Roads identified by Nominatim reverse-geocoding of each piece
+# midpoint (Nov 20, 2026), endpoints checked where the midpoint
+# sat on a trail crossing, OSM API way data where Nominatim
+# returned only a trail. Speeds are STATUTORY DEFAULTS (Minn.
+# Stat. 169.14): 55 rural, 30 urban — never a verified posted
+# limit. Piece order is the gap-arrowhead road-feature order
+# (the build asserts each piece's drawn length matches).
+# (index, road, badge mph, speed wording)
+ARROWHEAD_PIECE_SPEEDS = [
+    (0, "Forest History Road", "30",
+     "30 mph statutory urban — Grand Rapids city streets "
+     "(Minn. Stat. § 169.14)"),
+    (1, "SW 6th Street", "30",
+     "30 mph statutory urban — Grand Rapids city streets "
+     "(Minn. Stat. § 169.14)"),
+    (2, "CR 61 / Prairie Lake Road", "55",
+     "55 mph statutory rural unless posted "
+     "(Minn. Stat. § 169.14)"),
+    (3, "Fernberg Road", "55",
+     "55 mph statutory rural unless posted "
+     "(Minn. Stat. § 169.14)"),
+    (4, "CR 76", "30",
+     "30 mph statutory urban — Grand Rapids and Cohasset "
+     "(Minn. Stat. § 169.14)"),
+    (5, "MN-135", "55",
+     "55 mph statutory rural unless posted "
+     "(Minn. Stat. § 169.14)"),
+    (6, "MN-135", "55",
+     "55 mph statutory rural unless posted "
+     "(Minn. Stat. § 169.14)"),
+    (7, "MN-135", "55",
+     "55 mph statutory rural unless posted "
+     "(Minn. Stat. § 169.14)"),
+    (8, "CR 61 / Prairie Lake Road", "55",
+     "55 mph statutory rural unless posted "
+     "(Minn. Stat. § 169.14)"),
+    (9, "CR 61 / Prairie Lake Road", "55",
+     "55 mph statutory rural unless posted "
+     "(Minn. Stat. § 169.14)"),
+    (10, "11th Avenue SW", "30",
+     "30 mph statutory urban — Grand Rapids city streets "
+     "(Minn. Stat. § 169.14)"),
+    (11, "MN-135", "30",
+     "30 mph statutory urban — in Tower "
+     "(Minn. Stat. § 169.14)"),
+    (12, "Pines Street", "30",
+     "30 mph statutory urban — in Tower "
+     "(Minn. Stat. § 169.14)"),
+    (13, "Fernberg Road", "55",
+     "55 mph statutory rural unless posted "
+     "(Minn. Stat. § 169.14)"),
+]
+# Expected drawn lengths (mi) of the Arrowhead pieces, in the same
+# order — the build asserts each piece matches before assigning
+# its road, so a reordered gap file fails loudly instead of
+# mislabeling a road.
+ARROWHEAD_PIECE_LENGTHS = [
+    0.21, 0.18, 3.25, 4.29, 1.57, 6.82, 6.74, 1.28,
+    0.26, 0.12, 0.01, 0.17, 0.10, 0.04,
+]
+# One badge per road / contiguous same-setting run, at the group's
+# cumulative midpoint (western precedent: one badge per segment).
+# (area label, road, badge mph, speed wording, piece indices in
+# chain order, miles label)
+ARROWHEAD_BADGE_GROUPS = [
+    ("Arrowhead", "Grand Rapids city streets", "30",
+     "30 mph statutory urban — Grand Rapids city streets "
+     "(Minn. Stat. § 169.14)",
+     [4, 0, 1, 10], "Grand Rapids city streets, 2.0 mi"),
+    ("Arrowhead", "CR 61 / Prairie Lake Road", "55",
+     "55 mph statutory rural unless posted "
+     "(Minn. Stat. § 169.14)",
+     [8, 9, 2], "CR 61, 3.6 mi"),
+    ("Arrowhead", "Fernberg Road", "55",
+     "55 mph statutory rural unless posted "
+     "(Minn. Stat. § 169.14)",
+     [3, 13], "Fernberg Road, 4.3 mi"),
+    ("Arrowhead", "MN-135 (Highway 135 North)", "55",
+     "55 mph statutory rural unless posted / 30 mph in Tower "
+     "(Minn. Stat. § 169.14)",
+     [5, 6, 7, 11], "MN-135, 15.0 mi"),
+]
+# Star of the North on-road connectors, in trail-stn.geojson file
+# order (asserted by drawn length). Roads from Nominatim midpoint
+# reverse-geocodes Nov 20, 2026; STN0's road (MN 200) confirmed
+# against OSM API way data (its midpoint returned only the trail).
+# (road, badge mph, speed wording, expected length mi)
+STN_CONNECTORS = [
+    ("MN 200 (State 200 Northeast)", "55",
+     "55 mph statutory rural unless posted "
+     "(Minn. Stat. § 169.14)", 0.25),
+    ("Tobique Road NE", "55",
+     "55 mph statutory rural unless posted "
+     "(Minn. Stat. § 169.14)", 0.26),
+    ("Milton Lake Drive", "55",
+     "55 mph statutory rural unless posted "
+     "(Minn. Stat. § 169.14)", 0.23),
+]
+# Highway 6 road walk (Remer–Cohasset), one badge at the combined
+# midpoint. West end is rural (Deer Lake, Cass Co. — not in Remer);
+# east end meets County Road 17 in Cohasset.
+HWY6_BADGE = ("Highway 6", "MN 6 (State 6 Northeast)", "55",
+              "55 mph statutory rural unless posted / 30 mph in "
+              "Cohasset (Minn. Stat. § 169.14)",
+              "MN 6, 16.3 mi")
+
+STATUTORY_SOURCE = ("Minn. Stat. § 169.14 (statutory default — "
+                    "not a field-verified posted limit); road "
+                    "identified from OpenStreetMap / Nominatim, "
+                    "Nov 20, 2026")
 # Shoulder width / edge condition per T07 segment, transcribed
 # from T07 Leg 2 ("Segment Safety & Traffic Data Breakdown", the
 # "Shoulder Width / Edge Condition" column; T07 output Doc
@@ -470,6 +631,47 @@ def line_length_mi(coords):
     return total / KM_PER_MILE
 
 
+def point_on_polyline(coords, frac):
+    """Coordinate at a fraction (0-1) of a polyline's measured
+    length, interpolating within segments."""
+    seg_lens = []
+    total = 0.0
+    for a, b in zip(coords, coords[1:]):
+        d = dist_km(a, b)
+        seg_lens.append(d)
+        total += d
+    if total <= 0:
+        return list(coords[0])
+    target = frac * total
+    acc = 0.0
+    for (a, b), d in zip(zip(coords, coords[1:]), seg_lens):
+        if acc + d >= target:
+            t = 0.0 if d == 0 else (target - acc) / d
+            t = max(0.0, min(1.0, t))
+            return [a[0] + t * (b[0] - a[0]), a[1] + t * (b[1] - a[1])]
+        acc += d
+    return list(coords[-1])
+
+
+def group_midpoint(piece_coords):
+    """Midpoint of a group of polylines given in chain order: the
+    point half the group's total drawn length along the pieces.
+    Pieces need not be contiguous — the midpoint is located in
+    the piece that contains it, by that piece's own fraction."""
+    lens = [line_length_mi(c) for c in piece_coords]
+    total = sum(lens)
+    if total <= 0:
+        return list(piece_coords[0][0])
+    target = total / 2.0
+    acc = 0.0
+    for coords, L in zip(piece_coords, lens):
+        if acc + L >= target:
+            frac = 0.0 if L == 0 else (target - acc) / L
+            return point_on_polyline(coords, max(0.0, min(1.0, frac)))
+        acc += L
+    return list(piece_coords[-1][-1])
+
+
 ENDPOINT_FALLBACK = "No adjoining trail identified in the map data"
 TREAD_KINDS = {"foot": "foot tread", "paved": "paved multi-use path",
                "sidewalk": "sidewalk"}
@@ -637,6 +839,8 @@ def main():
     bike_features = json.loads(bike_path.read_text())["features"]
     ar_pieces = 0
     ar_miles = 0.0
+    ar_piece_coords = []  # flat coords per piece, in gap-file order
+    ar_piece_speeds = {}
     for feat in gap_a["features"]:
         props = feat.get("properties") or {}
         if props.get("surface") != "road":
@@ -650,12 +854,31 @@ def main():
         else:
             lines = []
         piece_len = sum(line_length_mi(c) for c in lines)
+        # Assert the piece is the one the speed table expects —
+        # a reordered gap file must fail loudly, never mislabel
+        # a road's speed.
+        idx = ar_pieces
+        if idx >= len(ARROWHEAD_PIECE_SPEEDS):
+            raise RuntimeError(
+                f"Arrowhead road piece {idx}: no speed table entry")
+        expect = ARROWHEAD_PIECE_LENGTHS[idx]
+        if abs(round(piece_len, 2) - expect) > 0.01:
+            raise RuntimeError(
+                f"Arrowhead road piece {idx}: drawn length "
+                f"{round(piece_len, 2)} != table {expect}")
+        _, road, mph, wording = ARROWHEAD_PIECE_SPEEDS[idx]
+        ar_piece_speeds[idx] = (road, mph, wording)
+        flat = [pt for part in lines for pt in part]
+        ar_piece_coords.append(flat)
         ar_miles += piece_len
         start_pt = lines[0][0] if lines and lines[0] else None
         end_pt = lines[-1][-1] if lines and lines[-1] else None
         p = {
             "kind": "line", "area": "arrowhead",
             "segment": "Arrowhead road walk",
+            "road": road,
+            "speed_mph": mph,
+            "speed_text": wording,
             "length_mi": round(piece_len, 2),
             "source": "NCTA gap line, surface = road (the Mesabi "
                       "Trail bike path, surface = paved, is not road walk)",
@@ -677,6 +900,147 @@ def main():
         })
         ar_pieces += 1
     print(f"Arrowhead road-walk line pieces: {ar_pieces} ({ar_miles:.1f} mi)")
+
+    # --- Star of the North road-walk line: the 3 on-road connectors
+    # (trail_type == "Public Road") on the official STN line.
+    # Added 2026-11-20 (Paul, "whole trail"). Each connector joins
+    # Chippewa National Forest footpath at both ends (the adjoining
+    # features in file order); ends are named from those features,
+    # never invented.
+    stn_path = REPO_ROOT / "site" / "data" / "trail-stn.geojson"
+    stn = json.loads(stn_path.read_text())["features"]
+    stn_road = [(i, f) for i, f in enumerate(stn)
+                if (f.get("properties") or {}).get("trail_type")
+                == "Public Road"]
+    if len(stn_road) != len(STN_CONNECTORS):
+        raise RuntimeError(
+            f"expected {len(STN_CONNECTORS)} STN road connectors, "
+            f"got {len(stn_road)}")
+    stn_piece_coords = []
+    stn_miles = 0.0
+    for (i, f), (road, mph, wording, expect) in zip(stn_road,
+                                                    STN_CONNECTORS):
+        geom = f.get("geometry") or {}
+        coords = geom.get("coordinates") or []
+        if geom.get("type") == "LineString":
+            lines = [coords]
+        elif geom.get("type") == "MultiLineString":
+            lines = coords
+        else:
+            lines = []
+        piece_len = sum(line_length_mi(c) for c in lines)
+        if abs(piece_len - expect) > 0.05:
+            raise RuntimeError(
+                f"STN connector {i}: drawn length "
+                f"{round(piece_len, 2)} != table {expect}")
+        stn_miles += piece_len
+        flat = [pt for part in lines for pt in part]
+        stn_piece_coords.append(flat)
+        p = {
+            "kind": "line", "area": "stn",
+            "segment": "Star of the North road walk",
+            "road": road,
+            "speed_mph": mph,
+            "speed_text": wording,
+            "length_mi": round(piece_len, 2),
+            "source": "NCT official line (Star of the North), "
+                      "trail_type = Public Road",
+        }
+        for end_key, j in (("from_name", i - 1), ("to_name", i + 1)):
+            if 0 <= j < len(stn):
+                nb = (stn[j].get("properties") or {})
+                if nb.get("trail_type") == "Foot Path":
+                    name = (nb.get("seg_name") or "").strip()
+                    p[end_key] = (f"{name} (foot tread)" if name
+                                  else "NCT footpath")
+        features.append({
+            "type": "Feature",
+            "geometry": geom,
+            "properties": p,
+        })
+    print(f"Star of the North road-walk line pieces: {len(stn_road)} "
+          f"({stn_miles:.2f} mi)")
+
+    # --- Highway 6 road walk (Remer–Cohasset): the 2 on-road
+    # features (trail_type = Public Road, NCT on-road) in the Hwy 6
+    # extent of the statewide NCT line. Added 2026-11-20 (Paul,
+    # "whole trail") — this line was in NO viewer layer before.
+    # Ends take the nearest statewide-line footpath within 500 m;
+    # nothing near leaves the field off (popup fallback).
+    tm_path = REPO_ROOT / "site" / "data" / "trail-minnesota.geojson"
+    tm = json.loads(tm_path.read_text())["features"]
+    hwy6 = []
+    for f in tm:
+        fp = f.get("properties") or {}
+        if fp.get("trail_type") != "Public Road":
+            continue
+        if fp.get("trail_stat") != "NCT (on-road)":
+            continue
+        geom = f.get("geometry") or {}
+        coords = geom.get("coordinates") or []
+        flat = []
+        if geom.get("type") == "LineString":
+            flat = coords
+        elif geom.get("type") == "MultiLineString":
+            flat = [pt for part in coords for pt in part]
+        if not flat:
+            continue
+        if (min(c[0] for c in flat) >= -93.86
+                and max(c[0] for c in flat) <= -93.60
+                and min(c[1] for c in flat) >= 47.09
+                and max(c[1] for c in flat) <= 47.24):
+            hwy6.append((f, flat))
+    if len(hwy6) != 2:
+        raise RuntimeError(f"expected 2 Hwy 6 road pieces, got {len(hwy6)}")
+    # The east piece ends in Cohasset (its easternmost point is the
+    # one inside Cohasset, on County Road 17); the west piece is
+    # rural throughout (Deer Lake, Cass Co. — not in Remer).
+    east_idx = max(range(len(hwy6)),
+                   key=lambda k: max(c[0] for c in hwy6[k][1]))
+    hwy6_piece_coords = []
+    hwy6_miles = 0.0
+    for k, (f, flat) in enumerate(hwy6):
+        piece_len = line_length_mi(flat)
+        hwy6_miles += piece_len
+        hwy6_piece_coords.append(flat)
+        wording = ("55 mph statutory rural unless posted / 30 mph in "
+                   "Cohasset (Minn. Stat. § 169.14)"
+                   if k == east_idx else
+                   "55 mph statutory rural unless posted "
+                   "(Minn. Stat. § 169.14)")
+        p = {
+            "kind": "line", "area": "hwy6",
+            "segment": "Highway 6 road walk",
+            "road": "MN 6",
+            "speed_mph": "55",
+            "speed_text": wording,
+            "length_mi": round(piece_len, 2),
+            "source": "NCT official line (statewide), "
+                      "trail_type = Public Road; MN-6, Remer–Cohasset",
+        }
+        west_pt = min(flat, key=lambda c: c[0])
+        east_pt = max(flat, key=lambda c: c[0])
+        for end_key, pt in (("from_name", west_pt),
+                            ("to_name", east_pt)):
+            best = None
+            for tf in tm:
+                tp = tf.get("properties") or {}
+                if tp.get("trail_type") != "Foot Path":
+                    continue
+                for a, b in iter_line_segments(tf.get("geometry")):
+                    d = point_seg_dist_km(pt, a, b)
+                    if best is None or d < best[0]:
+                        best = (d, (tp.get("seg_name") or "").strip())
+            if best is not None and best[0] * 1000.0 <= 500.0:
+                p[end_key] = (f"{best[1]} (foot tread)" if best[1]
+                              else "NCT footpath")
+        features.append({
+            "type": "Feature",
+            "geometry": f.get("geometry"),
+            "properties": p,
+        })
+    print(f"Highway 6 road-walk line pieces: {len(hwy6)} "
+          f"({hwy6_miles:.2f} mi)")
 
     # --- western segment enrichment: length, endpoints, speed, HIN
     # (per segment; every piece of a segment shares the values)
@@ -771,6 +1135,72 @@ def main():
         badges += 1
     print(f"Speed badges: {badges} (Seg 12 removed, Paul Nov 19, 2026)")
 
+    # --- Arrowhead / Star of the North / Highway 6 speed badges
+    # (added 2026-11-20, Paul — "whole trail"). One badge per road
+    # or contiguous same-setting run, at the group's cumulative
+    # midpoint. All values are statutory defaults (Minn. Stat.
+    # § 169.14), not verified posted limits — the popup and the
+    # sources page say so.
+    new_badges = 0
+    for (label, road, mph, wording, idxs, miles) in \
+            ARROWHEAD_BADGE_GROUPS:
+        pt = group_midpoint([ar_piece_coords[i] for i in idxs])
+        features.append({
+            "type": "Feature",
+            "geometry": {"type": "Point", "coordinates": pt},
+            "properties": {
+                "kind": "speed", "area": "arrowhead",
+                "segment": label, "road": road,
+                "miles": miles,
+                "speed_mph": mph, "speed_text": wording,
+                "position_note": (f"Midpoint of the {road} road walk "
+                                  f"({miles}); position approximate "
+                                  "within ~1 mi"),
+                "source": STATUTORY_SOURCE + "; line: NCTA gap line "
+                          "(gap-arrowhead.geojson)",
+            },
+        })
+        new_badges += 1
+    for (road, mph, wording, _expect), coords in zip(STN_CONNECTORS,
+                                                     stn_piece_coords):
+        pt = point_on_polyline(coords, 0.5)
+        features.append({
+            "type": "Feature",
+            "geometry": {"type": "Point", "coordinates": pt},
+            "properties": {
+                "kind": "speed", "area": "stn",
+                "segment": "Star of the North", "road": road,
+                "miles": f"{road}, "
+                         f"{round(line_length_mi(coords), 2)} mi",
+                "speed_mph": mph, "speed_text": wording,
+                "position_note": "Connector midpoint; position "
+                                 "approximate within ~1 mi",
+                "source": STATUTORY_SOURCE + "; line: NCT official "
+                          "line (Star of the North)",
+            },
+        })
+        new_badges += 1
+    hwy6_ordered = sorted(hwy6_piece_coords,
+                          key=lambda c: sum(p[0] for p in c) / len(c))
+    pt = group_midpoint(hwy6_ordered)
+    label, road, mph, wording, miles = HWY6_BADGE
+    features.append({
+        "type": "Feature",
+        "geometry": {"type": "Point", "coordinates": pt},
+        "properties": {
+            "kind": "speed", "area": "hwy6",
+            "segment": label, "road": road,
+            "miles": miles,
+            "speed_mph": mph, "speed_text": wording,
+            "position_note": "Midpoint of the 16.3-mi Highway 6 road "
+                             "walk; position approximate within ~1 mi",
+            "source": STATUTORY_SOURCE + "; line: NCT official line "
+                      "(statewide)",
+        },
+    })
+    new_badges += 1
+    print(f"Arrowhead / STN / Hwy 6 speed badges: {new_badges}")
+
     # --- crash markers: one per HIN corridor
     for spot in HIN_SPOTS:
         pt, feat = point_at_chain_mile(chain, spot["mile"])
@@ -796,21 +1226,32 @@ def main():
     out_fc = {
         "type": "FeatureCollection",
         "metadata": {
-            "dataset": "Road walk: on-road line (western T07 segments + "
-                       "Arrowhead road pieces), speed badges (T07), HIN "
-                       "crash markers (Otter Tail SAP)",
+            "dataset": "Road walk: on-road line (western T07 segments, "
+                       "Arrowhead road pieces, Star of the North "
+                       "connectors, Highway 6), speed badges (whole "
+                       "trail, statutory defaults), HIN crash markers "
+                       "(Otter Tail SAP, western only)",
             "built": "scripts/build_roadwalk.py",
             "western_chain_miles": round(total, 2),
             "gap_note": "T07 covers the western road walk only. No crash "
-                        "analysis and no verified per-segment speeds exist "
-                        "in the packet for the ITM or Arrowhead road walk, "
-                        "so the Arrowhead pieces carry the line only. "
+                        "analysis exists in the packet for the Arrowhead, "
+                        "Star of the North or Highway 6 road walk, so "
+                        "those pieces carry no crash icon. Speeds: the "
+                        "western badges are T07 / Otter Tail SAP values; "
+                        "the Arrowhead, STN and Hwy 6 badges are "
+                        "statutory defaults (Minn. Stat. § 169.14 — 55 "
+                        "rural / 30 urban), NOT field-verified posted "
+                        "limits; roads identified from OpenStreetMap / "
+                        "Nominatim, Nov 20, 2026. Seg 12 (Vergas) has no "
+                        "badge and no speed fields (Paul, Nov 19, 2026 — "
+                        "the 40-vs-30 discrepancy is unreconciled). "
                         "Shoulders: no as-built shoulder width is published "
                         "for any western segment (MnDOT TCDS omits shoulder "
                         "widths), so the layer carries the T07 edge-condition "
                         "note per segment (shoulder_quality) and no numeric "
-                        "shoulder_width_ft for any segment; the Arrowhead "
-                        "pieces carry no shoulder fields at all. Observed "
+                        "shoulder_width_ft for any segment; the Arrowhead, "
+                        "STN and Hwy 6 pieces carry no shoulder fields at "
+                        "all. Observed "
                         "speeds: none published per segment - MnDOT's Speed "
                         "Monitoring Program reports average 85th percentile "
                         "speed aggregated by roadway category only, with no "

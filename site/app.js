@@ -7441,11 +7441,15 @@ var LAYERS = [
     },
   },
   {
-    /* Road walk (Paul, Nov 18, 2026): the on-road portions of
-       the trail — the western T07 segments (Wilkin / Otter Tail
-       / Becker, 80 mi per T07) and the Arrowhead road pieces
-       (25 mi). Built by scripts/build_roadwalk.py from the
-       NCTA gap lines; the western pieces are clipped to T07's
+    /* Road walk (Paul, Nov 18, 2026; speeds extended to the whole
+       trail Nov 20, 2026): the on-road portions of the trail —
+       the western T07 segments (Wilkin / Otter Tail / Becker,
+       80 mi per T07), the Arrowhead road pieces (25 mi), the
+       Star of the North on-road connectors (0.7 mi) and the
+       Highway 6 road walk (16.3 mi, Remer–Cohasset — drawn here
+       Nov 20; it was in no viewer layer before). Built by
+       scripts/build_roadwalk.py from the NCTA gap lines and the
+       NCT official line; the western pieces are clipped to T07's
        segment ranges. The Mesabi Trail bike path is NOT road
        walk and is not drawn here. Line popups state the extent
        and what the road walk connects to at each end, the length
@@ -7455,7 +7459,7 @@ var LAYERS = [
        shoulder width exists for any segment. OFF by default and
        LAZY. */
     id: "roadwalk", label: "Road walk",
-    title: "Where the trail follows public roads — western T07 segments and Arrowhead road pieces",
+    title: "Where the trail follows public roads — western T07 segments, Arrowhead road pieces, Star of the North connectors, Highway 6",
     file: "data/roadwalk.geojson",
     onByDefault: false, group: "Road walk",
     swatch: { kind: "line", color: "#b45309", dashed: true },
@@ -7469,22 +7473,26 @@ var LAYERS = [
         },
         onEachFeature: function (f, l) {
           var p = f.properties;
-          /* Road-walk popup (Paul, Nov 19, 2026 — content only):
-             extent + what it connects to at each end, length
-             rounded to the nearest mile, then the planned facts:
-             speed limit, accident-prone areas, shoulder / edge
-             condition where known. Western popups are per SEGMENT
-             (every piece of a segment shows the segment);
-             Arrowhead popups are per PIECE. Seg 12 carries no
-             speed row — its badge was removed Nov 19, 2026
-             (Paul) and the disputed figure must not reappear
-             here. Endpoint names come from the adjoining
-             features' own names (scripts/build_roadwalk.py);
-             nothing is invented. */
+          /* Road-walk popup (Paul, Nov 19, 2026 — content only;
+             extended Nov 20 to the whole trail): extent + what it
+             connects to at each end, length rounded to the nearest
+             mile, then the planned facts: speed limit,
+             accident-prone areas, shoulder / edge condition where
+             known. Western popups are per SEGMENT (every piece of
+             a segment shows the segment); Arrowhead, Star of the
+             North and Highway 6 popups are per PIECE, headed by
+             the area. Seg 12 carries no speed row — its badge was
+             removed Nov 19, 2026 (Paul) and the disputed figure
+             must not reappear here. Endpoint names come from the
+             adjoining features' own names
+             (scripts/build_roadwalk.py); nothing is invented. */
           var isWestern = p.area === "western";
+          var areaLabel = p.area === "stn" ? "Star of the North"
+            : p.area === "hwy6" ? "Highway 6" : "Arrowhead";
           var rows = [
             ["Extent", isWestern
-              ? (p.road ? p.road + ", " : "") + p.miles : null],
+              ? (p.road ? p.road + ", " : "") + p.miles
+              : (p.road || null)],
             ["Length", p.length_mi != null
               ? roundMi(p.length_mi) + " mi" : null],
             ["West end", p.from_name ||
@@ -7507,9 +7515,9 @@ var LAYERS = [
             ["Source", p.source]);
           var note = isWestern
             ? "The trail follows a public road here. Speeds and crash spots are separate toggles in this group."
-            : "The trail follows a public road here. No speed or crash data is published for the Arrowhead road pieces.";
+            : "The trail follows a public road here. Speed limits are their own toggle in this group; no crash data is published for these road pieces.";
           bindPop(l, popKicker("Road walk") + "<h3>Road walk — " +
-            (isWestern ? esc(p.segment) : "Arrowhead") + "</h3>" +
+            (isWestern ? esc(p.segment) : areaLabel) + "</h3>" +
             kvTable(rows) + "<p class='pop-note'>" + note + "</p>" +
             popDataLink("roadwalk"));
         },
@@ -7517,21 +7525,28 @@ var LAYERS = [
     },
   },
   {
-    /* Speed limits (Paul, Nov 18, 2026): one badge per T07
-       western road-walk segment, at the segment midpoint (Seg 14
-       sits at the US-10 crossing instead — see
-       scripts/build_roadwalk.py). Seg 12 has NO badge (removed
-       Nov 19, 2026 — Paul; the Vergas 40-vs-30 discrepancy is
-       not reconciled). Values are T07's: statutory
-       55 rural / 30 urban / 65 expressway (Minn. Stat. § 169.14)
-       or the Otter Tail SAP "majority 55 mph" finding. The badge
-       shows the limit at the badge's spot; the popup carries the
-       segment's full wording, AADT, shoulder condition and
-       source. No Arrowhead badges: the packet verifies no
-       per-segment speeds there.
+    /* Speed limits (Paul, Nov 18, 2026; extended to the whole
+       trail Nov 20, 2026): one badge per western T07 segment, at
+       the segment midpoint (Seg 14 sits at the US-10 crossing
+       instead — see scripts/build_roadwalk.py), plus one badge
+       per Arrowhead road / run, one per Star of the North
+       connector, and one for Highway 6 — all at the piece or
+       group midpoint. Seg 12 has NO badge (removed Nov 19, 2026
+       — Paul; the Vergas 40-vs-30 discrepancy is not
+       reconciled). Western values are T07's: statutory 55 rural
+       / 30 urban / 65 expressway (Minn. Stat. § 169.14) or the
+       Otter Tail SAP "majority 55 mph" finding. Arrowhead, STN
+       and Hwy 6 values are the same statute's defaults (55 rural
+       / 30 urban) — NOT field-verified posted limits — and every
+       popup says so. The badge shows the limit at the badge's
+       spot; the popup carries the full wording, AADT and shoulder
+       condition where known, the source, and a Street View link
+       at the badge's spot so the shoulder can be seen (Paul,
+       Nov 20, 2026 — coverage varies; some rural spots have no
+       imagery and the link falls back to the map).
        OFF by default and LAZY. */
     id: "roadwalk-speeds", label: "Speed limits",
-    title: "Speed limit per western road-walk segment (T07)",
+    title: "Speed limits on the trail's road walks — western T07 segments, Arrowhead, Star of the North, Highway 6 (statutory defaults)",
     file: "data/roadwalk.geojson",
     onByDefault: false, group: "Road walk",
     swatch: { kind: "pin", color: "#1f2937" },
@@ -7552,6 +7567,16 @@ var LAYERS = [
         },
         onEachFeature: function (f, l) {
           var p = f.properties;
+          /* Street View link (Paul, Nov 20, 2026): every speed
+             badge popup links to Google Street View at the badge's
+             own spot, so the shoulder can be seen. Built from the
+             badge feature's coordinates (GeoJSON [lon, lat];
+             the viewpoint takes lat,lon). Coverage varies — some
+             rural spots have no imagery and the link falls back
+             to the map; SOURCES.md says so. */
+          var c = f.geometry && f.geometry.coordinates;
+          var sv = c ? "https://www.google.com/maps/@?api=1&map_action=pano&viewpoint=" +
+            c[1].toFixed(5) + "," + c[0].toFixed(5) : null;
           bindPop(l, popKicker("Speed limit") + "<h3>" + esc(p.segment) + " — " + esc(p.road) + "</h3>" +
             kvTable([
               ["Speed limit", p.speed_mph + " mph"],
@@ -7562,7 +7587,13 @@ var LAYERS = [
               ["Shoulder source", p.shoulder_source],
               ["Position", p.position_note],
               ["Source", p.source],
-            ]) + popDataLink("roadwalk"));
+            ]) +
+            (sv ? "<div class='pop-actions'><a class='pop-link' href='" + sv +
+              "' target='_blank' rel='noopener'>Open Street View here</a></div>" +
+              "<p class='pop-note'>Street View opens at this badge's spot — " +
+              "use it to check the shoulder. Coverage varies; some rural " +
+              "spots have no imagery and the link falls back to the map.</p>" : "") +
+            popDataLink("roadwalk"));
         },
       });
     },

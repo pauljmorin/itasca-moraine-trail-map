@@ -2231,15 +2231,31 @@ neither mileage reckoning above.
 
 - **What:** The on-road line, one speed badge per western
   road-walk segment except Seg 12 (badge removed Nov 19, 2026 —
-  Paul), and the High-Injury Network crash markers. Every line
-  feature carries its drawn length (`length_mi`) and the trail it
-  leaves and joins at each end (`from_name` / `to_name`).
+  Paul), one badge per Arrowhead road/run, one per Star of the
+  North connector and one for Highway 6 (added Nov 20, 2026 —
+  Paul, "whole trail"), and the High-Injury Network crash
+  markers (western only). Every line feature carries its drawn
+  length (`length_mi`) and the trail it leaves and joins at each
+  end (`from_name` / `to_name`); every line piece outside the
+  west also carries its road's speed (`speed_mph` /
+  `speed_text`). Every speed-badge popup links to Google Street
+  View at the badge's spot (added Nov 20, 2026 — Paul, to see
+  the shoulder; coverage varies, see below).
 - **Sources:** T07 (Trail Research Brief T07 — Western Road Walk:
   The Safety Case, Segment by Segment, Nov 15, 2026; data
   retrieved Nov 16, 2026) for the 15 western segments, their
   speeds and the crash spots; the NCTA gap lines for geometry
   (`site/buildout/data/gap-western.geojson`, 90 features,
   104.86 mi; `site/buildout/data/gap-arrowhead.geojson`).
+  Road names for the Arrowhead, Star of the North and Highway 6
+  pieces: OpenStreetMap / Nominatim reverse-geocodes of the
+  piece midpoints (Nov 20, 2026), endpoints checked where the
+  midpoint sat on a trail crossing, OSM API way data where
+  Nominatim returned only a trail; geometry for the STN
+  connectors from the official STN line
+  (`site/data/trail-stn.geojson`, trail_type = Public Road) and
+  for Highway 6 from the statewide NCT line
+  (`site/data/trail-minnesota.geojson`, trail_type = Public Road).
 - **Geometry method:** the western gap line is ordered west→east
   by a graph walk from the Red River end (endpoint adjacency
   within 2 km), validated against T07's mileposts (City of Fergus
@@ -2255,8 +2271,12 @@ neither mileage reckoning above.
   falls in Frazee, but the segment's expressway portion is the
   crossing). Crash markers sit at the HIN corridor's segment
   midpoint (CSAH 88 at MN-39.5; CSAH 4 at MN-85.5 in Vergas;
-  CSAH 1 / Tower Road at MN-56.5). Positions are approximate
-  within ~1 mi and the popups say so.
+  CSAH 1 / Tower Road at MN-56.5). Arrowhead badges sit at the
+  group midpoint by cumulative miles (Grand Rapids run, CR 61,
+  Fernberg Road, MN-135); STN badges at each connector's
+  midpoint; the Highway 6 badge at the combined midpoint of the
+  two pieces. Positions are approximate within ~1 mi and the
+  popups say so.
 - **Endpoints + lengths (added 2026-11-19, Paul):** western
   segments are enriched per SEGMENT (all pieces of a segment
   share the values); Arrowhead pieces per PIECE. `length_mi` is
@@ -2277,7 +2297,11 @@ neither mileage reckoning above.
   as footpath. Arrowhead piece ends take the nearest foot-tread
   or paved multi-use path (gap-arrowhead foot/paved features, or
   the bike-trails layer) within 500 m, by point-to-line
-  distance; nothing within 500 m leaves the field off. No
+  distance; nothing within 500 m leaves the field off. STN
+  connectors and Highway 6 pieces are enriched per PIECE: STN
+  ends join Chippewa National Forest footpath (the adjoining
+  features in file order); Highway 6 ends take the nearest
+  statewide-line footpath within 500 m. No
   endpoint name is invented: a name comes only from an adjoining
   feature's seg_name / trail_name, or the fixed fallback strings
   above. Speed and HIN facts ride on the western line features
@@ -2292,6 +2316,45 @@ neither mileage reckoning above.
   Seg 12 has no badge (removed Nov 19, 2026 — Paul; see below).
   The Mesabi Trail bike path (surface "paved", 115 mi) is NOT
   road walk and is not drawn.
+- **Speeds — Arrowhead / Star of the North / Highway 6 (added
+  2026-11-20, Paul — "whole trail"):** same statute, same
+  defaults — 55 mph rural / 30 mph urban (Minn. Stat. § 169.14),
+  with "unless posted" wording on rural pieces. These are
+  STATUTORY DEFAULTS, not field-verified posted limits: no posted
+  limit was verified for any of these pieces, and every popup,
+  this entry and the data-sources page say so. Urban/rural from
+  the Nominatim address (inside Grand Rapids, Cohasset or Tower
+  city/village limits = urban; township/unincorporated = rural).
+  One badge per road or contiguous same-setting run (western
+  precedent: one badge per segment, cf. Seg 7 "Fergus Falls city
+  streets"). Per-piece table (road — mph — setting): Forest
+  History Road — 30 — Grand Rapids; SW 6th Street — 30 — Grand
+  Rapids; 11th Avenue SW — 30 — Grand Rapids; CR 76 — 30 —
+  Grand Rapids + Cohasset; CR 61 / Prairie Lake Road — 55 — Arbo
+  Township; Fernberg Road — 55 — Fall Lake Township; MN-135 —
+  55 — Embarrass/Kugler Townships, 30 in Tower (the 0.17-mi
+  Tower piece shows 30; the MN-135 badge shows the 55 majority);
+  Pines Street — 30 — Tower; MN 200 — 55 — Cass Co.; Tobique
+  Road NE — 55 — Cass Co.; Milton Lake Drive — 55 — Cass Co.;
+  MN 6 — 55 — rural, 30 in Cohasset (west end is rural Deer
+  Lake, Cass Co. — not in Remer; east end meets County Road 17
+  in Cohasset). Badge grouping: Grand Rapids city streets
+  (4 pieces, 2.0 mi, 30); CR 61 (3 pieces, 3.6 mi, 55); Fernberg
+  Road (2 pieces, 4.3 mi, 55); MN-135 (4 pieces, 15.0 mi, 55);
+  MN 200 / Tobique / Milton Lake (one badge each, 55); MN 6
+  (one badge, 16.3 mi, 55). No piece was left badge-less.
+  **Highway 6 (added Nov 20, Paul):** the 16.3-mi Remer–
+  Cohasset road walk was in NO viewer layer; this build adds
+  its line (2 features from the statewide NCT line,
+  trail_type = Public Road) and its badge.
+  **Street View in badge popups (added Nov 20, Paul):** every
+  speed-badge popup links to Google Street View at the badge's
+  coordinates
+  (`https://www.google.com/maps/@?api=1&map_action=pano&viewpoint=LAT,LON`,
+  built from the badge feature's own geometry) so the shoulder
+  can be seen. Coverage varies — Street View has no imagery on
+  some rural roads, and the link then falls back to the map
+  view; the popup says so.
 - **Shoulders (T07 Leg 2; checked 2026-11-18):** no as-built
   shoulder width is published for any of the 15 western segments.
   MnDOT TCDS omits shoulder widths in public station views, so
@@ -2391,32 +2454,32 @@ neither mileage reckoning above.
   CSAH 1 / Tower Road HIN 7.0 (adjacent to Seg 9) + Tier 3.
   Caveat carried in every crash popup: no published record
   attributes any crash to a hiker.
-- **Gap (reported, not filled):** T07 covers the WESTERN road walk
-  only (Wilkin / Otter Tail / Becker). No crash analysis and no
-  verified per-segment speeds exist in the packet for the ITM or
-  Arrowhead road walk, so the Arrowhead pieces (14 features,
-  25.0 mi) carry the line only — no speed badge, no crash icon,
-  no shoulder fields. **Star of the North: nothing was added to
-  this layer.** The gap lines hold no `surface` "road" pieces in
-  the STN extent (the Arrowhead gap line starts at lon −93.66,
-  east of the STN east end), and the 3 on-road connectors on the
-  official STN line (1 mi) are connectors, not road-walk
-  segments. The 16.3-mi Hwy 6 road walk (Remer to Cohasset,
-  official-line on-road features lon −93.847..−93.630, lat
-  47.10..47.23) is in NO viewer layer — neither this road-walk
-  layer nor the gap line covers it — and it is Arrowhead reroute
-  / Tioga Beach EA territory, NOT Star of the North. Needs Paul's
-  decision on whether and how to add it. Wilkin/Becker segment-level pedestrian/bicycle counts could not
+- **Gap (reported, partly filled Nov 20, 2026):** T07 covers the
+  WESTERN road walk only (Wilkin / Otter Tail / Becker). No crash
+  analysis exists in the packet for the Arrowhead, Star of the
+  North or Highway 6 road walk, so those pieces carry no crash
+  icon. The speed gap is FILLED (Nov 20, Paul — "whole trail"):
+  every Arrowhead, STN and Highway 6 piece carries a
+  statutory-default speed and the Speed limits layer covers the
+  whole trail. **Star of the North: added Nov 20** — the 3
+  on-road connectors on the official STN line (0.74 mi) are now
+  road-walk lines with badges. **Highway 6: added Nov 20** — the
+  16.3-mi road walk (Remer to Cohasset, official-line on-road
+  features lon −93.847..−93.630, lat 47.10..47.23) is now a
+  road-walk line (2 features) with a badge; it is Arrowhead
+  reroute / Tioga Beach EA territory, NOT Star of the North.
+  Wilkin/Becker segment-level pedestrian/bicycle counts could not
   be resolved in T07 either (MnCMAT2 login-restricted; MNCrash
   upstream error; TCMAC gated).
-- **Use here:** `data/roadwalk.geojson` (73 features: 56 line
-  pieces, 14 speed badges, 3 crash markers) →
+- **Use here:** `data/roadwalk.geojson` (86 features: 61 line
+  pieces, 22 speed badges, 3 crash markers) →
   `site/data/roadwalk.geojson` (built by
   `scripts/build_site_data.py`), three layers in the "Road walk"
   group (Road walk / Speed limits / Accident-prone areas), all OFF
   by default and LAZY. The western line pieces and the speed
   badges carry `shoulder_quality` + `shoulder_source` (shown in
-  both popups); the Arrowhead pieces carry neither.
+  both popups); the Arrowhead, Star of the North and Highway 6
+  pieces carry speed fields but no shoulder fields.
 
 ## Street View — Google Street View at trailheads, road crossings, road-walk points (added 2026-11-13; extended 2026-11-18, Paul)
 
