@@ -677,6 +677,99 @@ the services carry no per-service copyright text.
   Corridor membership was tested by point-in-polygon against the
   2004 corridor polygon, not by town name or county.
 
+### Proposed ATV trails — overlay layer (added 2026-11-20, Paul)
+
+- The Nov 18 hunt wired NO layer because no proposed route had
+  published GIS. The Nov 19–20 GIS overlay produced the geometry
+  (color-extraction from DNR map PDFs, vector extraction from
+  GeoPDFs, approximations along named roads where the source pins
+  endpoints), so the layer is now wired:
+  `site/data/atv-proposals.geojson` (10 features, one per proposal,
+  845.24 mi drawn) and `site/data/atv-proposal-crossings.geojson`
+  (11 point features). Both OFF by default, in the "Other trails"
+  group. Overlay work files:
+  `~/workspace/goals/finish-the-north-country-trail-in-minnesota/analysis/atv-overlay/`
+  (findings, inventory, overlay-results.json, per-proposal notes,
+  tools/overlay.py, tools/build_viewer_layer.py).
+- Headline (measured, not quoted): 102.14 proposed miles inside
+  5 mi of the NCT; 10.44 mi within 300 m; 11 crossings — 10 Ice
+  Cracking, 1 Connect Four. Against the reroute alignment: 35.20
+  mi / 1.07 mi / 1 crossing. Built designated OHV trail within
+  5 mi of the NCT: 418.42 mi (context, not the case's number).
+- Interpretation method (how raw leg findings became the drawn
+  classification): every proposal GeoJSON reprojected WGS84 →
+  EPSG:26915 (UTM 15N) and simplified at 2 m before measuring.
+  (a) Within-5-mi miles: proposal length inside an 8,046.72-m
+  buffer of the reference centerline. (b) Near-coincident miles:
+  length inside a buffer of the centerline whose width depends on
+  the source's confidence tier — 50 m for vector sources (the
+  drawn line is the line; the 50-m width is the shared-tread
+  test) and 300 m for schematic sources (overview maps traced
+  from a rendered PDF, digitizing tolerance ~300 m); a schematic
+  source's "near" figure is a possible-coincidence figure, not an
+  exact one. (c) Crossings: proposal-line intersections with the
+  reference line, clustered within 100 m so one crossing sampled
+  as several points counts once; collinear overlap reported
+  separately as overlap miles. Every mileage figure is recomputed
+  from the geometry by tools/overlay.py (shapely 2.2.0); no figure
+  is read off a source's prose — source-claimed mileages appear
+  alongside for comparison only. Minimum distance is reported for
+  proposals entirely outside the buffer, so a near miss is not a
+  bare zero.
+- Classification rules (what the colors mean): `conflict` — the
+  proposal crosses the NCT as drawn (crossings > 0): Ice Cracking
+  (10), Connect Four (1). `in-buffer` — length inside the 5-mi
+  buffer > 0 with zero crossings: TATR main (0.25-mi boundary
+  sliver), CR 89 (3.61), Akeley (5.32), Pike River Bridge (1.04).
+  `clear` — zero miles inside the buffer: Voyageur Phase 2, Seven
+  Beavers Connector, Seven Beaver CP 971506, TATR alternate.
+  The two reference lines for the 5-mi test are the NCT line
+  itself (site/data/trail-minnesota.geojson, 559.30 mi measured)
+  and the Arrowhead reroute alignment (site/buildout/data/gap-arrowhead.geojson,
+  151.91 mi measured); the 2004 corridor polygon is the corridor,
+  not a reference line.
+- Judgment calls (labeled as such): TATR's 0.25 mi is a boundary
+  result — two fragments where the route's 4.81-mi closest
+  approach dips 0.19 mi inside the buffer, exactly the ±300-m
+  tolerance, so it could equally sit outside. Ice Cracking's 9.37
+  near miles are 139 fragments (largest 0.63 mi), paralleling at
+  ~200–400 m, not one shared stretch. Voyageur's 194.97 drawn
+  miles include the full alternative alignments and context trails
+  drawn in the EAW figures' project colors (+58% vs the ~125-mi
+  claim is a scope difference, not a tracing error); the verdict
+  (0 mi, 38.58 mi minimum distance) is insensitive to it. Pike
+  River Bridge is approximated along the TH 169 centerline, not
+  the trail as built (the resolution puts the trail on the east
+  side of TH 169). Seven Beaver CP 971506 is traced from the DNR
+  proposal map with ~0.1–0.2 mi endpoint uncertainty. The Akeley
+  page-1 overview layer measures 6.851 mi vs the page-2 detail
+  layer's 5.32 mi — page 2 was used as authoritative because it
+  matches the claim; the verdict is insensitive to it.
+- NOT drawn (and why): A10 North Star Connector — map exists but
+  no extractable vector layer and no defensible dike line could be
+  picked from the Fourtown-Grygla system; B1–B18 — no published
+  geometry (text-only or no-route proposals); the U of M GIS 8501
+  proposed route line and phased gaps — student work, no
+  fieldwork, never authoritative and never drawn. The built OHV
+  layer (418.42 mi within 5 mi) is context from the Minnesota
+  Geospatial Commons OHV Trails 2026-season dataset, not part of
+  this layer; its build note is
+  analysis/atv-overlay/built-layer-note.md.
+- Per-proposal sources: TATR — DNR EAW Figures 1–4 (extracted
+  with tools/extract_route_v2.py; the v1 extraction's +14.2%
+  inflation was a skeleton artifact, withdrawn); Voyageur Phase 2
+  — DNR EAW Figures 2-1 to 2-12 + Attachment A-1; Ice Cracking —
+  DNR "Proposed Ice Cracking ATV Trail map" PDF; Seven Beavers
+  Connector — DNR proposal map PDF (GeoPDF geotransform rejected,
+  re-georeferenced from scale bar + Black Mallard Lake anchor);
+  Connect Four — ROD Figure 2 (Figs 2-1 to 2-7) + EAW; CR 89 —
+  DNR map PDF, Aug 2017 (GeoPDF, raster only); Akeley — DNR-hosted
+  Round River proposal PDF, Apr 6, 2017 (GeoPDF page-2 vector
+  layer); Pike River Bridge — approximated from St. Louis County
+  RBA 26-396 endpoints (TH 169 centerline, TIGER/Line 2024);
+  Seven Beaver CP 971506 — traced from the DNR Seven Beavers
+  proposal map, Nov 18, 2025.
+
 #### In / around the corridor — the planning question
 
 1. **Prospectors Loop Phase 2 ("Connect Four")** — ~59 mi (22 mi

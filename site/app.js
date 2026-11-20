@@ -4881,6 +4881,61 @@ function atvPopup(f) {
   h += popDataLink("atv-trails");
   return h;
 }
+/* Proposed ATV trails (Paul, Nov 20, 2026): the ten measured
+   proposals from the ATV GIS overlay (Nov 19-20) — 845.24 mi
+   drawn, 102.14 mi inside 5 mi of the NCT, 10.44 mi within
+   300 m, 11 crossings. Colors carry the measured verdict:
+   red = crosses the NCT as drawn (Ice Cracking, Connect Four),
+   gold = inside the 5-mi buffer but no crossing, slate = clear
+   of the buffer. The near-buffer width is per-source: 300 m
+   for schematic map-PDF extractions, 50 m for vector sources
+   (Akeley). Popups name the status and the caveats; nothing
+   here is a designated trail. */
+function atvProposalPopup(f) {
+  var p = f.properties || {};
+  var cls = p.class === "conflict" ? " — crosses the NCT"
+    : p.class === "in-buffer" ? " — inside 5 mi, no crossing"
+    : " — clear of the NCT";
+  var h = popKicker("Proposed ATV trail" + cls) + "<h3>" +
+    esc(p.name || "Proposed ATV trail") + "</h3>";
+  h += kvTable([
+    ["Status", p.status],
+    ["County", p.county],
+    ["Drawn", p.drawn_mi != null ? p.drawn_mi + " mi as drawn" : null],
+    ["Within 5 mi of NCT", p.within5_mi != null ? p.within5_mi + " mi" : null],
+    ["Within " + (p.near_buffer_m != null ? p.near_buffer_m : 300) + " m of NCT",
+      p.near_mi != null ? p.near_mi + " mi" : null],
+    ["Crossings of the NCT", p.crossings != null
+      ? (p.crossings === 0 ? "0 — none as drawn"
+        : p.crossings + (p.crossings === 1 ? " crossing" : " crossings")) : null],
+    ["Reroute: within 5 mi", p.reroute_within5_mi > 0 ? p.reroute_within5_mi + " mi" : null],
+  ]);
+  if (p.note) h += "<p class='pop-note'>" + esc(p.note) + "</p>";
+  h += "<p class='pop-note'>Measured against the NCT line " +
+    "Nov 19–20, 2026 (ATV GIS overlay). Lines drawn from DNR " +
+    "map PDFs — schematic, ±300 m digitizing tolerance — or " +
+    "vector sources where stated. A proposed route, not a " +
+    "designated trail.</p>";
+  h += popDataLink("atv-proposals");
+  return h;
+}
+function atvCrossingPopup(f) {
+  var p = f.properties || {};
+  var c = f.geometry && f.geometry.coordinates;
+  var h = popKicker("Proposed ATV crossing — " + (p.ref || "NCT")) +
+    "<h3>" + esc(p.proposal || "Proposed ATV trail") + "</h3>";
+  h += kvTable([
+    ["County", p.county],
+    ["Crosses", p.ref],
+    ["Location", c ? c[1].toFixed(4) + ", " + c[0].toFixed(4) : null],
+  ]);
+  if (p.note) h += "<p class='pop-note'>" + esc(p.note) + "</p>";
+  h += "<p class='pop-note'>One of 11 measured crossings of " +
+    "the NCT by proposed ATV trails (10 Ice Cracking, 1 Connect " +
+    "Four), Nov 19–20, 2026.</p>";
+  h += popDataLink("atv-proposals");
+  return h;
+}
 function ohmPopup(f) {
   var p = f.properties;
   var h = popKicker("Dirt bike trail") + "<h3>Dirt bike &mdash; " + esc(p.trail_name || "Trail") +
@@ -5909,6 +5964,64 @@ var LAYERS = [
         color: "#ea580c", weight: 3, opacity: 0.85,
         lineCap: "round",
       }, bikePopup);
+    },
+  },
+  {
+    /* Proposed ATV trails (Paul, Nov 20, 2026): the ten
+       measured proposals from the ATV GIS overlay (Nov 19-20),
+       845.24 mi drawn. Red = crosses the NCT as drawn (Ice
+       Cracking 10 crossings, Connect Four 1); gold = inside
+       the 5-mi buffer with no crossing (TATR main, CR 89,
+       Akeley, Pike River Bridge); slate = clear of the buffer
+       (Voyageur Phase 2, Seven Beavers Connector, Seven Beaver
+       CP 971506, TATR alternate). Unmappable proposals (North
+       Star Connector, B1-B18) are NOT drawn — no geometry was
+       invented. The U of M GIS 8501 proposed route line is
+       student work and is never drawn. OFF by default and LAZY.
+       Popups carry the measured figures and the caveats. */
+    id: "atv-proposals", label: "Proposed ATV trails",
+    title: "Proposed ATV trails — 10 measured proposals, 845 mi " +
+      "drawn; 102 mi inside 5 mi of the NCT, 11 crossings",
+    file: "data/atv-proposals.geojson",
+    onByDefault: false, group: "Other trails",
+    swatch: { kind: "line", color: "#c0392b" },
+    build: function (gj) {
+      return hitLine(gj, function (f) {
+        var c = (f.properties || {}).class;
+        return {
+          color: c === "conflict" ? "#c0392b"
+            : c === "in-buffer" ? "#b7950b" : "#7f8c8d",
+          weight: 3, opacity: 0.9, lineCap: "round",
+        };
+      }, atvProposalPopup);
+    },
+  },
+  {
+    /* Proposed ATV crossings (Paul, Nov 20, 2026): the 11
+       measured crossings of the NCT by proposed ATV trails —
+       10 from Ice Cracking (Becker County, Two Inlets State
+       Forest corridor) and 1 from Connect Four (Mesabi Trail
+       ~8 mi WSW of Ely, where the NCT and the reroute share
+       tread). Red discs, one per crossing as drawn; schematic
+       sources carry ±300 m digitizing tolerance, so an
+       individual crossing could shift or merge. OFF by default
+       and LAZY, toggled with the proposals layer. */
+    id: "atv-proposal-crossings", label: "Proposed ATV crossings",
+    title: "Proposed ATV crossings of the NCT — 11 as drawn " +
+      "(10 Ice Cracking, 1 Connect Four)",
+    file: "data/atv-proposal-crossings.geojson",
+    onByDefault: false, group: "Other trails",
+    swatch: { kind: "pin", color: "#c0392b" },
+    build: function (gj) {
+      return L.geoJSON(gj, {
+        pointToLayer: function (f, latlng) {
+          return L.circleMarker(latlng, {
+            radius: 5, color: "#ffffff", weight: 1.5,
+            fillColor: "#c0392b", fillOpacity: 1,
+          });
+        },
+        onEachFeature: function (f, l) { bindPop(l, atvCrossingPopup(f)); },
+      });
     },
   },
   {
