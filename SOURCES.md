@@ -2486,12 +2486,13 @@ neither mileage reckoning above.
 ## Shoulder widths — measured, one point per mile (added 2026-11-20, Paul)
 
 - **What:** Two layers in the "Road walk" group, both OFF by
-  default and LAZY: `site/data/shoulder-segments.geojson` (183
-  stretches, 120.4 mi — the road-walk lines split at the measured
-  points, each stretch coloured by the class of the mile that
-  starts at it) and `site/data/shoulder-points.geojson` (142 dots,
-  one per point). Built by `scripts/build_shoulder_layer.py` from
-  the merged measurement sheet.
+  default and LAZY: `site/data/shoulder-segments.geojson` (180
+  stretches, 120.5 mi — the road-walk lines split at the midpoints
+  between measured points, each stretch the mile centred on its
+  point, half a mile either side, coloured by that point's class)
+  and `site/data/shoulder-points.geojson` (142 dots, one per point).
+  Built by `scripts/build_shoulder_layer.py` from the merged
+  measurement sheet.
 - **Speed limit in the popup (added 2026-11-20, Paul):** each point
   carries `speed_mph` + `speed_text` from the road-walk line piece
   it was assigned to (nearest line in its segment group), baked into
@@ -2558,19 +2559,25 @@ neither mileage reckoning above.
   metric does not apply; the point is a sidewalk check instead
   (Fergus Falls 46–49, Grand Rapids 113–114). `no-frame` — the
   capture returned the "no imagery here" placeholder; a coverage
-  gap, recorded, not a measurement. A stretch from point i to
-  point i+1 takes point i's class — each point stands for the
-  mile that starts at it. Geometry: points projected onto the
-  road-walk lines in EPSG:26915 (UTM 15N); every measured point
-  sits within 1.6 m of its line; the split follows the drawn road,
-  not a straight line between points.
-- **Judgment calls (labeled as such):** the head of a road-walk
-  piece before its first measured point takes the class of the
-  preceding point in mile order within the same segment group
-  (the mile that stretch belongs to); 18 pieces carry no point of
-  their own (short pieces between mile marks, e.g. six Vergas
-  pieces) and take the class of the nearest point in their group.
-  Point 72 (town street, no edge line, paved 0) is counted
+  gap, recorded, not a measurement. A stretch runs from the
+  midpoint between a point and the previous point to the midpoint
+  between it and the next point — the mile centred on the point,
+  half a mile either side — and takes that point's class. The
+  first point's stretch starts at the run's first piece and the
+  last point's stretch ends at its last piece. Geometry: points
+  projected onto the road-walk lines in EPSG:26915 (UTM 15N);
+  every measured point sits within 1.6 m of its line; the split
+  follows the drawn road, not a straight line between points.
+- **Judgment calls (labeled as such):** pieces are cut at the
+  midpoints between consecutive measured points in mile order
+  within the same run, so a piece with no point of its own (18
+  pieces — short pieces between mile marks, e.g. six Vergas
+  pieces) is split at the midpoint between its neighbouring
+  points where one falls inside it (two are: the Vergas piece 31,
+  split between points 72 and 73, and the Frazee piece 37, split
+  between points 80 and 81) and otherwise lies whole inside one
+  point's centred mile. Point 72 (town street, no edge line,
+  paved 0) is counted
   `below`, not `unmeasurable` — the pavement visibly ends at the
   road edge. Gravel roads are counted `below` at 0 ft paved, not
   excluded — a walker there has no paved shoulder. The 3–5 ft

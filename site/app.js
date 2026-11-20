@@ -5548,11 +5548,12 @@ var STREETVIEW_API_KEY = "";
 
 /* Shoulder widths (Paul, Nov 20, 2026): the class table shared by
    the shoulder-segments and shoulder-points layers. A point stands
-   for the mile that starts at it; a stretch takes the class of its
-   starting point. Colors: red under the 4-ft FHWA benchmark, amber
-   where the 2-ft range straddles it, green at or above it, sage
-   green where there is no paved shoulder at all but flat walkable
-   grass 4+ ft wide (grass class, Nov 20, 2026). */
+   for the mile centred on it — half a mile either side; a stretch
+   takes the class of the point it is centred on. Colors: red under
+   the 4-ft FHWA benchmark, amber where the 2-ft range straddles
+   it, green at or above it, sage green where there is no paved
+   shoulder at all but flat walkable grass 4+ ft wide (grass class,
+   Nov 20, 2026). */
 function shoulderClassInfo(c) {
   var t = {
     below: ["Below 4 ft — under the FHWA benchmark", "#c0392b"],
@@ -7754,15 +7755,16 @@ var LAYERS = [
   },
   {
     /* Shoulder widths — road stretches (Paul, Nov 20, 2026):
-       the road-walk lines split at the 142 measured points; each
-       stretch takes the class of the mile that starts at it
-       (below red, marginal amber, meets green, grass sage green,
-       unmeasurable grey, curbed blue-grey, no-frame light grey).
-       183 stretches, 120.4 mi. The road-walk geometry is the road
-       as drawn, so a stretch follows the road, not a straight line
-       between points. OFF by default and LAZY, in the "Road walk"
-       group with the measured-points layer. Popup names the class,
-       the mile it starts at, and the road. */
+       the road-walk lines are split at the midpoints between
+       measured points, so each stretch is the mile centred on its
+       point — half a mile either side — and takes that point's
+       class (below red, marginal amber, meets green, grass sage
+       green, unmeasurable grey, curbed blue-grey, no-frame light
+       grey). 180 stretches, 120.5 mi. The road-walk geometry is
+       the road as drawn, so a stretch follows the road, not a
+       straight line between points. OFF by default and LAZY, in
+       the "Road walk" group with the measured-points layer. Popup
+       names the class, the point it is centred on, and the road. */
     id: "shoulder-segments", label: "Shoulder widths — road stretches",
     title: "Shoulder width by mile — red under the 4-ft FHWA " +
       "benchmark, amber straddles it, green meets it, sage green is " +
@@ -7782,8 +7784,8 @@ var LAYERS = [
         var p = f.properties;
         var info = shoulderClassInfo(p.class);
         var stretch = p.from_point != null
-          ? "From point " + p.from_point + " (mi " + p.from_mi +
-            "), one measured mile"
+          ? "Centred on point " + p.from_point + " (mi " + p.from_mi +
+            "), half a mile either side"
           : "Continuation of the previous measured mile";
         return popKicker("Shoulder width") + "<h3>Shoulder — " +
           esc(p.seg) + " — " + esc(p.road) + "</h3>" +
@@ -7794,9 +7796,10 @@ var LAYERS = [
             ["Road", p.road],
             ["Segment", p.seg],
           ]) + "<p class='pop-note'>Each point stands for the mile " +
-          "that starts at it — the stretch takes that mile's class. " +
-          "Turn on \"Shoulder widths — measured points\" for the " +
-          "widths behind each mile.</p>" + popDataLink("shoulder");
+          "centred on it — half a mile either side — and the stretch " +
+          "takes that point's class. Turn on \"Shoulder widths — " +
+          "measured points\" for the widths behind each mile.</p>" +
+          popDataLink("shoulder");
       });
     },
   },
