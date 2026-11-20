@@ -1,0 +1,22 @@
+# Photos the pipeline must never pin, one filename per line.
+# Lines starting with # are comments. The list only stops NEW pins —
+# a photo already attached to an existing pin stays there (existing
+# pins are never touched; removing a photo from a pin is a deliberate
+# edit, not a build side effect).
+#
+# PXL_20261111_165431497.jpg — notebook close-up at the Lake Erin
+# register, Nov 11, 2026. Removed from the register pin Nov 11 by
+# Paul's privacy call: hiker names, dates and hometowns are legible
+# in it. Publish only on Paul's explicit word. (The filename's
+# 16:54 timestamp is misleading — its EXIF time is 10:54:31, inside
+# the track span, so without this entry a re-run of the batch would
+# pin it again.)
+PXL_20261111_165431497.jpg
+#
+# PXL_20261119_171954506.jpg — EXIF 11:19:54 local, hours before the Nov 19
+# track (13:24:58–14:32:35); no position. PXL_20261119_203242751.MP.jpg —
+# EXIF 14:32:42 local, 7 s after the track ended; no position. Both
+# unplaceable in batch 4; Paul's call Nov 19: ignore them. (They were
+# never pinned, so this entry only stops a future re-run from trying.)
+PXL_20261119_171954506.jpg
+PXL_20261119_203242751.MP.jpg
