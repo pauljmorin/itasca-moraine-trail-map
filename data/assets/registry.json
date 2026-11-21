@@ -212,9 +212,89 @@
      "chainage_mi": 58.21,
      "section": "Chip-5",
      "assigned": "2026-11-11"
+    },
+    "ITM-CP-031": {
+     "photo": "PXL_20261118_214014094.MP.jpg",
+     "type": "CP",
+     "chainage_mi": 54.43,
+     "section": "Chip-4",
+     "assigned": "2026-11-21",
+     "drive_id": "1F2LiGgpBV_c70NGMP0YbPdcVa0zLV23R"
+    },
+    "ITM-CP-032": {
+     "photo": "PXL_20261118_213637385.MP.jpg",
+     "type": "CP",
+     "chainage_mi": 54.46,
+     "section": "Chip-4",
+     "assigned": "2026-11-21",
+     "drive_id": "1aVHyWvJMhgnRs8q_nfCDH0wznicj84RW"
+    },
+    "ITM-CP-033": {
+     "photo": "PXL_20261118_211955392.MP.jpg",
+     "type": "CP",
+     "chainage_mi": 55.19,
+     "section": "Chip-4",
+     "assigned": "2026-11-21",
+     "drive_id": "1vQWfRyjceOmFTl2Ka5pdUUFGgCm6_zbf"
+    },
+    "ITM-CP-034": {
+     "photo": "PXL_20261118_205041067.MP.jpg",
+     "type": "CP",
+     "chainage_mi": 56.47,
+     "section": "Chip-4",
+     "assigned": "2026-11-21",
+     "drive_id": "1f93NE1Fjp7sQbdoMb8MFv1zdwIKCcj1q"
+    },
+    "ITM-CP-035": {
+     "photo": "PXL_20261119_195927805.MP.jpg",
+     "type": "CP",
+     "chainage_mi": 59.19,
+     "section": "Chip-6",
+     "assigned": "2026-11-21",
+     "drive_id": "1gLSTLFpdUioTeSmkzxaGt7vBn4RrXczV"
+    },
+    "ITM-CP-036": {
+     "photo": "PXL_20261119_194715154.jpg",
+     "type": "CP",
+     "chainage_mi": 59.79,
+     "section": "Chip-6",
+     "assigned": "2026-11-21",
+     "drive_id": "1NG6cECXGWF5SrH4wdJwM9TU_DjHlvlsB"
+    },
+    "ITM-CP-037": {
+     "photo": "PXL_20261119_193902454.jpg",
+     "type": "CP",
+     "chainage_mi": 60.17,
+     "section": "Chip-6",
+     "assigned": "2026-11-21",
+     "drive_id": "1_14Cx-58UAqBuSDsOp-VYhwqAoctuZZ7"
+    },
+    "ITM-CP-038": {
+     "photo": "PXL_20261119_193847356.MP.jpg",
+     "type": "CP",
+     "chainage_mi": 60.18,
+     "section": "Chip-6",
+     "assigned": "2026-11-21",
+     "drive_id": "1SyTyn89qWbbUYrGyLg_87na9sL_T2-AV"
+    },
+    "ITM-CP-039": {
+     "photo": "PXL_20261119_192607885.MP.jpg",
+     "type": "CP",
+     "chainage_mi": 60.74,
+     "section": "Chip-6",
+     "assigned": "2026-11-21",
+     "drive_id": "1Wg8ARZvM_raUzAWE8p_uB5EmNNMxm_X9"
+    },
+    "ITM-CP-040": {
+     "photo": "PXL_20261119_192637250.jpg",
+     "type": "CP",
+     "chainage_mi": 60.74,
+     "section": "Chip-6",
+     "assigned": "2026-11-21",
+     "drive_id": "1BzgtHT32vwLtIDBKqaFT69T6wvXAZvzJ"
     }
    },
-   "next": 31,
+   "next": 41,
    "retired": []
   },
   "CS": {
@@ -244,8 +324,33 @@
    "retired": []
   },
   "PK": {
-   "issued": {},
-   "next": 1,
+   "issued": {
+    "ITM-PK-001": {
+     "photo": "PXL_20261111_174516833.MP.jpg",
+     "type": "PK",
+     "chainage_mi": 58.58,
+     "section": "Chip-6",
+     "assigned": "2026-11-21",
+     "drive_id": "1QWmQKkhzegnS5ER24WgAHpsioHCvdGKO"
+    },
+    "ITM-PK-002": {
+     "photo": "PXL_20261111_174525449.jpg",
+     "type": "PK",
+     "chainage_mi": 58.58,
+     "section": "Chip-6",
+     "assigned": "2026-11-21",
+     "drive_id": "1IFj-U6b8ILGiOyp_C4ahe-HQI2iYFYWP"
+    },
+    "ITM-PK-003": {
+     "photo": "PXL_20261119_203217269.jpg",
+     "type": "PK",
+     "chainage_mi": 60.74,
+     "section": "Chip-7",
+     "assigned": "2026-11-21",
+     "drive_id": "1cgOM7mm6JAcsGlrTJj_1mPe8HhxLmu2m"
+    }
+   },
+   "next": 4,
    "retired": []
   },
   "PO": {
@@ -256,9 +361,17 @@
      "chainage_mi": 58.36,
      "section": "Chip-5",
      "assigned": "2026-11-11"
+    },
+    "ITM-PO-002": {
+     "photo": "PXL_20261118_212151064.MP.jpg",
+     "type": "PO",
+     "chainage_mi": 55.18,
+     "section": "Chip-4",
+     "assigned": "2026-11-21",
+     "drive_id": "1pJSQAmX4Z5LQtmC16l0r2YHEC2WH7OBd"
     }
    },
-   "next": 2,
+   "next": 3,
    "retired": []
   },
   "SG": {
@@ -382,13 +495,109 @@
      "chainage_mi": null,
      "section": null,
      "assigned": "2026-11-11"
+    },
+    "ITM-SG-018": {
+     "photo": "PXL_20261118_213807230.jpg",
+     "type": "SG",
+     "chainage_mi": 54.41,
+     "section": "Chip-4",
+     "assigned": "2026-11-21",
+     "drive_id": "1f90AbmbkCKyMUJZbBs5XJELg4EMqNDaW"
+    },
+    "ITM-SG-019": {
+     "photo": "PXL_20261118_213742891.jpg",
+     "type": "SG",
+     "chainage_mi": 54.42,
+     "section": "Chip-4",
+     "assigned": "2026-11-21",
+     "drive_id": "1nRTDoZIAXCkGkm0618nu_sCUBGfsKkLU"
+    },
+    "ITM-SG-020": {
+     "photo": "PXL_20261118_214121010.jpg",
+     "type": "SG",
+     "chainage_mi": 54.46,
+     "section": "Chip-4",
+     "assigned": "2026-11-21",
+     "drive_id": "1iOXmT29mzjraG1wDRT4wCZso6aARlFeo"
+    },
+    "ITM-SG-021": {
+     "photo": "PXL_20261118_214753308.jpg",
+     "type": "SG",
+     "chainage_mi": 54.74,
+     "section": "Chip-4",
+     "assigned": "2026-11-21",
+     "drive_id": "1qFESSmlhv2MAwaT6IItAXFTFFP-TedVU"
+    },
+    "ITM-SG-022": {
+     "photo": "PXL_20261118_212234802.jpg",
+     "type": "SG",
+     "chainage_mi": 55.15,
+     "section": "Chip-4",
+     "assigned": "2026-11-21",
+     "drive_id": "1sfxDyiQy3Qk44ccthSq68cY7_g_XnAdA"
+    },
+    "ITM-SG-023": {
+     "photo": "PXL_20261118_212021627.jpg",
+     "type": "SG",
+     "chainage_mi": 55.19,
+     "section": "Chip-4",
+     "assigned": "2026-11-21",
+     "drive_id": "1MDkFcYaBwvD_HcEKHE5OgBGnZJxC_kbo"
+    },
+    "ITM-SG-024": {
+     "photo": "PXL_20261118_210125408.MP.jpg",
+     "type": "SG",
+     "chainage_mi": 55.97,
+     "section": "Chip-4",
+     "assigned": "2026-11-21",
+     "drive_id": "1As0d8vfBB6fsES-FemtWQgUWrbVTLlCc"
+    },
+    "ITM-SG-025": {
+     "photo": "PXL_20261118_205026396.MP.jpg",
+     "type": "SG",
+     "chainage_mi": 56.47,
+     "section": "Chip-4",
+     "assigned": "2026-11-21",
+     "drive_id": "1ODSgsD7RO5UYDzHOp1qBrl8eFdnSRSkZ"
+    },
+    "ITM-SG-026": {
+     "photo": "PXL_20261111_170252322.MP.jpg",
+     "type": "SG",
+     "chainage_mi": 56.92,
+     "section": "Chip-5",
+     "assigned": "2026-11-21",
+     "drive_id": "1QJks5Zn63EEFAa4d9eMQW1aeZLL-tIeJ"
+    },
+    "ITM-SG-027": {
+     "photo": "PXL_20261119_192651760.jpg",
+     "type": "SG",
+     "chainage_mi": 60.73,
+     "section": "Chip-6",
+     "assigned": "2026-11-21",
+     "drive_id": "1OPLkOFyOKdOF9NVvMW5VaCJlILXX3hRo"
+    },
+    "ITM-SG-028": {
+     "photo": "PXL_20261119_192510528.jpg",
+     "type": "SG",
+     "chainage_mi": 60.74,
+     "section": "Chip-7",
+     "assigned": "2026-11-21",
+     "drive_id": "1pMxA_O41ZKOTq6uwywOtBxg7GM8Kcd1m"
+    },
+    "ITM-SG-029": {
+     "photo": "PXL_20261119_192531559.jpg",
+     "type": "SG",
+     "chainage_mi": 60.74,
+     "section": "Chip-7",
+     "assigned": "2026-11-21",
+     "drive_id": "1z6CZElQCzlkOGCWEUHHD-28s83ZT8nKK"
     }
    },
-   "next": 18,
+   "next": 30,
    "retired": []
   },
   "PN": {
-   "next": 11,
+   "next": 25,
    "issued": {
     "ITM-PN-001": {
      "photo": "PXL_20261111_173353595.MP.jpg",
@@ -459,6 +668,118 @@
      "chainage_mi": null,
      "section": null,
      "assigned": "2026-11-11"
+    },
+    "ITM-PN-011": {
+     "photo": "PXL_20261118_205713911.MP.jpg",
+     "type": "PN",
+     "chainage_mi": 56.17,
+     "section": "Chip-4",
+     "assigned": "2026-11-21",
+     "drive_id": "1qzsA1Oh6LadmDAUPco-7vKNOy6wc1BML"
+    },
+    "ITM-PN-012": {
+     "photo": "PXL_20261118_205723136.MP.jpg",
+     "type": "PN",
+     "chainage_mi": 56.17,
+     "section": "Chip-4",
+     "assigned": "2026-11-21",
+     "drive_id": "15ObCahIIxVa_k07Edy7lx_xR0K1ZGFrG"
+    },
+    "ITM-PN-013": {
+     "photo": "PXL_20261119_194242601.jpg",
+     "type": "PN",
+     "chainage_mi": 60.02,
+     "section": "Chip-6",
+     "assigned": "2026-11-21",
+     "drive_id": "1GPjZU3zQsGmkBJq1RbAeN2GNqGPYosnd"
+    },
+    "ITM-PN-014": {
+     "photo": "PXL_20261119_194249425.jpg",
+     "type": "PN",
+     "chainage_mi": 60.02,
+     "section": "Chip-6",
+     "assigned": "2026-11-21",
+     "drive_id": "164A92MiGCy9iulKu1f7e2d4m0h4aCxVn"
+    },
+    "ITM-PN-015": {
+     "photo": "PXL_20261119_194211909.MP.jpg",
+     "type": "PN",
+     "chainage_mi": 60.03,
+     "section": "Chip-6",
+     "assigned": "2026-11-21",
+     "drive_id": "11X7HSr_d_5V20SqZu5mI2k3cv4Vyy9zi"
+    },
+    "ITM-PN-016": {
+     "photo": "PXL_20261119_194148382.jpg",
+     "type": "PN",
+     "chainage_mi": 60.04,
+     "section": "Chip-6",
+     "assigned": "2026-11-21",
+     "drive_id": "1ZI5fOdHf1j9DHT0JUY1btnrntP9b0ncX"
+    },
+    "ITM-PN-017": {
+     "photo": "PXL_20261119_194156224.jpg",
+     "type": "PN",
+     "chainage_mi": 60.04,
+     "section": "Chip-6",
+     "assigned": "2026-11-21",
+     "drive_id": "1YlSn6A-rE8EoC3jyxtJNcFJwCsW0B3PM"
+    },
+    "ITM-PN-018": {
+     "photo": "PXL_20261119_193358177.jpg",
+     "type": "PN",
+     "chainage_mi": 60.41,
+     "section": "Chip-6",
+     "assigned": "2026-11-21",
+     "drive_id": "1bswCDhkIsY3g84CnCbe1x05irkdZhfOn"
+    },
+    "ITM-PN-019": {
+     "photo": "PXL_20261119_193407005.MP.jpg",
+     "type": "PN",
+     "chainage_mi": 60.41,
+     "section": "Chip-6",
+     "assigned": "2026-11-21",
+     "drive_id": "10G17HqNdqJi43NG0Pn7bOtaA2_2b5_0T"
+    },
+    "ITM-PN-020": {
+     "photo": "PXL_20261119_193411365.jpg",
+     "type": "PN",
+     "chainage_mi": 60.41,
+     "section": "Chip-6",
+     "assigned": "2026-11-21",
+     "drive_id": "1aGylw8ytnmbaDY-bw-P8UyMEvGTMu_N0"
+    },
+    "ITM-PN-021": {
+     "photo": "PXL_20261119_193023449.jpg",
+     "type": "PN",
+     "chainage_mi": 60.59,
+     "section": "Chip-6",
+     "assigned": "2026-11-21",
+     "drive_id": "1BgO3QLJ7zm4H-PpCowrb6WtxTnBfVg8S"
+    },
+    "ITM-PN-022": {
+     "photo": "PXL_20261119_193013209.jpg",
+     "type": "PN",
+     "chainage_mi": 60.6,
+     "section": "Chip-6",
+     "assigned": "2026-11-21",
+     "drive_id": "1nijRKngx84P4W6JbdkuiGXeQ6e_ohkmQ"
+    },
+    "ITM-PN-023": {
+     "photo": "PXL_20261119_192900435.MP.jpg",
+     "type": "PN",
+     "chainage_mi": 60.65,
+     "section": "Chip-6",
+     "assigned": "2026-11-21",
+     "drive_id": "18TOymXKhCXbT0-D_Td-UAO4gRch0luGj"
+    },
+    "ITM-PN-024": {
+     "photo": "PXL_20261119_192848804.jpg",
+     "type": "PN",
+     "chainage_mi": 60.66,
+     "section": "Chip-6",
+     "assigned": "2026-11-21",
+     "drive_id": "1ZEhPHAmuw7Jb1rZHWImwzaWWQeaw_ENO"
     }
    },
    "retired": []
@@ -537,8 +858,47 @@
    "retired": []
   },
   "BO": {
-   "issued": {},
-   "next": 1,
+   "issued": {
+    "ITM-BO-001": {
+     "photo": "PXL_20261111_165354000.MP.jpg",
+     "type": "BO",
+     "chainage_mi": 56.5,
+     "section": "Chip-5",
+     "assigned": "2026-11-21",
+     "drive_id": "1uF4ycXXfl0DdZgh3phNsCUVgvCUSK8RV"
+    },
+    "ITM-BO-002": {
+     "photo": "PXL_20261119_192715479.jpg",
+     "type": "BO",
+     "chainage_mi": 60.73,
+     "section": "Chip-6",
+     "assigned": "2026-11-21",
+     "drive_id": "1TIBZHx6y7hZVnyMyWnSn2S-_5oy8RpcW"
+    }
+   },
+   "next": 3,
+   "retired": []
+  },
+  "SH": {
+   "next": 3,
+   "issued": {
+    "ITM-SH-001": {
+     "photo": "PXL_20261118_213839852.jpg",
+     "type": "SH",
+     "chainage_mi": 54.42,
+     "section": "Chip-4",
+     "assigned": "2026-11-21",
+     "drive_id": "1wEFgBdh3wN-4l_PjR1pbx3mCmOiO0JgZ"
+    },
+    "ITM-SH-002": {
+     "photo": "PXL_20261118_213940821.jpg",
+     "type": "SH",
+     "chainage_mi": 54.42,
+     "section": "Chip-4",
+     "assigned": "2026-11-21",
+     "drive_id": "1UNRXklGUTw2WMHbausZg3ObjtxBENA0c"
+    }
+   },
    "retired": []
   }
  },
@@ -553,7 +913,7 @@
   },
   "BO": {
    "name": "bollard",
-   "note": "Vehicle barrier — a short vertical log/timber post at a trail entrance; blocks vehicles, lets hikers through.",
+   "note": "Vehicle barrier \u2014 a short vertical log/timber post at a trail entrance; blocks vehicles, lets hikers through.",
    "status": "proposed"
   },
   "BR": {

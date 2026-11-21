@@ -621,8 +621,8 @@
     "photo": "PXL_20261111_174516833.MP.jpg",
     "datetime": "2026:11:11 11:45:16",
     "photographer": "PJM",
-    "type": "UN",
-    "condition": null,
+    "type": "PK",
+    "condition": "good",
     "drive_id": "1QWmQKkhzegnS5ER24WgAHpsioHCvdGKO",
     "derivative": "pxl_20261111_174516833-mp.jpg",
     "direction_deg": null,
@@ -631,7 +631,7 @@
     "gps_source": "gpx",
     "gpx_offset_s": 4.0,
     "gpx_file": "Nov_11,_2026,_10_36_12_AM.gpx",
-    "serial": null,
+    "serial": "ITM-PK-001",
     "sign_kind": null,
     "chainage_mi": 58.58,
     "section": "Chip-6",
@@ -649,7 +649,8 @@
       "datetime": "2026:11:11 11:45:22",
       "drive_id": "1IwV4XENftJmNYYSHk9Giuz9ICyMI054P"
      }
-    ]
+    ],
+    "classification_note": "Wide gravel pull-off beside the road; no built asset in either photo, person standing in the pull-off. Gravel surface sound."
    }
   },
   {
@@ -665,8 +666,8 @@
     "photo": "PXL_20261111_174525449.jpg",
     "datetime": "2026:11:11 11:45:25",
     "photographer": "PJM",
-    "type": "UN",
-    "condition": null,
+    "type": "PK",
+    "condition": "good",
     "drive_id": "1IFj-U6b8ILGiOyp_C4ahe-HQI2iYFYWP",
     "derivative": "pxl_20261111_174525449.jpg",
     "direction_deg": null,
@@ -675,7 +676,7 @@
     "gps_source": "gpx",
     "gpx_offset_s": 13.0,
     "gpx_file": "Nov_11,_2026,_10_36_12_AM.gpx",
-    "serial": null,
+    "serial": "ITM-PK-002",
     "sign_kind": null,
     "chainage_mi": 58.58,
     "section": "Chip-6",
@@ -687,7 +688,8 @@
       "datetime": "2026:11:11 11:45:25",
       "drive_id": "1IFj-U6b8ILGiOyp_C4ahe-HQI2iYFYWP"
      }
-    ]
+    ],
+    "classification_note": "Same wide gravel pull-off beside the road, viewed from the other end; no built asset visible. Gravel surface sound."
    }
   },
   {
@@ -852,7 +854,8 @@
       "datetime": "2026:11:11 11:52:40",
       "drive_id": "1wgLmnjvoD9ingcqc3yOnMj59Q1y0iNma"
      }
-    ]
+    ],
+    "classification_note": "No asset visible in either photo: marshy grass under a power-line corridor, utility pole in the distance. Cannot determine type or condition from these photos; possibly a missing/washed-out crossing or an off-frame asset."
    }
   },
   {
@@ -1279,8 +1282,8 @@
     "photo": "PXL_20261111_175830534.MP.jpg",
     "datetime": "2026:11:11 11:58:30",
     "photographer": "PJM",
-    "type": "UN",
-    "condition": null,
+    "type": "BN",
+    "condition": "poor",
     "drive_id": "1Fo9VYjYFuggNVhYO2aoQVEKI6Ni2-ZOe",
     "derivative": "pxl_20261111_175830534-mp.jpg",
     "direction_deg": null,
@@ -1301,7 +1304,9 @@
       "datetime": "2026:11:11 11:58:30",
       "drive_id": "1Fo9VYjYFuggNVhYO2aoQVEKI6Ni2-ZOe"
      }
-    ]
+    ],
+    "classification_note": "Rotted wooden box-like structure lying under a fallen mossy log, with a weathered upright post behind it. Looks like a collapsed bench, but could be a puncheon remnant; cannot tell from the single photo.",
+    "uncertain": true
    }
   },
   {
@@ -2066,7 +2071,8 @@
       "datetime": "2026:11:11 10:41:02",
       "drive_id": "1bCx_eUJPi0LzK03BX-3EK-23lozXYla4"
      }
-    ]
+    ],
+    "classification_note": "No trail asset in photo: cut logs lying beside a muddy trail tread near water/marsh. Nothing classifiable; no sign, post, bridge, or structure visible."
    }
   },
   {
@@ -2148,7 +2154,8 @@
       "datetime": "2026:11:11 10:42:53",
       "drive_id": "1edkgbpUnJ-t_BDStVucBKJSjrhrtHRCA"
      }
-    ]
+    ],
+    "classification_note": "No trail asset in either photo: leaf-filled erosion gully/ditch crossing the tread. No bridge, puncheon, culvert, or other structure visible."
    }
   },
   {
@@ -2186,7 +2193,8 @@
       "datetime": "2026:11:11 10:43:03",
       "drive_id": "1XBj2p-Kn4ddOWpp5dcVKkV-nZChYP4kl"
      }
-    ]
+    ],
+    "classification_note": "No trail asset in photo: beaver-gnawed twin-trunk tree at a lakeshore/marsh. No sign, post, or structure visible."
    }
   },
   {
@@ -2357,7 +2365,8 @@
       "datetime": "2026:11:11 10:49:21",
       "drive_id": "1vtuZZVkGisPaUr4rOGOcjAl-QzDSqIiE"
      }
-    ]
+    ],
+    "classification_note": "Photo shows only a white painted blaze on a tree trunk; no post, sign, or other physical asset is visible. No registry code covers a painted blaze."
    }
   },
   {
@@ -2588,8 +2597,8 @@
     "photo": "PXL_20261111_165354000.MP.jpg",
     "datetime": "2026:11:11 10:53:54",
     "photographer": "PJM",
-    "type": "UN",
-    "condition": null,
+    "type": "BO",
+    "condition": "fair",
     "drive_id": "1uF4ycXXfl0DdZgh3phNsCUVgvCUSK8RV",
     "derivative": "pxl_20261111_165354000-mp.jpg",
     "direction_deg": null,
@@ -2598,7 +2607,7 @@
     "gps_source": "gpx",
     "gpx_offset_s": 8.0,
     "gpx_file": "Nov_11,_2026,_10_36_12_AM.gpx",
-    "serial": null,
+    "serial": "ITM-BO-001",
     "sign_kind": null,
     "chainage_mi": 56.5,
     "section": "Chip-5",
@@ -2611,7 +2620,8 @@
       "drive_id": "1uF4ycXXfl0DdZgh3phNsCUVgvCUSK8RV"
      }
     ],
-    "note": "Needs Paul's walk-through \u2014 the two stumps are unidentified (old sign or barrier posts?)."
+    "note": "Needs Paul's walk-through \u2014 the two stumps are unidentified (old sign or barrier posts?).",
+    "classification_note": "Pair of short weathered log/timber bollards flanking the trail, mossy tops, grey weathered wood, both standing and in place at a trail entrance."
    }
   },
   {
@@ -2815,7 +2825,8 @@
       "datetime": "2026:11:11 10:57:50",
       "drive_id": "1DiadXTBMTrdtcnJDLFRIEe4J7M2-ywg6"
      }
-    ]
+    ],
+    "classification_note": "Photo shows only a blue painted blaze on a tree trunk; no post, sign, or other physical asset is visible. No registry code covers a painted blaze."
    }
   },
   {
@@ -2831,8 +2842,8 @@
     "photo": "PXL_20261111_170252322.MP.jpg",
     "datetime": "2026:11:11 11:02:52",
     "photographer": "PJM",
-    "type": "UN",
-    "condition": null,
+    "type": "SG",
+    "condition": "fair",
     "drive_id": "1QJks5Zn63EEFAa4d9eMQW1aeZLL-tIeJ",
     "derivative": "pxl_20261111_170252322-mp.jpg",
     "direction_deg": null,
@@ -2841,8 +2852,8 @@
     "gps_source": "gpx",
     "gpx_offset_s": 7.0,
     "gpx_file": "Nov_11,_2026,_10_36_12_AM.gpx",
-    "serial": null,
-    "sign_kind": null,
+    "serial": "ITM-SG-026",
+    "sign_kind": "wayfinding",
     "chainage_mi": 56.92,
     "section": "Chip-5",
     "snap_m": 1.59,
@@ -2854,7 +2865,8 @@
       "drive_id": "1QJks5Zn63EEFAa4d9eMQW1aeZLL-tIeJ"
      }
     ],
-    "note": "Tree-mounted marker, not a freestanding sign \u2014 whether tree markers belong in the inventory is Paul's call."
+    "note": "Tree-mounted marker, not a freestanding sign \u2014 whether tree markers belong in the inventory is Paul's call.",
+    "classification_note": "NCT diamond route marker nailed to a tree: 'CHIPPEWA National Forest / NORTH COUNTRY TRAIL / FOOT TRAVEL ONLY'. Print faded but legible."
    }
   },
   {
@@ -3008,7 +3020,8 @@
       "drive_id": "1t1YQ23mN9Jyf6vKuhEnsjhBQlM3haqJR"
      }
     ],
-    "note": "Blowdown across the trail \u2014 see maintenance list."
+    "note": "Blowdown across the trail \u2014 see maintenance list.",
+    "classification_note": "No asset visible in the photo: open woods with fallen logs only. Possibly a trail-condition photo rather than an asset pin."
    }
   },
   {
@@ -3047,7 +3060,8 @@
       "drive_id": "1WSAnBH4H0ltvcJES7bYUeJVEqa0UbQX0"
      }
     ],
-    "note": "Blowdown across the trail \u2014 see maintenance list."
+    "note": "Blowdown across the trail \u2014 see maintenance list.",
+    "classification_note": "No asset visible: same fallen log / same spot as pin 74, photographed 11 seconds earlier. Possibly a trail-condition photo rather than an asset pin."
    }
   },
   {
@@ -3086,7 +3100,8 @@
       "drive_id": "1sMR7tYITlW5N4bgcZaN08-nqdhXtQFoo"
      }
     ],
-    "note": "Blowdown across the trail \u2014 see maintenance list."
+    "note": "Blowdown across the trail \u2014 see maintenance list.",
+    "classification_note": "No asset visible: person standing beside the same fallen log as pin 73. Possibly a trail-condition photo rather than an asset pin."
    }
   },
   {
@@ -3131,7 +3146,8 @@
       "drive_id": "15ELKt62PaO0zHDVJCE1aaipYbgqbyT8f"
      }
     ],
-    "note": "Blowdown across the trail \u2014 see maintenance list."
+    "note": "Blowdown across the trail \u2014 see maintenance list.",
+    "classification_note": "No asset visible: person standing before a blowdown (fallen trees across the trail). Looks like a trail-obstruction photo rather than an asset pin."
    }
   },
   {
@@ -3170,7 +3186,8 @@
       "drive_id": "1zFtIwysz_sPTwIPylZ6vVtMqUFJsVssD"
      }
     ],
-    "note": "Blowdown across the trail \u2014 see maintenance list."
+    "note": "Blowdown across the trail \u2014 see maintenance list.",
+    "classification_note": "No asset visible in the photo: fallen log in open woods only. Possibly a trail-condition photo rather than an asset pin."
    }
   },
   {
@@ -3318,8 +3335,8 @@
     "photo": "PXL_20261111_173247427.MP.jpg",
     "datetime": "2026:11:11 11:32:47",
     "photographer": "PJM",
-    "type": "UN",
-    "condition": null,
+    "type": "SG",
+    "condition": "good",
     "drive_id": "1tKRVwdF6nL73zkDUwUyoNfnpj05D0xVU",
     "derivative": "pxl_20261111_173247427-mp.jpg",
     "direction_deg": null,
@@ -3329,7 +3346,7 @@
     "gpx_offset_s": 6.0,
     "gpx_file": "Nov_11,_2026,_10_36_12_AM.gpx",
     "serial": null,
-    "sign_kind": null,
+    "sign_kind": "wayfinding",
     "chainage_mi": 58.2,
     "section": "Chip-5",
     "snap_m": 16.56,
@@ -3341,7 +3358,9 @@
       "drive_id": "1tKRVwdF6nL73zkDUwUyoNfnpj05D0xVU"
      }
     ],
-    "note": "Tree-mounted marker, not a freestanding sign \u2014 whether tree markers belong in the inventory is Paul's call."
+    "note": "Tree-mounted marker, not a freestanding sign \u2014 whether tree markers belong in the inventory is Paul's call.",
+    "classification_note": "Blank blue diamond blaze marker nailed to a tree trunk (two nail holes, no text). SG is the closest code for a nailed marker, but there is no blaze code in the registry; bright blue, intact.",
+    "uncertain": true
    }
   },
   {
@@ -3484,8 +3503,8 @@
     "photo": "PXL_20261118_205026396.MP.jpg",
     "datetime": "2026:11:18 14:50:26",
     "photographer": "PJM",
-    "type": "UN",
-    "condition": null,
+    "type": "SG",
+    "condition": "fair",
     "drive_id": "1ODSgsD7RO5UYDzHOp1qBrl8eFdnSRSkZ",
     "derivative": "pjm-pxl_20261118_205026396-mp.jpg",
     "direction_deg": 240.9,
@@ -3494,8 +3513,8 @@
     "gps_source": "gpx",
     "gpx_offset_s": 5.0,
     "gpx_file": "Nov_18,_2026,_2_47_32_PM-chopped.gpx",
-    "serial": null,
-    "sign_kind": null,
+    "serial": "ITM-SG-025",
+    "sign_kind": "information",
     "chainage_mi": 56.47,
     "section": "Chip-4",
     "snap_m": 15.08,
@@ -3539,7 +3558,8 @@
       "direction_ref": null,
       "direction_compass": null
      }
-    ]
+    ],
+    "classification_note": "Large wooden 'CHIPPEWA National Forest / NORTH COUNTRY TRAIL' sign on a wood post; front face legible and sound, back face weathered with peeling paint."
    }
   },
   {
@@ -3555,8 +3575,8 @@
     "photo": "PXL_20261118_205041067.MP.jpg",
     "datetime": "2026:11:18 14:50:41",
     "photographer": "PJM",
-    "type": "UN",
-    "condition": null,
+    "type": "CP",
+    "condition": "new",
     "drive_id": "1f93NE1Fjp7sQbdoMb8MFv1zdwIKCcj1q",
     "derivative": "pjm-pxl_20261118_205041067-mp.jpg",
     "direction_deg": 240.9,
@@ -3565,7 +3585,7 @@
     "gps_source": "gpx",
     "gpx_offset_s": 10.0,
     "gpx_file": "Nov_18,_2026,_2_47_32_PM-chopped.gpx",
-    "serial": null,
+    "serial": "ITM-CP-034",
     "sign_kind": null,
     "chainage_mi": 56.47,
     "section": "Chip-4",
@@ -3584,7 +3604,8 @@
       "direction_ref": "track",
       "direction_compass": "WSW"
      }
-    ]
+    ],
+    "classification_note": "Brown Carsonite post, straight, 'HWY 371' decal fully legible; looks like new."
    }
   },
   {
@@ -3600,8 +3621,8 @@
     "photo": "PXL_20261118_205713911.MP.jpg",
     "datetime": "2026:11:18 14:57:13",
     "photographer": "PJM",
-    "type": "UN",
-    "condition": null,
+    "type": "PN",
+    "condition": "fair",
     "drive_id": "1qzsA1Oh6LadmDAUPco-7vKNOy6wc1BML",
     "derivative": "pjm-pxl_20261118_205713911-mp.jpg",
     "direction_deg": 261.3,
@@ -3610,7 +3631,7 @@
     "gps_source": "gpx",
     "gpx_offset_s": 3.0,
     "gpx_file": "Nov_18,_2026,_2_47_32_PM-chopped.gpx",
-    "serial": null,
+    "serial": "ITM-PN-011",
     "sign_kind": null,
     "chainage_mi": 56.17,
     "section": "Chip-4",
@@ -3629,7 +3650,8 @@
       "direction_ref": "track",
       "direction_compass": "W"
      }
-    ]
+    ],
+    "classification_note": "Short puncheon of weathered grey planks across a grassy wet stretch; planks intact and walkable, no broken/missing boards visible."
    }
   },
   {
@@ -3645,8 +3667,8 @@
     "photo": "PXL_20261118_205723136.MP.jpg",
     "datetime": "2026:11:18 14:57:23",
     "photographer": "PJM",
-    "type": "UN",
-    "condition": null,
+    "type": "PN",
+    "condition": "fair",
     "drive_id": "15ObCahIIxVa_k07Edy7lx_xR0K1ZGFrG",
     "derivative": "pjm-pxl_20261118_205723136-mp.jpg",
     "direction_deg": 261.3,
@@ -3655,7 +3677,7 @@
     "gps_source": "gpx",
     "gpx_offset_s": 6.0,
     "gpx_file": "Nov_18,_2026,_2_47_32_PM-chopped.gpx",
-    "serial": null,
+    "serial": "ITM-PN-012",
     "sign_kind": null,
     "chainage_mi": 56.17,
     "section": "Chip-4",
@@ -3687,7 +3709,8 @@
       "direction_ref": "track",
       "direction_compass": "E"
      }
-    ]
+    ],
+    "classification_note": "Same puncheon as pin 86 seen from the other end; weathered planks intact and walkable."
    }
   },
   {
@@ -3703,8 +3726,8 @@
     "photo": "PXL_20261118_210125408.MP.jpg",
     "datetime": "2026:11:18 15:01:25",
     "photographer": "PJM",
-    "type": "UN",
-    "condition": null,
+    "type": "SG",
+    "condition": "fair",
     "drive_id": "1As0d8vfBB6fsES-FemtWQgUWrbVTLlCc",
     "derivative": "pjm-pxl_20261118_210125408-mp.jpg",
     "direction_deg": 27.0,
@@ -3713,8 +3736,8 @@
     "gps_source": "gpx",
     "gpx_offset_s": 6.0,
     "gpx_file": "Nov_18,_2026,_2_47_32_PM-chopped.gpx",
-    "serial": null,
-    "sign_kind": null,
+    "serial": "ITM-SG-024",
+    "sign_kind": "wayfinding",
     "chainage_mi": 55.97,
     "section": "Chip-4",
     "snap_m": 2.32,
@@ -3745,7 +3768,8 @@
       "direction_ref": "track",
       "direction_compass": "SSW"
      }
-    ]
+    ],
+    "classification_note": "Metal plate nailed to a tree reading 'CASS COUNTY' / 'MP 9' / 'NCT' (mile marker); paint peeling and text faint but still readable."
    }
   },
   {
@@ -3761,8 +3785,8 @@
     "photo": "PXL_20261118_211955392.MP.jpg",
     "datetime": "2026:11:18 15:19:55",
     "photographer": "PJM",
-    "type": "UN",
-    "condition": null,
+    "type": "CP",
+    "condition": "worn",
     "drive_id": "1vQWfRyjceOmFTl2Ka5pdUUFGgCm6_zbf",
     "derivative": "pjm-pxl_20261118_211955392-mp.jpg",
     "direction_deg": 2.7,
@@ -3771,7 +3795,7 @@
     "gps_source": "gpx",
     "gpx_offset_s": 8.0,
     "gpx_file": "Nov_18,_2026,_2_47_32_PM-chopped.gpx",
-    "serial": null,
+    "serial": "ITM-CP-033",
     "sign_kind": null,
     "chainage_mi": 55.19,
     "section": "Chip-4",
@@ -3803,7 +3827,8 @@
       "direction_ref": "track",
       "direction_compass": "S"
      }
-    ]
+    ],
+    "classification_note": "Leaning, lichen-covered Carsonite post; NCT shield and 'OPEN TO foot travel / CLOSED TO ALL OTHER USES' decals plus no-ATV/no-horse decals still legible, blue blaze faded."
    }
   },
   {
@@ -3819,8 +3844,8 @@
     "photo": "PXL_20261118_212021627.jpg",
     "datetime": "2026:11:18 15:20:21",
     "photographer": "PJM",
-    "type": "UN",
-    "condition": null,
+    "type": "SG",
+    "condition": "poor",
     "drive_id": "1MDkFcYaBwvD_HcEKHE5OgBGnZJxC_kbo",
     "derivative": "pjm-pxl_20261118_212021627.jpg",
     "direction_deg": 258.0,
@@ -3829,8 +3854,8 @@
     "gps_source": "gpx",
     "gpx_offset_s": 10.0,
     "gpx_file": "Nov_18,_2026,_2_47_32_PM-chopped.gpx",
-    "serial": null,
-    "sign_kind": null,
+    "serial": "ITM-SG-023",
+    "sign_kind": "regulatory",
     "chainage_mi": 55.19,
     "section": "Chip-4",
     "snap_m": 0.94,
@@ -3848,7 +3873,8 @@
       "direction_ref": "track",
       "direction_compass": "WSW"
      }
-    ]
+    ],
+    "classification_note": "'PRIVATE PROPERTY / NO TRESPASSING' sign on a tall wooden utility pole; face blackened/faded and text barely legible even in the full-resolution original, so the sign is failing its job."
    }
   },
   {
@@ -3864,8 +3890,8 @@
     "photo": "PXL_20261118_212058590.jpg",
     "datetime": "2026:11:18 15:20:58",
     "photographer": "PJM",
-    "type": "UN",
-    "condition": null,
+    "type": "SH",
+    "condition": "poor",
     "drive_id": "1WtsQOhMDYmNI0hVF0uxjLdEHbnLmIWG6",
     "derivative": "pjm-pxl_20261118_212058590.jpg",
     "direction_deg": 65.0,
@@ -3906,7 +3932,9 @@
       "direction_ref": "track",
       "direction_compass": "WSW"
      }
-    ]
+    ],
+    "classification_note": "Derelict small wood cabin/shack in the woods: weathered grey boards, hole in the roof/gable, door open, no trail signage visible. Unclear whether this is a trail shelter or an abandoned private building.",
+    "uncertain": true
    }
   },
   {
@@ -3922,8 +3950,8 @@
     "photo": "PXL_20261118_212151064.MP.jpg",
     "datetime": "2026:11:18 15:21:51",
     "photographer": "PJM",
-    "type": "UN",
-    "condition": null,
+    "type": "PO",
+    "condition": "fair",
     "drive_id": "1pJSQAmX4Z5LQtmC16l0r2YHEC2WH7OBd",
     "derivative": "pjm-pxl_20261118_212151064-mp.jpg",
     "direction_deg": 60.2,
@@ -3932,7 +3960,7 @@
     "gps_source": "gpx",
     "gpx_offset_s": 4.0,
     "gpx_file": "Nov_18,_2026,_2_47_32_PM-chopped.gpx",
-    "serial": null,
+    "serial": "ITM-PO-002",
     "sign_kind": null,
     "chainage_mi": 55.18,
     "section": "Chip-4",
@@ -3977,7 +4005,8 @@
       "direction_ref": null,
       "direction_compass": null
      }
-    ]
+    ],
+    "classification_note": "Round weathered-wood post (not Carsonite) carrying a legible 'NORTH COUNTRY / NATIONAL SCENIC TRAIL' shield; post straight, wood greyed with age."
    }
   },
   {
@@ -3993,8 +4022,8 @@
     "photo": "PXL_20261118_212234802.jpg",
     "datetime": "2026:11:18 15:22:34",
     "photographer": "PJM",
-    "type": "UN",
-    "condition": null,
+    "type": "SG",
+    "condition": "good",
     "drive_id": "1sfxDyiQy3Qk44ccthSq68cY7_g_XnAdA",
     "derivative": "pjm-pxl_20261118_212234802.jpg",
     "direction_deg": 327.2,
@@ -4003,8 +4032,8 @@
     "gps_source": "gpx",
     "gpx_offset_s": 5.0,
     "gpx_file": "Nov_18,_2026,_2_47_32_PM-chopped.gpx",
-    "serial": null,
-    "sign_kind": null,
+    "serial": "ITM-SG-022",
+    "sign_kind": "regulatory",
     "chainage_mi": 55.15,
     "section": "Chip-4",
     "snap_m": 2.7,
@@ -4022,7 +4051,8 @@
       "direction_ref": "track",
       "direction_compass": "NNW"
      }
-    ]
+    ],
+    "classification_note": "'NO TRESPASSING' sign nailed to a tree; black/white, fully legible, sound."
    }
   },
   {
@@ -4038,8 +4068,8 @@
     "photo": "PXL_20261118_213637385.MP.jpg",
     "datetime": "2026:11:18 15:36:37",
     "photographer": "PJM",
-    "type": "UN",
-    "condition": null,
+    "type": "CP",
+    "condition": "worn",
     "drive_id": "1aVHyWvJMhgnRs8q_nfCDH0wznicj84RW",
     "derivative": "pjm-pxl_20261118_213637385-mp.jpg",
     "direction_deg": 278.2,
@@ -4048,7 +4078,7 @@
     "gps_source": "gpx",
     "gpx_offset_s": 10.0,
     "gpx_file": "Nov_18,_2026,_2_47_32_PM-chopped.gpx",
-    "serial": null,
+    "serial": "ITM-CP-032",
     "sign_kind": null,
     "chainage_mi": 54.46,
     "section": "Chip-4",
@@ -4080,7 +4110,8 @@
       "direction_ref": "track",
       "direction_compass": "E"
      }
-    ]
+    ],
+    "classification_note": "Front photo: lichen-covered, slightly leaning Carsonite post reading 'PAUL BUNYAN TRAIL' vertically; letters legible."
    }
   },
   {
@@ -4096,8 +4127,8 @@
     "photo": "PXL_20261118_213742891.jpg",
     "datetime": "2026:11:18 15:37:42",
     "photographer": "PJM",
-    "type": "UN",
-    "condition": null,
+    "type": "SG",
+    "condition": "fair",
     "drive_id": "1nRTDoZIAXCkGkm0618nu_sCUBGfsKkLU",
     "derivative": "pjm-pxl_20261118_213742891.jpg",
     "direction_deg": 9.0,
@@ -4106,8 +4137,8 @@
     "gps_source": "gpx",
     "gpx_offset_s": 6.0,
     "gpx_file": "Nov_18,_2026,_2_47_32_PM-chopped.gpx",
-    "serial": null,
-    "sign_kind": null,
+    "serial": "ITM-SG-019",
+    "sign_kind": "wayfinding",
     "chainage_mi": 54.42,
     "section": "Chip-4",
     "snap_m": 32.8,
@@ -4151,7 +4182,8 @@
       "direction_ref": null,
       "direction_compass": null
      }
-    ]
+    ],
+    "classification_note": "Wooden post with yellow direction signs: 'HACKENSACK' left, 'WALKER' right, 'LONGVILLE C TRAIL' left; reverse carries a 'Leech Lake Riders Snowmobile Club / Paul Bunyan Trail' volunteer sign. Yellow paint faded/peeling and chipped, but all text legible."
    }
   },
   {
@@ -4167,8 +4199,8 @@
     "photo": "PXL_20261118_213807230.jpg",
     "datetime": "2026:11:18 15:38:07",
     "photographer": "PJM",
-    "type": "UN",
-    "condition": null,
+    "type": "SG",
+    "condition": "fair",
     "drive_id": "1f90AbmbkCKyMUJZbBs5XJELg4EMqNDaW",
     "derivative": "pjm-pxl_20261118_213807230.jpg",
     "direction_deg": 99.7,
@@ -4177,8 +4209,8 @@
     "gps_source": "gpx",
     "gpx_offset_s": 7.0,
     "gpx_file": "Nov_18,_2026,_2_47_32_PM-chopped.gpx",
-    "serial": null,
-    "sign_kind": null,
+    "serial": "ITM-SG-018",
+    "sign_kind": "wayfinding",
     "chainage_mi": 54.41,
     "section": "Chip-4",
     "snap_m": 26.75,
@@ -4235,7 +4267,8 @@
       "direction_ref": null,
       "direction_compass": null
      }
-    ]
+    ],
+    "classification_note": "Wooden post with 'MRT' bicycle-route sign and left-arrow plate on one face and 'PAUL BUNYAN STATE TRAIL' + 'MRT' on the other; MRT face peeling/damaged, arrow plate bent, but text legible."
    }
   },
   {
@@ -4251,8 +4284,8 @@
     "photo": "PXL_20261118_213839852.jpg",
     "datetime": "2026:11:18 15:38:39",
     "photographer": "PJM",
-    "type": "UN",
-    "condition": null,
+    "type": "SH",
+    "condition": "fair",
     "drive_id": "1wEFgBdh3wN-4l_PjR1pbx3mCmOiO0JgZ",
     "derivative": "pjm-pxl_20261118_213839852.jpg",
     "direction_deg": 99.7,
@@ -4261,7 +4294,7 @@
     "gps_source": "gpx",
     "gpx_offset_s": 13.0,
     "gpx_file": "Nov_18,_2026,_2_47_32_PM-chopped.gpx",
-    "serial": null,
+    "serial": "ITM-SH-001",
     "sign_kind": null,
     "chainage_mi": 54.42,
     "section": "Chip-4",
@@ -4345,7 +4378,8 @@
       "direction_ref": null,
       "direction_compass": null
      }
-    ]
+    ],
+    "classification_note": "Log shelter with green metal roof, bench and map/information boards inside (SCT 'Shingobee Connection Trail' round sign, advertiser map board, trail map board); structure sound but interior weathered with cobwebs, leaves and a grimy map dispenser."
    }
   },
   {
@@ -4361,8 +4395,8 @@
     "photo": "PXL_20261118_213940821.jpg",
     "datetime": "2026:11:18 15:39:40",
     "photographer": "PJM",
-    "type": "UN",
-    "condition": null,
+    "type": "SH",
+    "condition": "fair",
     "drive_id": "1UNRXklGUTw2WMHbausZg3ObjtxBENA0c",
     "derivative": "pjm-pxl_20261118_213940821.jpg",
     "direction_deg": 219.6,
@@ -4371,7 +4405,7 @@
     "gps_source": "gpx",
     "gpx_offset_s": 28.0,
     "gpx_file": "Nov_18,_2026,_2_47_32_PM-chopped.gpx",
-    "serial": null,
+    "serial": "ITM-SH-002",
     "sign_kind": null,
     "chainage_mi": 54.42,
     "section": "Chip-4",
@@ -4390,7 +4424,8 @@
       "direction_ref": "track",
       "direction_compass": "SW"
      }
-    ]
+    ],
+    "classification_note": "Rear log wall of the shelter: siding sound overall, white streaks (bird droppings) and a small hole/chewed spot near the base."
    }
   },
   {
@@ -4406,8 +4441,8 @@
     "photo": "PXL_20261118_214014094.MP.jpg",
     "datetime": "2026:11:18 15:40:14",
     "photographer": "PJM",
-    "type": "UN",
-    "condition": null,
+    "type": "CP",
+    "condition": "worn",
     "drive_id": "1F2LiGgpBV_c70NGMP0YbPdcVa0zLV23R",
     "derivative": "pjm-pxl_20261118_214014094-mp.jpg",
     "direction_deg": 172.4,
@@ -4416,7 +4451,7 @@
     "gps_source": "gpx",
     "gpx_offset_s": 6.0,
     "gpx_file": "Nov_18,_2026,_2_47_32_PM-chopped.gpx",
-    "serial": null,
+    "serial": "ITM-CP-031",
     "sign_kind": null,
     "chainage_mi": 54.43,
     "section": "Chip-4",
@@ -4448,7 +4483,8 @@
       "direction_ref": "track",
       "direction_compass": "N"
      }
-    ]
+    ],
+    "classification_note": "Straight Carsonite post with NCT shield, 'OPEN TO foot travel / CLOSED TO ALL MOTORIZED VEHICLES', no-ATV, USFS and arrow decals plus blue blaze; decals legible, post weathered."
    }
   },
   {
@@ -4464,8 +4500,8 @@
     "photo": "PXL_20261118_214121010.jpg",
     "datetime": "2026:11:18 15:41:21",
     "photographer": "PJM",
-    "type": "UN",
-    "condition": null,
+    "type": "SG",
+    "condition": "fair",
     "drive_id": "1iOXmT29mzjraG1wDRT4wCZso6aARlFeo",
     "derivative": "pjm-pxl_20261118_214121010.jpg",
     "direction_deg": 344.9,
@@ -4474,8 +4510,8 @@
     "gps_source": "gpx",
     "gpx_offset_s": 5.0,
     "gpx_file": "Nov_18,_2026,_2_47_32_PM-chopped.gpx",
-    "serial": null,
-    "sign_kind": null,
+    "serial": "ITM-SG-020",
+    "sign_kind": "regulatory",
     "chainage_mi": 54.46,
     "section": "Chip-4",
     "snap_m": 28.27,
@@ -4493,7 +4529,8 @@
       "direction_ref": "track",
       "direction_compass": "NNW"
      }
-    ]
+    ],
+    "classification_note": "'CAUTION' diamond plus cross (+) diamond and a small arrow plate on a weathered wooden post; CAUTION sign sound, lower diamond rusty and faded."
    }
   },
   {
@@ -4509,8 +4546,8 @@
     "photo": "PXL_20261118_214753308.jpg",
     "datetime": "2026:11:18 15:47:53",
     "photographer": "PJM",
-    "type": "UN",
-    "condition": null,
+    "type": "SG",
+    "condition": "fair",
     "drive_id": "1qFESSmlhv2MAwaT6IItAXFTFFP-TedVU",
     "derivative": "pjm-pxl_20261118_214753308.jpg",
     "direction_deg": 53.4,
@@ -4519,8 +4556,8 @@
     "gps_source": "gpx",
     "gpx_offset_s": 5.0,
     "gpx_file": "Nov_18,_2026,_2_47_32_PM-chopped.gpx",
-    "serial": null,
-    "sign_kind": null,
+    "serial": "ITM-SG-021",
+    "sign_kind": "information",
     "chainage_mi": 54.74,
     "section": "Chip-4",
     "snap_m": 5.88,
@@ -4538,7 +4575,8 @@
       "direction_ref": "track",
       "direction_compass": "NE"
      }
-    ]
+    ],
+    "classification_note": "'SHINGOBEE TWP. RURAL FIRE NO. 11' sign nailed to a tree; text legible but the sign hangs crooked/askew."
    }
   },
   {
@@ -4554,8 +4592,8 @@
     "photo": "PXL_20261119_192510528.jpg",
     "datetime": "2026:11:19 13:25:10",
     "photographer": "PJM",
-    "type": "UN",
-    "condition": null,
+    "type": "SG",
+    "condition": "good",
     "drive_id": "1pMxA_O41ZKOTq6uwywOtBxg7GM8Kcd1m",
     "derivative": "pjm-pxl_20261119_192510528.jpg",
     "direction_deg": 251.9,
@@ -4564,8 +4602,8 @@
     "gps_source": "gpx",
     "gpx_offset_s": 10.0,
     "gpx_file": "Nov_19,_2026,_1_24_51_PM.gpx",
-    "serial": null,
-    "sign_kind": null,
+    "serial": "ITM-SG-028",
+    "sign_kind": "information",
     "chainage_mi": 60.74,
     "section": "Chip-7",
     "snap_m": 16.48,
@@ -4583,7 +4621,8 @@
       "direction_ref": "track",
       "direction_compass": "WSW"
      }
-    ]
+    ],
+    "classification_note": "Itasca Moraine Chapter info sign on a green U-channel post: 'This trail segment is maintained by volunteers of the Itasca Moraine Chapter of the NCTA', QR codes for Volunteer / Donate / ITM Chapter Info, 'Please hike responsibly - put out fires at campsites - wear blaze orange during hunting season and remember to Leave No Trace', 'Happy Hiking!'. Clean, straight, fully legible. Part of the same road-crossing sign cluster as pins 103/104 but a distinct sign."
    }
   },
   {
@@ -4599,8 +4638,8 @@
     "photo": "PXL_20261119_192531559.jpg",
     "datetime": "2026:11:19 13:25:31",
     "photographer": "PJM",
-    "type": "UN",
-    "condition": null,
+    "type": "SG",
+    "condition": "good",
     "drive_id": "1z6CZElQCzlkOGCWEUHHD-28s83ZT8nKK",
     "derivative": "pjm-pxl_20261119_192531559.jpg",
     "direction_deg": 321.8,
@@ -4609,8 +4648,8 @@
     "gps_source": "gpx",
     "gpx_offset_s": 2.0,
     "gpx_file": "Nov_19,_2026,_1_24_51_PM.gpx",
-    "serial": null,
-    "sign_kind": null,
+    "serial": "ITM-SG-029",
+    "sign_kind": "regulatory",
     "chainage_mi": 60.74,
     "section": "Chip-7",
     "snap_m": 3.11,
@@ -4628,7 +4667,8 @@
       "direction_ref": "track",
       "direction_compass": "NW"
      }
-    ]
+    ],
+    "classification_note": "Yellow diamond 'TRAIL CROSSING' warning sign with a rectangular left-arrow plaque below it, on a green U-channel post beside a gravel road. Bright, legible, straight."
    }
   },
   {
@@ -4644,8 +4684,8 @@
     "photo": "PXL_20261119_192542649.MP.jpg",
     "datetime": "2026:11:19 13:25:42",
     "photographer": "PJM",
-    "type": "UN",
-    "condition": null,
+    "type": "SG",
+    "condition": "good",
     "drive_id": "1aGj6kClPDUEUUagJPNh-OpJAOMwoK6XM",
     "derivative": "pjm-pxl_20261119_192542649-mp.jpg",
     "direction_deg": 321.8,
@@ -4655,7 +4695,7 @@
     "gpx_offset_s": 7.0,
     "gpx_file": "Nov_19,_2026,_1_24_51_PM.gpx",
     "serial": null,
-    "sign_kind": null,
+    "sign_kind": "regulatory",
     "chainage_mi": 60.74,
     "section": "Chip-7",
     "snap_m": 0.63,
@@ -4699,7 +4739,9 @@
       "direction_ref": null,
       "direction_compass": null
      }
-    ]
+    ],
+    "classification_note": "Pin bundles more than one asset. Front photo is the back of pin 103's TRAIL CROSSING sign. Back photo is a separate NCT use-regulation sign on a brown post: 'OPEN TO' hiker icon, 'CLOSED TO ALL OTHER USES', USFS shield, no-ATV and no-horse symbols; legible, post straight. Detail photo is a close-up of the weathered log bollard beside that post, with a small screwed-on placard advertising the NCT guidebook ('The guidebook includes...' / 'Order copies today from...'). Classification given is for the regulation sign, the pin's most substantial distinct asset.",
+    "uncertain": true
    }
   },
   {
@@ -4715,8 +4757,8 @@
     "photo": "PXL_20261119_192607885.MP.jpg",
     "datetime": "2026:11:19 13:26:07",
     "photographer": "PJM",
-    "type": "UN",
-    "condition": null,
+    "type": "CP",
+    "condition": "worn",
     "drive_id": "1Wg8ARZvM_raUzAWE8p_uB5EmNNMxm_X9",
     "derivative": "pjm-pxl_20261119_192607885-mp.jpg",
     "direction_deg": 245.1,
@@ -4725,7 +4767,7 @@
     "gps_source": "gpx",
     "gpx_offset_s": 18.0,
     "gpx_file": "Nov_19,_2026,_1_24_51_PM.gpx",
-    "serial": null,
+    "serial": "ITM-CP-039",
     "sign_kind": null,
     "chainage_mi": 60.74,
     "section": "Chip-6",
@@ -4770,7 +4812,8 @@
       "direction_ref": null,
       "direction_compass": null
      }
-    ]
+    ],
+    "classification_note": "Brown Carsonite post, straight, decals legible: NCT logo, OPEN TO hiker / CLOSED TO ALL MOTORIZED VEHICLES, USFS, WOODTICK TRAIL 2. Weathered but standing and readable. Three wooden bollards also in frame belong to the pin 108 group."
    }
   },
   {
@@ -4786,8 +4829,8 @@
     "photo": "PXL_20261119_192637250.jpg",
     "datetime": "2026:11:19 13:26:37",
     "photographer": "PJM",
-    "type": "UN",
-    "condition": null,
+    "type": "CP",
+    "condition": "worn",
     "drive_id": "1BzgtHT32vwLtIDBKqaFT69T6wvXAZvzJ",
     "derivative": "pjm-pxl_20261119_192637250.jpg",
     "direction_deg": 310.3,
@@ -4796,7 +4839,7 @@
     "gps_source": "gpx",
     "gpx_offset_s": 5.0,
     "gpx_file": "Nov_19,_2026,_1_24_51_PM.gpx",
-    "serial": null,
+    "serial": "ITM-CP-040",
     "sign_kind": null,
     "chainage_mi": 60.74,
     "section": "Chip-6",
@@ -4828,7 +4871,8 @@
       "direction_ref": "track",
       "direction_compass": "SE"
      }
-    ]
+    ],
+    "classification_note": "Same brown Carsonite post as pin 105, from the trail side: NCT logo, OPEN TO foot travel / CLOSED TO ALL OTHER USES, no-horse and no-ATV decals, arrow up; reverse face reads WOODTICK TRAIL 2 with a peeling decal patch below the lettering. Straight, decals legible, still doing its job."
    }
   },
   {
@@ -4844,8 +4888,8 @@
     "photo": "PXL_20261119_192651760.jpg",
     "datetime": "2026:11:19 13:26:51",
     "photographer": "PJM",
-    "type": "UN",
-    "condition": null,
+    "type": "SG",
+    "condition": "good",
     "drive_id": "1OPLkOFyOKdOF9NVvMW5VaCJlILXX3hRo",
     "derivative": "pjm-pxl_20261119_192651760.jpg",
     "direction_deg": 310.3,
@@ -4854,8 +4898,8 @@
     "gps_source": "gpx",
     "gpx_offset_s": 3.0,
     "gpx_file": "Nov_19,_2026,_1_24_51_PM.gpx",
-    "serial": null,
-    "sign_kind": null,
+    "serial": "ITM-SG-027",
+    "sign_kind": "regulatory",
     "chainage_mi": 60.73,
     "section": "Chip-6",
     "snap_m": 11.15,
@@ -4886,7 +4930,8 @@
       "direction_ref": "track",
       "direction_compass": "N"
      }
-    ]
+    ],
+    "classification_note": "Yellow diamond TRAIL CROSSING warning sign with a left-down arrow plaque below, on a steel post at the roadside. Legible, straight, minor dents."
    }
   },
   {
@@ -4902,8 +4947,8 @@
     "photo": "PXL_20261119_192715479.jpg",
     "datetime": "2026:11:19 13:27:15",
     "photographer": "PJM",
-    "type": "UN",
-    "condition": null,
+    "type": "BO",
+    "condition": "fair",
     "drive_id": "1TIBZHx6y7hZVnyMyWnSn2S-_5oy8RpcW",
     "derivative": "pjm-pxl_20261119_192715479.jpg",
     "direction_deg": 170.4,
@@ -4912,7 +4957,7 @@
     "gps_source": "gpx",
     "gpx_offset_s": 7.0,
     "gpx_file": "Nov_19,_2026,_1_24_51_PM.gpx",
-    "serial": null,
+    "serial": "ITM-BO-002",
     "sign_kind": null,
     "chainage_mi": 60.73,
     "section": "Chip-6",
@@ -4944,7 +4989,8 @@
       "direction_ref": "track",
       "direction_compass": "N"
      }
-    ]
+    ],
+    "classification_note": "Group of three short wooden bollards at the trail entrance from the road; weathered and mossy, one leaning with a blue blaze, but all standing and blocking vehicle access. Same bollard group visible in pin 105 photos; the WOODTICK TRAIL 2 Carsonite post visible in the back photo is pin 105/106."
    }
   },
   {
@@ -4960,8 +5006,8 @@
     "photo": "PXL_20261119_192848804.jpg",
     "datetime": "2026:11:19 13:28:48",
     "photographer": "PJM",
-    "type": "UN",
-    "condition": null,
+    "type": "PN",
+    "condition": "fair",
     "drive_id": "1ZEhPHAmuw7Jb1rZHWImwzaWWQeaw_ENO",
     "derivative": "pjm-pxl_20261119_192848804.jpg",
     "direction_deg": 223.2,
@@ -4970,7 +5016,7 @@
     "gps_source": "gpx",
     "gpx_offset_s": 2.0,
     "gpx_file": "Nov_19,_2026,_1_24_51_PM.gpx",
-    "serial": null,
+    "serial": "ITM-PN-024",
     "sign_kind": null,
     "chainage_mi": 60.66,
     "section": "Chip-6",
@@ -5002,7 +5048,8 @@
       "direction_ref": "track",
       "direction_compass": "NE"
      }
-    ]
+    ],
+    "classification_note": "Short weathered 3-plank crossing over a ditch, intact and walkable."
    }
   },
   {
@@ -5018,8 +5065,8 @@
     "photo": "PXL_20261119_192900435.MP.jpg",
     "datetime": "2026:11:19 13:29:00",
     "photographer": "PJM",
-    "type": "UN",
-    "condition": null,
+    "type": "PN",
+    "condition": "fair",
     "drive_id": "18TOymXKhCXbT0-D_Td-UAO4gRch0luGj",
     "derivative": "pjm-pxl_20261119_192900435-mp.jpg",
     "direction_deg": 221.5,
@@ -5028,7 +5075,7 @@
     "gps_source": "gpx",
     "gpx_offset_s": 3.0,
     "gpx_file": "Nov_19,_2026,_1_24_51_PM.gpx",
-    "serial": null,
+    "serial": "ITM-PN-023",
     "sign_kind": null,
     "chainage_mi": 60.65,
     "section": "Chip-6",
@@ -5047,7 +5094,8 @@
       "direction_ref": "track",
       "direction_compass": "SW"
      }
-    ]
+    ],
+    "classification_note": "Same weathered 3-plank ditch crossing as pin 109, close view from the far end; planks intact."
    }
   },
   {
@@ -5063,8 +5111,8 @@
     "photo": "PXL_20261119_193013209.jpg",
     "datetime": "2026:11:19 13:30:13",
     "photographer": "PJM",
-    "type": "UN",
-    "condition": null,
+    "type": "PN",
+    "condition": "good",
     "drive_id": "1nijRKngx84P4W6JbdkuiGXeQ6e_ohkmQ",
     "derivative": "pjm-pxl_20261119_193013209.jpg",
     "direction_deg": 208.0,
@@ -5073,7 +5121,7 @@
     "gps_source": "gpx",
     "gpx_offset_s": 2.0,
     "gpx_file": "Nov_19,_2026,_1_24_51_PM.gpx",
-    "serial": null,
+    "serial": "ITM-PN-022",
     "sign_kind": null,
     "chainage_mi": 60.6,
     "section": "Chip-6",
@@ -5105,7 +5153,8 @@
       "direction_ref": "track",
       "direction_compass": "NE"
      }
-    ]
+    ],
+    "classification_note": "Short 3-plank bridge over a ditch in fresh light lumber with green treatment marks; sound, no visible defect."
    }
   },
   {
@@ -5121,8 +5170,8 @@
     "photo": "PXL_20261119_193023449.jpg",
     "datetime": "2026:11:19 13:30:23",
     "photographer": "PJM",
-    "type": "UN",
-    "condition": null,
+    "type": "PN",
+    "condition": "good",
     "drive_id": "1BgO3QLJ7zm4H-PpCowrb6WtxTnBfVg8S",
     "derivative": "pjm-pxl_20261119_193023449.jpg",
     "direction_deg": 233.0,
@@ -5131,7 +5180,7 @@
     "gps_source": "gpx",
     "gpx_offset_s": 5.0,
     "gpx_file": "Nov_19,_2026,_1_24_51_PM.gpx",
-    "serial": null,
+    "serial": "ITM-PN-021",
     "sign_kind": null,
     "chainage_mi": 60.59,
     "section": "Chip-6",
@@ -5150,7 +5199,8 @@
       "direction_ref": "track",
       "direction_compass": "SW"
      }
-    ]
+    ],
+    "classification_note": "Same fresh-lumber 3-plank bridge as pin 111, close view from the far end over standing water; planks sound."
    }
   },
   {
@@ -5166,8 +5216,8 @@
     "photo": "PXL_20261119_193358177.jpg",
     "datetime": "2026:11:19 13:33:58",
     "photographer": "PJM",
-    "type": "UN",
-    "condition": null,
+    "type": "PN",
+    "condition": "fair",
     "drive_id": "1bswCDhkIsY3g84CnCbe1x05irkdZhfOn",
     "derivative": "pjm-pxl_20261119_193358177.jpg",
     "direction_deg": 345.9,
@@ -5176,7 +5226,7 @@
     "gps_source": "gpx",
     "gpx_offset_s": 7.0,
     "gpx_file": "Nov_19,_2026,_1_24_51_PM.gpx",
-    "serial": null,
+    "serial": "ITM-PN-018",
     "sign_kind": null,
     "chainage_mi": 60.41,
     "section": "Chip-6",
@@ -5221,7 +5271,8 @@
       "direction_ref": null,
       "direction_compass": null
      }
-    ]
+    ],
+    "classification_note": "Long weathered grey 3-plank puncheon on cross-sleepers over wet ground; mossy, intact and walkable."
    }
   },
   {
@@ -5237,8 +5288,8 @@
     "photo": "PXL_20261119_193407005.MP.jpg",
     "datetime": "2026:11:19 13:34:07",
     "photographer": "PJM",
-    "type": "UN",
-    "condition": null,
+    "type": "PN",
+    "condition": "fair",
     "drive_id": "10G17HqNdqJi43NG0Pn7bOtaA2_2b5_0T",
     "derivative": "pjm-pxl_20261119_193407005-mp.jpg",
     "direction_deg": 348.6,
@@ -5247,7 +5298,7 @@
     "gps_source": "gpx",
     "gpx_offset_s": 2.0,
     "gpx_file": "Nov_19,_2026,_1_24_51_PM.gpx",
-    "serial": null,
+    "serial": "ITM-PN-019",
     "sign_kind": null,
     "chainage_mi": 60.41,
     "section": "Chip-6",
@@ -5279,7 +5330,8 @@
       "direction_ref": "track",
       "direction_compass": "SSE"
      }
-    ]
+    ],
+    "classification_note": "Same long weathered 3-plank puncheon as pin 113, close views from the far end; mossy, intact."
    }
   },
   {
@@ -5295,8 +5347,8 @@
     "photo": "PXL_20261119_193411365.jpg",
     "datetime": "2026:11:19 13:34:11",
     "photographer": "PJM",
-    "type": "UN",
-    "condition": null,
+    "type": "PN",
+    "condition": "fair",
     "drive_id": "1aGylw8ytnmbaDY-bw-P8UyMEvGTMu_N0",
     "derivative": "pjm-pxl_20261119_193411365.jpg",
     "direction_deg": 348.6,
@@ -5305,7 +5357,7 @@
     "gps_source": "gpx",
     "gpx_offset_s": 1.0,
     "gpx_file": "Nov_19,_2026,_1_24_51_PM.gpx",
-    "serial": null,
+    "serial": "ITM-PN-020",
     "sign_kind": null,
     "chainage_mi": 60.41,
     "section": "Chip-6",
@@ -5350,7 +5402,8 @@
       "direction_ref": null,
       "direction_compass": null
      }
-    ]
+    ],
+    "classification_note": "Same long weathered 3-plank puncheon as pins 113/114, viewed from its far end; mossy, intact and walkable."
    }
   },
   {
@@ -5366,8 +5419,8 @@
     "photo": "PXL_20261119_193847356.MP.jpg",
     "datetime": "2026:11:19 13:38:47",
     "photographer": "PJM",
-    "type": "UN",
-    "condition": null,
+    "type": "CP",
+    "condition": "worn",
     "drive_id": "1SyTyn89qWbbUYrGyLg_87na9sL_T2-AV",
     "derivative": "pjm-pxl_20261119_193847356-mp.jpg",
     "direction_deg": 273.5,
@@ -5376,7 +5429,7 @@
     "gps_source": "gpx",
     "gpx_offset_s": 5.0,
     "gpx_file": "Nov_19,_2026,_1_24_51_PM.gpx",
-    "serial": null,
+    "serial": "ITM-CP-038",
     "sign_kind": null,
     "chainage_mi": 60.18,
     "section": "Chip-6",
@@ -5408,7 +5461,8 @@
       "direction_ref": "track",
       "direction_compass": "E"
      }
-    ]
+    ],
+    "classification_note": "Brown Carsonite post leaning noticeably, NCT logo and blue blaze legible, middle decal worn dark; standing and readable, still doing its job."
    }
   },
   {
@@ -5424,8 +5478,8 @@
     "photo": "PXL_20261119_193902454.jpg",
     "datetime": "2026:11:19 13:39:02",
     "photographer": "PJM",
-    "type": "UN",
-    "condition": null,
+    "type": "CP",
+    "condition": "new",
     "drive_id": "1_14Cx-58UAqBuSDsOp-VYhwqAoctuZZ7",
     "derivative": "pjm-pxl_20261119_193902454.jpg",
     "direction_deg": 251.1,
@@ -5434,7 +5488,7 @@
     "gps_source": "gpx",
     "gpx_offset_s": 1.0,
     "gpx_file": "Nov_19,_2026,_1_24_51_PM.gpx",
-    "serial": null,
+    "serial": "ITM-CP-037",
     "sign_kind": null,
     "chainage_mi": 60.17,
     "section": "Chip-6",
@@ -5466,7 +5520,8 @@
       "direction_ref": "track",
       "direction_compass": "NE"
      }
-    ]
+    ],
+    "classification_note": "Brown Carsonite post, straight, decals crisp and legible: NCT logo, USFS, no-horse, no-ATV, arrow up. Back face blank."
    }
   },
   {
@@ -5482,8 +5537,8 @@
     "photo": "PXL_20261119_194148382.jpg",
     "datetime": "2026:11:19 13:41:48",
     "photographer": "PJM",
-    "type": "UN",
-    "condition": null,
+    "type": "PN",
+    "condition": "fair",
     "drive_id": "1ZI5fOdHf1j9DHT0JUY1btnrntP9b0ncX",
     "derivative": "pjm-pxl_20261119_194148382.jpg",
     "direction_deg": 214.5,
@@ -5492,7 +5547,7 @@
     "gps_source": "gpx",
     "gpx_offset_s": 7.0,
     "gpx_file": "Nov_19,_2026,_1_24_51_PM.gpx",
-    "serial": null,
+    "serial": "ITM-PN-016",
     "sign_kind": null,
     "chainage_mi": 60.04,
     "section": "Chip-6",
@@ -5524,7 +5579,8 @@
       "direction_ref": "track",
       "direction_compass": "NE"
      }
-    ]
+    ],
+    "classification_note": "Long raised 3-plank puncheon on cross-timbers over wet ground, weathered and mossy, in use (walker on it)."
    }
   },
   {
@@ -5540,8 +5596,8 @@
     "photo": "PXL_20261119_194156224.jpg",
     "datetime": "2026:11:19 13:41:56",
     "photographer": "PJM",
-    "type": "UN",
-    "condition": null,
+    "type": "PN",
+    "condition": "fair",
     "drive_id": "1YlSn6A-rE8EoC3jyxtJNcFJwCsW0B3PM",
     "derivative": "pjm-pxl_20261119_194156224.jpg",
     "direction_deg": 214.5,
@@ -5550,7 +5606,7 @@
     "gps_source": "gpx",
     "gpx_offset_s": 0.0,
     "gpx_file": "Nov_19,_2026,_1_24_51_PM.gpx",
-    "serial": null,
+    "serial": "ITM-PN-017",
     "sign_kind": null,
     "chainage_mi": 60.04,
     "section": "Chip-6",
@@ -5595,7 +5651,8 @@
       "direction_ref": null,
       "direction_compass": null
      }
-    ]
+    ],
+    "classification_note": "Same long raised 3-plank puncheon as pin 118, viewed from the other side with close-ups of the weathered planks and cross-timbers; intact."
    }
   },
   {
@@ -5611,8 +5668,8 @@
     "photo": "PXL_20261119_194211909.MP.jpg",
     "datetime": "2026:11:19 13:42:11",
     "photographer": "PJM",
-    "type": "UN",
-    "condition": null,
+    "type": "PN",
+    "condition": "fair",
     "drive_id": "11X7HSr_d_5V20SqZu5mI2k3cv4Vyy9zi",
     "derivative": "pjm-pxl_20261119_194211909-mp.jpg",
     "direction_deg": 251.3,
@@ -5621,7 +5678,7 @@
     "gps_source": "gpx",
     "gpx_offset_s": 10.0,
     "gpx_file": "Nov_19,_2026,_1_24_51_PM.gpx",
-    "serial": null,
+    "serial": "ITM-PN-015",
     "sign_kind": null,
     "chainage_mi": 60.03,
     "section": "Chip-6",
@@ -5666,7 +5723,8 @@
       "direction_ref": null,
       "direction_compass": null
      }
-    ]
+    ],
+    "classification_note": "Same long raised 3-plank puncheon as pins 118/119 (front photo, mossy log landmark); back/detail photos show its short plank span over a small stream. Weathered, mossy, intact."
    }
   },
   {
@@ -5682,8 +5740,8 @@
     "photo": "PXL_20261119_194242601.jpg",
     "datetime": "2026:11:19 13:42:42",
     "photographer": "PJM",
-    "type": "UN",
-    "condition": null,
+    "type": "PN",
+    "condition": "fair",
     "drive_id": "1GPjZU3zQsGmkBJq1RbAeN2GNqGPYosnd",
     "derivative": "pjm-pxl_20261119_194242601.jpg",
     "direction_deg": 253.3,
@@ -5692,7 +5750,7 @@
     "gps_source": "gpx",
     "gpx_offset_s": 2.0,
     "gpx_file": "Nov_19,_2026,_1_24_51_PM.gpx",
-    "serial": null,
+    "serial": "ITM-PN-013",
     "sign_kind": null,
     "chainage_mi": 60.02,
     "section": "Chip-6",
@@ -5724,7 +5782,8 @@
       "direction_ref": "track",
       "direction_compass": "NE"
      }
-    ]
+    ],
+    "classification_note": "Kinked 3-plank bridge: two sections meeting at an angle over a ditch, on cross-timbers; weathered and mossy but functional."
    }
   },
   {
@@ -5740,8 +5799,8 @@
     "photo": "PXL_20261119_194249425.jpg",
     "datetime": "2026:11:19 13:42:49",
     "photographer": "PJM",
-    "type": "UN",
-    "condition": null,
+    "type": "PN",
+    "condition": "fair",
     "drive_id": "164A92MiGCy9iulKu1f7e2d4m0h4aCxVn",
     "derivative": "pjm-pxl_20261119_194249425.jpg",
     "direction_deg": 231.0,
@@ -5750,7 +5809,7 @@
     "gps_source": "gpx",
     "gpx_offset_s": 5.0,
     "gpx_file": "Nov_19,_2026,_1_24_51_PM.gpx",
-    "serial": null,
+    "serial": "ITM-PN-014",
     "sign_kind": null,
     "chainage_mi": 60.02,
     "section": "Chip-6",
@@ -5782,7 +5841,8 @@
       "direction_ref": "track",
       "direction_compass": "NE"
      }
-    ]
+    ],
+    "classification_note": "Same kinked 3-plank bridge over the stream as pin 121, viewed from the far side; weathered, mossy, far section slightly offset/tilted but still functional."
    }
   },
   {
@@ -5798,8 +5858,8 @@
     "photo": "PXL_20261119_194715154.jpg",
     "datetime": "2026:11:19 13:47:15",
     "photographer": "PJM",
-    "type": "UN",
-    "condition": null,
+    "type": "CP",
+    "condition": "new",
     "drive_id": "1NG6cECXGWF5SrH4wdJwM9TU_DjHlvlsB",
     "derivative": "pjm-pxl_20261119_194715154.jpg",
     "direction_deg": 221.6,
@@ -5808,7 +5868,7 @@
     "gps_source": "gpx",
     "gpx_offset_s": 7.0,
     "gpx_file": "Nov_19,_2026,_1_24_51_PM.gpx",
-    "serial": null,
+    "serial": "ITM-CP-036",
     "sign_kind": null,
     "chainage_mi": 59.79,
     "section": "Chip-6",
@@ -5840,7 +5900,8 @@
       "direction_ref": "track",
       "direction_compass": "NE"
      }
-    ]
+    ],
+    "classification_note": "Brown Carsonite post, straight, decals crisp and legible: NCT logo, USFS, no-horse, no-ATV, arrow up. Back face blank."
    }
   },
   {
@@ -5856,8 +5917,8 @@
     "photo": "PXL_20261119_195225482.jpg",
     "datetime": "2026:11:19 13:52:25",
     "photographer": "PJM",
-    "type": "UN",
-    "condition": null,
+    "type": "BR",
+    "condition": "good",
     "drive_id": "1Qb1R7o1MO_JbZYWWWBQTRptv0ChESDnc",
     "derivative": "pjm-pxl_20261119_195225482.jpg",
     "direction_deg": 289.9,
@@ -5911,7 +5972,9 @@
       "direction_ref": null,
       "direction_compass": null
      }
-    ]
+    ],
+    "classification_note": "Corrugated metal culvert pipe under the trail; both pipe ends photographed, open and sound with moss on the rim. No culvert code exists in the registry, so BR is a best fit only \u2014 a culvert is not a bridge deck.",
+    "uncertain": true
    }
   },
   {
@@ -5927,8 +5990,8 @@
     "photo": "PXL_20261119_195927805.MP.jpg",
     "datetime": "2026:11:19 13:59:27",
     "photographer": "PJM",
-    "type": "UN",
-    "condition": null,
+    "type": "CP",
+    "condition": "worn",
     "drive_id": "1gLSTLFpdUioTeSmkzxaGt7vBn4RrXczV",
     "derivative": "pjm-pxl_20261119_195927805-mp.jpg",
     "direction_deg": 72.4,
@@ -5937,7 +6000,7 @@
     "gps_source": "gpx",
     "gpx_offset_s": 7.0,
     "gpx_file": "Nov_19,_2026,_1_24_51_PM.gpx",
-    "serial": null,
+    "serial": "ITM-CP-035",
     "sign_kind": null,
     "chainage_mi": 59.19,
     "section": "Chip-6",
@@ -5969,7 +6032,8 @@
       "direction_ref": "track",
       "direction_compass": "WSW"
      }
-    ]
+    ],
+    "classification_note": "Brown Carsonite post, slight lean, lichen, decals legible: NCT logo, OPEN TO hiker / CLOSED TO ALL MOTORIZED VEHICLES, USFS, no-ATV, with a faded blue blaze patch. Standing and readable."
    }
   },
   {
@@ -5985,8 +6049,8 @@
     "photo": "PXL_20261119_203217269.jpg",
     "datetime": "2026:11:19 14:32:17",
     "photographer": "PJM",
-    "type": "UN",
-    "condition": null,
+    "type": "PK",
+    "condition": "good",
     "drive_id": "1cgOM7mm6JAcsGlrTJj_1mPe8HhxLmu2m",
     "derivative": "pjm-pxl_20261119_203217269.jpg",
     "direction_deg": 121.2,
@@ -5995,7 +6059,7 @@
     "gps_source": "gpx",
     "gpx_offset_s": 1.0,
     "gpx_file": "Nov_19,_2026,_1_24_51_PM.gpx",
-    "serial": null,
+    "serial": "ITM-PK-003",
     "sign_kind": null,
     "chainage_mi": 60.74,
     "section": "Chip-7",
@@ -6014,7 +6078,8 @@
       "direction_ref": "track",
       "direction_compass": "ESE"
      }
-    ]
+    ],
+    "classification_note": "Gravel parking pull-off beside a road, car parked, graded surface in use. A small white sign on a post at the far left edge is too distant to read but is part of the parking area, not a separate asset."
    }
   },
   {
@@ -6030,8 +6095,8 @@
     "photo": "PXL_20261120_210132227.MP.jpg",
     "datetime": "2026:11:20 15:01:32",
     "photographer": "PJM",
-    "type": "UN",
-    "condition": null,
+    "type": "SG",
+    "condition": "good",
     "drive_id": "1SWkYhtcafm5tfsVyfckIjQUb-skcoEXB",
     "derivative": "pjm-pxl_20261120_210132227-mp.jpg",
     "direction_deg": 340.5,
@@ -6041,7 +6106,7 @@
     "gpx_offset_s": 4.0,
     "gpx_file": "Nov_20,_2026,_3_00_48_PM.gpx",
     "serial": null,
-    "sign_kind": null,
+    "sign_kind": "information",
     "chainage_mi": null,
     "section": null,
     "snap_m": 11285.66,
@@ -6072,7 +6137,8 @@
       "direction_ref": "track",
       "direction_compass": "SSE"
      }
-    ]
+    ],
+    "classification_note": "Wooden trailhead sign on a post: 'NORTH COUNTRY TRAIL / MN HWY 200 TRAILHEAD' with NCT logo; front fully legible, back blank brown. Sound, lettering legible."
    }
   },
   {
@@ -6088,8 +6154,8 @@
     "photo": "PXL_20261120_210146854.jpg",
     "datetime": "2026:11:20 15:01:46",
     "photographer": "PJM",
-    "type": "UN",
-    "condition": null,
+    "type": "PO",
+    "condition": "fair",
     "drive_id": "1ASIXa4XwQh0y9vIwNHsZrs6EFGze8zzr",
     "derivative": "pjm-pxl_20261120_210146854.jpg",
     "direction_deg": 340.5,
@@ -6117,7 +6183,8 @@
       "direction_ref": "track",
       "direction_compass": "NNW"
      }
-    ]
+    ],
+    "classification_note": "Bare rusted metal U-channel sign post, standing, no sign attached. Non-Carsonite post, so PO not CP."
    }
   },
   {
@@ -6133,8 +6200,8 @@
     "photo": "PXL_20261120_210223270.jpg",
     "datetime": "2026:11:20 15:02:23",
     "photographer": "PJM",
-    "type": "UN",
-    "condition": null,
+    "type": "PK",
+    "condition": "good",
     "drive_id": "1OQBMhMIQ4yv8spSp-51Rzrz_r_dlxPgv",
     "derivative": "pjm-pxl_20261120_210223270.jpg",
     "direction_deg": 358.0,
@@ -6201,7 +6268,9 @@
       "direction_ref": null,
       "direction_compass": null
      }
-    ]
+    ],
+    "classification_note": "Read as the gravel trailhead parking area: back photo shows a car parked in the lot and both detail photos show the lot surface/access drive, all sound gravel with no defects. BUT the front photo centers on the trailhead kiosk cluster (large NCT map board + invasive-species board), so this pin could instead be the kiosk (KI); the kiosk board close-up is filed under pin 130's details.",
+    "uncertain": true
    }
   },
   {
@@ -6217,8 +6286,8 @@
     "photo": "PXL_20261120_210239978.jpg",
     "datetime": "2026:11:20 15:02:39",
     "photographer": "PJM",
-    "type": "UN",
-    "condition": null,
+    "type": "CP",
+    "condition": "worn",
     "drive_id": "1mq3D8f5qc71bACYx6TZuxExnCbmy6lAt",
     "derivative": "pjm-pxl_20261120_210239978.jpg",
     "direction_deg": 359.0,
@@ -6298,7 +6367,8 @@
       "direction_ref": null,
       "direction_compass": null
      }
-    ]
+    ],
+    "classification_note": "Carsonite post (front/back photos): DNR hiker-symbol sign on top, NCT 'OPEN TO hikers / CLOSED TO ALL MOTORIZED VEHICLES' decals, no-ATV symbol, USFS shield. Standing straight, decals legible, post weathered so worn not new."
    }
   },
   {
@@ -6314,8 +6384,8 @@
     "photo": "PXL_20261120_210318337.jpg",
     "datetime": "2026:11:20 15:03:18",
     "photographer": "PJM",
-    "type": "UN",
-    "condition": null,
+    "type": "SG",
+    "condition": "good",
     "drive_id": "1GvOyuCVrbFgF8zHPKFbpg78K2UBpHdva",
     "derivative": "pjm-pxl_20261120_210318337.jpg",
     "direction_deg": 70.7,
@@ -6325,7 +6395,7 @@
     "gpx_offset_s": 1.0,
     "gpx_file": "Nov_20,_2026,_3_00_48_PM.gpx",
     "serial": null,
-    "sign_kind": null,
+    "sign_kind": "wayfinding",
     "chainage_mi": null,
     "section": null,
     "snap_m": 11293.71,
@@ -6356,7 +6426,8 @@
       "direction_ref": "track",
       "direction_compass": "WSW"
      }
-    ]
+    ],
+    "classification_note": "Brown routed wooden sign on two posts: 'NORTH COUNTRY TRAIL / MN HWY 200 TRAILHEAD' with distances/directions \u2014 FR 2104 3.6 mi, FR 2117 parking 4 mi, Old Pines Campsite 5 mi, Cass CR-4 9.7 mi (right); MN Hwy 200 access 0.3 mi, Crown Lake Campsite 4.5 mi, MN Hwy 84 6.7 mi (left). Fully legible, posts straight."
    }
   },
   {
@@ -6372,8 +6443,8 @@
     "photo": "PXL_20261120_210333229.MP.jpg",
     "datetime": "2026:11:20 15:03:33",
     "photographer": "PJM",
-    "type": "UN",
-    "condition": null,
+    "type": "SG",
+    "condition": "good",
     "drive_id": "15vk4OMcS5rwD5nf5e2E73sq7xrLqZjL9",
     "derivative": "pjm-pxl_20261120_210333229-mp.jpg",
     "direction_deg": 70.7,
@@ -6401,7 +6472,8 @@
       "direction_ref": "track",
       "direction_compass": "ENE"
      }
-    ]
+    ],
+    "classification_note": "Blank brown reverse of a routed wooden sign on two posts; no text on this face. Construction matches pin 131's sign and it sits ~5 m away, so this is most likely that sign's back face."
    }
   },
   {
@@ -6417,8 +6489,8 @@
     "photo": "PXL_20261120_210404567.MP.jpg",
     "datetime": "2026:11:20 15:04:04",
     "photographer": "PJM",
-    "type": "UN",
-    "condition": null,
+    "type": "SG",
+    "condition": "good",
     "drive_id": "1B5LBuuVJK4GLxF7mx6s7DAaIfDSJWfjs",
     "derivative": "pjm-pxl_20261120_210404567-mp.jpg",
     "direction_deg": 100.7,
@@ -6428,7 +6500,7 @@
     "gpx_offset_s": 4.0,
     "gpx_file": "Nov_20,_2026,_3_00_48_PM.gpx",
     "serial": null,
-    "sign_kind": null,
+    "sign_kind": "regulatory",
     "chainage_mi": null,
     "section": null,
     "snap_m": 11321.3,
@@ -6446,7 +6518,8 @@
       "direction_ref": "track",
       "direction_compass": "E"
      }
-    ]
+    ],
+    "classification_note": "DNR sign nailed to a tree: 'Foot Travel Welcome / Closed to motor vehicle use.' Fully legible, sound."
    }
   },
   {
@@ -6504,7 +6577,8 @@
       "direction_ref": "track",
       "direction_compass": "WSW"
      }
-    ]
+    ],
+    "classification_note": "Corrugated-metal culvert/drainage pipe end under the tread, both ends photographed; openings partly crushed/deformed and leaf-filled. No type code covers a culvert (it is not a bridge), so no type assigned. The pipe itself is in poor shape."
    }
   },
   {
@@ -6520,8 +6594,8 @@
     "photo": "PXL_20261120_212023398.jpg",
     "datetime": "2026:11:20 15:20:23",
     "photographer": "PJM",
-    "type": "UN",
-    "condition": null,
+    "type": "SG",
+    "condition": "good",
     "drive_id": "1TUm7LDZ-w6OmyAHMWT5zn98rjejibrWn",
     "derivative": "pjm-pxl_20261120_212023398.jpg",
     "direction_deg": 17.4,
@@ -6531,7 +6605,7 @@
     "gpx_offset_s": 7.0,
     "gpx_file": "Nov_20,_2026,_3_00_48_PM.gpx",
     "serial": null,
-    "sign_kind": null,
+    "sign_kind": "wayfinding",
     "chainage_mi": null,
     "section": null,
     "snap_m": 12007.74,
@@ -6562,7 +6636,8 @@
       "direction_ref": "track",
       "direction_compass": "SSW"
      }
-    ]
+    ],
+    "classification_note": "Tree-mounted trail markers: blue paint blaze + brown hiker-symbol plate on one face, NCT medallion on the other. Blaze faded/cracked but visible; plates legible. Not a post, so SG not CP."
    }
   },
   {
@@ -6578,8 +6653,8 @@
     "photo": "PXL_20261120_212707496.MP.jpg",
     "datetime": "2026:11:20 15:27:07",
     "photographer": "PJM",
-    "type": "UN",
-    "condition": null,
+    "type": "CP",
+    "condition": "new",
     "drive_id": "1PUJF7AECf1oKeg_j_WCprZgvBZOJNbYG",
     "derivative": "pjm-pxl_20261120_212707496-mp.jpg",
     "direction_deg": 20.3,
@@ -6620,7 +6695,8 @@
       "direction_ref": "track",
       "direction_compass": "SSW"
      }
-    ]
+    ],
+    "classification_note": "Carsonite post: NCT logo + 'OPEN TO hikers / CLOSED TO ALL MOTORIZED VEHICLES' decals, no-ATV symbol, USFS shield on the front; blank back. Straight, decals crisp and fully legible."
    }
   },
   {
@@ -6636,8 +6712,8 @@
     "photo": "PXL_20261120_212731160.jpg",
     "datetime": "2026:11:20 15:27:31",
     "photographer": "PJM",
-    "type": "UN",
-    "condition": null,
+    "type": "SG",
+    "condition": "good",
     "drive_id": "1sXbNL3VeeliG8DKsVePh6GxwS3CS0Izd",
     "derivative": "pjm-pxl_20261120_212731160.jpg",
     "direction_deg": 20.3,
@@ -6647,7 +6723,7 @@
     "gpx_offset_s": 9.0,
     "gpx_file": "Nov_20,_2026,_3_00_48_PM.gpx",
     "serial": null,
-    "sign_kind": null,
+    "sign_kind": "wayfinding",
     "chainage_mi": null,
     "section": null,
     "snap_m": 12339.08,
@@ -6665,7 +6741,8 @@
       "direction_ref": "track",
       "direction_compass": "NNE"
      }
-    ]
+    ],
+    "classification_note": "Brown hiker-symbol plate nailed to a pine trunk; legible, sound. Tree-mounted, so SG not CP. Sits ~6 m from pin 136's CP and is visible at the left edge of 136's front photo, but it is a separate asset."
    }
   },
   {
@@ -6681,8 +6758,8 @@
     "photo": "PXL_20261120_214110390.MP.jpg",
     "datetime": "2026:11:20 15:41:10",
     "photographer": "PJM",
-    "type": "UN",
-    "condition": null,
+    "type": "CP",
+    "condition": "new",
     "drive_id": "1nqggCt-Re8OkzfaYn54sN4Rdzrpd6sA1",
     "derivative": "pjm-pxl_20261120_214110390-mp.jpg",
     "direction_deg": 14.0,
@@ -6723,7 +6800,8 @@
       "direction_ref": "track",
       "direction_compass": "SSW"
      }
-    ]
+    ],
+    "classification_note": "Carsonite post: NCT logo + right-arrow decal on one face; full regulatory decal set (OPEN TO hikers / CLOSED TO ALL MOTORIZED VEHICLES, USFS shield, no-ATV) + up arrow on the other. Straight, decals crisp and fully legible."
    }
   },
   {
@@ -6739,8 +6817,8 @@
     "photo": "PXL_20261120_214125458.MP.jpg",
     "datetime": "2026:11:20 15:41:25",
     "photographer": "PJM",
-    "type": "UN",
-    "condition": null,
+    "type": "SG",
+    "condition": "good",
     "drive_id": "1anPYD4YUoTYh51ybY1OskaQ0jKaVlY43",
     "derivative": "pjm-pxl_20261120_214125458-mp.jpg",
     "direction_deg": 14.0,
@@ -6750,7 +6828,7 @@
     "gpx_offset_s": 4.0,
     "gpx_file": "Nov_20,_2026,_3_00_48_PM.gpx",
     "serial": null,
-    "sign_kind": null,
+    "sign_kind": "wayfinding",
     "chainage_mi": null,
     "section": null,
     "snap_m": 12736.35,
@@ -6768,7 +6846,8 @@
       "direction_ref": "track",
       "direction_compass": "NNE"
      }
-    ]
+    ],
+    "classification_note": "White right-arrow plate nailed to a pine, with a faded blue paint blaze above it. Plate legible, sound."
    }
   },
   {
@@ -6784,8 +6863,8 @@
     "photo": "PXL_20261120_214147207.MP.jpg",
     "datetime": "2026:11:20 15:41:47",
     "photographer": "PJM",
-    "type": "UN",
-    "condition": null,
+    "type": "CP",
+    "condition": "new",
     "drive_id": "1QY7-k63rWrMMVhSJC80-thTOyz5vRw_x",
     "derivative": "pjm-pxl_20261120_214147207-mp.jpg",
     "direction_deg": 81.5,
@@ -6839,7 +6918,8 @@
       "direction_ref": null,
       "direction_compass": null
      }
-    ]
+    ],
+    "classification_note": "Carsonite post: NCT logo + 'OPEN TO hikers / CLOSED TO ALL OTHER USES' decals, no-ATV symbol, USFS shield, up arrow on one face; NCT logo + right arrow on the other. Straight, decals crisp and fully legible."
    }
   },
   {
@@ -6855,8 +6935,8 @@
     "photo": "PXL_20261120_214211719.jpg",
     "datetime": "2026:11:20 15:42:11",
     "photographer": "PJM",
-    "type": "UN",
-    "condition": null,
+    "type": "SG",
+    "condition": "good",
     "drive_id": "1fD0joLQDfd30fJRfolNLsFhJ2qtTqUlj",
     "derivative": "pjm-pxl_20261120_214211719.jpg",
     "direction_deg": 276.7,
@@ -6866,7 +6946,7 @@
     "gpx_offset_s": 21.0,
     "gpx_file": "Nov_20,_2026,_3_00_48_PM.gpx",
     "serial": null,
-    "sign_kind": null,
+    "sign_kind": "wayfinding",
     "chainage_mi": null,
     "section": null,
     "snap_m": 12750.24,
@@ -6884,7 +6964,8 @@
       "direction_ref": "track",
       "direction_compass": "W"
      }
-    ]
+    ],
+    "classification_note": "White right-arrow plate nailed to a pine trunk; legible, sound."
    }
   },
   {
@@ -6900,8 +6981,8 @@
     "photo": "PXL_20261120_214251199.jpg",
     "datetime": "2026:11:20 15:42:51",
     "photographer": "PJM",
-    "type": "UN",
-    "condition": null,
+    "type": "SG",
+    "condition": "fair",
     "drive_id": "15gQaD8ICKjMrCOmtsKC-aJJ7bDZjDFMX",
     "derivative": "pjm-pxl_20261120_214251199.jpg",
     "direction_deg": 208.8,
@@ -6911,7 +6992,7 @@
     "gpx_offset_s": 15.0,
     "gpx_file": "Nov_20,_2026,_3_00_48_PM.gpx",
     "serial": null,
-    "sign_kind": null,
+    "sign_kind": "information",
     "chainage_mi": null,
     "section": null,
     "snap_m": 12739.97,
@@ -6929,7 +7010,8 @@
       "direction_ref": "track",
       "direction_compass": "SSW"
      }
-    ]
+    ],
+    "classification_note": "USFS 'PAYMENT UNIT' timber-sale sign nailed crooked to a pine (Unit No. / Color / Sale fields blank). Not a trail sign \u2014 it marks a timber sale unit \u2014 but it is a sign, so SG. Corner bent, nailed askew, text still legible, so fair."
    }
   },
   {
@@ -6945,8 +7027,8 @@
     "photo": "PXL_20261120_214352256.jpg",
     "datetime": "2026:11:20 15:43:52",
     "photographer": "PJM",
-    "type": "UN",
-    "condition": null,
+    "type": "SG",
+    "condition": "good",
     "drive_id": "10aEIVemNxp0GvZSsZdd9T_iGmdxRNppv",
     "derivative": "pjm-pxl_20261120_214352256.jpg",
     "direction_deg": 208.8,
@@ -6956,7 +7038,7 @@
     "gpx_offset_s": 5.0,
     "gpx_file": "Nov_20,_2026,_3_00_48_PM.gpx",
     "serial": null,
-    "sign_kind": null,
+    "sign_kind": "wayfinding",
     "chainage_mi": null,
     "section": null,
     "snap_m": 12730.54,
@@ -6974,7 +7056,8 @@
       "direction_ref": "track",
       "direction_compass": "SSW"
      }
-    ]
+    ],
+    "classification_note": "Tree-mounted markers on a pine: bright yellow paint blaze above, NCT medallion (partly behind the hiker plate) + brown hiker-symbol plate. All legible, sound."
    }
   },
   {
@@ -6990,8 +7073,8 @@
     "photo": "PXL_20261120_221454721.MP.jpg",
     "datetime": "2026:11:20 16:14:54",
     "photographer": "PJM",
-    "type": "UN",
-    "condition": null,
+    "type": "SG",
+    "condition": "good",
     "drive_id": "1LxbTt9xTM9m0oqN23aFIQgOe8-od50Ej",
     "derivative": "pjm-pxl_20261120_221454721-mp.jpg",
     "direction_deg": 193.6,
@@ -7001,7 +7084,7 @@
     "gpx_offset_s": 5.0,
     "gpx_file": "Nov_20,_2026,_3_00_48_PM.gpx",
     "serial": null,
-    "sign_kind": null,
+    "sign_kind": "wayfinding",
     "chainage_mi": null,
     "section": null,
     "snap_m": 11537.62,
@@ -7019,7 +7102,8 @@
       "direction_ref": "track",
       "direction_compass": "SSW"
      }
-    ]
+    ],
+    "classification_note": "Single NCT medallion nailed to a tree trunk; legible, sound."
    }
   }
  ]
