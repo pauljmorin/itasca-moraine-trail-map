@@ -124,3 +124,10 @@ Pins below were grouped by time+position only. Where two pins are probably one a
 - ITM-CP-036 <- PXL_20261119_194715154.jpg (chainage 59.79, Chip-6)
 - ITM-CP-035 <- PXL_20261119_195927805.MP.jpg (chainage 59.19, Chip-6)
 - ITM-PK-003 <- PXL_20261119_203217269.jpg (chainage 60.74, Chip-7)
+
+## Addendum — blaze code BL (Paul, voice call, Nov 20, 2026, evening)
+- Paul: painted blazes can be typed as blazes. New registry code BL (blaze, seeded): painted trail blaze on a tree trunk, no post or sign.
+- pin 56 (chainage 56.52, Chip-5): white painted blaze, good — ITM-BL-001.
+- pin 67 (chainage 56.65, Chip-5): blue painted blaze, good — ITM-BL-002.
+- Serials minted via scripts/assign_serials.py on a filtered temp copy (same pattern as the main batch); registry counter BL next=3.
+- Not re-typed: pin 80 (blank blue diamond blaze marker nailed to a tree) stays SG — it is a nailed physical marker, and SG is the closest code; pins 135/139/143 stay SG (plates/medallions + blaze). UN count now 10.

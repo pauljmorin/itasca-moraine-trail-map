@@ -2343,8 +2343,8 @@
     "photo": "PXL_20261111_164921068.jpg",
     "datetime": "2026:11:11 10:49:21",
     "photographer": "PJM",
-    "type": "UN",
-    "condition": null,
+    "type": "BL",
+    "condition": "good",
     "drive_id": "1vtuZZVkGisPaUr4rOGOcjAl-QzDSqIiE",
     "derivative": "pxl_20261111_164921068.jpg",
     "direction_deg": null,
@@ -2353,7 +2353,7 @@
     "gps_source": "gpx",
     "gpx_offset_s": 3.0,
     "gpx_file": "Nov_11,_2026,_10_36_12_AM.gpx",
-    "serial": null,
+    "serial": "ITM-BL-001",
     "sign_kind": null,
     "chainage_mi": 56.52,
     "section": "Chip-5",
@@ -2366,7 +2366,7 @@
       "drive_id": "1vtuZZVkGisPaUr4rOGOcjAl-QzDSqIiE"
      }
     ],
-    "classification_note": "Photo shows only a white painted blaze on a tree trunk; no post, sign, or other physical asset is visible. No registry code covers a painted blaze."
+    "classification_note": "Painted white blaze on a tree trunk; no post, sign, or other physical asset. Typed BL per Paul, Nov 20, 2026."
    }
   },
   {
@@ -2803,8 +2803,8 @@
     "photo": "PXL_20261111_165750037.jpg",
     "datetime": "2026:11:11 10:57:50",
     "photographer": "PJM",
-    "type": "UN",
-    "condition": null,
+    "type": "BL",
+    "condition": "good",
     "drive_id": "1DiadXTBMTrdtcnJDLFRIEe4J7M2-ywg6",
     "derivative": "pxl_20261111_165750037.jpg",
     "direction_deg": null,
@@ -2813,7 +2813,7 @@
     "gps_source": "gpx",
     "gpx_offset_s": 3.0,
     "gpx_file": "Nov_11,_2026,_10_36_12_AM.gpx",
-    "serial": null,
+    "serial": "ITM-BL-002",
     "sign_kind": null,
     "chainage_mi": 56.65,
     "section": "Chip-5",
@@ -2826,7 +2826,7 @@
       "drive_id": "1DiadXTBMTrdtcnJDLFRIEe4J7M2-ywg6"
      }
     ],
-    "classification_note": "Photo shows only a blue painted blaze on a tree trunk; no post, sign, or other physical asset is visible. No registry code covers a painted blaze."
+    "classification_note": "Painted blue blaze on a tree trunk; no post, sign, or other physical asset. Typed BL per Paul, Nov 20, 2026."
    }
   },
   {

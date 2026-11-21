@@ -900,6 +900,28 @@
     }
    },
    "retired": []
+  },
+  "BL": {
+   "next": 3,
+   "issued": {
+    "ITM-BL-001": {
+     "photo": "PXL_20261111_164921068.jpg",
+     "type": "BL",
+     "chainage_mi": 56.52,
+     "section": "Chip-5",
+     "assigned": "2026-11-20",
+     "drive_id": "1vtuZZVkGisPaUr4rOGOcjAl-QzDSqIiE"
+    },
+    "ITM-BL-002": {
+     "photo": "PXL_20261111_165750037.jpg",
+     "type": "BL",
+     "chainage_mi": 56.65,
+     "section": "Chip-5",
+     "assigned": "2026-11-20",
+     "drive_id": "1DiadXTBMTrdtcnJDLFRIEe4J7M2-ywg6"
+    }
+   },
+   "retired": []
   }
  },
  "format": "ITM-<type>-<nnn>",
@@ -975,6 +997,11 @@
   "RG": {
    "name": "register",
    "note": "Trail register box. Code approved by Paul Nov 11, 2026 with the second batch; ITM-RG-001 is the Lake Erin trailhead register box.",
+   "status": "seeded"
+  },
+  "BL": {
+   "name": "blaze",
+   "note": "Painted trail blaze on a tree trunk (no post or sign). Code approved by Paul Nov 20, 2026.",
    "status": "seeded"
   }
  },
