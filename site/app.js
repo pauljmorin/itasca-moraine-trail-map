@@ -3810,6 +3810,146 @@ function zoomToSelection() {
   if (bounds) map.fitBounds(bounds, { padding: [40, 40], maxZoom: 14 });
 }
 
+/* ------------------------------------------------- popup highlight
+   Click-to-outline (Paul, Nov 24, 2026): "When I click on a parcel
+   I'd like for the parcel to be outlined. I'd like that behavior
+   for all objects that can be clicked like points, lines, polygons,
+   etc." One shared mechanism for every clickable object: the map's
+   popupopen/popupclose events drive it, so anything that opens a
+   popup gets outlined and closing the popup clears it — no
+   per-layer wiring, and exactly one object is outlined at a time
+   (opening a new popup closes the old one first — Leaflet
+   autoClose — and a click on the map closes the popup via
+   preclick before any section click selects). Section selection
+   keeps its own halo (§2.13); the two never overlap, because a
+   section click closes an open popup first. The outline is drawn
+   as its own non-interactive overlay on top (like the section
+   halo), never by restyling the source layer — so the source's
+   own style, the draw order (assertDrawOrder untouched), and the
+   Canvas/SVG renderer mix are all unchanged. Style constants live
+   in one place (POPUP_HIGHLIGHT) so the look is easy to tune. */
+var POPUP_HIGHLIGHT = {
+  color: "#111111",        /* outline core — near-black: no data layer
+                              uses it (darkest line is roads #616161),
+                              so it reads as "selected", never as a
+                              layer; the white casing does the work
+                              over any fill */
+  casing: "#ffffff",       /* white casing separates the outline from
+                              the fill on either side */
+  polygonCasingWeight: 7, /* polygon outline: white casing ... */
+  polygonWeight: 3,        /* ... with a 3 px core */
+  lineCasingWeight: 10,    /* line: white casing, same as the section halo */
+  lineWeightBoost: 2,      /* line core: the object's own style at
+                              weight + 2 (§2.13 idiom) */
+  ringRadius: 16,          /* point ring radius, px */
+  ringCasingWeight: 6,     /* point ring: white casing ... */
+  ringWeight: 3,           /* ... with a 3 px core */
+  ringRadiusBoost: 8,      /* circleMarker ring: source radius + 8 */
+  opacity: 1,
+};
+var popupHighlight = null; /* L.layerGroup on the map, or null */
+
+function clearPopupHighlight() {
+  if (popupHighlight) { map.removeLayer(popupHighlight); popupHighlight = null; }
+}
+
+/* Flatten nested LatLng arrays into a list of polylines (arrays of
+   LatLng). Handles LineString, MultiLineString, Polygon rings and
+   MultiPolygon rings alike; polygon rings are closed so the outline
+   meets itself. */
+function highlightLines(latlngs, close) {
+  var out = [];
+  (function walk(a) {
+    if (!a || !a.length) return;
+    if (a[0] && typeof a[0].lat === "number") {
+      var line = a.slice();
+      if (close && line.length > 1) {
+        var first = line[0], last = line[line.length - 1];
+        if (first.lat !== last.lat || first.lng !== last.lng) {
+          line.push(first);
+        }
+      }
+      out.push(line);
+    } else {
+      for (var i = 0; i < a.length; i++) walk(a[i]);
+    }
+  })(latlngs);
+  return out;
+}
+
+function drawPopupHighlight(layer) {
+  clearPopupHighlight();
+  if (!layer || !layer._map) return;
+  var H = POPUP_HIGHLIGHT, parts = [];
+  var pathOpts = function (extra) {
+    var o = { renderer: canvasFor(), interactive: false,
+      opacity: H.opacity };
+    for (var k in extra) o[k] = extra[k];
+    return o;
+  };
+  if (layer instanceof L.Marker) {
+    /* Point marker (divIcon pin, place, label-marker, gazetteer
+       pin): a ring at the marker's position. CircleMarkers keep
+       the default SVG renderer, which sits above the canvas in
+       the shared pane. */
+    var ll = layer.getLatLng();
+    parts.push(L.circleMarker(ll, { interactive: false,
+      color: H.casing, weight: H.ringCasingWeight, fill: false,
+      radius: H.ringRadius, opacity: H.opacity }));
+    parts.push(L.circleMarker(ll, { interactive: false,
+      color: H.color, weight: H.ringWeight, fill: false,
+      radius: H.ringRadius, opacity: H.opacity }));
+  } else if (layer instanceof L.CircleMarker) {
+    /* Circle marker (alerts, shoulder points, ...): a ring just
+       outside the marker's own radius. */
+    var r = Math.max(H.ringRadius,
+      ((layer.options && layer.options.radius) || 0) + H.ringRadiusBoost);
+    var cll = layer.getLatLng();
+    parts.push(L.circleMarker(cll, { interactive: false,
+      color: H.casing, weight: H.ringCasingWeight, fill: false,
+      radius: r, opacity: H.opacity }));
+    parts.push(L.circleMarker(cll, { interactive: false,
+      color: H.color, weight: H.ringWeight, fill: false,
+      radius: r, opacity: H.opacity }));
+  } else if (layer instanceof L.Polygon) {
+    /* Polygon (parcel, reservation, reroute corridor, easement,
+       wetland, ...): its boundary rings, white casing + contrasting
+       core. Polygon is checked before Polyline — it extends it. */
+    highlightLines(layer.getLatLngs(), true).forEach(function (ring) {
+      parts.push(L.polyline(ring, pathOpts({
+        color: H.casing, weight: H.polygonCasingWeight })));
+      parts.push(L.polyline(ring, pathOpts({
+        color: H.color, weight: H.polygonWeight })));
+    });
+  } else if (layer instanceof L.Polyline) {
+    /* Line (trail, road walk, road, access, ...): white casing +
+       the object's own style at weight + 2 — the §2.13 idiom, so
+       the highlight reads as the same line thickened. */
+    var o = layer.options || {};
+    var w = (typeof o.weight === "number" ? o.weight : 3) + H.lineWeightBoost;
+    highlightLines(layer.getLatLngs(), false).forEach(function (line) {
+      parts.push(L.polyline(line, pathOpts({
+        color: H.casing,
+        weight: Math.max(H.lineCasingWeight, w + 4) })));
+      parts.push(L.polyline(line, pathOpts({
+        color: o.color || H.color, weight: w,
+        dashArray: o.dashArray || null })));
+    });
+  } else {
+    return; /* FeatureGroup, ImageOverlay, the map itself: nothing
+               with a geometry of its own to outline. */
+  }
+  if (!parts.length) return;
+  popupHighlight = L.layerGroup(parts).addTo(map);
+}
+
+map.on("popupopen", function (e) {
+  drawPopupHighlight(e.popup && e.popup._source);
+});
+map.on("popupclose", function () {
+  clearPopupHighlight();
+});
+
 map.on("click", function () {
   if (spiderfyPinClick) return; /* a pin handled this click */
   unspiderfy(); /* clicking empty map collapses a fan */
