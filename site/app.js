@@ -9231,6 +9231,19 @@ function setView(view) {
    tokens win, unlisted layers keep their state. */
 var shareHashReady = false; /* false until applyHash has run, so the
    preset application during load never clobbers an incoming link */
+/* Compact share links (Paul, Nov 24, 2026): the writer encodes
+   ONLY the layers and toggles that differ from their defaults —
+   a default view with parcels on is now "layers=parcels" instead
+   of all 101 layer ids plus every type and place kind (~1,900
+   characters). The reader (applyHash) needs no change: it leaves
+   any unlisted toggle at its default, so it accepts both the old
+   long form and this compact form — old shared links keep
+   working, and applying one normalizes it to the compact form
+   (applyHash calls writeShareHash at the end). v=/view=/base=
+   are unchanged. A defaultFrom layer ("boundaries", derived from
+   "stretches") counts as at-default when it matches its source
+   toggle's CURRENT state, because that is what the reader
+   re-derives for an unlisted boundaries. */
 function writeShareHash() {
   if (!shareHashReady || !history.replaceState) return;
   var c = map.getCenter();
@@ -9242,19 +9255,29 @@ function writeShareHash() {
   var layerParts = [];
   LAYERS.forEach(function (def) {
     if (def.enabled === false || !def.box) return;
-    layerParts.push(def.box.checked ? def.id : "-" + def.id);
+    var atDefault;
+    if (def.defaultFrom) {
+      var srcDef = layerById(def.defaultFrom);
+      atDefault = !!(srcDef && srcDef.box &&
+        def.box.checked === srcDef.box.checked);
+    } else {
+      atDefault = def.box.checked === !!def.onByDefault;
+    }
+    if (!atDefault) {
+      layerParts.push(def.box.checked ? def.id : "-" + def.id);
+    }
   });
-  parts.push("layers=" + layerParts.join(","));
+  if (layerParts.length) parts.push("layers=" + layerParts.join(","));
   var typeParts = [];
   ASSET_TYPE_TOGGLES.forEach(function (t) {
-    typeParts.push(assetTypeOn[t[0]] ? t[0] : "-" + t[0]);
+    if (!assetTypeOn[t[0]]) typeParts.push("-" + t[0]);
   });
-  parts.push("types=" + typeParts.join(","));
+  if (typeParts.length) parts.push("types=" + typeParts.join(","));
   var placeParts = [];
   PLACES_KIND_TOGGLES.forEach(function (t) {
-    placeParts.push(placesKindOn[t[0]] ? t[0] : "-" + t[0]);
+    if (!placesKindOn[t[0]]) placeParts.push("-" + t[0]);
   });
-  parts.push("places=" + placeParts.join(","));
+  if (placeParts.length) parts.push("places=" + placeParts.join(","));
   history.replaceState(null, "", "#" + parts.join("&"));
 }
 
@@ -9496,6 +9519,11 @@ var requestedView = null;
     var baseDef = baseByCode(bm[1]);
     if (baseDef) setBase(baseDef.name);
   }
+  /* Both share-link forms land here: the old long form (every
+     toggle listed) and the compact form (only diffs from the
+     defaults — see writeShareHash). Either way an unlisted toggle
+     is left exactly as the panel built it, so old links restore
+     the same view they always did. */
   var m = /layers=([a-z,\-]+)/.exec(hash);
   var wanted = [], unwanted = [];
   if (m) {
