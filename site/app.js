@@ -1027,12 +1027,19 @@ L.imageOverlay.rotated = function (imgSrc, topleft, topright,
 };
 
 /* NCTA map sheets: the 22 sheet IMAGES draw at zoom 11+ only —
-   below that the toggle shows just the sheet outlines and number
-   labels (a locator), so the chapter view is never buried under
-   a near-white blanket. Leaflet loads an image overlay's <img>
+   below that the toggle shows just the sheet outlines (a
+   locator), so the chapter view is never buried under a
+   near-white blanket. Leaflet loads an image overlay's <img>
    only while the layer is on the map, so gating here also keeps
-   the 13 MB of sheet JPEGs off the wire until they can be read. */
+   the 13 MB of sheet JPEGs off the wire until they can be read.
+   The NCTA sheet NUMBER LABELS ride the same zoom >= 11 gate
+   (Nov 24, 2026 — Paul: hide the names when zoomed out, so 104
+   "MN-042" labels don't blanket the map); the labels live in
+   sheetLabels, parallel to sheetImages, and only the NCTA
+   sheets' labels are gated — the DNR / Forest Service labels
+   stay visible at every zoom, as before. */
 var sheetImages = [];
+var sheetLabels = [];
 function applySheetImageGate() {
   var show = map.getZoom() >= 11;
   sheetImages.forEach(function (img) {
@@ -1042,6 +1049,14 @@ function applySheetImageGate() {
       img._sheetGroup.addLayer(img);
     }
     if (!show && onMap) img._sheetGroup.removeLayer(img);
+  });
+  sheetLabels.forEach(function (lab) {
+    var onMap = lab._map != null;
+    if (show && !onMap && lab._sheetGroup &&
+        map.hasLayer(lab._sheetGroup)) {
+      lab._sheetGroup.addLayer(lab);
+    }
+    if (!show && onMap) lab._sheetGroup.removeLayer(lab);
   });
 }
 map.on("zoomend", applySheetImageGate);
@@ -8485,10 +8500,11 @@ var LAYERS = [
        axis-aligned placement sheared content 80-150 m,
        103-256 m at corners, and doubled the trail up to 374 m
        in overlap strips). Sheet
-       outlines + number labels ride the same toggle and stay
-       visible at low zoom where 104 near-white sheets would just
-       be a blanket. Overlay opacity 0.92 keeps the base faintly
-       present at sheet seams. */
+       outlines ride the same toggle and stay visible at low zoom
+       where 104 near-white sheets would just be a blanket; the
+       number labels ride the zoom >= 11 gate with the images
+       (Nov 24, 2026). Overlay opacity 0.92 keeps the base
+       faintly present at sheet seams. */
     id: "nctasheets", label: "Matt's NCTA map sheets",
     title: "The North Country Trail Association's printed " +
       "Minnesota map sheets (MN-001 to MN-104), laid over the map",
@@ -8542,7 +8558,12 @@ var LAYERS = [
               "</span>",
           }),
         });
-        group.addLayer(lab);
+        /* Number labels ride the same zoom >= 11 gate as the
+           sheet images (sheetLabels / applySheetImageGate
+           above) — at low zoom the layer shows outlines only. */
+        lab._sheetGroup = group;
+        sheetLabels.push(lab);
+        if (map.getZoom() >= 11) group.addLayer(lab);
       });
       return group;
     },
