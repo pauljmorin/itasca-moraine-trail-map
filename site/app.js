@@ -5909,9 +5909,35 @@ var LAYERS = [
       });
       trailCasingLayer = casing;
       trailCoreLayer = core;
-      var group = L.featureGroup([casing, core]);
+      /* Hit line (Nov 24, 2026 — the click-outline gap): the visible
+         core is only 3.5–5 px wide and the canvas hit test only
+         registers clicks within ~weight/2 of the centreline, so
+         clicks on the 7 px casing band missed it — five direct
+         clicks on the orange line opened nothing. The 12 px
+         invisible line (the hitLine idiom) catches the click and
+         opens the matching core feature's popup AT the click
+         point, so popupopen fires with the core as its source and
+         the highlight draws from the core's own style — own
+         colour, weight + 2, dash preserved. The hit line carries
+         no popup of its own on purpose: binding one to it would
+         make the highlight draw from the hit line's black/12 px
+         options instead. Features are processed in file order by
+         both geoJSON layers, so the counter keeps hit and core
+         aligned (a feature with no geometry is skipped by both). */
+      var coreLayers = core.getLayers();
+      var hitIndex = 0;
+      var hit = L.geoJSON(gj, {
+        renderer: canvasFor(),
+        style: { color: "#000000", weight: 12, opacity: 0,
+          lineCap: "round" },
+        onEachFeature: function (f, l) {
+          var target = coreLayers[hitIndex++];
+          l.on("click", function (e) { target.openPopup(e.latlng); });
+        },
+      });
+      var group = L.featureGroup([casing, core, hit]);
       group.bringToFront = function () {
-        casing.bringToFront(); core.bringToFront();
+        casing.bringToFront(); core.bringToFront(); hit.bringToFront();
       };
       return group;
     },
