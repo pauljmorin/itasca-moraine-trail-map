@@ -9537,9 +9537,12 @@ function assertDrawOrder() {
   drawOrderQueued = true;
   requestAnimationFrame(function () {
     drawOrderQueued = false;
-    /* Stacking, back → front (§2.12): the reservation polygon
-       first (it is the largest context fill and must sit under
-       everything, parcels included), then parcels, access
+    /* Stacking, back → front (§2.12): Nov 24, 2026 (Paul):
+       "reroute-arrowhead" sits FIRST — the lowest layer, just
+       above the background maps; it was covering clickable
+       layers above it. Then the reservation polygon (the largest
+       context fill, under everything else, parcels included),
+       then parcels, access
        context, roads, the official trail line, the ADOPTED
        SECTIONS on top of the trail line (Paul, Nov 10, 2026 —
        the amber highlight must read as lying over the green),
@@ -9558,9 +9561,7 @@ function assertDrawOrder() {
        arrowhead" sits with "parcels" directly after
        "parcels-driftless"; "parcels-stn" sits directly after
        "parcels-arrowhead"; "gov-owned" sits directly after
-       "parcels-stn"; "reroute-arrowhead" sits directly
-       under "trail-minnesota" (the corridor fill under the trail
-       lines); "roadwalk" sits directly over "trail" (the
+       "parcels-stn"; "roadwalk" sits directly over "trail" (the
        on-road highlight over the tread); "trail-stn" sits directly
        after "trail" (Nov 19, 2026: the Star of the North chapter
        line, drawn like the chapter line over the state line);
@@ -9582,7 +9583,7 @@ function assertDrawOrder() {
        land layers
        (foresthealth, invasives, chippewa-plan) sit with the
        other "The land" fills, after easements, before access. */
-    ["leechlake", "whiteearth", "parcels", "parcels-driftless", "parcels-arrowhead", "parcels-stn", "gov-owned", "logfim",
+    ["reroute-arrowhead", "leechlake", "whiteearth", "parcels", "parcels-driftless", "parcels-arrowhead", "parcels-stn", "gov-owned", "logfim",
      "logpast", "logplanned", "easements", "wetlands-nwi", "foresthealth",
      "invasives", "chippewa-plan", "access",
      "roads", "nctasheets",
@@ -9598,7 +9599,6 @@ function assertDrawOrder() {
      "fws-tamarac-2of3", "fws-tamarac-3of3",
      "atv", "ohm", "snow", "sht", "brt", "driftless",
      "near-brt-sht", "bwca-portages",
-     "reroute-arrowhead",
      "trail-minnesota", "trail", "trail-stn", "roadwalk", "shoulder-segments", "alerts-mn-lines",
      "stretches", "loops", "alltrails", "gaps",
      "boundaries", "termini", "milemarkers", "chainage", "contours",
