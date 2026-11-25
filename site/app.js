@@ -530,6 +530,13 @@ var mnCir2018Itasca = L.tileLayer.wms(MN_WMS, {
    HTTP 200 JPEGs for every rule below (see
    docs/infrared-bands-2026-11-25.md). */
 var S2_IMAGE = "https://sentinel.arcgis.com/arcgis/rest/services/Sentinel2/ImageServer";
+/* Sentinel-2 scene-date selector (Paul, Nov 25, 2026): the
+   selected day's time window, shared by all ten renders. null
+   means the service default — the latest scene. The window is
+   a UTC day, "startMs,endMs", appended to exportImage as
+   &time= (verified Nov 25: the same bbox renders three
+   different JPEGs for no-time, 14 Nov 2026 and 10 Oct 2026). */
+var s2TimeWindow = null;
 var ImageServerLayer = L.TileLayer.extend({
   options: { serviceUrl: null, renderingRule: null },
   getTileUrl: function (coords) {
@@ -544,6 +551,7 @@ var ImageServerLayer = L.TileLayer.extend({
       "&bboxSR=3857&imageSR=3857&size=256,256&format=jpgpng" +
       "&renderingRule=" + encodeURIComponent(JSON.stringify(
         { rasterFunction: this.options.renderingRule })) +
+      (s2TimeWindow ? "&time=" + s2TimeWindow : "") +
       "&f=image";
   }
 });
@@ -823,9 +831,17 @@ var BASES = [
     meta: "USGS via MnGeo · 1991 · 1 m · statewide · black-and-white" },
   { name: "Aerial (Esri)", code: "esri-aerial", label: "ESRI World Imagery",
     layer: esriImagery,
-    meta: "Esri World Imagery (Maxar et al.) · newest available (mosaic) · sub-metre, varies by source tile · worldwide · natural colour (RGB)" },
+    /* Date measured Nov 25, 2026, at 3 corridor points via the
+       service's identify (SRC_DATE): 4 Jul 2025 west, 2 Jun
+       2025 middle, 26 Sep 2025 east — all summer 2025, so the
+       corner readout says Jun–Sep 2025. The mosaic is living:
+       the date varies by location, and newer imagery may
+       arrive. */
+    date: "Jun–Sep 2025",
+    meta: "Esri World Imagery (Maxar et al.) · captured Jun–Sep 2025 along the corridor (measured Nov 25 at 3 points; varies by location) · 0.31–0.5 m · worldwide · natural colour (RGB)" },
   { name: "Aerial + Topo (NAIP 2023/25)", code: "aerial-topo", label: "Aerial + Topo",
     sub: "NAIP with topo labels", layer: usgsImageryTopo,
+    date: "NAIP 2023/25",
     meta: "USGS The National Map (NAIP 2023/25) · 30–60 cm · statewide · natural colour (RGB) + topo labels" },
   /* Sentinel-2 band combinations (Paul, Nov 25, 2026): the
      nonstandard renders, as buttons above the year menu — each
@@ -912,6 +928,8 @@ function setBase(name) {
   if (accessLayerRef) accessLayerRef.setStyle(accessStyle);
   markActiveBase(name);
   showAerialMeta();
+  showImageryDate();
+  showS2Date();
   writeShareHash(); /* a base change is a new shareable view */
 }
 /* Aerial-by-year menu (Paul, Nov 13, 2026): the year aerials are
@@ -943,6 +961,12 @@ var aerialMetaEl = null;
 function showAerialMeta() {
   if (!aerialMetaEl) return;
   var meta = currentBase && currentBase.meta;
+  /* Sentinel-2 scene date (Paul, Nov 25, 2026): when a dated
+     scene is chosen, the meta line says so instead of
+     "latest scene". */
+  if (meta && currentBase && isSentinel2(currentBase) && s2Date) {
+    meta = meta.replace("latest scene", "scene " + s2Date.label);
+  }
   if (meta) {
     aerialMetaEl.textContent = meta;
     aerialMetaEl.style.display = "";
@@ -950,6 +974,178 @@ function showAerialMeta() {
     aerialMetaEl.textContent = "";
     aerialMetaEl.style.display = "none";
   }
+}
+function isSentinel2(def) {
+  return !!def && /^Sentinel-2/.test(def.name);
+}
+/* Imagery date readout (Paul, Nov 25, 2026): the short date of
+   the imagery on screen, shown in the map's bottom-right
+   corner (see showImageryDate) and ONLY while an imagery base
+   is active. The date comes from the base's `meta` string —
+   the documented "source · vintage · resolution · season ·
+   coverage · bands" shape — second segment, capitalised; a
+   base may override it with an explicit `date`. Sentinel-2
+   shows the chosen scene date, or "Latest scene" by default.
+   Two entries break the meta shape and carry explicit dates:
+   "Aerial (Esri)" (measured, see below) and "Aerial + Topo"
+   (vintage sits in its first segment). */
+var imageryDateEl = null;
+function imageryDateFor(def) {
+  if (!def || !def.meta) return null;
+  if (isSentinel2(def)) return s2Date ? s2Date.label : "Latest scene";
+  if (def.date) return def.date;
+  var parts = def.meta.split(" · ");
+  if (parts.length < 2) return null;
+  var v = parts[1];
+  /* Wayback entries phrase the vintage as "photos taken YYYY"
+     (or "photos taken YYYY–YY"); the corner shows just the
+     year(s) — "2024", "2017–19" — not the whole phrase. */
+  var taken = v.match(/^photos taken (\d{4}(?:–\d{2})?)/);
+  if (taken) return taken[1];
+  /* Unmeasured Wayback entries say so in the vintage slot;
+     the corner shows the release month instead, which is the
+     honest dated fact about that snapshot. */
+  if (v.indexOf("capture year unmeasured") === 0) {
+    var m = parts[0].match(/(\d{4})-(\d{2})-\d{2}/);
+    if (m) {
+      var months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun",
+        "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+      return months[parseInt(m[2], 10) - 1] + " " + m[1] + " release";
+    }
+    return null;
+  }
+  return v.charAt(0).toUpperCase() + v.slice(1);
+}
+function showImageryDate() {
+  if (!imageryDateEl) return;
+  var d = currentBase && imageryDateFor(currentBase);
+  if (d) {
+    imageryDateEl.textContent = "Imagery: " + d;
+    imageryDateEl.style.display = "";
+  } else {
+    imageryDateEl.textContent = "";
+    imageryDateEl.style.display = "none";
+  }
+}
+/* Sentinel-2 scene-date selector (Paul, Nov 25, 2026): the
+   selector lives below the aerial metadata readout and shows
+   ONLY while a Sentinel-2 base is active. s2Date is the chosen
+   day ({label, startMs, endMs}) or null for the latest scene. */
+var s2DateWrapEl = null, s2DateSelectEl = null;
+var s2Date = null, s2DatesLoaded = false;
+var S2_QUERY_BBOX = { xmin: -95.62, ymin: 46.93, xmax: -94.28, ymax: 47.19 };
+function showS2Date() {
+  if (!s2DateWrapEl) return;
+  if (currentBase && isSentinel2(currentBase)) {
+    s2DateWrapEl.style.display = "";
+    if (!s2DatesLoaded) loadS2Dates();
+  } else {
+    s2DateWrapEl.style.display = "none";
+  }
+}
+function s2DateLabel(ms) {
+  var d = new Date(ms);
+  var months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun",
+    "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+  return d.getUTCDate() + " " + months[d.getUTCMonth()] + " " +
+    d.getUTCFullYear();
+}
+function loadS2Dates() {
+  s2DatesLoaded = true;
+  if (!s2DateSelectEl) return;
+  s2DateSelectEl.innerHTML = "";
+  var loading = document.createElement("option");
+  loading.value = "";
+  loading.textContent = "Loading scene dates…";
+  s2DateSelectEl.appendChild(loading);
+  /* Scenes over the trail, cloud < 30%, newest first — the
+     service is keyless and CORS-enabled, so the list is fetched
+     live and never goes stale. Cloud is the worst tile in the
+     scene: the corridor spans five Sentinel-2 tiles, so a date
+     is only as clear as its cloudiest tile. */
+  var q = S2_IMAGE + "/query?where=" +
+    encodeURIComponent("cloudcover<0.3") +
+    "&geometry=" + encodeURIComponent(JSON.stringify({
+      xmin: S2_QUERY_BBOX.xmin, ymin: S2_QUERY_BBOX.ymin,
+      xmax: S2_QUERY_BBOX.xmax, ymax: S2_QUERY_BBOX.ymax,
+      spatialReference: { wkid: 4326 } })) +
+    "&geometryType=esriGeometryEnvelope" +
+    "&spatialRel=esriSpatialRelIntersects" +
+    "&outFields=acquisitiondate,cloudcover" +
+    "&orderByFields=acquisitiondate%20DESC" +
+    "&resultRecordCount=60&f=json";
+  fetch(q).then(function (r) { return r.json(); }).then(function (d) {
+    var byDay = {};
+    (d.features || []).forEach(function (f) {
+      var a = f.attributes;
+      var day = new Date(a.acquisitiondate);
+      day.setUTCHours(0, 0, 0, 0);
+      var key = day.getTime();
+      if (!byDay[key] || a.cloudcover > byDay[key]) {
+        byDay[key] = a.cloudcover;
+      }
+    });
+    var days = Object.keys(byDay).map(Number).sort(function (a, b) {
+      return b - a;
+    }).slice(0, 12);
+    s2DateSelectEl.innerHTML = "";
+    var latest = document.createElement("option");
+    latest.value = "";
+    latest.textContent = "Latest scene";
+    s2DateSelectEl.appendChild(latest);
+    days.forEach(function (startMs) {
+      var opt = document.createElement("option");
+      opt.value = startMs + "," + (startMs + 86399000);
+      opt.textContent = s2DateLabel(startMs) + " · max " +
+        Math.round(byDay[startMs] * 100) + "% cloud";
+      s2DateSelectEl.appendChild(opt);
+    });
+    /* Keep the current selection if the list reloaded. */
+    s2DateSelectEl.value = s2TimeWindow || "";
+  }).catch(function () {
+    s2DateSelectEl.innerHTML = "";
+    var opt = document.createElement("option");
+    opt.value = "";
+    opt.textContent = "Scene dates unavailable — showing latest";
+    s2DateSelectEl.appendChild(opt);
+  });
+}
+function setS2Date(value) {
+  if (!value) {
+    s2Date = null;
+    s2TimeWindow = null;
+  } else {
+    var parts = value.split(",");
+    var startMs = parseInt(parts[0], 10);
+    s2Date = { label: s2DateLabel(startMs),
+      startMs: startMs, endMs: parseInt(parts[1], 10) };
+    s2TimeWindow = value;
+  }
+  /* Re-render the active Sentinel-2 layer for the chosen day;
+     the other nine renders share the same window and pick it up
+     when they are next chosen. */
+  if (currentBase && isSentinel2(currentBase) &&
+      currentBase.layer && currentBase.layer.redraw) {
+    currentBase.layer.redraw();
+  }
+  updateS2Subs();
+  showImageryDate();
+  showAerialMeta();
+}
+function updateS2Subs() {
+  /* The Sentinel-2 buttons say "10 m · latest scene"; when a
+     date is chosen they say which date, so the button never
+     claims "latest" while a dated scene is on screen. */
+  document.querySelectorAll("#background-choices .bg-choice")
+    .forEach(function (row) {
+      var def = baseByName(row.getAttribute("data-base"));
+      if (!def || !isSentinel2(def)) return;
+      var sub = row.querySelector(".bg-sub");
+      if (sub) {
+        sub.textContent = "10 m · " +
+          (s2Date ? s2Date.label : "latest scene");
+      }
+    });
 }
 /* Shareable view: look a base up by its short hash code. */
 function baseByName(name) {
@@ -1048,6 +1244,34 @@ function baseByCode(code) {
     metaEl.style.display = "none";
     wrap.appendChild(metaEl);
     aerialMetaEl = metaEl;
+    /* Sentinel-2 scene-date selector (Paul, Nov 25, 2026):
+       below the metadata readout, shown only while a
+       Sentinel-2 base is active (see showS2Date). The list is
+       fetched live from the service on first use, so it never
+       goes stale. */
+    var s2Wrap = document.createElement("div");
+    s2Wrap.id = "bg-s2-date-wrap";
+    s2Wrap.className = "bg-s2-date-wrap";
+    s2Wrap.style.display = "none";
+    var s2Label = document.createElement("label");
+    s2Label.className = "bg-year-label";
+    s2Label.setAttribute("for", "bg-s2-date-select");
+    s2Label.textContent = "Sentinel-2 scene date";
+    var s2Note = document.createElement("div");
+    s2Note.className = "bg-year-note";
+    s2Note.textContent = "Scenes over the trail, clearest recent first — cloud is the worst tile in the scene. Choosing a date re-renders all ten Sentinel-2 renders for that day.";
+    var s2Sel = document.createElement("select");
+    s2Sel.id = "bg-s2-date-select";
+    s2Sel.className = "bg-year-select";
+    s2Sel.addEventListener("change", function () {
+      setS2Date(s2Sel.value);
+    });
+    s2Wrap.appendChild(s2Label);
+    s2Wrap.appendChild(s2Note);
+    s2Wrap.appendChild(s2Sel);
+    wrap.appendChild(s2Wrap);
+    s2DateWrapEl = s2Wrap;
+    s2DateSelectEl = s2Sel;
     yearSelect = sel;
     return wrap;
   }
@@ -1066,6 +1290,22 @@ function baseByCode(code) {
   if (bgHead) wireSubToggleExpand(bgHead, main, "basemap choices", true);
 })();
 L.control.scale({ imperial: true, metric: true }).addTo(map);
+/* Imagery date readout (Paul, Nov 25, 2026): a small chip in
+   the map's bottom-right corner, above nothing and below the
+   attribution — it reads "Imagery: <date>" and shows ONLY
+   while an imagery base is active (see showImageryDate).
+   The chip is created here, after the scale control, so it
+   stacks below the attribution in the same corner. */
+var imageryDateControl = L.control({ position: "bottomright" });
+imageryDateControl.onAdd = function () {
+  var el = L.DomUtil.create("div", "imagery-date leaflet-control");
+  el.id = "imagery-date";
+  el.style.display = "none";
+  imageryDateEl = el;
+  return el;
+};
+imageryDateControl.addTo(map);
+showImageryDate();
 
 /* ------------------------------------------------ v7 cartography
    Zoom bands (cartography notes §2): Z1 ≤ 10 (chapter), Z2 11–12
@@ -1520,27 +1760,40 @@ function printAccessStyle(f, s) {
    crossed parcels get a 2px solid orange outline, adjoining parcels
    a 2px dashed khaki outline. The earlier 1px lines were too faint
    on the canvas renderer to read as boundaries. Fills unchanged. */
+/* Parcels — ONE color everywhere (Paul, Nov 25, 2026): deep cyan
+   outline #0891b2, bright cyan wash #22d3ee. The old crossed-orange
+   (#b35806 / #fdbb84) and adjoining-khaki (#a89a5b / #e7e1c3)
+   vanished on summer satellite (orange on brown/green) and on
+   color-infrared (orange on red vegetation), and the khaki was
+   nearly invisible on light paper. Cyan is rare in natural
+   imagery, so it reads on light paper, dark LiDAR hillshade,
+   summer satellite and CIR red alike (complementary to red); it
+   is clear of the gov-owned blues/greens/ambers/pink, timber
+   lime, the reroute blue wash and the reservation violet.
+   Crossed vs adjoining is now dash-only — solid = the trail
+   crosses the parcel, dashed "3 3" = adjoining ring — same
+   color, same fill. Same color in the NCT full viewer and the
+   Leech Lake viewer (see docs/parcels-color-2026-11-25.md). */
 function parcelStyle(f) {
+  var crossed = f.properties.corridor === "crossed";
   if (currentBand < 3) {
-    /* Faint at any zoom (Paul, Nov 19, 2026): same crossed/adjoining
-       distinction, muted — thin outline, light wash. Full style at Z3+. */
-    var crossedLow = f.properties.corridor === "crossed";
+    /* Faint at any zoom (Paul, Nov 19, 2026): thin outline, light
+       wash. Full style at Z3+. */
     return {
-      color: crossedLow ? "#b35806" : "#a89a5b",
+      color: "#0891b2",
       weight: 1,
-      opacity: crossedLow ? 0.5 : 0.35,
-      dashArray: crossedLow ? null : "3 3",
-      fillColor: crossedLow ? "#fdbb84" : "#e7e1c3",
-      fillOpacity: crossedLow ? 0.12 : 0.05,
+      opacity: 0.4,
+      dashArray: crossed ? null : "3 3",
+      fillColor: "#22d3ee",
+      fillOpacity: 0.05,
     };
   }
-  var crossed = f.properties.corridor === "crossed";
   return {
-    color: crossed ? "#b35806" : "#a89a5b",
+    color: "#0891b2",
     weight: 2,
     dashArray: crossed ? null : "3 3",
-    fillColor: crossed ? "#fdbb84" : "#e7e1c3",
-    fillOpacity: crossed ? 0.32 : 0.12,
+    fillColor: "#22d3ee",
+    fillOpacity: 0.10,
   };
 }
 
@@ -1553,7 +1806,7 @@ function parcelStyle(f) {
    tax-forfeit county land gets a dashed outline (county forest,
    loggable). Hidden below band 3 like parcels. Colors are a first
    cut (Paul: display adjustable later) — chosen clear of parcels
-   orange, timber lime, the reroute blue wash and the reservation
+   cyan, timber lime, the reroute blue wash and the reservation
    violet. */
 var GOV_OWNED_STYLES = {
   "Federal":    { fill: "#1d4ed8", border: "#1e3a8a" },
@@ -1564,7 +1817,7 @@ var GOV_OWNED_STYLES = {
 };
 function govOwnedStyle(f) {
   if (currentBand < 3) {
-    return { color: "#a89a5b", weight: 0, opacity: 0, fillOpacity: 0 };
+    return { color: "#0891b2", weight: 0, opacity: 0, fillOpacity: 0 };
   }
   var s = GOV_OWNED_STYLES[f.properties.category] || GOV_OWNED_STYLES.State;
   return {
@@ -7059,7 +7312,7 @@ var LAYERS = [
        #layers=parcels hash, never at startup). */
     id: "parcels", label: "Parcels",
     file: "data/parcels.geojson", onByDefault: false, group: "Land ownership",
-    swatch: { kind: "fill", color: "#fdbb84", border: "#b35806" },
+    swatch: { kind: "fill", color: "#22d3ee", border: "#0891b2" },
     build: function (gj) {
       var layer = L.geoJSON(gj, {
         renderer: canvasFor(),
@@ -7090,7 +7343,7 @@ var LAYERS = [
     id: "parcels-driftless", label: "Parcels — Driftless area (Iowa Co., WI)",
     file: "data/parcels-driftless.geojson",
     onByDefault: false, group: "Land ownership",
-    swatch: { kind: "fill", color: "#e7e1c3", border: "#a89a5b" },
+    swatch: { kind: "fill", color: "#22d3ee", border: "#0891b2" },
     build: function (gj) {
       return L.geoJSON(gj, {
         renderer: canvasFor(),
@@ -7119,7 +7372,7 @@ var LAYERS = [
     title: "Parcels in the Arrowhead reroute corridor (whole polygon)",
     file: "data/parcels-arrowhead.geojson",
     onByDefault: false, group: "Land ownership",
-    swatch: { kind: "fill", color: "#fdbb84", border: "#b35806" },
+    swatch: { kind: "fill", color: "#22d3ee", border: "#0891b2" },
     build: function (gj) {
       return L.geoJSON(gj, {
         renderer: canvasFor(),
@@ -7152,7 +7405,7 @@ var LAYERS = [
     title: "Parcels along the Star of the North trail (MN-84 to MN-6, foot trail only)",
     file: "data/parcels-stn.geojson",
     onByDefault: false, group: "Land ownership",
-    swatch: { kind: "fill", color: "#fdbb84", border: "#b35806" },
+    swatch: { kind: "fill", color: "#22d3ee", border: "#0891b2" },
     build: function (gj) {
       return L.geoJSON(gj, {
         renderer: canvasFor(),
@@ -10228,11 +10481,11 @@ function legendHtml() {
        add("", "<strong>Roads</strong>");
        ["A", "B", "C", "F"].forEach(...) */
   add("", "<strong>Parcels</strong>");
-  add("<span class='swatch fill' style='background:#fdbb84'></span>",
+  add("<span class='swatch fill' style='background:#22d3ee;border:2px solid #0891b2'></span>",
     "Parcel the trail crosses");
-  add("<span class='swatch fill' style='background:#e7e1c3'></span>",
+  add("<span class='swatch fill' style='background:#22d3ee;border:2px solid #0891b2'></span>",
     "Adjoining parcel (corridor ring)");
-  add("<span class='swatch fill' style='background:#e7e1c3'></span>",
+  add("<span class='swatch fill' style='background:#22d3ee;border:2px solid #0891b2'></span>",
     "Driftless parcel (Iowa Co., WI — half-mile corridor)");
   add("", "<strong>Government-owned lands</strong>");
   add("<span class='swatch fill' style='background:#1d4ed8'></span>",

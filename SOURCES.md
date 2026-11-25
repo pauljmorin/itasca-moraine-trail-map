@@ -243,6 +243,22 @@ pulled.
 - **What:** Tax parcel boundaries with ownership attributes,
   compiled from opt-in counties (GAC parcel standard fields,
   including `owner_name` and `ownership`).
+- **Display color (Nov 25, 2026, Paul):** ONE color in all three
+  viewers (this one, the NCT full viewer, the Leech Lake viewer)
+  — deep cyan outline `#0891b2`, bright cyan wash `#22d3ee`
+  (fill 0.10, faint 0.05 below Z3). The old crossed-orange
+  (`#b35806` / `#fdbb84`) and adjoining-khaki (`#a89a5b` /
+  `#e7e1c3`) vanished on summer satellite and on color-infrared
+  (orange on red vegetation) and the khaki was nearly invisible
+  on light paper. Cyan is rare in natural imagery, so it reads on
+  light paper, dark LiDAR hillshade, summer satellite and CIR red
+  alike (complementary to red); it is clear of the gov-owned
+  blues/greens/ambers/pink, timber lime, the reroute blue wash
+  and the reservation violet. Crossed vs adjoining is now
+  dash-only: solid = the trail crosses the parcel, dashed
+  "3 3" = adjoining ring — same color, same fill. Panel swatches
+  and legend use the same fill + outline. See
+  `docs/parcels-color-2026-11-25.md`.
 - **URL:** https://enterprise.gisdata.mn.gov/aghost/rest/services/us_mn_state_mngeo/plan_parcels_open/FeatureServer
   (layer 0, "Open Parcels In Minnesota"; layer 1 is the per-county
   metadata layer used for the coverage check — the two layer numbers
@@ -2814,7 +2830,14 @@ all three keyed bases.
 - **Aerial (Esri)** — Esri World Imagery —
   `https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}`.
   Attribution: "Aerial imagery: Esri, Maxar, Earthstar
-  Geographics".
+  Geographics". **Capture date measured Nov 25, 2026** via
+  the service's identify (SRC_DATE) at 3 corridor points:
+  west (−95.5, 47.15) 4 Jul 2025 (WV03, 0.31 m), middle
+  (−95.0, 47.05) 2 Jun 2025 (WV02, 0.5 m), east (−94.4,
+  47.1) 26 Sep 2025 (WV02, 0.5 m) — all summer 2025. The
+  layer is a living mosaic, so the date varies by location;
+  the corner readout says "Jun–Sep 2025" and the meta line
+  carries the measurement.
 
 **Also in the switcher:**
 
@@ -2866,8 +2889,12 @@ are each genuinely distinct.**
   underlying Minnesota imagery is summer leaf-on (visually
   confirmed on z14 tiles for 2018 and 2025). Labels "Aerial YYYY
   (Dec)", sub "Esri Wayback · summer leaf-on". 2026 NOT added —
-  the current Aerial (Esri) base already serves the newest
-  imagery.
+  re-checked Nov 25, 2026: release 3692 (2026-11-18, the
+  Leech Lake viewer's newest Wayback entry) returns
+  byte-identical JPEGs to release 13192 (2025) at all 3
+  corridor points (z12), so it adds no new imagery over the
+  corridor — the same finding as 2015–2017, which resolve
+  to the 2014 base.
 - **MnGeo Geospatial Image Service** — same WMS endpoint and
   pattern as the hillshade (`L.tileLayer.wms`, endpoint
   `https://imageserver.gisdata.mn.gov/cgi-bin/wmswm?`), layers:
@@ -3047,6 +3074,72 @@ in the Basemap section, as Paul's follow-up allowed.**
   resolution (50 cm) comes from the WMS ScaleHint
   (min 0.20); the 2006 layer's 1 m comes from its own
   abstract.
+
+- **Imagery date readout (Nov 25, 2026)** — a small chip in
+  the map's bottom-right corner reading "Imagery: <date>",
+  visible ONLY while an imagery base is active. The date is
+  derived from the base's `meta` string (second segment —
+  the vintage slot of the documented "source · vintage ·
+  resolution · season · coverage · bands" shape), except
+  where a base carries an explicit `date`: "Aerial (Esri)"
+  shows the measured capture range above ("Jun–Sep 2025"),
+  "Aerial + Topo" shows "NAIP 2023/25", and Sentinel-2
+  shows the chosen scene date (or "Latest scene"). Wayback
+  entries whose capture year is unmeasured show their
+  release month instead ("Dec 2024 release"), which is the
+  honest dated fact about that snapshot. No date is ever
+  invented: a base with no vintage and no `date` hides the
+  chip. Interpretation method: the chip answers "when was
+  the picture I'm looking at taken", per base, from the
+  same vintage facts the metadata readout already states.
+
+- **Sentinel-2 scene-date selector (Nov 25, 2026)** — the
+  ten Sentinel-2 renders are the service's latest-scene
+  mosaic by default, and the latest scene over the corridor
+  is often cloud (the newest scenes, 17–24 Nov 2026, are
+  80–100% cloud). The selector, below the metadata readout
+  and shown only while a Sentinel-2 base is active, lists
+  the clearest recent scenes over the trail and re-renders
+  all ten renders for the chosen day. **How the dates are
+  found:** live, at first use, from the service itself —
+  `.../Sentinel2/ImageServer/query` over the corridor bbox
+  (lon −95.62…−94.28, lat 46.93…47.19), `cloudcover<0.3`,
+  newest first, deduplicated by UTC day, cloud = the worst
+  tile in the scene (the corridor spans five Sentinel-2
+  tiles: 15TUM, 15TVM, 14TQT, 15TUN, 15TVN), 12 most recent
+  days. **How a date is applied:** the chosen UTC day is
+  passed to every tile render as the exportImage `time`
+  parameter (`time=<day start ms>,<day end ms>`), which
+  restricts the mosaic to rasters acquired that day —
+  verified Nov 25 at a Park Rapids bbox: no-time, 14 Nov
+  2026 and 10 Oct 2026 renders are three different JPEGs.
+  The selector, the Sentinel-2 button subs ("10 m · 14 Nov
+  2026"), the metadata line ("scene 14 Nov 2026") and the
+  corner chip all follow the same chosen date; "Latest
+  scene" clears it. The choice is session-only — it is not
+  carried in the share hash. **What dates exist:** the
+  service spans 2015–2026 (timeExtent 2015-04-30 →
+  2026-11-08 in the service description, with newer scenes
+  arriving since); any date in that span with a clear scene
+  over the corridor can be selected, newest clear dates
+  first. Recent clear dates measured Nov 25: 14 Nov 2026
+  (0–6% cloud), 12 Nov 2026 (0%), 20 Oct 2026 (0–10%),
+  10 Oct 2026 (0–2%).
+
+- **Landsat — no selector, and no live layer in either
+  viewer (Nov 25, 2026).** Paul asked about Landsat dates:
+  there is no Landsat ImageServer layer in the ITM viewer
+  or the Leech Lake viewer. The only Landsat anywhere in
+  the pair is the Leech viewer's static MnGeo WMS mosaic
+  ("Aerial 2002–04 (Landsat)", 30 m) — a single vintage,
+  2002–2004, so a selector would have nothing to select.
+  Esri's Landsat ImageServer was checked and NOT added to
+  the ITM viewer (SOURCES.md, infrared section): the same
+  renders at 30 m, strictly coarser than Sentinel-2's
+  10 m, with nothing distinct except thermal bands, which
+  are not band combinations. If a dated Landsat layer is
+  ever wanted, it would be a new layer, not a selector on
+  an existing one.
 
 - **MN LiDAR Canopy** and **Canopy height (LiDAR)** — the
   second-generation LiDAR trio, completed Nov 11, 2026 (the

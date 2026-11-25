@@ -2013,6 +2013,21 @@ body.base-white .leaflet-container { background: #ffffff; }
   color: var(--ink-soft);
   line-height: 1.35;
 }
+/* Imagery date readout (Paul, Nov 25, 2026): the "Imagery:
+   <date>" chip in the map's bottom-right corner. Same quiet
+   treatment as the Leaflet attribution it sits under. */
+.imagery-date {
+  font-size: 11px;
+  line-height: 1.4;
+  color: #333;
+  background: rgba(255, 255, 255, 0.85);
+  padding: 2px 6px;
+}
+/* Sentinel-2 scene-date selector (Paul, Nov 25, 2026):
+   same treatment as the year menu above it. */
+.bg-s2-date-wrap {
+  margin-top: 8px;
+}
 
 /* --- Maintenance markers (R1): red/amber diamonds, the same
    vocabulary as the work list. --- */
