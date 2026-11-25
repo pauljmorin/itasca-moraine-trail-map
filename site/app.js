@@ -433,6 +433,179 @@ var mnAerial1991 = L.tileLayer.wms(MN_WMS, {
   attribution: "Aerial imagery (1991, black-and-white): USGS / MnGeo",
 });
 
+/* Added Nov 25, 2026 (Paul, voice: "does infrared exist for
+   the air photography — if so, put it into the viewer"): the
+   color-infrared (CIR) twins of the year aerials, same WMS
+   endpoint and pattern as the RGB entries above. MnGeo serves
+   a CIR rendering for most NAIP vintages (4-band RGBI) plus
+   the county/project CIR flights. Every layer below was verified
+   live Nov 25 with GetMap requests at corridor points (2 km
+   box, 256x256 JPEG) — see docs/infrared-bands-2026-11-25.md.
+   Coverage notes, from the same check: the statewide FSA CIR
+   layers cover the whole corridor; nc13hmcir matches its RGB
+   twin exactly (real at Itasca State Park, Akeley, Nevis and
+   Lake George; blank at Park Rapids, as the RGB layer is
+   there); itas18cir is Itasca County only (blank at Park
+   Rapids, real at Grand Rapids); nc13ftcir is northern MN
+   (real at Grand Rapids, blank at Ely). NOT added: ncir09
+   (2009, Big Fork/Little Fork watersheds only — no corridor
+   coverage) and nw14cir (2014 NW, blank over most of the
+   corridor — same verdict as its RGB twin Nov 13). The Nov 13
+   note's blanket "the *cir renderings were not added" is
+   superseded by this entry: Paul asked for CIR explicitly. */
+var mnCir2025 = L.tileLayer.wms(MN_WMS, {
+  layers: "fsa2025cir", format: "image/jpeg", transparent: false,
+  version: "1.1.1",
+  attribution: "Infrared imagery (2025 NAIP CIR): USDA / MnGeo",
+});
+var mnCir2023 = L.tileLayer.wms(MN_WMS, {
+  layers: "fsa2023cir", format: "image/jpeg", transparent: false,
+  version: "1.1.1",
+  attribution: "Infrared imagery (2023 NAIP CIR): USDA / MnGeo",
+});
+var mnCir2021 = L.tileLayer.wms(MN_WMS, {
+  layers: "fsa2021cir", format: "image/jpeg", transparent: false,
+  version: "1.1.1",
+  attribution: "Infrared imagery (2021 NAIP CIR): USDA / MnGeo",
+});
+var mnCir2019 = L.tileLayer.wms(MN_WMS, {
+  layers: "fsa2019cir", format: "image/jpeg", transparent: false,
+  version: "1.1.1",
+  attribution: "Infrared imagery (2019 NAIP CIR): USDA / MnGeo",
+});
+var mnCir2017 = L.tileLayer.wms(MN_WMS, {
+  layers: "fsa2017cir", format: "image/jpeg", transparent: false,
+  version: "1.1.1",
+  attribution: "Infrared imagery (2017 NAIP CIR): USDA / MnGeo",
+});
+var mnCir2015 = L.tileLayer.wms(MN_WMS, {
+  layers: "fsa2015cir", format: "image/jpeg", transparent: false,
+  version: "1.1.1",
+  attribution: "Infrared imagery (2015 NAIP CIR): USDA / MnGeo",
+});
+var mnCir2013 = L.tileLayer.wms(MN_WMS, {
+  layers: "fsa2013cir", format: "image/jpeg", transparent: false,
+  version: "1.1.1",
+  attribution: "Infrared imagery (2013 NAIP CIR): USDA / MnGeo",
+});
+var mnCir2013Spring = L.tileLayer.wms(MN_WMS, {
+  layers: "nc13hmcir", format: "image/jpeg", transparent: false,
+  version: "1.1.1",
+  attribution: "Infrared imagery (2013, spring leaf-off CIR): " +
+    "MnGeo / Minnesota DNR (Spring Aerial Imagery Program)",
+});
+var mnCir2013North = L.tileLayer.wms(MN_WMS, {
+  layers: "nc13ftcir", format: "image/jpeg", transparent: false,
+  version: "1.1.1",
+  attribution: "Infrared imagery (2013, North CIR): MnGeo",
+});
+var mnCir2012Fall = L.tileLayer.wms(MN_WMS, {
+  layers: "fallcir12", format: "image/jpeg", transparent: false,
+  version: "1.1.1",
+  attribution: "Infrared imagery (2012, fall CIR): MnGeo",
+});
+var mnCir2008 = L.tileLayer.wms(MN_WMS, {
+  layers: "cir2008", format: "image/jpeg", transparent: false,
+  version: "1.1.1",
+  attribution: "Infrared imagery (2008 NAIP CIR): USDA / MnGeo",
+});
+var mnCir2018Itasca = L.tileLayer.wms(MN_WMS, {
+  layers: "itas18cir", format: "image/jpeg", transparent: false,
+  version: "1.1.1",
+  attribution: "Infrared imagery (2018, Itasca County CIR): MnGeo",
+});
+
+/* ArcGIS ImageServer as a tile layer (Paul, Nov 25, 2026 —
+   the nonstandard band combinations): the Sentinel-2 service
+   has no cached tile endpoint, so each tile is a live
+   exportImage render of that tile's bbox, with the rendering
+   rule (band combination or index) named in the request. The
+   plain (non-DRA) rules are used on purpose: DRA re-stretches
+   every tile to its own contents, so neighbouring tiles would
+   not match; the fixed-stretch rules render every tile the
+   same way. Leaflet hands getTileUrl the tile coords at the
+   clamped native zoom (_tileZoom), so coords.z is the zoom the
+   bbox is computed at — no rescaling is needed. Verified live
+   Nov 25: exportImage requests at a Park Rapids bbox returned
+   HTTP 200 JPEGs for every rule below (see
+   docs/infrared-bands-2026-11-25.md). */
+var S2_IMAGE = "https://sentinel.arcgis.com/arcgis/rest/services/Sentinel2/ImageServer";
+var ImageServerLayer = L.TileLayer.extend({
+  options: { serviceUrl: null, renderingRule: null },
+  getTileUrl: function (coords) {
+    var z = coords.z, n = Math.pow(2, z), R = 20037508.34;
+    var minx = (coords.x / n * 2 - 1) * R;
+    var maxx = ((coords.x + 1) / n * 2 - 1) * R;
+    var maxy = (1 - coords.y / n * 2) * R;
+    var miny = (1 - (coords.y + 1) / n * 2) * R;
+    return this.options.serviceUrl + "/exportImage?bbox=" +
+      [minx.toFixed(1), miny.toFixed(1),
+       maxx.toFixed(1), maxy.toFixed(1)].join(",") +
+      "&bboxSR=3857&imageSR=3857&size=256,256&format=jpgpng" +
+      "&renderingRule=" + encodeURIComponent(JSON.stringify(
+        { rasterFunction: this.options.renderingRule })) +
+      "&f=image";
+  }
+});
+/* Sentinel-2 band combinations (10 m, latest-scene mosaic).
+   Order is Paul's priority order, CIR first; the rest is a
+   best-guess usefulness order, PROVISIONAL until Paul ranks
+   them — reorder the entries below to re-rank (the BASES
+   entries below follow this same order). Band combinations
+   and formulas are Esri's own rendering-rule descriptions,
+   fetched from the service Nov 25 — see SOURCES.md. */
+var s2Cir = new ImageServerLayer("", {
+  serviceUrl: S2_IMAGE, renderingRule: "Color Infrared",
+  maxZoom: 17, maxNativeZoom: 16,
+  attribution: "Sentinel-2: ESA / Esri",
+});
+var s2Agriculture = new ImageServerLayer("", {
+  serviceUrl: S2_IMAGE, renderingRule: "Agriculture",
+  maxZoom: 17, maxNativeZoom: 16,
+  attribution: "Sentinel-2: ESA / Esri",
+});
+var s2Ndvi = new ImageServerLayer("", {
+  serviceUrl: S2_IMAGE, renderingRule: "NDVI Colormap",
+  maxZoom: 17, maxNativeZoom: 16,
+  attribution: "Sentinel-2: ESA / Esri",
+});
+var s2Ndmi = new ImageServerLayer("", {
+  serviceUrl: S2_IMAGE, renderingRule: "NDMI Colorized",
+  maxZoom: 17, maxNativeZoom: 16,
+  attribution: "Sentinel-2: ESA / Esri",
+});
+var s2Geology = new ImageServerLayer("", {
+  serviceUrl: S2_IMAGE, renderingRule: "Geology",
+  maxZoom: 17, maxNativeZoom: 16,
+  attribution: "Sentinel-2: ESA / Esri",
+});
+var s2Swir = new ImageServerLayer("", {
+  serviceUrl: S2_IMAGE, renderingRule: "Short-wave Infrared",
+  maxZoom: 17, maxNativeZoom: 16,
+  attribution: "Sentinel-2: ESA / Esri",
+});
+var s2Bathymetric = new ImageServerLayer("", {
+  serviceUrl: S2_IMAGE, renderingRule: "Bathymetric",
+  maxZoom: 17, maxNativeZoom: 16,
+  attribution: "Sentinel-2: ESA / Esri",
+});
+var s2Nbr = new ImageServerLayer("", {
+  serviceUrl: S2_IMAGE, renderingRule: "Normalized Burn Ratio",
+  maxZoom: 17, maxNativeZoom: 16,
+  attribution: "Sentinel-2: ESA / Esri",
+});
+var s2Ndbi = new ImageServerLayer("", {
+  serviceUrl: S2_IMAGE,
+  renderingRule: "Normalized Difference Built-Up Index (NDBI)",
+  maxZoom: 17, maxNativeZoom: 16,
+  attribution: "Sentinel-2: ESA / Esri",
+});
+var s2Ndwi = new ImageServerLayer("", {
+  serviceUrl: S2_IMAGE, renderingRule: "NDWI Raw",
+  maxZoom: 17, maxNativeZoom: 16,
+  attribution: "Sentinel-2: ESA / Esri",
+});
+
 /* LiDAR Shaded is a COMPOSED base: OpenSnowMap's pistes are a
    transparent overlay tile set with no cartography of their own
    (OpenSnowMap's own base snow map stays unused -- its author
@@ -541,57 +714,156 @@ var BASES = [
      2018, 2020 and 2024 releases are unmeasured, so those three
      labels still show the release year. */
   { name: "Aerial 2025 (Dec)", code: "aerial-2025", label: "Aerial 2024",
-    sub: "Esri Wayback snapshot", layer: esriWayback2025 },
+    sub: "Esri Wayback snapshot", layer: esriWayback2025,
+    meta: "Esri Wayback release 2025-12-18 · photos taken 2024 · sub-metre, varies by source tile · December snapshot · worldwide · natural colour (RGB)" },
   { name: "Aerial 2025 (summer)", code: "aerial-2025-naip", label: "Aerial 2025 (summer)",
-    sub: "NAIP", layer: mnAerial2025 },
+    sub: "NAIP", layer: mnAerial2025,
+    meta: "USDA NAIP via MnGeo · summer 2025 · 60 cm · statewide · natural colour (RGB)" },
+  { name: "Aerial 2025 (summer, infrared)", code: "aerial-2025-summer-cir", label: "Aerial 2025 (summer)",
+    sub: "NAIP · CIR", layer: mnCir2025,
+    meta: "USDA NAIP via MnGeo · summer 2025 · 60 cm · statewide · false-colour infrared (NIR–red–green)" },
   { name: "Aerial 2024 (Dec)", code: "aerial-2024", label: "Aerial 2024 (Dec)",
-    sub: "Esri Wayback snapshot", layer: esriWayback2024 },
+    sub: "Esri Wayback snapshot", layer: esriWayback2024,
+    meta: "Esri Wayback release 2024-12-12 · capture year unmeasured — label shows release year · sub-metre, varies by source tile · December snapshot · worldwide · natural colour (RGB)" },
   { name: "Aerial 2023 (Dec)", code: "aerial-2023", label: "Aerial 2019",
-    sub: "Esri Wayback snapshot", layer: esriWayback2023 },
+    sub: "Esri Wayback snapshot", layer: esriWayback2023,
+    meta: "Esri Wayback release 2023-12-07 · photos taken 2019 · sub-metre, varies by source tile · December snapshot · worldwide · natural colour (RGB)" },
   { name: "Aerial 2023 (summer)", code: "aerial-2023-naip", label: "Aerial 2023 (summer)",
-    sub: "NAIP", layer: mnAerial2023 },
+    sub: "NAIP", layer: mnAerial2023,
+    meta: "USDA NAIP via MnGeo · summer 2023 · 30 cm · statewide · natural colour (RGB)" },
+  { name: "Aerial 2023 (summer, infrared)", code: "aerial-2023-summer-cir", label: "Aerial 2023 (summer)",
+    sub: "NAIP · CIR", layer: mnCir2023,
+    meta: "USDA NAIP via MnGeo · summer 2023 · 30 cm · statewide · false-colour infrared (NIR–red–green)" },
   { name: "Aerial 2022 (Dec)", code: "aerial-2022", label: "Aerial 2021",
-    sub: "Esri Wayback snapshot", layer: esriWayback2022 },
+    sub: "Esri Wayback snapshot", layer: esriWayback2022,
+    meta: "Esri Wayback release 2022-12-14 · photos taken 2021 · sub-metre, varies by source tile · December snapshot · worldwide · natural colour (RGB)" },
   { name: "Aerial 2021 (Dec)", code: "aerial-2021", label: "Aerial 2017–19",
-    sub: "Esri Wayback snapshot", layer: esriWayback2021 },
+    sub: "Esri Wayback snapshot", layer: esriWayback2021,
+    meta: "Esri Wayback release 2021-12-21 · photos taken 2017–19 · sub-metre, varies by source tile · December snapshot · worldwide · natural colour (RGB)" },
   { name: "Aerial 2021 (summer)", code: "aerial-2021-naip", label: "Aerial 2021 (summer)",
-    sub: "NAIP", layer: mnAerial2021 },
+    sub: "NAIP", layer: mnAerial2021,
+    meta: "USDA NAIP via MnGeo · summer–fall 2021 · 60 cm · statewide · natural colour (RGB)" },
+  { name: "Aerial 2021 (summer, infrared)", code: "aerial-2021-summer-cir", label: "Aerial 2021 (summer)",
+    sub: "NAIP · CIR", layer: mnCir2021,
+    meta: "USDA NAIP via MnGeo · summer–fall 2021 · 60 cm · statewide · false-colour infrared (NIR–red–green)" },
   { name: "Aerial 2020 (Dec)", code: "aerial-2020", label: "Aerial 2020 (Dec)",
-    sub: "Esri Wayback snapshot", layer: esriWayback2020 },
+    sub: "Esri Wayback snapshot", layer: esriWayback2020,
+    meta: "Esri Wayback release 2020-12-16 · capture year unmeasured — label shows release year · sub-metre, varies by source tile · December snapshot · worldwide · natural colour (RGB)" },
   { name: "Aerial 2019 (Dec)", code: "aerial-2019", label: "Aerial 2017",
-    sub: "Esri Wayback snapshot", layer: esriWayback2019 },
+    sub: "Esri Wayback snapshot", layer: esriWayback2019,
+    meta: "Esri Wayback release 2019-12-12 · photos taken 2017 · sub-metre, varies by source tile · December snapshot · worldwide · natural colour (RGB)" },
   { name: "Aerial 2019 (summer)", code: "aerial-2019-naip", label: "Aerial 2019 (summer)",
-    sub: "NAIP", layer: mnAerial2019 },
+    sub: "NAIP", layer: mnAerial2019,
+    meta: "USDA NAIP via MnGeo · summer 2019 · 60 cm · statewide · natural colour (RGB)" },
+  { name: "Aerial 2019 (summer, infrared)", code: "aerial-2019-summer-cir", label: "Aerial 2019 (summer)",
+    sub: "NAIP · CIR", layer: mnCir2019,
+    meta: "USDA NAIP via MnGeo · summer 2019 · 60 cm · statewide · false-colour infrared (NIR–red–green)" },
   { name: "Aerial 2018 (Dec)", code: "aerial-2018", label: "Aerial 2018 (Dec)",
-    sub: "Esri Wayback snapshot", layer: esriWayback2018 },
+    sub: "Esri Wayback snapshot", layer: esriWayback2018,
+    meta: "Esri Wayback release 2018-12-14 · capture year unmeasured — label shows release year · sub-metre, varies by source tile · December snapshot · worldwide · natural colour (RGB)" },
+  { name: "Aerial 2018 (Itasca Co., infrared)", code: "aerial-2018-itasca-cir", label: "Aerial 2018 (Itasca Co.)",
+    sub: "Itasca Co. · 30 cm · CIR", layer: mnCir2018Itasca,
+    meta: "Itasca County via MnGeo · 2018 · 30 cm (1 ft) · Itasca County only · false-colour infrared (NIR–red–green)" },
   { name: "Aerial 2017 (summer)", code: "aerial-2017-naip", label: "Aerial 2017 (summer)",
-    sub: "NAIP", layer: mnAerial2017 },
+    sub: "NAIP", layer: mnAerial2017,
+    meta: "USDA NAIP via MnGeo · summer 2017 · 1 m · statewide · natural colour (RGB)" },
+  { name: "Aerial 2017 (summer, infrared)", code: "aerial-2017-summer-cir", label: "Aerial 2017 (summer)",
+    sub: "NAIP · CIR", layer: mnCir2017,
+    meta: "USDA NAIP via MnGeo · summer 2017 · 1 m · statewide · false-colour infrared (NIR–red–green)" },
   { name: "Aerial 2015 (summer)", code: "aerial-2015-naip", label: "Aerial 2015 (summer)",
-    sub: "NAIP", layer: mnAerial2015 },
+    sub: "NAIP", layer: mnAerial2015,
+    meta: "USDA NAIP via MnGeo · summer 2015 · 1 m · statewide · natural colour (RGB)" },
+  { name: "Aerial 2015 (summer, infrared)", code: "aerial-2015-summer-cir", label: "Aerial 2015 (summer)",
+    sub: "NAIP · CIR", layer: mnCir2015,
+    meta: "USDA NAIP via MnGeo · summer 2015 · 1 m · statewide · false-colour infrared (NIR–red–green)" },
   { name: "Aerial 2014 (Dec)", code: "aerial-2014", label: "Aerial 1999",
-    sub: "Esri Wayback snapshot", layer: esriWayback2014 },
+    sub: "Esri Wayback snapshot", layer: esriWayback2014,
+    meta: "Esri Wayback release 2014-12-30 · photos taken 1999 · sub-metre, varies by source tile · December snapshot · worldwide · natural colour (RGB)" },
   { name: "Aerial 2013 (spring, leaf-off)", code: "aerial-2013-spring", label: "Aerial 2013 (spring, leaf-off)",
-    sub: "MnGeo NW 50 cm · SAIP", layer: mnAerial2013Spring },
+    sub: "MnGeo NW 50 cm · SAIP", layer: mnAerial2013Spring,
+    meta: "MnGeo SAIP · spring 2013, leaf-off · 50 cm · NW Minnesota, patchy over the corridor · natural colour (RGB)" },
+  { name: "Aerial 2013 (spring, leaf-off, infrared)", code: "aerial-2013-spring-cir", label: "Aerial 2013 (spring, leaf-off)",
+    sub: "SAIP · 50 cm · CIR", layer: mnCir2013Spring,
+    meta: "MnGeo SAIP · spring 2013, leaf-off · 50 cm · NW Minnesota, patchy over the corridor · false-colour infrared (NIR–red–green)" },
   { name: "Aerial 2013 (summer)", code: "aerial-2013-naip", label: "Aerial 2013 (summer)",
-    sub: "NAIP", layer: mnAerial2013 },
+    sub: "NAIP", layer: mnAerial2013,
+    meta: "USDA NAIP via MnGeo · summer 2013 · 1 m · statewide · natural colour (RGB)" },
+  { name: "Aerial 2013 (summer, infrared)", code: "aerial-2013-summer-cir", label: "Aerial 2013 (summer)",
+    sub: "NAIP · CIR", layer: mnCir2013,
+    meta: "USDA NAIP via MnGeo · summer 2013 · 1 m · statewide · false-colour infrared (NIR–red–green)" },
+  { name: "Aerial 2013 (north, infrared)", code: "aerial-2013-north-cir", label: "Aerial 2013 (north)",
+    sub: "MnGeo North · 30 cm · CIR", layer: mnCir2013North,
+    meta: "MnGeo · 2013 · 30 cm (1 ft) · northern Minnesota, incl. Grand Rapids · false-colour infrared (NIR–red–green)" },
   { name: "Aerial 2012 (fall)", code: "aerial-2012-fall", label: "Aerial 2012 (fall)",
-    sub: "MnGeo Central", layer: mnAerial2012Fall },
+    sub: "MnGeo Central", layer: mnAerial2012Fall,
+    meta: "MnGeo · fall 2012 · 50 cm · Central Minnesota · natural colour (RGB)" },
+  { name: "Aerial 2012 (fall, infrared)", code: "aerial-2012-fall-cir", label: "Aerial 2012 (fall)",
+    sub: "MnGeo Central · 50 cm · CIR", layer: mnCir2012Fall,
+    meta: "MnGeo · fall 2012 · 50 cm · Central Minnesota · false-colour infrared (NIR–red–green)" },
   { name: "Aerial 2010 (summer)", code: "aerial-2010-naip", label: "Aerial 2010 (summer)",
-    sub: "NAIP", layer: mnAerial2010 },
+    sub: "NAIP", layer: mnAerial2010,
+    meta: "USDA NAIP via MnGeo · summer 2010 · 1 m · statewide · natural colour (RGB)" },
   { name: "Aerial 2009 (summer)", code: "aerial-2009-naip", label: "Aerial 2009 (summer)",
-    sub: "NAIP", layer: mnAerial2009 },
+    sub: "NAIP", layer: mnAerial2009,
+    meta: "USDA NAIP via MnGeo · summer 2009 · 1 m · statewide · natural colour (RGB)" },
   { name: "Aerial 2008 (summer)", code: "aerial-2008-naip", label: "Aerial 2008 (summer)",
-    sub: "NAIP", layer: mnAerial2008 },
+    sub: "NAIP", layer: mnAerial2008,
+    meta: "USDA NAIP via MnGeo · summer 2008 · 1 m · statewide · natural colour (RGB)" },
+  { name: "Aerial 2008 (summer, infrared)", code: "aerial-2008-summer-cir", label: "Aerial 2008 (summer)",
+    sub: "NAIP · CIR", layer: mnCir2008,
+    meta: "USDA NAIP via MnGeo · summer 2008 · 1 m · statewide · false-colour infrared (NIR–red–green)" },
   { name: "Aerial 2006 (summer/fall)", code: "aerial-2006", label: "Aerial 2006 (summer/fall)",
-    sub: "USGS 40-county · 1 m", layer: mnAerial2006 },
+    sub: "USGS 40-county · 1 m", layer: mnAerial2006,
+    meta: "USGS via MnGeo · summer/fall 2006 · 1 m · 40 counties · natural colour (RGB)" },
   { name: "Aerial 2003 (summer)", code: "aerial-2003", label: "Aerial 2003 (summer)",
-    sub: "FSA", layer: mnAerial2003 },
+    sub: "FSA", layer: mnAerial2003,
+    meta: "USDA FSA via MnGeo · summer 2003 · 1 m · statewide · natural colour (RGB)" },
   { name: "Aerial 1991 (black-and-white)", code: "aerial-1991", label: "Aerial 1991 (black-and-white)",
-    sub: "USGS DOQ · 1 m", layer: mnAerial1991 },
+    sub: "USGS DOQ · 1 m", layer: mnAerial1991,
+    meta: "USGS via MnGeo · 1991 · 1 m · statewide · black-and-white" },
   { name: "Aerial (Esri)", code: "esri-aerial", label: "ESRI World Imagery",
-    layer: esriImagery },
+    layer: esriImagery,
+    meta: "Esri World Imagery (Maxar et al.) · newest available (mosaic) · sub-metre, varies by source tile · worldwide · natural colour (RGB)" },
   { name: "Aerial + Topo (NAIP 2023/25)", code: "aerial-topo", label: "Aerial + Topo",
-    sub: "NAIP with topo labels", layer: usgsImageryTopo },
+    sub: "NAIP with topo labels", layer: usgsImageryTopo,
+    meta: "USGS The National Map (NAIP 2023/25) · 30–60 cm · statewide · natural colour (RGB) + topo labels" },
+  /* Sentinel-2 band combinations (Paul, Nov 25, 2026): the
+     nonstandard renders, as buttons above the year menu — each
+     is one current mosaic, not a year aerial, so they do not
+     belong in the menu. ORDER is provisional (CIR first, the
+     rest best-guess usefulness) until Paul ranks them — reorder
+     this block to re-rank. imagery: true keeps the label
+     treatment setBase gives the "Aerial" bases. */
+  { name: "Sentinel-2 — Color Infrared", code: "s2-cir", label: "Sentinel-2 CIR",
+    sub: "10 m · latest scene", layer: s2Cir, imagery: true,
+    meta: "Sentinel-2 (ESA) via Esri · latest scene (mosaic; vintage varies by tile) · 10 m · NIR–red–green false colour · healthy vegetation bright red" },
+  { name: "Sentinel-2 — Agriculture", code: "s2-agriculture", label: "Sentinel-2 Agriculture",
+    sub: "10 m · latest scene", layer: s2Agriculture, imagery: true,
+    meta: "Sentinel-2 (ESA) via Esri · latest scene (mosaic; vintage varies by tile) · 10 m · SWIR-1–NIR–blue · vigorous crops bright green, stressed dull green, bare ground brown" },
+  { name: "Sentinel-2 — NDVI", code: "s2-ndvi", label: "Sentinel-2 NDVI",
+    sub: "10 m · latest scene", layer: s2Ndvi, imagery: true,
+    meta: "Sentinel-2 (ESA) via Esri · latest scene (mosaic; vintage varies by tile) · 10 m · NDVI (NIR−red)/(NIR+red), colour-mapped · dark green vigorous vegetation, brown sparse" },
+  { name: "Sentinel-2 — NDMI", code: "s2-ndmi", label: "Sentinel-2 NDMI",
+    sub: "10 m · latest scene", layer: s2Ndmi, imagery: true,
+    meta: "Sentinel-2 (ESA) via Esri · latest scene (mosaic; vintage varies by tile) · 10 m · NDMI (NIR−SWIR-1)/(NIR+SWIR-1), colour-mapped · moist ground blue, dry ground yellow-brown" },
+  { name: "Sentinel-2 — Geology", code: "s2-geology", label: "Sentinel-2 Geology",
+    sub: "10 m · latest scene", layer: s2Geology, imagery: true,
+    meta: "Sentinel-2 (ESA) via Esri · latest scene (mosaic; vintage varies by tile) · 10 m · SWIR-2–SWIR-1–blue · rock and soil types" },
+  { name: "Sentinel-2 — Short-wave Infrared", code: "s2-swir", label: "Sentinel-2 SWIR",
+    sub: "10 m · latest scene", layer: s2Swir, imagery: true,
+    meta: "Sentinel-2 (ESA) via Esri · latest scene (mosaic; vintage varies by tile) · 10 m · SWIR-2–SWIR-1–red · moisture and burn scars" },
+  { name: "Sentinel-2 — Bathymetric", code: "s2-bathymetric", label: "Sentinel-2 Bathymetric",
+    sub: "10 m · latest scene", layer: s2Bathymetric, imagery: true,
+    meta: "Sentinel-2 (ESA) via Esri · latest scene (mosaic; vintage varies by tile) · 10 m · red–green–coastal blue · shallow water" },
+  { name: "Sentinel-2 — Burn Ratio", code: "s2-nbr", label: "Sentinel-2 Burn Ratio",
+    sub: "10 m · latest scene", layer: s2Nbr, imagery: true,
+    meta: "Sentinel-2 (ESA) via Esri · latest scene (mosaic; vintage varies by tile) · 10 m · NBR (NIR−SWIR-2)/(NIR+SWIR-2) · burned ground highlighted" },
+  { name: "Sentinel-2 — Built-up Index", code: "s2-ndbi", label: "Sentinel-2 Built-up Index",
+    sub: "10 m · latest scene", layer: s2Ndbi, imagery: true,
+    meta: "Sentinel-2 (ESA) via Esri · latest scene (mosaic; vintage varies by tile) · 10 m · NDBI (SWIR-1−NIR)/(SWIR-1+NIR) · built-up ground highlighted" },
+  { name: "Sentinel-2 — Water Index", code: "s2-ndwi", label: "Sentinel-2 Water Index",
+    sub: "10 m · latest scene", layer: s2Ndwi, imagery: true,
+    meta: "Sentinel-2 (ESA) via Esri · latest scene (mosaic; vintage varies by tile) · 10 m · NDWI (green−NIR)/(green+NIR), greyscale · open water bright" },
   { name: "USGS Topo 1:24k", code: "usgs", label: "USGS Topo",
     sub: "1:24k quadrangles", layer: usgsTopo },
   { name: "National Geographic (Esri)", code: "natgeo", label: "National Geographic",
@@ -620,7 +892,8 @@ function setBase(name) {
   map.removeLayer(currentBase.layer);
   map.addLayer(def.layer);
   currentBase = def;
-  document.body.classList.toggle("base-imagery", /^Aerial/.test(name));
+  document.body.classList.toggle("base-imagery",
+    /^Aerial/.test(name) || !!def.imagery);
   /* White — no basemap (Paul, Nov 17, 2026): with no tile layer
      the map pane shows the container background — body.base-white
      in style.css makes it white, not Leaflet's grey. */
@@ -638,6 +911,7 @@ function setBase(name) {
   document.body.classList.toggle("winter", winterMode);
   if (accessLayerRef) accessLayerRef.setStyle(accessStyle);
   markActiveBase(name);
+  showAerialMeta();
   writeShareHash(); /* a base change is a new shareable view */
 }
 /* Aerial-by-year menu (Paul, Nov 13, 2026): the year aerials are
@@ -657,6 +931,24 @@ function markActiveBase(name) {
      placeholder when the current base is not a year aerial. */
   if (yearSelect) {
     yearSelect.value = isAerialYear({ name: name }) ? name : "";
+  }
+}
+/* Aerial metadata readout (Paul, Nov 25, 2026): the current
+   aerial base's source line — resolution, provider, vintage,
+   season, coverage, bands — shown directly below the year
+   menu, and ONLY while an aerial base is chosen. Every aerial
+   BASES entry carries a `meta` string; every other base has
+   none, so the readout hides itself for non-aerial bases. */
+var aerialMetaEl = null;
+function showAerialMeta() {
+  if (!aerialMetaEl) return;
+  var meta = currentBase && currentBase.meta;
+  if (meta) {
+    aerialMetaEl.textContent = meta;
+    aerialMetaEl.style.display = "";
+  } else {
+    aerialMetaEl.textContent = "";
+    aerialMetaEl.style.display = "none";
   }
 }
 /* Shareable view: look a base up by its short hash code. */
@@ -746,6 +1038,16 @@ function baseByCode(code) {
     wrap.appendChild(label);
     wrap.appendChild(note);
     wrap.appendChild(sel);
+    /* Aerial metadata readout (Paul, Nov 25, 2026): one line
+       directly below the menu, filled by showAerialMeta() from
+       the current base's `meta` — hidden unless the current
+       base is an aerial source. */
+    var metaEl = document.createElement("div");
+    metaEl.id = "bg-aerial-meta";
+    metaEl.className = "bg-aerial-meta";
+    metaEl.style.display = "none";
+    wrap.appendChild(metaEl);
+    aerialMetaEl = metaEl;
     yearSelect = sel;
     return wrap;
   }
@@ -814,6 +1116,30 @@ var CASING_BY_BASE = {
   "Aerial 2006 (summer/fall)": "photo",
   "Aerial 2003 (summer)": "photo",
   "Aerial 1991 (black-and-white)": "photo",
+  /* Infrared + Sentinel-2 (Nov 25, 2026): every new imagery
+     base takes the photo register, like the other aerials. */
+  "Aerial 2025 (summer, infrared)": "photo",
+  "Aerial 2023 (summer, infrared)": "photo",
+  "Aerial 2021 (summer, infrared)": "photo",
+  "Aerial 2019 (summer, infrared)": "photo",
+  "Aerial 2017 (summer, infrared)": "photo",
+  "Aerial 2015 (summer, infrared)": "photo",
+  "Aerial 2013 (summer, infrared)": "photo",
+  "Aerial 2013 (spring, leaf-off, infrared)": "photo",
+  "Aerial 2013 (north, infrared)": "photo",
+  "Aerial 2012 (fall, infrared)": "photo",
+  "Aerial 2008 (summer, infrared)": "photo",
+  "Aerial 2018 (Itasca Co., infrared)": "photo",
+  "Sentinel-2 — Color Infrared": "photo",
+  "Sentinel-2 — Agriculture": "photo",
+  "Sentinel-2 — NDVI": "photo",
+  "Sentinel-2 — NDMI": "photo",
+  "Sentinel-2 — Geology": "photo",
+  "Sentinel-2 — Short-wave Infrared": "photo",
+  "Sentinel-2 — Bathymetric": "photo",
+  "Sentinel-2 — Burn Ratio": "photo",
+  "Sentinel-2 — Built-up Index": "photo",
+  "Sentinel-2 — Water Index": "photo",
   /* LiDAR Shaded (Paul, Nov 13, 2026) replaces Terrain + Winter:
      one button, same relief register. */
   "LiDAR Shaded": "relief",

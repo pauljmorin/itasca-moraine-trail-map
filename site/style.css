@@ -2008,6 +2008,11 @@ body.base-white .leaflet-container { background: #ffffff; }
   border-radius: 4px;
   cursor: pointer;
 }
+.bg-aerial-meta {
+  font-size: 0.78rem;
+  color: var(--ink-soft);
+  line-height: 1.35;
+}
 
 /* --- Maintenance markers (R1): red/amber diamonds, the same
    vocabulary as the work list. --- */

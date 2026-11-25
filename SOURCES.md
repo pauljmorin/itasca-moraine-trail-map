@@ -2906,6 +2906,148 @@ are each genuinely distinct.**
   OpenSnowMap, © OpenStreetMap contributors" (shown alongside
   the hillshade's own credit).
 
+**Nov 25, 2026 — infrared + nonstandard band combinations
+(Paul, voice: "does infrared exist for the air photography —
+if so, put it into the viewer" + "any of the other nonstandard
+band combinations, please put those in"). 22 new bases: 12
+MnGeo CIR year aerials in the year menu (each directly after
+its RGB twin) and 10 Sentinel-2 renders as buttons above the
+menu. All verified live Nov 25 — see
+`docs/infrared-bands-2026-11-25.md` for the tile-test log.
+Placement note: there is no "Lisa's family" group in this
+viewer (verified by search — the name appears nowhere in the
+panel code), so the new cluster sits with the other aerials
+in the Basemap section, as Paul's follow-up allowed.**
+
+- **Infrared (CIR) aerials — MnGeo Geospatial Image Service**
+  — same WMS endpoint and pattern as the RGB year aerials
+  (`L.tileLayer.wms`, `https://imageserver.gisdata.mn.gov/cgi-bin/wmswm?`),
+  layers: `fsa2025cir` (2025, 60 cm), `fsa2023cir` (2023,
+  30 cm), `fsa2021cir` (2021, 60 cm), `fsa2019cir` (2019,
+  60 cm), `fsa2017cir` (2017, 1 m), `fsa2015cir` (2015, 1 m),
+  `fsa2013cir` (2013, 1 m), `cir2008` (2008, 1 m),
+  `fallcir12` (2012 fall Central, 50 cm), `nc13hmcir` (2013
+  spring leaf-off, SAIP 50 cm), `nc13ftcir` (2013 North,
+  30 cm / 1 ft), `itas18cir` (2018 Itasca County, 30 cm /
+  1 ft). Resolutions are MnGeo's published values (mn.gov
+  NAIP table; WMS layer titles for the county flights)
+  cross-checked against the service's own ScaleHint minima
+  (min 0.12 ≈ 30 cm, 0.20 ≈ 50 cm, 0.24 ≈ 60 cm,
+  0.40 ≈ 1 m). Labels "Aerial YYYY (season, infrared)",
+  sub carries the program and "CIR".
+  **Interpretation — how to read CIR:** the rendering maps
+  near-infrared → red, red → green, green → blue (the NAIP
+  4-band RGBI data, displayed NIR–red–green). Healthy,
+  vigorous vegetation reflects strongly in NIR and reads
+  bright red to pink; stressed or sparse vegetation reads
+  dull red to grey-pink; open water absorbs NIR and reads
+  near-black; bare soil, rock, concrete and dead vegetation
+  read pale grey-white to tan. Conifers read darker red
+  than hardwoods in leaf-on summer flights. The red is
+  RELATIVE, not calibrated: the same stand can read
+  brighter or duller between vintages (sensor, sun angle,
+  season), so compare CIR against CIR of the same season,
+  and treat a red patch as "vigorous vegetation here",
+  never as a species or health measurement. Leaf-off
+  spring CIR (2013) shows ground and structure through
+  the bare canopy; it does not see through leaf-on
+  canopy. Coverage notes (measured Nov 25): the statewide
+  FSA CIR layers cover the whole corridor; `nc13hmcir`
+  matches its RGB twin exactly (real at Itasca State
+  Park, Akeley, Nevis, Lake George; blank white at Park
+  Rapids, as the RGB layer is there); `itas18cir` is
+  Itasca County only; `nc13ftcir` is northern MN (Grand
+  Rapids yes, Ely no). This entry supersedes the Nov 13
+  note's "the *cir renderings were not added" — Paul asked
+  for CIR explicitly Nov 25.
+- **Sentinel-2 band combinations — Esri** — the Sentinel-2
+  ImageServer,
+  `https://sentinel.arcgis.com/arcgis/rest/services/Sentinel2/ImageServer`,
+  13-band, 10 m, latest-scene mosaic (the service's default
+  mosaic picks the newest scene per location, so vintage
+  varies by tile and is NOT a single date). Wired without
+  esri-leaflet: a small `ImageServerLayer` (`L.TileLayer`
+  subclass in app.js) builds each tile as a live
+  `exportImage` render of that tile's bbox
+  (`bboxSR=3857&imageSR=3857&size=256,256&format=jpgpng`),
+  with the rendering rule named in the request. The plain
+  (non-DRA) rules are used on purpose: DRA re-stretches
+  every tile to its own contents, so neighbouring tiles
+  would not match; the fixed-stretch rules render every
+  tile the same way. All keyless. Band combinations and
+  index formulas below are Esri's own rendering-rule
+  descriptions, fetched from the service's
+  `rasterFunctionInfos` Nov 25 (Sentinel-2 bands: B01
+  coastal/aerosol, B02 blue, B03 green, B04 red, B08 NIR,
+  B11 SWIR-1, B12 SWIR-2):
+  - **Color Infrared** — B08, B04, B03 (NIR–red–green).
+    Same reading as the NAIP CIR above, at 10 m and
+    current vintage.
+  - **Agriculture** — B11, B08, B02 (SWIR-1–NIR–blue).
+    Vigorous crops bright green, stressed vegetation dull
+    green, bare ground brown; separates cropland from
+    forest and pasture.
+  - **NDVI** ("NDVI Colormap") — (B08−B04)/(B08+B04),
+    colour-mapped: dark green = vigorous vegetation, brown
+    = sparse. A relative vigour map, not a measurement —
+    compare within one scene, not across dates.
+  - **NDMI** ("NDMI Colorized") — (B08−B11)/(B08+B11),
+    colour-mapped: moist ground and wetlands blue, dry
+    ground deep yellow-brown. The wet-ground finder:
+    beaver flooding and saturated tread show blue.
+  - **Geology** — B12, B11, B02 (SWIR-2–SWIR-1–blue).
+    Rock and soil types; subtle in this terrain.
+  - **Short-wave Infrared** — B12, B11, B04
+    (SWIR-2–SWIR-1–red). Moisture and burn scars.
+  - **Bathymetric** — B04, B03, B01 (red–green–coastal).
+    Shallow water; of limited use on the trail's lakes.
+  - **Burn Ratio** ("Normalized Burn Ratio") —
+    (B08−B12)/(B08+B12). Burned ground highlighted; only
+    meaningful after a fire.
+  - **Built-up Index** ("Normalized Difference Built-Up
+    Index (NDBI)") — (B11−B08)/(B11+B08). Built-up
+    ground highlighted; the corridor is rural, so this
+    mostly marks towns and roads.
+  - **Water Index** ("NDWI Raw") —
+    (B03−B08)/(B03+B08), greyscale (no colour map exists
+    for it): open water bright. The least readable of the
+    set; kept because it is the only water index the
+    service offers.
+  Order in the panel is provisional (CIR first, the rest
+  best-guess usefulness) until Paul ranks them — the block
+  in app.js is ordered to be re-ranked by reordering.
+  Checked and NOT added: the Landsat ImageServer's
+  equivalents (same renders at 30 m — strictly coarser
+  than Sentinel-2's 10 m, nothing distinct except
+  thermal bands, which are not band combinations); the
+  USDA NAIP ImageServer (gis.apfo.usda.gov — empty reply
+  from this VM twice, Nov 25; the same NAIP CIR data is
+  already served by MnGeo above, so nothing is lost);
+  NASA GIBS MODIS Bands 7-2-1 false colour (500 m — a
+  blur at trail zoom); MnGeo `ncir09` (2009, Big
+  Fork/Little Fork watersheds only) and `nw14cir` (2014
+  NW, blank over most of the corridor); the Sentinel-2
+  raw-index variants (NDVI Raw, NDVI–VRE, NDWI–VRE —
+  same indices without a colour map, or red-edge variants
+  for precision agriculture; no trail use).
+- **Aerial metadata readout (Nov 25, 2026)** — every aerial
+  BASES entry now carries a `meta` string (source ·
+  vintage · resolution · season · coverage · bands), shown
+  in one line directly below the year menu and ONLY while
+  an aerial base is chosen; any other base hides it.
+  Sources for the strings: MnGeo's NAIP table (mn.gov)
+  and WMS layer titles for the NAIP/county flights
+  (resolutions cross-checked against ScaleHint minima);
+  Esri's Wayback release dates with the Nov 13
+  capture-year measurements (2025 release = 2024 photos,
+  2023 = 2019, 2022 = 2021, 2021 = 2017–19, 2019 = 2017,
+  2014 = 1999; 2018, 2020, 2024 unmeasured — their
+  strings say so); Esri's Sentinel-2 service description
+  (10 m, 13-band, latest-scene mosaic). The 2012 fall
+  resolution (50 cm) comes from the WMS ScaleHint
+  (min 0.20); the 2006 layer's 1 m comes from its own
+  abstract.
+
 - **MN LiDAR Canopy** and **Canopy height (LiDAR)** — the
   second-generation LiDAR trio, completed Nov 11, 2026 (the
   trio's first member, the bare-earth shade, is the MN LiDAR
