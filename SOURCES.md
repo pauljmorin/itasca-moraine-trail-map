@@ -2938,8 +2938,13 @@ are each genuinely distinct.**
 if so, put it into the viewer" + "any of the other nonstandard
 band combinations, please put those in"). 22 new bases: 12
 MnGeo CIR year aerials in the year menu (each directly after
-its RGB twin) and 10 Sentinel-2 renders as buttons above the
-menu. All verified live Nov 25 — see
+its RGB twin) and 10 Sentinel-2 renders in the Landsat &
+Sentinel-2 menu below the aerial menu (Nov 26 rework — the
+base-map buttons became three pull-downs: Base map, Aerial
+photography, Landsat & Sentinel-2; the third menu is the
+shared Landsat & Sentinel-2 picker Paul asked for Nov 26,
+and Landsat entries join it when the Landsat layer is built,
+a separate step). All verified live Nov 25 — see
 `docs/infrared-bands-2026-11-25.md` for the tile-test log.
 Placement note: there is no "Lisa's family" group in this
 viewer (verified by search — the name appears nowhere in the
@@ -3113,7 +3118,7 @@ in the Basemap section, as Paul's follow-up allowed.**
   restricts the mosaic to rasters acquired that day —
   verified Nov 25 at a Park Rapids bbox: no-time, 14 Nov
   2026 and 10 Oct 2026 renders are three different JPEGs.
-  The selector, the Sentinel-2 button subs ("10 m · 14 Nov
+  The selector, the Sentinel-2 menu options ("10 m · 14 Nov
   2026"), the metadata line ("scene 14 Nov 2026") and the
   corner chip all follow the same chosen date; "Latest
   scene" clears it. The choice is session-only — it is not
