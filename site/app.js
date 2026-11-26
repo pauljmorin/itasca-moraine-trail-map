@@ -714,8 +714,9 @@ var BASES = [
      year. All verified live over the corridor — see the tile-layer
      definitions above and the research note in SOURCES.md. The
      2014 entry sits in its chronological slot, not at the head.
-     Leaf state is labelled only where it is leaf-off (2013
-     spring); the rest carry no leaf label (Paul, Nov 13).
+     Leaf state is labelled on every entry (Paul, Nov 26):
+     leaf-on / leaf-off / fall / mixed / season unknown — see
+     AERIAL_LEAF for the status of each entry and its evidence.
      RELABELLED Nov 13, 2026 (Paul): the Wayback entries are
      labelled by the year the photo was taken (capture year),
      not the release date — see the Wayback comment above. The
@@ -954,6 +955,60 @@ function isSatellite(def) {
 function isPlainBase(def) {
   return !isAerialMenu(def) && !isSatellite(def);
 }
+/* Aerial leaf status (Paul, Nov 26, 2026): every aerial menu
+   entry shows whether its imagery is leaf-on or leaf-off, so
+   the choice is visible without opening the layer. Status by
+   code — "on" leaf-on, "off" leaf-off, "fall" leaves on in
+   autumn colour, "mixed" a flight spanning seasons, "unknown"
+   where no season is recorded. Evidence: NAIP summer flights
+   are leaf-on; the 2013 spring SAIP flight is leaf-off; the
+   2012 fall flight is fall colour; 2006 is summer/fall, mixed
+   leaf-on/off (SOURCES.md); Wayback imagery is summer leaf-on
+   (visually confirmed on z14 tiles for 2018 and 2025,
+   SOURCES.md); the 2013 north CIR, 2018 Itasca CIR and 1991
+   DOQ carry no season in the service title, meta or SOURCES,
+   so they are "unknown" rather than guessed. Any aerial code
+   missing from this table shows "season unknown" — a new
+   entry must add its row here. */
+var AERIAL_LEAF = {
+  "aerial-2025": "on", "aerial-2024": "on", "aerial-2023": "on",
+  "aerial-2022": "on", "aerial-2021": "on", "aerial-2020": "on",
+  "aerial-2019": "on", "aerial-2018": "on", "aerial-2014": "on",
+  "aerial-2025-naip": "on", "aerial-2025-summer-cir": "on",
+  "aerial-2023-naip": "on", "aerial-2023-summer-cir": "on",
+  "aerial-2021-naip": "on", "aerial-2021-summer-cir": "on",
+  "aerial-2019-naip": "on", "aerial-2019-summer-cir": "on",
+  "aerial-2017-naip": "on", "aerial-2017-summer-cir": "on",
+  "aerial-2015-naip": "on", "aerial-2015-summer-cir": "on",
+  "aerial-2013-naip": "on", "aerial-2013-summer-cir": "on",
+  "aerial-2010-naip": "on", "aerial-2009-naip": "on",
+  "aerial-2008-naip": "on", "aerial-2008-summer-cir": "on",
+  "aerial-2003": "on",
+  "esri-aerial": "on", "aerial-topo": "on",
+  "aerial-2013-spring": "off", "aerial-2013-spring-cir": "off",
+  "aerial-2012-fall": "fall", "aerial-2012-fall-cir": "fall",
+  "aerial-2006": "mixed",
+  "aerial-2013-north-cir": "unknown", "aerial-2018-itasca-cir": "unknown",
+  "aerial-1991": "unknown"
+};
+function aerialLeafText(def) {
+  var s = AERIAL_LEAF[def.code];
+  if (s === "on") return "leaf-on";
+  if (s === "off") return "leaf-off";
+  if (s === "fall") return "fall";
+  if (s === "mixed") return "mixed";
+  return "season unknown";
+}
+function aerialLeafColor(def) {
+  /* Infrared (CIR) entries are red; leaf-on entries are green;
+     leaf-off, fall, mixed and unknown keep the default text.
+     The colour is an accent only — the suffix carries the
+     status in every browser (option colours are ignored by
+     some browsers). */
+  if (def.name.indexOf("infrared") !== -1) return "#b91c1c";
+  if (AERIAL_LEAF[def.code] === "on") return "#15803d";
+  return "";
+}
 function markActiveBase(name) {
   /* Each menu shows the current base only when it belongs to
      that menu; the others fall back to their placeholder — one
@@ -965,6 +1020,10 @@ function markActiveBase(name) {
   }
   if (yearSelect) {
     yearSelect.value = (def && isAerialMenu(def)) ? name : "";
+    /* The closed menu shows the current aerial's status colour
+       (green leaf-on, red infrared, default otherwise). */
+    yearSelect.style.color = (def && isAerialMenu(def)) ?
+      aerialLeafColor(def) : "";
   }
   if (satelliteSelect) {
     satelliteSelect.value = (def && isSatellite(def)) ? name : "";
@@ -1240,7 +1299,7 @@ function baseByCode(code) {
     label.textContent = "Aerial photography";
     var note = document.createElement("div");
     note.className = "bg-year-note";
-    note.textContent = "Wayback entries are labelled by the year the photo was taken; some span more than one year.";
+    note.textContent = "Wayback entries are labelled by the year the photo was taken; some span more than one year. Every entry shows its leaf status — leaf-on in green, leaf-off in black, fall for autumn colour, mixed where a flight spans seasons, season unknown where no flight date is recorded. Infrared (CIR) entries are red.";
     var sel = document.createElement("select");
     sel.id = "bg-year-select";
     sel.className = "bg-year-select";
@@ -1252,7 +1311,10 @@ function baseByCode(code) {
       if (!isAerialMenu(def)) return;
       var opt = document.createElement("option");
       opt.value = def.name;
-      opt.textContent = def.label + (def.sub ? " " + def.sub : "");
+      opt.textContent = def.label + " · " + aerialLeafText(def) +
+        (def.sub ? " · " + def.sub : "");
+      var leafColor = aerialLeafColor(def);
+      if (leafColor) opt.style.color = leafColor;
       sel.appendChild(opt);
     });
     sel.addEventListener("change", function () {

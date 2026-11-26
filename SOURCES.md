@@ -2915,6 +2915,27 @@ are each genuinely distinct.**
   trail or no trail coverage), `landsat` (30 m, too coarse),
   and the `*cir` color-infrared renderings (same years already
   covered in colour).
+
+**Nov 26, 2026 — leaf status on every aerial menu entry (Paul:
+"so we can visually tell the difference between leaf on and
+leaf off").** Each of the 38 aerial-menu entries carries its
+leaf status in the menu — "leaf-on", "leaf-off", "fall",
+"mixed", or "season unknown" — and the menu colours leaf-on
+entries green and infrared (CIR) entries red; leaf-off stays
+the default text. Statuses: all nine Wayback entries leaf-on
+(the underlying Minnesota imagery is summer leaf-on, visually
+confirmed on z14 tiles for 2018 and 2025); all NAIP summer
+flights leaf-on; the 2013 spring SAIP flight leaf-off (RGB
+and CIR); the 2012 fall flight "fall" (leaves on, autumn
+colour); 2006 "mixed" (summer/fall, mixed leaf-on/off);
+the 2013 north CIR, 2018 Itasca CIR and 1991 DOQ "season
+unknown" — no season is recorded for those flights in the
+service title, the menu metadata or this file, so the status
+is stated as unknown rather than guessed. The current Esri
+base (Jun–Sep 2025) and Aerial + Topo (NAIP 2023/25) are
+leaf-on. The table lives in app.js as AERIAL_LEAF; a new
+aerial entry must add its row there (an entry with no row
+shows "season unknown").
 - **Winter (snow trails)** — a COMPOSED base: OpenSnowMap
   pistes tiles
   `https://tiles.opensnowmap.org/pistes/{z}/{x}/{y}.png`
