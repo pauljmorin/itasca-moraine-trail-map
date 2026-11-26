@@ -1001,12 +1001,20 @@ function aerialLeafText(def) {
 }
 function aerialLeafColor(def) {
   /* Infrared (CIR) entries are red; leaf-on entries are green;
-     leaf-off, fall, mixed and unknown keep the default text.
+     leaf-off entries are the theme's text colour — CanvasText
+     is black in a light theme and light in a dark theme, so the
+     black leaf-off text (Paul, Nov 26) stays readable when the
+     OS/browser is in dark mode, where a literal #000 would
+     vanish. The viewer page itself has no dark mode (no
+     prefers-color-scheme in style.css); the native select
+     dropdown follows the OS theme, which is what CanvasText
+     tracks. Fall, mixed and unknown keep the default text.
      The colour is an accent only — the suffix carries the
      status in every browser (option colours are ignored by
      some browsers). */
   if (def.name.indexOf("infrared") !== -1) return "#b91c1c";
   if (AERIAL_LEAF[def.code] === "on") return "#15803d";
+  if (AERIAL_LEAF[def.code] === "off") return "CanvasText";
   return "";
 }
 function markActiveBase(name) {

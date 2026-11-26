@@ -2921,8 +2921,10 @@ are each genuinely distinct.**
 leaf off").** Each of the 38 aerial-menu entries carries its
 leaf status in the menu — "leaf-on", "leaf-off", "fall",
 "mixed", or "season unknown" — and the menu colours leaf-on
-entries green and infrared (CIR) entries red; leaf-off stays
-the default text. Statuses: all nine Wayback entries leaf-on
+entries green and infrared (CIR) entries red; leaf-off entries
+use the theme's text colour (black in light mode, light in dark
+mode — the CanvasText system colour, so the black leaf-off text
+stays readable in dark mode). Statuses: all nine Wayback entries leaf-on
 (the underlying Minnesota imagery is summer leaf-on, visually
 confirmed on z14 tiles for 2018 and 2025); all NAIP summer
 flights leaf-on; the 2013 spring SAIP flight leaf-off (RGB
