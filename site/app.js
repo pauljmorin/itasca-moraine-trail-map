@@ -934,14 +934,17 @@ function setBase(name) {
   showS2Date();
   writeShareHash(); /* a base change is a new shareable view */
 }
-/* Basemap menus (Paul, Nov 26, 2026): three pull-downs, not
-   buttons — Base map, Aerial photography, Landsat & Sentinel-2.
-   A base is a year aerial when its name starts with "Aerial "
-   + a 4-digit year; the aerial menu also holds the two
-   non-year aerials ("Aerial (Esri)" and "Aerial + Topo").
-   The satellite menu holds the Sentinel-2 renders today;
-   Landsat entries join it when the Landsat layer is built. */
-var baseSelect = null, yearSelect = null, satelliteSelect = null;
+/* Basemap menus (Paul, Nov 27, 2026): one compact row, four
+   pull-downs — Basemap, Aerial Photography, Landsat,
+   Sentinel — plus an info button. The shared Landsat &
+   Sentinel-2 menu split into two selects; Landsat has no
+   renders yet, so its select is disabled until the layer is
+   built. A base is a year aerial when its name starts with
+   "Aerial " + a 4-digit year; the aerial menu also holds the
+   two non-year aerials ("Aerial (Esri)" and "Aerial +
+   Topo"). */
+var baseSelect = null, yearSelect = null, satelliteSelect = null,
+  landsatSelect = null;
 function isAerialYear(def) {
   return /^Aerial \d{4}/.test(def.name);
 }
@@ -949,8 +952,16 @@ function isAerialMenu(def) {
   return isAerialYear(def) || def.code === "esri-aerial" ||
     def.code === "aerial-topo";
 }
+/* Landsat (Paul, Nov 27, 2026): no Landsat renders exist yet —
+   the layer is designed (docs/landsat-date-picker-2026-11-26.md)
+   but not built — so isLandsat matches nothing today. The
+   Landsat menu is built anyway, disabled, so the slot is there
+   when the renders land. */
+function isLandsat(def) {
+  return !!def && /^Landsat/.test(def.name);
+}
 function isSatellite(def) {
-  return isSentinel2(def);
+  return isSentinel2(def) || isLandsat(def);
 }
 function isPlainBase(def) {
   return !isAerialMenu(def) && !isSatellite(def);
@@ -1034,7 +1045,10 @@ function markActiveBase(name) {
       aerialLeafColor(def) : "";
   }
   if (satelliteSelect) {
-    satelliteSelect.value = (def && isSatellite(def)) ? name : "";
+    satelliteSelect.value = (def && isSentinel2(def)) ? name : "";
+  }
+  if (landsatSelect) {
+    landsatSelect.value = (def && isLandsat(def)) ? name : "";
   }
 }
 /* Aerial metadata readout (Paul, Nov 25, 2026): the current
@@ -1258,63 +1272,127 @@ function baseByCode(code) {
 (function buildBackground() {
   var main = document.getElementById("background-choices");
   if (!main) return;
-  /* Base-map menu (Paul, Nov 26, 2026): the plain bases — the
-     map-style choices — as one pull-down, same pattern as the
-     aerial menu below it. The sub-choices (Streets, Trails,
-     Outdoors under Topo) sit right after Topo in the order,
-     which is what marks them as belonging to Topo. */
-  function baseMenu() {
+  /* Compact basemap row (Paul, Nov 27, 2026): one row, four
+     labelled selects side by side — Basemap, Aerial
+     Photography, Landsat, Sentinel — plus a small info
+     button. No other text in the row: the notes that used to
+     sit under the menus moved into the info panel. One
+     basemap on screen at a time — setBase swaps the layer,
+     and markActiveBase keeps each select showing the current
+     base only when it belongs to that select. */
+  function cell(labelText, selectId, extraClass) {
     var wrap = document.createElement("div");
-    wrap.className = "bg-year-wrap";
+    wrap.className = "bg-cell" + (extraClass ? " " + extraClass : "");
     var label = document.createElement("label");
     label.className = "bg-year-label";
-    label.setAttribute("for", "bg-base-select");
-    label.textContent = "Base map";
+    label.setAttribute("for", selectId);
+    label.textContent = labelText;
     var sel = document.createElement("select");
-    sel.id = "bg-base-select";
+    sel.id = selectId;
     sel.className = "bg-year-select";
     var ph = document.createElement("option");
     ph.value = "";
-    ph.textContent = "Choose a base map…";
+    ph.textContent = "—";
     sel.appendChild(ph);
-    BASES.forEach(function (def) {
-      if (!isPlainBase(def)) return;
-      var opt = document.createElement("option");
-      opt.value = def.name;
-      opt.textContent = def.label + (def.sub ? " " + def.sub : "");
-      sel.appendChild(opt);
-    });
     sel.addEventListener("change", function () {
       if (sel.value) setBase(sel.value);
     });
     wrap.appendChild(label);
     wrap.appendChild(sel);
-    baseSelect = sel;
-    return wrap;
+    return { wrap: wrap, sel: sel };
   }
-  /* Aerial menu (Paul, Nov 26, 2026): the aerials live in one
-     menu, newest first (BASES order). The two non-year aerials
-     ("Aerial (Esri)", "Aerial + Topo") sit at the end of the
-     same menu — they are aerial photography, just not
-     year-dated — so the label is "Aerial photography" now,
-     not "by year". */
+  /* Info button + panel (Paul, Nov 27, 2026): one small
+     button at the row's end; it opens a short panel on where
+     each source comes from, what to expect, and how good the
+     dates are — text drawn from SOURCES.md and the
+     aerial-year / Landsat verification docs, not new
+     research. */
+  function infoPanel() {
+    var panel = document.createElement("div");
+    panel.id = "bg-info-panel";
+    panel.className = "bg-info-panel";
+    panel.hidden = true;
+    panel.innerHTML =
+      "<h3>Where the imagery comes from</h3>" +
+      "<p><strong>Basemap</strong> — map styles, not photos. " +
+      "Topo (OpenTopoMap, the default) draws OpenStreetMap " +
+      "data with contours and hillshading; Streets is the " +
+      "plain OSM rendering; Trails (CyclOSM) emphasises " +
+      "paths; LiDAR Shaded is MnGeo 1 m LiDAR hillshade; USGS " +
+      "Topo 1:24k is the quadrangle series; National " +
+      "Geographic is Esri's; White is no base at all.</p>" +
+      "<p><strong>Aerial Photography</strong> — year-by-year " +
+      "aerial photos, newest first. MnGeo NAIP flights " +
+      "(2003–2025, summer leaf-on unless noted) carry the " +
+      "year in MnGeo's own layer title — high confidence. " +
+      "Esri Wayback releases are labelled by the year the " +
+      "photos were taken, measured from Esri's per-tile " +
+      "dates at three corridor points — medium-high " +
+      "confidence; the 2018, 2020 and 2024 releases are " +
+      "unmeasured, so their labels show the release year, " +
+      "not the capture year. Menu colours: green leaf-on, " +
+      "black leaf-off, red infrared (CIR). Current Esri " +
+      "imagery is Jun–Sep 2025, measured.</p>" +
+      "<p><strong>Landsat</strong> — not built yet; this menu " +
+      "is ready for the renders when they land. Landsat is " +
+      "30 m, coarser than Sentinel-2's 10 m; its one thing " +
+      "Sentinel-2 lacks is thermal (surface temperature). " +
+      "Date picking needs the lockRaster mechanism — the " +
+      "Esri Landsat service ignores date requests. Verified " +
+      "Nov 26, 2026.</p>" +
+      "<p><strong>Sentinel</strong> — Sentinel-2, ESA via " +
+      "Esri, 10 m. Ten renders — infrared, agriculture, " +
+      "NDVI, NDMI, geology, water and more. Latest scene by " +
+      "default; the scene-date picker lists the 12 newest " +
+      "clear days over the trail (cloud under 30%) — cloud " +
+      "is the worst tile in the scene, and picking a date " +
+      "re-renders all ten. Verified Nov 25–26, 2026.</p>" +
+      "<p>Full detail: <a href=\"data-sources.html\" " +
+      "target=\"_blank\" rel=\"noopener\">Data sources</a>.</p>";
+    return panel;
+  }
+  function infoButton() {
+    var btn = document.createElement("button");
+    btn.type = "button";
+    btn.className = "bg-info-btn";
+    btn.id = "bg-info-btn";
+    btn.textContent = "ⓘ";
+    btn.setAttribute("aria-expanded", "false");
+    btn.setAttribute("aria-controls", "bg-info-panel");
+    btn.setAttribute("aria-label", "About the imagery sources");
+    btn.title = "About the imagery sources";
+    btn.addEventListener("click", function () {
+      var panel = document.getElementById("bg-info-panel");
+      var open = panel.hidden;
+      panel.hidden = !open;
+      btn.setAttribute("aria-expanded", open ? "true" : "false");
+    });
+    return btn;
+  }
+  function baseMenu() {
+    /* The plain bases — the map-style choices. The
+       sub-choices (Streets, Trails, Outdoors under Topo) sit
+       right after Topo in the order, which is what marks them
+       as belonging to Topo. */
+    var c = cell("Basemap", "bg-base-select");
+    BASES.forEach(function (def) {
+      if (!isPlainBase(def)) return;
+      var opt = document.createElement("option");
+      opt.value = def.name;
+      opt.textContent = def.label + (def.sub ? " " + def.sub : "");
+      c.sel.appendChild(opt);
+    });
+    baseSelect = c.sel;
+    return c.wrap;
+  }
   function yearMenu() {
-    var wrap = document.createElement("div");
-    wrap.className = "bg-year-wrap";
-    var label = document.createElement("label");
-    label.className = "bg-year-label";
-    label.setAttribute("for", "bg-year-select");
-    label.textContent = "Aerial photography";
-    var note = document.createElement("div");
-    note.className = "bg-year-note";
-    note.textContent = "Wayback entries are labelled by the year the photo was taken; some span more than one year. Every entry shows its leaf status — leaf-on in green, leaf-off in black, fall for autumn colour, mixed where a flight spans seasons, season unknown where no flight date is recorded. Infrared (CIR) entries are red.";
-    var sel = document.createElement("select");
-    sel.id = "bg-year-select";
-    sel.className = "bg-year-select";
-    var ph = document.createElement("option");
-    ph.value = "";
-    ph.textContent = "Choose a year…";
-    sel.appendChild(ph);
+    /* The aerials, newest first (BASES order). The two
+       non-year aerials ("Aerial (Esri)", "Aerial + Topo") sit
+       at the end of the same menu — they are aerial
+       photography, just not year-dated. Leaf status rides on
+       each option (green leaf-on, black leaf-off, red
+       infrared); the explanation lives in the info panel. */
+    var c = cell("Aerial Photography", "bg-year-select", "bg-cell-aerial");
     BASES.forEach(function (def) {
       if (!isAerialMenu(def)) return;
       var opt = document.createElement("option");
@@ -1323,100 +1401,91 @@ function baseByCode(code) {
         (def.sub ? " · " + def.sub : "");
       var leafColor = aerialLeafColor(def);
       if (leafColor) opt.style.color = leafColor;
-      sel.appendChild(opt);
+      c.sel.appendChild(opt);
     });
-    sel.addEventListener("change", function () {
-      if (sel.value) setBase(sel.value);
-    });
-    wrap.appendChild(label);
-    wrap.appendChild(note);
-    wrap.appendChild(sel);
-    /* Aerial metadata readout (Paul, Nov 25, 2026): one line
-       directly below the menu, filled by showAerialMeta() from
-       the current base's `meta` — hidden unless the current
-       base is an aerial source. */
-    var metaEl = document.createElement("div");
-    metaEl.id = "bg-aerial-meta";
-    metaEl.className = "bg-aerial-meta";
-    metaEl.style.display = "none";
-    wrap.appendChild(metaEl);
-    aerialMetaEl = metaEl;
-    yearSelect = sel;
-    return wrap;
+    yearSelect = c.sel;
+    return c.wrap;
   }
-  /* Satellite menu (Paul, Nov 26, 2026): the Landsat and
-     Sentinel-2 renders, one pull-down under the aerial menu.
-     Today that is the ten Sentinel-2 renders; Landsat entries
-     join this menu when the Landsat layer is built. */
-  function satelliteMenu() {
-    var wrap = document.createElement("div");
-    wrap.className = "bg-year-wrap";
-    var label = document.createElement("label");
-    label.className = "bg-year-label";
-    label.setAttribute("for", "bg-satellite-select");
-    label.textContent = "Landsat & Sentinel-2";
-    var note = document.createElement("div");
-    note.className = "bg-year-note";
-    note.textContent = "Satellite renders — Sentinel-2 at 10 m, latest scene unless a date is chosen below. Landsat renders join this menu when the Landsat layer is built.";
-    var sel = document.createElement("select");
-    sel.id = "bg-satellite-select";
-    sel.className = "bg-year-select";
-    var ph = document.createElement("option");
-    ph.value = "";
-    ph.textContent = "Choose a render…";
-    sel.appendChild(ph);
+  function landsatMenu() {
+    /* Landsat renders — none exist yet (the layer is
+       designed, not built: docs/landsat-date-picker-2026-
+       11-26.md), so this select is disabled until they land.
+       The slot stays visible so the row reads Basemap /
+       Aerial Photography / Landsat / Sentinel. */
+    var c = cell("Landsat", "bg-landsat-select");
     BASES.forEach(function (def) {
-      if (!isSatellite(def)) return;
+      if (!isLandsat(def)) return;
+      var opt = document.createElement("option");
+      opt.value = def.name;
+      opt.textContent = def.label;
+      c.sel.appendChild(opt);
+    });
+    if (c.sel.options.length <= 1) c.sel.disabled = true;
+    landsatSelect = c.sel;
+    return c.wrap;
+  }
+  function sentinelMenu() {
+    /* The ten Sentinel-2 renders. */
+    var c = cell("Sentinel", "bg-satellite-select");
+    BASES.forEach(function (def) {
+      if (!isSentinel2(def)) return;
       var opt = document.createElement("option");
       opt.value = def.name;
       opt.textContent = s2OptionLabel(def);
-      sel.appendChild(opt);
+      c.sel.appendChild(opt);
     });
-    sel.addEventListener("change", function () {
-      if (sel.value) setBase(sel.value);
-    });
-    wrap.appendChild(label);
-    wrap.appendChild(note);
-    wrap.appendChild(sel);
-    /* Sentinel-2 scene-date selector (Paul, Nov 25, 2026;
-       moved here Nov 26): below the render menu, shown only
-       while a Sentinel-2 base is active (see showS2Date).
-       The list is fetched live from the service on first use,
-       so it never goes stale. */
-    var s2Wrap = document.createElement("div");
-    s2Wrap.id = "bg-s2-date-wrap";
-    s2Wrap.className = "bg-s2-date-wrap";
-    s2Wrap.style.display = "none";
-    var s2Label = document.createElement("label");
-    s2Label.className = "bg-year-label";
-    s2Label.setAttribute("for", "bg-s2-date-select");
-    s2Label.textContent = "Sentinel-2 scene date";
-    var s2Note = document.createElement("div");
-    s2Note.className = "bg-year-note";
-    s2Note.textContent = "Scenes over the trail, clearest recent first — cloud is the worst tile in the scene. Choosing a date re-renders all ten Sentinel-2 renders for that day.";
-    var s2Sel = document.createElement("select");
-    s2Sel.id = "bg-s2-date-select";
-    s2Sel.className = "bg-year-select";
-    s2Sel.addEventListener("change", function () {
-      setS2Date(s2Sel.value);
-    });
-    s2Wrap.appendChild(s2Label);
-    s2Wrap.appendChild(s2Note);
-    s2Wrap.appendChild(s2Sel);
-    wrap.appendChild(s2Wrap);
-    s2DateWrapEl = s2Wrap;
-    s2DateSelectEl = s2Sel;
-    satelliteSelect = sel;
-    return wrap;
+    satelliteSelect = c.sel;
+    return c.wrap;
   }
-  /* The three menus, in order: base map, aerial photography,
-     satellite renders. One basemap on screen at a time —
-     setBase swaps the layer, and markActiveBase keeps each
-     menu showing the current base only when it belongs to
-     that menu. */
-  main.appendChild(baseMenu());
-  main.appendChild(yearMenu());
-  main.appendChild(satelliteMenu());
+  /* The row: the four selects side by side, info button at
+     the end. Below it, the info panel (hidden until the
+     button opens it), the aerial metadata line (only while an
+     aerial base is active), and the Sentinel-2 scene-date
+     picker (only while a Sentinel-2 base is active) — both
+     readouts unchanged from the three-menu layout. The date
+     list is fetched live from the service on first use, so it
+     never goes stale. */
+  var row = document.createElement("div");
+  row.className = "bg-row";
+  row.appendChild(baseMenu());
+  row.appendChild(yearMenu());
+  row.appendChild(landsatMenu());
+  row.appendChild(sentinelMenu());
+  row.appendChild(infoButton());
+  main.appendChild(row);
+  main.appendChild(infoPanel());
+  /* Aerial metadata readout (Paul, Nov 25, 2026): one line
+     below the row, filled by showAerialMeta() from the
+     current base's `meta` — hidden unless the current base
+     is an aerial source. */
+  var metaEl = document.createElement("div");
+  metaEl.id = "bg-aerial-meta";
+  metaEl.className = "bg-aerial-meta";
+  metaEl.style.display = "none";
+  main.appendChild(metaEl);
+  aerialMetaEl = metaEl;
+  /* Sentinel-2 scene-date selector (Paul, Nov 25, 2026):
+     below the row, shown only while a Sentinel-2 base is
+     active (see showS2Date). */
+  var s2Wrap = document.createElement("div");
+  s2Wrap.id = "bg-s2-date-wrap";
+  s2Wrap.className = "bg-s2-date-wrap";
+  s2Wrap.style.display = "none";
+  var s2Label = document.createElement("label");
+  s2Label.className = "bg-year-label";
+  s2Label.setAttribute("for", "bg-s2-date-select");
+  s2Label.textContent = "Sentinel-2 scene date";
+  var s2Sel = document.createElement("select");
+  s2Sel.id = "bg-s2-date-select";
+  s2Sel.className = "bg-year-select";
+  s2Sel.addEventListener("change", function () {
+    setS2Date(s2Sel.value);
+  });
+  s2Wrap.appendChild(s2Label);
+  s2Wrap.appendChild(s2Sel);
+  main.appendChild(s2Wrap);
+  s2DateWrapEl = s2Wrap;
+  s2DateSelectEl = s2Sel;
   markActiveBase(currentBase.name);
   /* Basemap is a pull-down (Paul, Nov 13, 2026): the menus
      start hidden behind a disclosure on the Basemap heading;

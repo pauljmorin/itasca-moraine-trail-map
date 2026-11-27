@@ -1937,7 +1937,12 @@ body.base-imagery.gap-chip .gap-label span {
 #background-choices {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  grid-auto-rows: 1fr;
+  /* Compact row (Paul, Nov 27, 2026): rows size to their own
+     content. The old `grid-auto-rows: 1fr` made every row as
+     tall as the tallest one — fine when the section held three
+     similar menus, but it blows the 60 px compact row up to
+     the info panel's height when the panel opens. */
+  grid-auto-rows: auto;
   gap: 6px;
   margin: 4px 0 6px;
 }
@@ -2027,6 +2032,82 @@ body.base-white .leaflet-container { background: #ffffff; }
    same treatment as the year menu above it. */
 .bg-s2-date-wrap {
   margin-top: 8px;
+}
+/* Compact basemap row (Paul, Nov 27, 2026): the four
+   selectors side by side — Basemap, Aerial Photography,
+   Landsat, Sentinel — plus the info button. The row spans
+   both grid columns; each cell is a label over its select.
+   Labels get two lines of height so "Aerial Photography"
+   (which wraps) does not push its select below the others. */
+.bg-row {
+  grid-column: 1 / -1;
+  display: flex;
+  gap: 6px;
+  align-items: stretch;
+}
+.bg-cell {
+  flex: 1 1 0;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.bg-cell .bg-year-label {
+  font-size: 0.75rem;
+  line-height: 1.2;
+  min-height: 1.9em;
+  overflow: hidden;
+}
+/* The aerial cell takes a wider share so "Photography" fits
+   on its own line — at equal shares it clips to "Photogra". */
+.bg-cell-aerial { flex: 1.35 1 0; }
+.bg-info-btn {
+  flex: 0 0 auto;
+  align-self: flex-end;
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  font: inherit;
+  font-size: 1rem;
+  line-height: 1;
+  text-align: center;
+  background: #fff;
+  border: 1px solid #b9cba5;
+  border-radius: 4px;
+  cursor: pointer;
+}
+.bg-info-btn:hover { background: var(--paper-hover); }
+.bg-info-btn[aria-expanded="true"] {
+  background: var(--trail-deep);
+  color: #fff;
+  border-color: var(--trail-deep);
+}
+/* Info panel (Paul, Nov 27, 2026): the source notes that
+   used to sit under the menus, opened by the info button. */
+.bg-info-panel {
+  grid-column: 1 / -1;
+  padding: 6px 8px;
+  background: #fff;
+  border: 1px solid #b9cba5;
+  border-radius: 6px;
+}
+.bg-info-panel h3 {
+  font-size: 0.88rem;
+  margin: 0 0 4px;
+}
+.bg-info-panel p {
+  font-size: 0.8rem;
+  color: var(--ink-soft);
+  line-height: 1.4;
+  margin: 0 0 6px;
+}
+.bg-info-panel p:last-child { margin-bottom: 0; }
+/* The aerial meta line and the Sentinel-2 date wrap sit
+   below the row, full width, as before — shown only while
+   their base is active. */
+#background-choices > .bg-aerial-meta,
+#background-choices > .bg-s2-date-wrap {
+  grid-column: 1 / -1;
 }
 
 /* --- Maintenance markers (R1): red/amber diamonds, the same

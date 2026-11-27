@@ -2974,6 +2974,20 @@ viewer (verified by search — the name appears nowhere in the
 panel code), so the new cluster sits with the other aerials
 in the Basemap section, as Paul's follow-up allowed.**
 
+  **Nov 27, 2026 — compact basemap row (Paul, voice):** the
+  three pull-downs became ONE compact row — Basemap, Aerial
+  Photography, Landsat, Sentinel, side by side, no other text
+  — plus a small info button opening a panel on where each
+  source comes from, what to expect, and data quality (text
+  from this file and the aerial-year / Landsat verification
+  docs). The shared Landsat & Sentinel-2 menu split into two
+  selects; the Landsat select is disabled until the Landsat
+  layer is built. Behaviour unchanged: one basemap at a time,
+  the aerial leaf-colour menu, the corner imagery-date chip,
+  the Sentinel-2 scene-date picker. Branch
+  `compact-basemap-controls`; Paul reviews before it goes
+  live.
+
 - **Infrared (CIR) aerials — MnGeo Geospatial Image Service**
   — same WMS endpoint and pattern as the RGB year aerials
   (`L.tileLayer.wms`, `https://imageserver.gisdata.mn.gov/cgi-bin/wmswm?`),
