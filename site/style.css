@@ -1943,8 +1943,8 @@ body.base-imagery.gap-chip .gap-label span {
      similar menus, but it blows the 60 px compact row up to
      the info panel's height when the panel opens. */
   grid-auto-rows: auto;
-  gap: 6px;
-  margin: 4px 0 6px;
+  gap: 4px;
+  margin: 2px 0 4px;
 }
 .bg-choice {
   display: grid;
@@ -2013,11 +2013,6 @@ body.base-white .leaflet-container { background: #ffffff; }
   border-radius: 4px;
   cursor: pointer;
 }
-.bg-aerial-meta {
-  font-size: 0.78rem;
-  color: var(--ink-soft);
-  line-height: 1.35;
-}
 /* Imagery date readout (Paul, Nov 25, 2026): the "Imagery:
    <date>" chip in the map's bottom-right corner. Same quiet
    treatment as the Leaflet attribution it sits under. */
@@ -2031,18 +2026,19 @@ body.base-white .leaflet-container { background: #ffffff; }
 /* Sentinel-2 scene-date selector (Paul, Nov 25, 2026):
    same treatment as the year menu above it. */
 .bg-s2-date-wrap {
-  margin-top: 8px;
+  margin-top: 4px;
 }
-/* Compact basemap row (Paul, Nov 27, 2026): the four
-   selectors side by side — Basemap, Aerial Photography,
-   Landsat, Sentinel — plus the info button. The row spans
-   both grid columns; each cell is a label over its select.
-   Labels get two lines of height so "Aerial Photography"
-   (which wraps) does not push its select below the others. */
+/* Compact basemap row (Paul, Nov 27, 2026; three menus from
+   Nov 28, 2026, Paul): the three selectors side by side —
+   Basemap, Aerial Photography, Sentinel — plus the info
+   button. The row spans both grid columns; each cell is a
+   label over its select. Labels stay on one line
+   ("Aerial Photography" fits now the row holds three cells,
+   not four) so every select sits at the same height. */
 .bg-row {
   grid-column: 1 / -1;
   display: flex;
-  gap: 6px;
+  gap: 4px;
   align-items: stretch;
 }
 .bg-cell {
@@ -2055,12 +2051,16 @@ body.base-white .leaflet-container { background: #ffffff; }
 .bg-cell .bg-year-label {
   font-size: 0.75rem;
   line-height: 1.2;
-  min-height: 1.9em;
+  min-height: 1.2em;
+  white-space: nowrap;
   overflow: hidden;
 }
-/* The aerial cell takes a wider share so "Photography" fits
-   on its own line — at equal shares it clips to "Photogra". */
-.bg-cell-aerial { flex: 1.35 1 0; }
+/* The aerial cell takes a wider share so "Aerial
+   Photography" fits on one line; the basemap cell takes a
+   slightly wider share too, so the short base names
+   ("Topo", "Streets", "Trails") read in full. */
+.bg-cell-aerial { flex: 1.7 1 0; }
+.bg-cell-base { flex: 1.1 1 0; }
 .bg-info-btn {
   flex: 0 0 auto;
   align-self: flex-end;
@@ -2102,10 +2102,9 @@ body.base-white .leaflet-container { background: #ffffff; }
   margin: 0 0 6px;
 }
 .bg-info-panel p:last-child { margin-bottom: 0; }
-/* The aerial meta line and the Sentinel-2 date wrap sit
+/* The Sentinel-2 date wrap sits
    below the row, full width, as before — shown only while
-   their base is active. */
-#background-choices > .bg-aerial-meta,
+   its base is active. */
 #background-choices > .bg-s2-date-wrap {
   grid-column: 1 / -1;
 }
