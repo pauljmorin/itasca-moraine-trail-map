@@ -546,7 +546,12 @@ var S2_IMAGE = "https://sentinel.arcgis.com/arcgis/rest/services/Sentinel2/Image
    latest scene on or before the picked date, so a picked
    date never shows grey. s2DateValue holds the picked day
    itself (the date-picker option value); the window is
-   derived from it in setS2Date. */
+   derived from it in setS2Date. The window alone does NOT
+   fix coarse zooms: with a window the service returns a
+   blank tile when the requested pixels are coarser than
+   ~50 m (measured Nov 28 — z=10 blank at 256 px, real at
+   512 px), so getTileUrl also steps the output size up at
+   z<11 while a window is set (see there). */
 var s2TimeWindow = null;
 var ImageServerLayer = L.TileLayer.extend({
   options: { serviceUrl: null, renderingRule: null },
@@ -556,10 +561,29 @@ var ImageServerLayer = L.TileLayer.extend({
     var maxx = ((coords.x + 1) / n * 2 - 1) * R;
     var maxy = (1 - coords.y / n * 2) * R;
     var miny = (1 - (coords.y + 1) / n * 2) * R;
+    /* Output size (Nov 28, 2026): with a date window the service
+       returns a BLANK tile when the requested pixels are coarser
+       than ~50 m — measured: z=10 at 256 px (95 m/px) blank, at
+       512 px (47 m/px) real imagery; z=9 blank at 512 px, real
+       at 1024 px; z=8 blank at 1024 px, real at 2048 px; z=11+
+       fine at 256 px. So with a window, keep the output at
+       ~47 m/px: 256 px at z>=11, doubling per level below,
+       capped at 2048 px. Without a window (latest scene) the
+       service renders fine at 256 px at every zoom, so the
+       ladder applies only with a window. Leaflet sizes the tile
+       element at 256 px and the browser downscales the larger
+       image — the same pattern as retina tiles. Residual: at
+       z<=7 even 2048 px is coarser than ~50 m/px, so a dated
+       scene may still come back blank that far out. */
+    var px = 256;
+    if (s2TimeWindow && z < 11) {
+      px = Math.min(2048, 256 * Math.pow(2, 11 - z));
+    }
     return this.options.serviceUrl + "/exportImage?bbox=" +
       [minx.toFixed(1), miny.toFixed(1),
        maxx.toFixed(1), maxy.toFixed(1)].join(",") +
-      "&bboxSR=3857&imageSR=3857&size=256,256&format=jpgpng" +
+      "&bboxSR=3857&imageSR=3857&size=" + px + "," + px +
+      "&format=jpgpng" +
       "&renderingRule=" + encodeURIComponent(JSON.stringify(
         { rasterFunction: this.options.renderingRule })) +
       (s2TimeWindow ? "&time=" + s2TimeWindow : "") +
